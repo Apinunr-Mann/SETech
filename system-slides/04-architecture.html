@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
+<style>
+  .wrap { display: grid; grid-template-columns: 1fr 330px; gap: 22px; height: 100%; padding: 4px 4px 6px; }
+  .stack { display: flex; flex-direction: column; gap: 0; height: 100%; }
+  .tier { flex: 1; display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: stretch; }
+  .tl { border-radius: 18px; background: var(--navy); color: #fff; padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; }
+  .tl b { font: italic 600 19px/1.15 'Prompt'; }
+  .tl span { font-size: 13px; opacity: .8; margin-top: 2px; line-height: 1.3; }
+  .tl.acc { background: var(--accent); color: var(--navy); }
+  .boxes { display: grid; gap: 10px; height: 100%; align-content: stretch; }
+  .bx { background: var(--paper); border: 2px solid var(--line); border-radius: 16px; padding: 10px 14px; display: flex; flex-direction: column; justify-content: center; }
+  .bx b { display: block; font-size: 18px; color: var(--navy); font-weight: 600; line-height: 1.25; }
+  .bx span { display: block; font-size: 14px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+  .bx.hi { border-color: var(--navy); }
+  .bx.ac { border-color: var(--accent); background: #fffaf2; }
+  .flow { height: 30px; flex: none; display: grid; grid-template-columns: 150px 1fr; gap: 14px; }
+  .flow div:last-child { display: flex; justify-content: space-around; align-items: center; }
+  .flow svg { width: 18px; height: 22px; }
+  .edge { display: flex; gap: 10px; height: 100%; }
+  .edge .bx { flex: 1; display: flex; align-items: center; gap: 10px; }
+  .gw { flex: none; background: var(--lav); border: 2px dashed var(--navy-2); border-radius: 14px; padding: 7px 12px; font-size: 14.5px; color: var(--navy); font-weight: 600; text-align: center; margin-bottom: 10px; }
+  .gw span { font-weight: 400; color: var(--muted); }
+
+  .side { display: flex; flex-direction: column; gap: 12px; }
+  .panel { background: var(--paper); border: 3px solid var(--navy); border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+  .panel h4 { font: italic 600 21px 'Prompt'; color: var(--navy); }
+  .panel h4 small { display: block; font: 400 13px 'Prompt'; color: var(--muted); }
+  .it { border-left: 4px solid var(--accent); padding: 2px 0 2px 10px; }
+  .it b { display: block; font-size: 16px; color: var(--ink); font-weight: 600; line-height: 1.25; }
+  .it span { display: block; font-size: 13.5px; color: var(--muted); line-height: 1.35; }
+  .host { background: var(--navy); color: #fff; border-radius: 22px; padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .host h4 { font: italic 600 19px 'Prompt'; color: var(--accent); }
+  .host div { font-size: 15px; line-height: 1.4; display: flex; gap: 8px; }
+  .host div:before { content: ''; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-top: 7px; }
+</style></head>
+<body><div class="wrap">
+
+  <div class="stack">
+    <!-- Channels -->
+    <div class="tier">
+      <div class="tl"><b>Channels</b><span>หน้าบ้านแยกตามผู้ใช้</span></div>
+      <div class="boxes" style="grid-template-columns: repeat(5, 1fr)">
+        <div class="bx hi"><b>WeChat Mini Program</b><span>นักท่องเที่ยวจีน · 中文</span></div>
+        <div class="bx hi"><b>H5 Microsite</b><span>แชร์บน Weibo / Xiaohongshu / Douyin · 中 / EN / ไทย</span></div>
+        <div class="bx"><b>Merchant Web App</b><span>ร้านค้า / ที่พัก · ภาษาไทย · PWA</span></div>
+        <div class="bx"><b>Event Check-in App</b><span>สแกน e-Ticket หน้างาน · ทำงานแบบ Offline ได้</span></div>
+        <div class="bx"><b>TAT Back Office</b><span>Dashboard · CMS · จัดการร้านค้า/รางวัล</span></div>
+      </div>
+    </div>
+    <div class="flow"><div></div><div>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+    </div></div>
+
+    <!-- Edge -->
+    <div class="tier">
+      <div class="tl acc"><b>Edge &amp; Security</b><span>เข้าถึงจากจีนได้เร็ว</span></div>
+      <div class="edge">
+        <div class="bx ac"><div><b>CDN เครือข่ายจีน</b><span>Alibaba Cloud CDN · โหลดเร็วในจีนแผ่นดินใหญ่</span></div></div>
+        <div class="bx ac"><div><b>WAF + Anti-bot</b><span>Tencent Captcha · Rate Limit · กันบอทแย่งสิทธิ์</span></div></div>
+        <div class="bx ac"><div><b>ไม่พึ่งบริการ Google</b><span>ใช้ Amap / Baidu Analytics แทน</span></div></div>
+      </div>
+    </div>
+    <div class="flow"><div></div><div>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+    </div></div>
+
+    <!-- Services -->
+    <div class="tier" style="flex:2.1">
+      <div class="tl"><b>Core Services</b><span>ระบบหลังบ้านแบบโมดูล</span></div>
+      <div style="display:flex;flex-direction:column">
+        <div class="gw" style="margin-bottom:10px">API Gateway <span>· Auth (JWT) · Logging · Versioning</span></div>
+        <div class="boxes" style="grid-template-columns: repeat(4, 1fr); flex: 1">
+          <div class="bx"><b>Identity &amp; Consent</b><span>WeChat / Weibo Login · ความยินยอม PIPL + PDPA</span></div>
+          <div class="bx"><b>Booking Verification</b><span>ตรวจการจองกับ OTA · ออก e-Passport</span></div>
+          <div class="bx"><b>e-Passport &amp; e-Stamp</b><span>Dynamic QR · บันทึกยอดใช้จ่าย/พิกัด</span></div>
+          <div class="bx"><b>Artist Code &amp; Rewards</b><span>โค้ดรายคู่ · สต็อกของรางวัล · ROI</span></div>
+          <div class="bx"><b>Lucky Draw Engine</b><span>สุ่มตามเงื่อนไข · Audit Log ตรวจย้อนหลัง</span></div>
+          <div class="bx"><b>Event Ticketing</b><span>e-Ticket ผูกตัวตน · เช็กอินหน้างาน</span></div>
+          <div class="bx"><b>Anti-fraud Rules</b><span>จับ Stamp ผิดปกติ · บัญชีซ้ำ · ร้านค้าเสี่ยง</span></div>
+          <div class="bx"><b>CMS &amp; Notification</b><span>คอนเทนต์ 16 EP · แจ้งเตือน WeChat / SMS / Email</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="flow"><div></div><div>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+      <svg viewBox="0 0 18 22"><path d="M9 0v16M2 11l7 8 7-8" fill="none" stroke="#37386c" stroke-width="2.5"/></svg>
+    </div></div>
+
+    <!-- Data -->
+    <div class="tier">
+      <div class="tl"><b>Data Layer</b><span>1 ฐานข้อมูลกลาง</span></div>
+      <div class="boxes" style="grid-template-columns: repeat(5, 1fr)">
+        <div class="bx"><b>PostgreSQL</b><span>ผู้ใช้ · การจอง · Stamp · รางวัล</span></div>
+        <div class="bx"><b>Redis</b><span>Cache · คิวช่วง Peak เปิดลงทะเบียน</span></div>
+        <div class="bx"><b>Object Storage</b><span>รูป · วิดีโอ · ไฟล์คอนเทนต์</span></div>
+        <div class="bx"><b>Audit Log</b><span>บันทึกทุก Stamp / การสุ่ม / Admin</span></div>
+        <div class="bx hi"><b>Analytics Warehouse</b><span>ป้อน Dashboard ททท. · ข้อมูลระยะยาว</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="panel">
+      <h4>Integrations<small>เชื่อมต่อระบบภายนอก</small></h4>
+      <div class="it"><b>OTA พาร์ทเนอร์ (LOI)</b><span>China Tourism Group · Utour · Tongcheng — API หรือไฟล์ Voucher Code</span></div>
+      <div class="it"><b>WeChat Open Platform / Weibo</b><span>Login · Template Message · แชร์</span></div>
+      <div class="it"><b>Amap (高德地图)</b><span>แผนที่เส้นทางตามรอย Friends</span></div>
+      <div class="it"><b>ระบบ / ข้อมูลของ ททท.</b><span>ส่งออกรายงาน · API ข้อมูลแคมเปญ</span></div>
+    </div>
+    <div class="host">
+      <h4>Hosting &amp; Compliance</h4>
+      <div>Alibaba Cloud ภูมิภาค Hong Kong ร่วมกับ CDN ในจีน</div>
+      <div>Auto-scaling รองรับ Peak ช่วง Roadshow / Live Weibo</div>
+      <div>สอดคล้อง PIPL (จีน) และ PDPA (ไทย)</div>
+      <div>เข้ารหัสข้อมูล · Backup รายวัน · Uptime 99.9%</div>
+      <div>Load Test ก่อนเปิดลงทะเบียน · Monitoring 24/7 ช่วงอีเวนต์</div>
+    </div>
+  </div>
+
+</div></body></html>

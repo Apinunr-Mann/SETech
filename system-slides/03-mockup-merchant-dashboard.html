@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
+<style>
+  .row { display: flex; gap: 34px; padding: 4px 6px 0; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; align-items: center; }
+  .cap { margin-top: 16px; text-align: center; }
+  .cap b { display: block; font: 600 21px/1.2 'Prompt'; color: var(--navy); }
+  .cap span { display: block; font: 400 15.5px/1.35 'Prompt'; color: var(--muted); margin-top: 3px; }
+  .cap .tag { display: inline-block; margin: 0 0 8px; font-size: 15px; color: #fff; font-weight: 500; }
+
+  .scr { font-size: 13px; }
+  .body { flex: 1; padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
+  .mbar { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 8px; font-weight: 600; color: var(--navy); }
+  .shop { font-size: 11px; color: #888; font-weight: 400; }
+  .cam { position: relative; height: 250px; border-radius: 18px; background: linear-gradient(160deg, #3b3b4f, #20202c); overflow: hidden; display: grid; place-items: center; }
+  .cam .fr { width: 150px; height: 150px; position: relative; }
+  .cam .fr i { position: absolute; width: 34px; height: 34px; border: 4px solid var(--accent); }
+  .cam .fr i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 10px 0 0 0; }
+  .cam .fr i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 10px 0 0; }
+  .cam .fr i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 10px; }
+  .cam .fr i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 10px 0; }
+  .cam .ln { position: absolute; left: 20px; right: 20px; top: 50%; height: 2px; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+  .cam .hint { position: absolute; bottom: 12px; color: #fff; font-size: 12px; opacity: .85; }
+  .cust { border-radius: 14px; background: #f6f5fb; padding: 10px 12px; }
+  .cust b { color: var(--navy); }
+  .cust .ok { color: var(--green); font-weight: 600; font-size: 12px; }
+  .amt { border: 1.5px solid #ddd; border-radius: 10px; padding: 8px 10px; }
+  .amt small { display: block; color: #999; font-size: 11px; }
+  .amt div { font-size: 18px; font-weight: 600; }
+  .btn { background: var(--navy); color: #fff; text-align: center; border-radius: 12px; padding: 11px; font-weight: 600; font-size: 14px; }
+  .today { display: flex; gap: 8px; }
+  .today div { flex: 1; border-radius: 12px; background: var(--accent-soft); padding: 8px; text-align: center; }
+  .today b { display: block; font-size: 18px; color: var(--navy); }
+  .today span { font-size: 11px; color: #7a5a20; }
+
+  /* dashboard */
+  .browser { width: 1380px; height: 640px; border-radius: 18px; background: #fff; box-shadow: 0 18px 40px rgba(55,56,108,.18); overflow: hidden; display: flex; flex-direction: column; flex: none; }
+  .chrome { height: 38px; background: #e9e8f1; display: flex; align-items: center; gap: 8px; padding: 0 14px; flex: none; }
+  .chrome i { width: 12px; height: 12px; border-radius: 50%; background: #c9c7d8; }
+  .chrome .url { margin-left: 14px; background: #fff; border-radius: 8px; padding: 3px 14px; font-size: 13px; color: #777; width: 420px; }
+  .app { flex: 1; display: flex; min-height: 0; }
+  .side { width: 190px; background: var(--navy); color: #fff; padding: 18px 14px; display: flex; flex-direction: column; gap: 6px; flex: none; }
+  .side .logo { font: italic 600 15px/1.2 'Prompt'; margin-bottom: 14px; }
+  .side .logo span { color: var(--accent); display: block; font-size: 12px; font-style: normal; font-weight: 400; }
+  .side div.m { font-size: 14px; padding: 7px 10px; border-radius: 8px; opacity: .78; }
+  .side div.m.on { background: rgba(255,255,255,.14); opacity: 1; font-weight: 500; }
+  .main { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .mhead { display: flex; justify-content: space-between; align-items: center; }
+  .mhead h2 { font: 600 22px 'Prompt'; color: var(--navy); }
+  .filters { display: flex; gap: 6px; }
+  .filters span { font-size: 12.5px; border: 1.5px solid var(--line); border-radius: 999px; padding: 3px 12px; color: var(--muted); }
+  .filters span.on { border-color: var(--navy); color: var(--navy); font-weight: 600; }
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .kpi { border: 1.5px solid #ecebf3; border-radius: 14px; padding: 10px 12px; }
+  .kpi small { font-size: 12.5px; color: var(--muted); display: block; }
+  .kpi b { font: 600 25px/1.2 'Prompt'; color: var(--ink); }
+  .kpi em { font-style: normal; font-size: 12px; color: var(--green); font-weight: 600; }
+  .grid2 { display: grid; grid-template-columns: 1.05fr 1fr 0.95fr; gap: 12px; flex: 1; min-height: 0; }
+  .panel { border: 1.5px solid #ecebf3; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; }
+  .panel h5 { font: 600 15px 'Prompt'; color: var(--navy); margin-bottom: 8px; }
+  .hb { display: grid; grid-template-columns: 118px 1fr 52px; align-items: center; gap: 8px; font-size: 13px; margin: 5px 0; }
+  .hb .bar { height: 16px; border-radius: 0 4px 4px 0; background: var(--navy); }
+  .hb .v { text-align: right; font-weight: 600; color: var(--ink); }
+  .vb { flex: 1; display: flex; align-items: flex-end; gap: 16px; padding: 0 6px; border-bottom: 1.5px solid #ddd; }
+  .vb div { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .vb div i { width: 100%; background: var(--navy-2); border-radius: 4px 4px 0 0; display: block; }
+  .vb div span { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+  .vbl { display: flex; gap: 16px; padding: 4px 6px 0; }
+  .vbl span { flex: 1; text-align: center; font-size: 12px; color: var(--muted); }
+  .fn { display: flex; flex-direction: column; gap: 6px; }
+  .fn div { display: flex; justify-content: space-between; align-items: center; background: var(--lav); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+  .fn div b { color: var(--navy); }
+  .fn div:last-child { background: var(--accent-soft); }
+  .note { font-size: 12px; color: var(--muted); }
+  .tb { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid #f0eff5; }
+  .tb b { color: var(--navy); }
+  .alert { margin-top: 10px; font-size: 12.5px; line-height: 1.45; border-radius: 10px; padding: 8px 10px; background: #fdecea; color: #a5352a; }
+  .alert.ok { background: #eaf7f1; color: #1f7a52; }
+</style></head>
+<body>
+<div class="row">
+
+  <div class="col">
+    <div class="phone"><div class="notch"></div><div class="scr">
+      <div class="status"></div>
+      <div class="mbar"><span>Friends Merchant</span><span class="shop">ร้านครัวทะเลตราด</span></div>
+      <div class="body">
+        <div class="cam"><div class="fr"><i></i><i></i><i></i><i></i></div><div class="ln"></div><div class="hint">สแกน QR จาก e-Passport ของลูกค้า</div></div>
+        <div class="cust"><b>LI XIAOYU</b> · FOAT-27-004218<br><span class="ok">✓ e-Passport ถูกต้อง · สะสมแล้ว 5/10</span></div>
+        <div class="amt"><small>ยอดใช้จ่าย (บาท)</small><div>1,450</div></div>
+        <div class="btn">ยืนยันแจก e-Stamp</div>
+        <div class="today"><div><b>38</b><span>Stamp วันนี้</span></div><div><b>฿52,300</b><span>ยอดจากลูกค้าจีน</span></div></div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="tag">Merchant Web App</span><b>ร้านค้า / ที่พัก</b><span>เปิดผ่านมือถือ ไม่ต้องติดตั้ง<br>สแกน → กรอกยอด → แจก Stamp</span></div>
+  </div>
+
+  <div class="col">
+    <div class="browser">
+      <div class="chrome"><i></i><i></i><i></i><div class="url">dashboard.friendsofamazingthailand.com</div></div>
+      <div class="app">
+        <div class="side">
+          <div class="logo">FRIENDS OF<br>AMAZING THAILAND<span>TAT Back Office</span></div>
+          <div class="m on">ภาพรวมแคมเปญ</div>
+          <div class="m">นักท่องเที่ยว</div>
+          <div class="m">การจอง OTA</div>
+          <div class="m">ร้านค้า / ที่พัก</div>
+          <div class="m">Artist Code</div>
+          <div class="m">Lucky Draw</div>
+          <div class="m">อีเวนต์ &amp; เช็กอิน</div>
+          <div class="m">คอนเทนต์ (CMS)</div>
+          <div class="m">รายงาน / Export</div>
+        </div>
+        <div class="main">
+          <div class="mhead"><h2>ภาพรวมแคมเปญ</h2>
+            <div class="filters"><span class="on">ทุกคู่</span><span>ทุกภาค</span><span>ก.พ. – พ.ย. 2570</span></div></div>
+          <div class="kpis">
+            <div class="kpi"><small>ผู้ลงทะเบียน</small><b>128,540</b><br><em>▲ 12% สัปดาห์นี้</em></div>
+            <div class="kpi"><small>การจองที่ยืนยันแล้ว</small><b>41,260</b><br><em>▲ 8%</em></div>
+            <div class="kpi"><small>e-Stamp ทั้งหมด</small><b>312,880</b><br><em>▲ 15%</em></div>
+            <div class="kpi"><small>ร้านค้า/ที่พักที่เข้าร่วม</small><b>1,248</b><br><em>▲ 64 ร้านใหม่</em></div>
+            <div class="kpi"><small>ยอดใช้จ่ายผ่านร้านค้า</small><b>฿186.4M</b><br><em>▲ 10%</em></div>
+          </div>
+          <div class="grid2">
+            <div class="panel"><h5>Artist Code ที่ถูก Redeem (ROI รายคู่)</h5>
+              <div class="hb"><span>Gemini &amp; Fourth</span><div class="bar" style="width:100%"></div><span class="v">14,820</span></div>
+              <div class="hb"><span>Pond &amp; Phuwin</span><div class="bar" style="width:88%"></div><span class="v">13,050</span></div>
+              <div class="hb"><span>Perth &amp; Santa</span><div class="bar" style="width:61%"></div><span class="v">9,040</span></div>
+              <div class="hb"><span>William &amp; Est</span><div class="bar" style="width:47%"></div><span class="v">6,970</span></div>
+              <div class="note" style="margin-top:4px">ใช้วัดว่าแต่ละคู่ดึงนักท่องเที่ยวได้กี่คน</div>
+              <h5 style="margin-top:14px">ร้านค้า/ที่พักที่มี Stamp สูงสุด</h5>
+              <div class="tb"><span>1. บ้านริมน้ำจันทบูร</span><b>4,210</b></div>
+              <div class="tb"><span>2. ครัวทะเลตราด</span><b>3,870</b></div>
+              <div class="tb"><span>3. ระนองฮอตสปริง รีสอร์ท</span><b>3,420</b></div>
+              <div class="tb"><span>4. คาเฟ่ภูเรือ เลย</span><b>2,960</b></div>
+            </div>
+            <div class="panel"><h5>e-Stamp แยกตามภาค</h5>
+              <div class="vb">
+                <div><span>96K</span><i style="height:82%"></i></div>
+                <div><span>71K</span><i style="height:61%"></i></div>
+                <div><span>84K</span><i style="height:72%"></i></div>
+                <div><span>62K</span><i style="height:53%"></i></div>
+              </div>
+              <div class="vbl"><span>ตะวันออก</span><span>ใต้</span><span>อีสาน</span><span>เหนือ</span></div>
+            </div>
+            <div class="panel"><h5>Conversion Funnel</h5>
+              <div class="fn">
+                <div><span>ลงทะเบียน</span><b>128,540</b></div>
+                <div><span>จองที่ยืนยันแล้ว</span><b>41,260</b></div>
+                <div><span>เดินทางถึงไทย (Stamp แรก)</span><b>36,910</b></div>
+                <div><span>สะสมครบ 10 Stamp</span><b>18,430</b></div>
+                <div><span>เข้าร่วมอีเวนต์จริง</span><b>9,800</b></div>
+              </div>
+              <div class="alert"><b>Anti-fraud</b> · 23 บัญชี และ 2 ร้านค้า รอตรวจสอบ (Stamp ผิดปกติ)</div>
+              <div class="alert ok"><b>Lucky Draw</b> · Friends Tour ภาคตะวันออก · สุ่มแล้ว 2,000 สิทธิ์ · มี Audit Log</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap"><span class="tag">TAT Back Office &amp; Dashboard</span><b>ข้อมูลแคมเปญแบบ Real-time สำหรับ ททท.</b><span>ดูแยกตามคู่ศิลปิน · ภาค · ร้านค้า · Export รายงาน · ตัวเลขบนหน้าจอเป็นตัวอย่าง</span></div>
+  </div>
+
+</div>
+</body></html>

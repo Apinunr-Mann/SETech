@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
+<style>
+  .row { display: flex; justify-content: space-between; padding: 4px 30px 0; }
+  .col { display: flex; flex-direction: column; align-items: center; width: 300px; }
+  .cap { margin-top: 18px; text-align: center; }
+  .cap .n { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--navy); font: 600 18px 'Prompt'; margin-bottom: 6px; }
+  .cap b { display: block; font: 600 21px/1.2 'Prompt'; color: var(--navy); }
+  .cap span { display: block; font: 400 15.5px/1.35 'Prompt'; color: var(--muted); margin-top: 3px; }
+
+  .scr { font-family: 'Noto Sans SC', 'Prompt', sans-serif; font-size: 13px; }
+  .body { flex: 1; padding: 0 14px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .nav { height: 52px; flex: none; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; font-size: 11px; color: #999; }
+  .nav i { display: block; width: 18px; height: 18px; border-radius: 5px; background: #ddd; margin: 0 auto 2px; }
+  .nav .on { color: var(--navy); font-weight: 700; }
+  .nav .on i { background: var(--navy); }
+  h4 { font-size: 17px; font-weight: 700; color: var(--navy); }
+  .muted { color: #888; font-size: 12px; }
+  .btn { background: var(--navy); color: #fff; text-align: center; border-radius: 12px; padding: 11px; font-weight: 700; font-size: 14px; }
+  .btn.wx { background: #07c160; }
+  .card { border-radius: 14px; background: #f6f5fb; padding: 10px 12px; }
+
+  /* screen 1 */
+  .hero { margin: 0 -14px; padding: 14px 16px 16px; background: linear-gradient(135deg, #37386c, #5a5ba3); color: #fff; }
+  .hero .zh-t { font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+  .hero .en { font: italic 600 12px 'Prompt'; opacity: .85; letter-spacing: .5px; }
+  .hero .sub { font-size: 12px; margin-top: 8px; opacity: .9; }
+  .pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pair { border-radius: 12px; padding: 8px; background: #f6f5fb; border: 2px solid transparent; }
+  .pair.sel { border-color: var(--accent); background: #fff8ec; }
+  .av { display: flex; margin-bottom: 4px; }
+  .av span { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; margin-right: -8px; }
+  .pair b { display: block; font: 600 12px 'Prompt'; color: var(--navy); }
+  .pair em { font-style: normal; font-size: 11px; color: #777; }
+
+  /* screen 2 */
+  .steps { display: flex; gap: 4px; }
+  .steps div { flex: 1; height: 4px; border-radius: 2px; background: #e5e5ef; }
+  .steps .on { background: var(--accent); }
+  .ota { display: flex; gap: 6px; }
+  .ota div { flex: 1; text-align: center; border: 1.5px solid #ddd; border-radius: 10px; padding: 8px 2px; font-size: 11.5px; }
+  .ota .sel { border-color: var(--navy); color: var(--navy); font-weight: 700; background: #f0f0fa; }
+  .field { border: 1.5px solid #ddd; border-radius: 10px; padding: 8px 10px; }
+  .field small { display: block; color: #999; font-size: 11px; }
+  .field div { font-size: 14px; font-weight: 500; color: #222; }
+  .ok { background: #eaf7f1; border-radius: 12px; padding: 10px 12px; color: #1f7a52; font-size: 12.5px; display: flex; gap: 8px; align-items: center; }
+  .ok svg { width: 22px; height: 22px; flex: none; }
+
+  /* screen 3 */
+  .pass { border-radius: 16px; background: linear-gradient(150deg, #2c2d5e, #4a4b8f); color: #fff; padding: 12px 14px; position: relative; overflow: hidden; }
+  .pass:after { content: ''; position: absolute; right: -30px; top: -30px; width: 110px; height: 110px; border-radius: 50%; border: 14px solid rgba(233,162,59,.35); }
+  .pass .t { font: italic 600 12px 'Prompt'; color: var(--accent); letter-spacing: .5px; }
+  .pass .nm { font-size: 16px; font-weight: 700; margin-top: 2px; }
+  .pass .meta { font-size: 11px; opacity: .8; }
+  .qrbox { background: #fff; border-radius: 12px; padding: 8px; display: flex; gap: 10px; align-items: center; margin-top: 10px; color: #333; }
+  .qr { display: grid; grid-template-columns: repeat(21, 1fr); width: 92px; height: 92px; flex: none; }
+  .qr i { background: #111; }
+  .qr i.w { background: transparent; }
+  .stamps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .st { aspect-ratio: 1; border-radius: 50%; border: 2px dashed #ccc; display: grid; place-items: center; font-size: 9.5px; color: #bbb; text-align: center; line-height: 1.1; }
+  .st.on { border: 2px solid var(--accent); background: #fff4e2; color: #a86a12; font-weight: 700; }
+  .prog { height: 8px; border-radius: 4px; background: #eee; overflow: hidden; }
+  .prog div { height: 100%; width: 60%; background: var(--accent); }
+
+  /* screen 4 */
+  .codein { display: flex; gap: 5px; justify-content: center; }
+  .codein div { width: 30px; height: 40px; border-radius: 8px; border: 2px solid var(--navy); display: grid; place-items: center; font: 700 18px 'Prompt'; color: var(--navy); }
+  .reward { border-radius: 14px; border: 2px solid var(--accent); background: #fff8ec; padding: 12px; text-align: center; }
+  .gift { width: 64px; height: 64px; margin: 2px auto 6px; border-radius: 16px; background: linear-gradient(135deg, #e9a23b, #f4c77c); display: grid; place-items: center; }
+  .gift svg { width: 36px; height: 36px; stroke: #fff; fill: none; stroke-width: 2; }
+  .reward b { color: var(--navy); font-size: 14px; display: block; }
+  .li { display: flex; justify-content: space-between; font-size: 12px; padding: 7px 0; border-bottom: 1px solid #f0f0f0; }
+  .li em { font-style: normal; color: var(--green); font-weight: 700; }
+
+  /* screen 5 */
+  .win { text-align: center; padding: 6px 0 0; }
+  .win .big { font-size: 22px; font-weight: 800; color: var(--accent); }
+  .ticket { border-radius: 16px; background: #fff; border: 2px solid var(--navy); overflow: hidden; }
+  .ticket .top { background: var(--navy); color: #fff; padding: 10px 12px; }
+  .ticket .top b { font: italic 600 15px 'Prompt'; display: block; }
+  .ticket .top span { font-size: 11px; opacity: .85; }
+  .ticket .mid { padding: 10px 12px; display: flex; gap: 10px; align-items: center; border-top: 2px dashed #ccc; }
+  .kv { font-size: 11.5px; color: #555; line-height: 1.6; }
+  .kv b { color: #222; }
+  .note { font-size: 11px; color: #c0392b; text-align: center; }
+</style></head>
+<body>
+<div class="row">
+
+  <!-- 1 Home / Register -->
+  <div class="col">
+    <div class="phone"><div class="notch"></div><div class="scr">
+      <div class="status"></div>
+      <div class="miniapp-bar"><span>神奇泰国好朋友</span><div class="capsule">··· ◎</div></div>
+      <div class="body">
+        <div class="hero">
+          <div class="en">FRIENDS OF AMAZING THAILAND</div>
+          <div class="zh-t">神奇泰国好朋友</div>
+          <div class="sub">跟着好朋友，去泰国的宝藏小城 →</div>
+        </div>
+        <h4>选择你的好朋友</h4>
+        <div class="pairs">
+          <div class="pair"><div class="av"><span style="background:#9fb7d8"></span><span style="background:#c8a6d6"></span></div><b>Pond &amp; Phuwin</b><em>慢活与养生 · 东北部</em></div>
+          <div class="pair"><div class="av"><span style="background:#8fcfb5"></span><span style="background:#f2b48a"></span></div><b>William &amp; Est</b><em>活力与冒险 · 南部</em></div>
+          <div class="pair"><div class="av"><span style="background:#e4c27a"></span><span style="background:#a7a9d9"></span></div><b>Perth &amp; Santa</b><em>文化与遗产 · 北部</em></div>
+          <div class="pair sel"><div class="av"><span style="background:#f19c9c"></span><span style="background:#7fc4e0"></span></div><b>Gemini &amp; Fourth</b><em>美食与海滩 · 东部</em></div>
+        </div>
+        <div class="btn wx">微信一键登记</div>
+        <div class="muted" style="text-align:center">登记即表示同意《个人信息处理规则》</div>
+      </div>
+      <div class="nav"><div class="on"><i></i>首页</div><div><i></i>护照</div><div><i></i>活动</div><div><i></i>我的</div></div>
+    </div></div>
+    <div class="cap"><div class="n">1</div><b>ลงทะเบียน &amp; เลือกคู่</b><span>Login ผ่าน WeChat ในคลิกเดียว<br>เลือกคู่ Friends ที่ชอบ</span></div>
+  </div>
+
+  <!-- 2 Link OTA booking -->
+  <div class="col">
+    <div class="phone"><div class="notch"></div><div class="scr">
+      <div class="status"></div>
+      <div class="miniapp-bar"><span>‹ 绑定旅行订单</span><div class="capsule">··· ◎</div></div>
+      <div class="body">
+        <div class="steps"><div class="on"></div><div class="on"></div><div></div></div>
+        <h4>你在哪里预订了“好朋友之旅”？</h4>
+        <div class="ota"><div>中国旅游<br>集团</div><div>众信旅游<br>Utour</div><div class="sel">同程旅行<br>Tongcheng</div></div>
+        <div class="field"><small>订单号</small><div>TC2027-0388 5126</div></div>
+        <div class="field"><small>护照姓名 (拼音)</small><div>LI XIAOYU</div></div>
+        <div class="field"><small>目的地</small><div>泰国东部 · 尖竹汶 – 达叻</div></div>
+        <div class="btn">验证订单</div>
+        <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#2f9e6e" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><path d="M7 12l3.5 3.5L17 9"/></svg><div><b>订单已验证</b><br>好朋友电子护照已发放</div></div>
+      </div>
+      <div class="nav"><div><i></i>首页</div><div class="on"><i></i>护照</div><div><i></i>活动</div><div><i></i>我的</div></div>
+    </div></div>
+    <div class="cap"><div class="n">2</div><b>ผูกการจองกับ OTA</b><span>กรอกเลขที่การจอง ระบบตรวจกับ OTA<br>แล้วออก e-Passport อัตโนมัติ</span></div>
+  </div>
+
+  <!-- 3 e-Passport -->
+  <div class="col">
+    <div class="phone"><div class="notch"></div><div class="scr">
+      <div class="status"></div>
+      <div class="miniapp-bar"><span>我的好朋友护照</span><div class="capsule">··· ◎</div></div>
+      <div class="body">
+        <div class="pass">
+          <div class="t">FRIENDS PASSPORT · 好朋友护照</div>
+          <div class="nm">LI XIAOYU</div>
+          <div class="meta">No. FOAT-27-004218 · Gemini &amp; Fourth</div>
+          <div class="qrbox"><div class="qr" id="qr1"></div><div style="font-size:11.5px;line-height:1.5"><b style="color:#37386c">出示给商家扫码</b><br>集印章 · 抽奖资格<br><span style="color:#999">每60秒自动刷新</span></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h4>我的印章</h4><span style="font-weight:700;color:#a86a12">6 / 10</span></div>
+        <div class="prog"><div></div></div>
+        <div class="stamps">
+          <div class="st on">尖竹汶<br>酒店</div><div class="st on">达叻<br>海鲜</div><div class="st on">尖竹汶<br>宝石</div><div class="st on">达叻<br>咖啡</div><div class="st on">象岛<br>度假村</div>
+          <div class="st on">尖竹汶<br>水果</div><div class="st">7</div><div class="st">8</div><div class="st">9</div><div class="st">10</div>
+        </div>
+        <div class="muted" style="text-align:center">再集 <b style="color:#a86a12">4</b> 枚即可参加 Friends Tour 抽奖</div>
+      </div>
+      <div class="nav"><div><i></i>首页</div><div class="on"><i></i>护照</div><div><i></i>活动</div><div><i></i>我的</div></div>
+    </div></div>
+    <div class="cap"><div class="n">3</div><b>Friends e-Passport</b><span>QR แบบ Dynamic เปลี่ยนทุก 60 วิ<br>สะสม e-Stamp จากร้านค้า/ที่พัก</span></div>
+  </div>
+
+  <!-- 4 Artist code -->
+  <div class="col">
+    <div class="phone"><div class="notch"></div><div class="scr">
+      <div class="status"></div>
+      <div class="miniapp-bar"><span>‹ 好朋友专属口令</span><div class="capsule">··· ◎</div></div>
+      <div class="body">
+        <h4>输入艺人专属口令</h4>
+        <div class="muted">口令来自好朋友节目及官方微博</div>
+        <div class="codein"><div>G</div><div>M</div><div>F</div><div>T</div><div>2</div><div>7</div></div>
+        <div class="btn">兑换</div>
+        <div class="reward">
+          <div class="gift"><svg viewBox="0 0 24 24"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7c-2-4-6-4-6-1s6 1 6 1zm0 0c2-4 6-4 6-1s-6 1-6 1z"/></svg></div>
+          <b>兑换成功！</b>
+          <div style="font-size:12px;color:#555;margin-top:2px">Gemini &amp; Fourth 限定签名明信片<br>领取地点：尖竹汶 TAT 游客中心</div>
+        </div>
+        <div style="font-weight:700;color:#37386c;font-size:13px">我的兑换记录</div>
+        <div class="li"><span>限定明信片</span><em>已兑换</em></div>
+        <div class="li"><span>额外抽奖机会 ×1</span><em>已兑换</em></div>
+      </div>
+      <div class="nav"><div><i></i>首页</div><div><i></i>护照</div><div class="on"><i></i>活动</div><div><i></i>我的</div></div>
+    </div></div>
+    <div class="cap"><div class="n">4</div><b>Artist Code</b><span>โค้ดเฉพาะของแต่ละคู่ แลกของรางวัล<br>ใช้วัด ROI ของศิลปินรายคู่</span></div>
+  </div>
+
+  <!-- 5 Lucky draw & e-Ticket -->
+  <div class="col">
+    <div class="phone"><div class="notch"></div><div class="scr">
+      <div class="status"></div>
+      <div class="miniapp-bar"><span>‹ 抽奖结果</span><div class="capsule">··· ◎</div></div>
+      <div class="body">
+        <div class="win"><div class="big">恭喜中签！</div><div class="muted">Friends Tour · 东部站 · 2027年10月</div></div>
+        <div class="ticket">
+          <div class="top"><b>FRIENDS TOUR 2027</b><span>Gemini &amp; Fourth · 尖竹汶</span></div>
+          <div class="mid"><div class="qr" id="qr2"></div>
+            <div class="kv">区域 <b>A区</b><br>座位 <b>A-07</b><br>入场 <b>18:00</b><br>持票人 <b>LI XIAOYU</b></div></div>
+        </div>
+        <div class="note">实名入场 · 需出示护照 · 不可转让</div>
+        <div class="card" style="font-size:12px;line-height:1.6"><b style="color:#37386c">Meet &amp; Greet 专属权益</b><br>入场后前往 VIP 签到台领取手环</div>
+        <div class="btn">添加到微信卡包</div>
+      </div>
+      <div class="nav"><div><i></i>首页</div><div><i></i>护照</div><div class="on"><i></i>活动</div><div><i></i>我的</div></div>
+    </div></div>
+    <div class="cap"><div class="n">5</div><b>Lucky Draw &amp; e-Ticket</b><span>แจ้งผลผ่าน WeChat · บัตรผูกชื่อจริง<br>กันการขายต่อบัตร</span></div>
+  </div>
+
+</div>
+<script>
+  // Decorative QR-like pattern (not a real code) with three finder squares.
+  function qr(id, seed) {
+    const el = document.getElementById(id), n = 21; let s = seed;
+    const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+    const inFinder = (r, c) => [[0,0],[0,n-7],[n-7,0]].find(([fr, fc]) => r >= fr && r < fr + 8 && c >= fc && c < fc + 8 && r - fr <= 7 && c - fc <= 7);
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      const i = document.createElement('i');
+      const f = inFinder(r, c);
+      let black;
+      if (f) { const y = r - f[0], x = c - f[1]; black = y < 7 && x < 7 && (y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4)); }
+      else black = rnd() > 0.52;
+      if (!black) i.className = 'w';
+      el.appendChild(i);
+    }
+  }
+  qr('qr1', 7); qr('qr2', 42);
+</script>
+</body></html>
