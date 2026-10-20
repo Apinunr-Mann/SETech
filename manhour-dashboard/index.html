@@ -260,7 +260,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 18p
       <div class="scroll"><div id="matrix"></div></div>
     </section>
     <section class="card">
-      <div class="head"><div><h2>ชั่วโมงที่จัดสรรได้</h2><p class="sub">10 วันทำงานข้างหน้า · ช่องว่างและงานที่ยังไม่ระบุโปรเจกต์</p></div></div>
+      <div class="head"><div><h2>ชั่วโมงที่จัดสรรได้</h2><p class="sub">10 วันทำงานข้างหน้า · ชั่วโมงว่าง (Next Project) ที่รับงานใหม่ได้</p></div></div>
       <div class="av" id="avail"></div>
     </section>
   </div>
@@ -277,7 +277,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 18p
 const SHEET_ID = "1EYrEf7kngDzJk6Thf5d6oLNKDiPCa52_YbDY2JK7-ag";
 const SERVER = "Google Sheets";
 const FALLBACK_TABS = ["OAT","JAME","KT","ARYCK","PLOY"]; // used only when the tab list can't be read (standalone mode)
-const FLEX = ["next project","project อื่น","project อื่นๆ","tbd","รอ","รอจัดสรร"];
+const FREE = ["next project","ว่าง","tbd","รอจัดสรร"]; // planned-but-open hours; "Project อื่น" is booked work
 const POLL_MS = 60000;
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -317,7 +317,7 @@ function kindOf(v) {
   if (t.startsWith("พัก")) return "break";
   if (t === "ลา" || l.startsWith("ลา")) return "leave";
   if (t === "หยุด" || l.startsWith("หยุด") || l === "holiday") return "holiday";
-  if (FLEX.includes(l)) return "flex";
+  if (FREE.includes(l)) return "free";
   return "project";
 }
 function parseSheet(name, values) {
@@ -417,7 +417,7 @@ function drawKPIs(ds) {
   const k = [
     { h: 1, l: "Utilization", v: u, u: "%", d: `${t.booked} จาก ${t.avail} ชม. ที่พร้อมทำงาน` },
     { l: "ชม. โปรเจกต์", v: t.booked, u: "ชม.", d: `${t.prj.size} โปรเจกต์` },
-    { l: "จัดสรรได้", v: t.flex + t.free, u: "ชม.", d: `ยังไม่ระบุ ${t.flex} · ว่าง ${t.free}` },
+    { l: "จัดสรรได้", v: t.flex + t.free, u: "ชม.", d: "ชั่วโมงว่าง (Next Project / ช่องว่าง)" },
     { l: "ความจุทีม", v: t.cap, u: "ชม.", d: `${shown().length} คน · ${ds.length} วัน` },
     { l: "ลา", v: +(t.leave / slotsPerDay).toFixed(1), u: "วัน", d: `${t.leave} ชม.` },
     { l: "วันหยุด", v: +(t.holiday / slotsPerDay).toFixed(1), u: "คน-วัน", d: `${t.holiday} ชม. ไม่นับในความจุ` },
@@ -450,7 +450,7 @@ function drawNow() {
   }).join("");
 }
 function stateLegend() {
-  $("#stateLegend").innerHTML = [["flex", "ยังไม่ระบุโปรเจกต์"], ["free", "ว่าง"], ["leave", "ลา"], ["holiday", "วันหยุด"]].map(([k, l]) => `<span><i class="sw ${k}"></i>${l}</span>`).join("");
+  $("#stateLegend").innerHTML = [["free", "ว่าง · Next Project"], ["leave", "ลา"], ["holiday", "วันหยุด"]].map(([k, l]) => `<span><i class="sw ${k}"></i>${l}</span>`).join("");
 }
 function tip(p, d, s) { const name = s.k === "project" || s.k === "flex" ? s.v : { free: "ว่าง", leave: "ลา", holiday: "วันหยุด" }[s.k]; return esc(`${p.name}|${fDay(d)} · ${s.label}:00|${name}${s.k === "flex" ? " (ยังไม่ระบุโปรเจกต์)" : ""}`); }
 function drawTimeline(ds) {
@@ -504,7 +504,7 @@ function drawLoad(ds) {
       (a.flex ? `<i class="flex" style="width:${a.flex / cap * 100}%" data-tip="${esc(`${p.name}|ยังไม่ระบุโปรเจกต์|${a.flex} ชม.`)}"></i>` : "") +
       (a.leave ? `<i class="leave" style="width:${a.leave / cap * 100}%" data-tip="${esc(`${p.name}|ลา|${a.leave} ชม.`)}"></i>` : "");
     return `<div class="lrow"><button type="button" class="nm" data-person="${esc(p.name)}">${esc(p.name)}</button><div class="bar">${segs}</div><div class="pct"><b class="num">${Math.round(a.util * 100)}%</b><span class="status" style="--st:${stt.c}">${stt.t}</span></div>
-      <div class="lsub num">โปรเจกต์ ${a.booked} · ยังไม่ระบุ ${a.flex} · ว่าง ${a.free} · ลา ${a.leave} / ${a.cap} ชม.</div></div>`;
+      <div class="lsub num">โปรเจกต์ ${a.booked} · ว่าง ${a.free} · ลา ${a.leave} / ${a.cap} ชม.</div></div>`;
   }).join("") || `<div class="empty">ไม่มีข้อมูล</div>`;
 }
 function drawProjects(ds) {

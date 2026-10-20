@@ -12,8 +12,8 @@ Live executive dashboard for the **SETech Manhour** Google Sheet (one tab per pe
 | `พักเที่ยง` | lunch break (excluded) |
 | `ลา` | leave (counted in capacity, not available) |
 | `หยุด` | holiday (excluded from capacity) |
-| `Next Project`, `Project อื่น` (see `FLEX`) | unassigned, so it can still be allocated |
+| `Next Project` (see `FREE`) | free, open for new work |
 | empty | free |
-| anything else | project hours |
+| anything else, including `Project อื่น` | booked project hours |
 
 Utilization = project hours ÷ (capacity − leave).
