@@ -1,0 +1,652 @@
+<title>SETech Manhour</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@500;700;900&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: one calm column of white cards on a dotted grey plane; dot-matrix numerals, one red signal colour for "live" and "now". */
+:root{
+  --bg:#f3f3f1; --card:#ffffff; --card-2:#f6f6f4; --ink:#0a0a0a; --ink-2:#4a4a47; --muted:#8a8a85;
+  --line:#e6e6e2; --line-2:#d2d2cd; --dot:#d9d9d4; --accent:#d71921; --flex:#cfcfc9; --hol:#ececE8;
+  --good:#0a8a0a; --warn:#c98500;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4; --c6:#008300; --c7:#6250d6; --c0:#5c5c58;
+  --f-dot:"Doto","Space Mono",ui-monospace,monospace;
+  --f-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","IBM Plex Sans Thai","Helvetica Neue",system-ui,sans-serif;
+  --f-mono:"Space Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r:22px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#000000; --card:#121212; --card-2:#1a1a1a; --ink:#f2f2ef; --ink-2:#bdbdb8; --muted:#83837e;
+  --line:#242424; --line-2:#363636; --dot:#1f1f1f; --accent:#ff3b30; --flex:#3a3a37; --hol:#1c1c1c;
+  --good:#2fbf2f; --warn:#e0a020;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9085e9; --c0:#a8a8a2;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000000; --card:#121212; --card-2:#1a1a1a; --ink:#f2f2ef; --ink-2:#bdbdb8; --muted:#83837e;
+  --line:#242424; --line-2:#363636; --dot:#1f1f1f; --accent:#ff3b30; --flex:#3a3a37; --hol:#1c1c1c;
+  --good:#2fbf2f; --warn:#e0a020;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9085e9; --c0:#a8a8a2;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-ui);-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:14px 14px}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+/* header */
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand h1{margin:0;font-family:var(--f-dot);font-weight:900;font-size:clamp(40px,7vw,64px);line-height:.95;letter-spacing:-.01em}
+.brand p{margin:0;color:var(--ink-2)}
+.live{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;white-space:nowrap}
+.pill .led{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.pill.on .led{background:var(--accent);box-shadow:0 0 0 0 var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.pill.on .led{animation:none}}
+a.pill,button.pill{cursor:pointer;text-decoration:none;color:var(--ink)}
+button.pill:hover,a.pill:hover{border-color:var(--line-2)}
+
+/* controls */
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  padding:10px;border-radius:999px;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.seg{display:inline-flex;background:var(--card-2);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;height:30px;padding:0 16px;border-radius:999px;cursor:pointer;font-size:14px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);font-weight:600}
+.nav{display:inline-flex;align-items:center;gap:4px}
+.nav button{width:32px;height:32px;border-radius:50%;border:0;background:var(--card-2);cursor:pointer;font-size:16px}
+.nav button:hover{background:var(--line)}
+.nav .lbl{min-width:150px;text-align:center;font-weight:600;font-size:14px}
+.today{border:1px solid var(--line-2);background:transparent;height:30px;padding:0 12px;border-radius:999px;cursor:pointer;font-size:13px}
+.people{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.chip{border:1px solid var(--line);background:transparent;height:30px;padding:0 12px;border-radius:999px;cursor:pointer;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+@media (max-width:760px){.controls{border-radius:20px}.people{margin-left:0}}
+
+/* cards */
+.card{background:var(--card);border-radius:var(--r);padding:22px;border:1px solid var(--line);min-width:0}
+.card h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.card .sub{margin:2px 0 0;color:var(--muted);font-size:13px}
+.head{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:flex-end;margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+@media (max-width:1000px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi .v{font-family:var(--f-dot);font-weight:700;font-size:40px;line-height:1;letter-spacing:-.01em}
+.kpi .v small{font-family:var(--f-ui);font-size:13px;font-weight:500;color:var(--muted);margin-left:4px;letter-spacing:0}
+.kpi .d{font-size:12px;color:var(--muted)}
+.kpi.hero{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.kpi.hero .mono,.kpi.hero .d,.kpi.hero .v small{color:color-mix(in srgb,var(--card) 62%,transparent)}
+
+/* now strip */
+.now{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.nowc{border-radius:16px;background:var(--card-2);padding:14px;display:flex;flex-direction:column;gap:6px;cursor:pointer;border:1px solid transparent;text-align:left}
+.nowc:hover{border-color:var(--line-2)}
+.nowc .who{display:flex;justify-content:space-between;align-items:center}
+.nowc .who b{font-family:var(--f-mono);letter-spacing:.06em;font-size:13px}
+.nowc .task{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px;min-width:0}
+.nowc .task span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nowc .next{font-size:12px;color:var(--muted)}
+
+/* swatch dots */
+.sw{width:10px;height:10px;border-radius:50%;flex:none;background:var(--c,var(--c0))}
+.sw.flex{background:var(--flex)}
+.sw.free{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.sw.leave{background:transparent;box-shadow:inset 0 0 0 2px var(--accent)}
+.sw.holiday{background:var(--hol);box-shadow:inset 0 0 0 1px var(--line)}
+
+/* timeline */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -6px;padding:0 6px 4px}
+.tl{display:grid;gap:6px;min-width:max-content}
+.tl .rowname{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;display:flex;align-items:center;gap:8px;cursor:pointer;padding-right:8px;background:none;border:0;text-align:left}
+.tl .rowname:hover{color:var(--accent)}
+.tl .colh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);text-align:center;letter-spacing:.04em;padding-bottom:2px;position:relative}
+.tl .colh.isnow{color:var(--accent);font-weight:700}
+.tl .colh.isnow::after{content:"";position:absolute;left:50%;bottom:-3px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent)}
+.blk{height:46px;border-radius:12px;display:flex;align-items:center;gap:7px;padding:0 10px;min-width:0;font-size:13px;font-weight:500;
+  background:color-mix(in srgb,var(--c,var(--c0)) 16%,var(--card));color:var(--ink);overflow:hidden;cursor:default}
+.blk span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.blk.flex{background:repeating-linear-gradient(135deg,var(--card-2) 0 6px,color-mix(in srgb,var(--flex) 35%,var(--card)) 6px 7px);color:var(--ink-2)}
+.blk.free{background:transparent;border:1.5px dashed var(--line-2);color:var(--muted)}
+.blk.leave{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
+.blk.holiday{background:var(--hol);color:var(--muted)}
+.blk.isnow{box-shadow:inset 0 -3px 0 var(--accent)}
+.brk{display:flex;align-items:center;justify-content:center}
+.brk i{width:4px;height:4px;border-radius:50%;background:var(--line-2)}
+/* dot matrix cells (week / month) */
+.dm{display:flex;gap:3px;padding:8px;border-radius:12px;background:var(--card-2);align-items:center;justify-content:center}
+.dm.v{flex-direction:column;padding:6px 5px;gap:3px}
+.dm .d{width:9px;height:9px;border-radius:50%;background:var(--c,var(--c0))}
+.dm.v .d{width:8px;height:8px}
+.dm .d.flex{background:var(--flex)}
+.dm .d.free{background:transparent;box-shadow:inset 0 0 0 1.3px var(--line-2)}
+.dm .d.leave{background:transparent;box-shadow:inset 0 0 0 1.8px var(--accent)}
+.dm .d.holiday{background:var(--hol)}
+.dm.istoday{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.dm .tot{font-family:var(--f-mono);font-size:10px;color:var(--muted);margin-left:4px}
+.dm.v .tot{margin:2px 0 0}
+.wkcell{display:flex;flex-direction:column;gap:4px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+
+/* load bars */
+.load{display:flex;flex-direction:column;gap:16px}
+.lrow{display:grid;grid-template-columns:72px 1fr 92px;gap:12px;align-items:center}
+.lrow .nm{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;cursor:pointer;background:none;border:0;text-align:left;padding:0}
+.lrow .nm:hover{color:var(--accent)}
+.bar{display:flex;height:14px;gap:2px;border-radius:7px;overflow:hidden;background:var(--card-2)}
+.bar i{display:block;height:100%;background:var(--c,var(--c0));min-width:2px}
+.bar i.flex{background:var(--flex)} .bar i.free{background:transparent} .bar i.leave{background:var(--accent);opacity:.35}
+.lrow .pct{text-align:right;display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}
+.lrow .pct b{font-family:var(--f-dot);font-size:22px;font-weight:700}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--st)}
+.lsub{grid-column:2/4;margin-top:-10px;font-size:12px;color:var(--muted)}
+
+/* projects */
+.prj{display:flex;flex-direction:column;gap:10px}
+.prow{display:grid;grid-template-columns:minmax(90px,150px) 1fr 54px;gap:12px;align-items:center;font-size:13px}
+.prow .pn{display:flex;align-items:center;gap:8px;min-width:0}
+.prow .pn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ptrack{height:10px;border-radius:5px;background:var(--card-2);overflow:hidden}
+.ptrack i{display:block;height:100%;border-radius:0 5px 5px 0;background:var(--c,var(--c0))}
+.ptrack i.flex{background:var(--flex)}
+.prow .ph{text-align:right;font-family:var(--f-mono);font-size:12px}
+
+/* matrix */
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}
+td.h{font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--ink) calc(var(--a,0)*14%),var(--card))}
+td.z{color:var(--line-2)}
+tr.tot td{font-weight:600;border-bottom:0}
+td .pn{display:inline-flex;align-items:center;gap:8px}
+
+/* availability */
+.av{display:flex;flex-direction:column;gap:12px}
+.avrow{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center}
+.avdots{display:flex;gap:4px;flex-wrap:wrap}
+.avdots i{width:16px;height:28px;border-radius:5px;background:var(--card-2);display:flex;align-items:flex-end;overflow:hidden}
+.avdots i b{display:block;width:100%;background:var(--ink);height:calc(var(--p)*100%)}
+.avdots i.off{background:var(--hol);opacity:.6}
+.avrow .free{font-family:var(--f-dot);font-size:22px;font-weight:700;text-align:right}
+.avrow .free small{font-family:var(--f-ui);font-size:11px;color:var(--muted);font-weight:400;display:block}
+
+/* states */
+.notice{border-radius:16px;padding:14px 16px;background:var(--card);border:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.notice b{font-weight:600}
+.notice.err{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.skel{height:120px;border-radius:16px;background:linear-gradient(90deg,var(--card-2),var(--line),var(--card-2));background-size:200% 100%;animation:sk 1.4s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.skel{animation:none}}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--card);padding:8px 11px;border-radius:10px;font-size:12.5px;line-height:1.4;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+#tip b{display:block;font-weight:600}
+footer{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="mono">SETech · Live Manhour</span>
+      <h1>MANHOUR</h1>
+      <p>ภาระงานรายชั่วโมงของทีม สำหรับวางแผนจัดสรรงานถัดไป</p>
+    </div>
+    <div class="live">
+      <span class="pill" id="livePill"><span class="led"></span><span id="liveTxt">กำลังเชื่อมต่อ…</span></span>
+      <button class="pill" id="refreshBtn" type="button">รีเฟรช</button>
+      <a class="pill" id="sheetLink" target="_blank" rel="noopener">เปิด Sheet ↗</a>
+    </div>
+  </header>
+
+  <nav class="controls" aria-label="ตัวกรอง">
+    <div class="seg" role="group" aria-label="ช่วงเวลา">
+      <button type="button" data-view="day">วัน</button>
+      <button type="button" data-view="week">สัปดาห์</button>
+      <button type="button" data-view="month">เดือน</button>
+    </div>
+    <div class="nav">
+      <button type="button" id="prev" aria-label="ก่อนหน้า">‹</button>
+      <span class="lbl num" id="periodLbl">—</span>
+      <button type="button" id="next" aria-label="ถัดไป">›</button>
+    </div>
+    <button type="button" class="today" id="todayBtn">วันนี้</button>
+    <div class="people" id="people" role="group" aria-label="พนักงาน"></div>
+  </nav>
+
+  <div id="notice" hidden></div>
+
+  <section class="kpis" id="kpis" aria-label="สรุป"></section>
+
+  <section class="card" id="nowCard">
+    <div class="head"><div><h2 id="nowTitle">ขณะนี้</h2><p class="sub" id="nowSub">ใครกำลังทำอะไรอยู่ และงานถัดไป</p></div><span class="mono" id="clock"></span></div>
+    <div class="now" id="now"><div class="skel"></div></div>
+  </section>
+
+  <section class="card">
+    <div class="head">
+      <div><h2 id="tlTitle">ตารางงานรายชั่วโมง</h2><p class="sub" id="tlSub"></p></div>
+      <div class="legend" id="stateLegend"></div>
+    </div>
+    <div class="scroll"><div id="timeline"><div class="skel"></div></div></div>
+    <div class="legend" id="prjLegend" style="margin-top:16px"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <div class="head"><div><h2>ภาระงานรายบุคคล</h2><p class="sub">ชั่วโมงโปรเจกต์ ÷ ชั่วโมงที่พร้อมทำงาน (ไม่นับวันหยุดและวันลา)</p></div></div>
+      <div class="load" id="load"></div>
+    </section>
+    <section class="card">
+      <div class="head"><div><h2>ชั่วโมงตามโปรเจกต์</h2><p class="sub" id="prjSub"></p></div></div>
+      <div class="prj" id="projects"></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="card">
+      <div class="head"><div><h2>คน × โปรเจกต์</h2><p class="sub">จำนวนชั่วโมงในช่วงที่เลือก</p></div></div>
+      <div class="scroll"><div id="matrix"></div></div>
+    </section>
+    <section class="card">
+      <div class="head"><div><h2>ชั่วโมงที่จัดสรรได้</h2><p class="sub">10 วันทำงานข้างหน้า · ช่องว่างและงานที่ยังไม่ระบุโปรเจกต์</p></div></div>
+      <div class="av" id="avail"></div>
+    </section>
+  </div>
+
+  <footer>
+    <span id="srcInfo">แหล่งข้อมูล: Google Sheet “SETech Manhour” · หนึ่งแท็บต่อหนึ่งคน</span>
+    <span>อัปเดตอัตโนมัติทุก 1 นาทีขณะเปิดหน้านี้ · เวลา Asia/Bangkok</span>
+  </footer>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+(() => {
+const SHEET_ID = "1EYrEf7kngDzJk6Thf5d6oLNKDiPCa52_YbDY2JK7-ag";
+const SERVER = "Google Sheets";
+const FALLBACK_TABS = ["OAT","JAME","KT","ARYCK","PLOY"]; // used only when the tab list can't be read (standalone mode)
+const FLEX = ["next project","project อื่น","project อื่นๆ","tbd","รอ","รอจัดสรร"];
+const POLL_MS = 60000;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+$("#sheetLink").href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`;
+
+/* ---------- state ---------- */
+const store = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
+const st = { view: store("mh.view") || "day", person: store("mh.person") || "ALL", anchor: null, tabs: [], raw: {}, people: [], dates: [], colors: {}, updated: null, errors: {} };
+
+/* ---------- time (Bangkok) ---------- */
+function bkkNow() {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Bangkok", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date()).map(x => [x.type, x.value]));
+  return { date: `${p.year}-${p.month}-${p.day}`, hour: +p.hour % 24, min: +p.minute };
+}
+const D = s => new Date(s + "T00:00:00Z");
+const iso = d => d.toISOString().slice(0, 10);
+const addDays = (s, n) => { const d = D(s); d.setUTCDate(d.getUTCDate() + n); return iso(d); };
+const fmt = (s, o) => new Intl.DateTimeFormat("th-TH", Object.assign({ timeZone: "UTC" }, o)).format(D(s));
+const fDay = s => fmt(s, { weekday: "short", day: "numeric", month: "short" });
+const fShort = s => fmt(s, { day: "numeric", month: "short" });
+const fMonth = s => fmt(s, { month: "long", year: "numeric" });
+
+/* ---------- parsing ---------- */
+function normDate(v) {
+  v = String(v || "").trim();
+  let m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return `${m[1]}-${m[2].padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) { let y = +m[3]; if (y > 2400) y -= 543; return `${y}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`; }
+  m = v.match(/^Date\((\d+),(\d+),(\d+)\)/);
+  if (m) return `${m[1]}-${String(+m[2] + 1).padStart(2, "0")}-${m[3].padStart(2, "0")}`;
+  return null;
+}
+function kindOf(v) {
+  const t = String(v || "").trim(), l = t.toLowerCase();
+  if (!t) return "free";
+  if (t.startsWith("พัก")) return "break";
+  if (t === "ลา" || l.startsWith("ลา")) return "leave";
+  if (t === "หยุด" || l.startsWith("หยุด") || l === "holiday") return "holiday";
+  if (FLEX.includes(l)) return "flex";
+  return "project";
+}
+function parseSheet(name, values) {
+  if (!Array.isArray(values) || !values.length) return null;
+  const hi = values.findIndex(r => r.some(c => /\d{1,2}:\d{2}/.test(String(c))));
+  const head = values[Math.max(hi, 0)] || [];
+  const slots = [];
+  head.forEach((h, i) => { const m = String(h).match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/); if (m) slots.push({ i, h: +m[1], label: `${m[1].padStart(2, "0")}–${m[3].padStart(2, "0")}`, brk: /พัก/.test(h) }); });
+  const days = {};
+  for (const r of values) {
+    const date = normDate(r[2]); if (!date) continue;
+    days[date] = { date, week: r[0] || "", dow: r[1] || "", slots: slots.map(s => { const v = String(r[s.i] ?? "").trim(); const k = s.brk ? "break" : kindOf(v); return { h: s.h, label: s.label, v: k === "free" ? "" : v, k }; }) };
+  }
+  return { name, slots, days };
+}
+function parseCSV(text) {
+  const rows = []; let row = [], cur = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true; else if (c === ",") { row.push(cur); cur = ""; }
+    else if (c === "\n") { row.push(cur); rows.push(row); row = []; cur = ""; } else if (c !== "\r") cur += c;
+  }
+  if (cur || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+
+/* ---------- model ---------- */
+function rebuild() {
+  st.people = st.tabs.map(t => st.raw[t]).filter(Boolean);
+  const all = new Set(); st.people.forEach(p => Object.keys(p.days).forEach(d => all.add(d)));
+  st.dates = [...all].sort();
+  // colour follows the project, ranked once over the whole sheet so filtering never repaints
+  const tot = {}; st.people.forEach(p => Object.values(p.days).forEach(d => d.slots.forEach(s => { if (s.k === "project") tot[s.v] = (tot[s.v] || 0) + 1; })));
+  const order = Object.keys(tot).sort((a, b) => tot[b] - tot[a] || a.localeCompare(b));
+  const prev = st.colors; st.colors = {};
+  const used = new Set(Object.values(prev).filter(Boolean));
+  order.forEach(n => { if (prev[n] && prev[n] !== "c0") st.colors[n] = prev[n]; });
+  let slot = 1;
+  order.forEach(n => { if (st.colors[n]) return; while (slot <= 7 && Object.values(st.colors).includes("c" + slot)) slot++; st.colors[n] = slot <= 7 ? "c" + slot : "c0"; });
+  if (!st.anchor) { const t = bkkNow().date; st.anchor = clampDate(t); }
+  if (st.person !== "ALL" && !st.people.some(p => p.name === st.person)) st.person = "ALL";
+}
+const colorOf = n => `var(--${st.colors[n] || "c0"})`;
+function clampDate(t) {
+  if (!st.dates.length) return t;
+  if (st.dates.includes(t)) return t;
+  const nx = st.dates.find(d => d >= t); return nx || st.dates[st.dates.length - 1];
+}
+function range() {
+  const a = st.anchor;
+  if (st.view === "day") return [a, a];
+  if (st.view === "week") { const wd = (D(a).getUTCDay() + 6) % 7; const s = addDays(a, -wd); return [s, addDays(s, 6)]; }
+  const s = a.slice(0, 8) + "01"; const e = D(s); e.setUTCMonth(e.getUTCMonth() + 1); e.setUTCDate(0); return [s, iso(e)];
+}
+const datesIn = ([s, e]) => st.dates.filter(d => d >= s && d <= e);
+const shown = () => st.person === "ALL" ? st.people : st.people.filter(p => p.name === st.person);
+function agg(p, dates) {
+  const a = { prj: {}, booked: 0, flex: 0, free: 0, leave: 0, holiday: 0, cap: 0, flexBy: {} };
+  dates.forEach(d => { const day = p.days[d]; if (!day) return; day.slots.forEach(s => {
+    if (s.k === "break") return;
+    if (s.k === "holiday") { a.holiday++; return; }
+    a.cap++;
+    if (s.k === "project") { a.booked++; a.prj[s.v] = (a.prj[s.v] || 0) + 1; }
+    else if (s.k === "flex") { a.flex++; a.flexBy[s.v] = (a.flexBy[s.v] || 0) + 1; }
+    else a[s.k]++;
+  }); });
+  a.avail = a.cap - a.leave; a.util = a.avail ? a.booked / a.avail : 0;
+  return a;
+}
+function statusOf(u, avail) {
+  if (!avail) return { t: "ไม่มีชั่วโมงทำงาน", c: "var(--muted)" };
+  if (u >= .9) return { t: "เต็ม", c: "var(--accent)" };
+  if (u >= .6) return { t: "เหมาะสม", c: "var(--good)" };
+  return { t: "รับงานเพิ่มได้", c: "var(--warn)" };
+}
+
+/* ---------- render ---------- */
+let raf = 0;
+const render = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); };
+function draw() {
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === st.view));
+  drawPeople();
+  if (!st.people.length) return;
+  const r = range(), ds = datesIn(r);
+  $("#periodLbl").textContent = st.view === "day" ? fmt(r[0], { weekday: "short", day: "numeric", month: "short", year: "2-digit" }) : st.view === "week" ? `${fShort(r[0])} – ${fShort(addDays(r[0], 4))}` : fMonth(r[0]);
+  drawKPIs(ds); drawNow(); drawTimeline(ds); drawLoad(ds); drawProjects(ds); drawMatrix(ds); drawAvail();
+}
+function drawPeople() {
+  const names = ["ALL", ...st.people.map(p => p.name)];
+  $("#people").innerHTML = names.map(n => `<button type="button" class="chip" data-person="${esc(n)}" aria-pressed="${st.person === n}">${n === "ALL" ? "ทุกคน" : esc(n)}</button>`).join("");
+}
+function drawKPIs(ds) {
+  const t = shown().reduce((s, p) => { const a = agg(p, ds); ["booked", "flex", "free", "leave", "holiday", "cap", "avail"].forEach(k => s[k] += a[k]); Object.keys(a.prj).forEach(n => s.prj.add(n)); return s; }, { booked: 0, flex: 0, free: 0, leave: 0, holiday: 0, cap: 0, avail: 0, prj: new Set() });
+  const u = t.avail ? Math.round(t.booked / t.avail * 100) : 0;
+  const slotsPerDay = (st.people[0]?.slots.filter(s => !s.brk).length) || 8;
+  const k = [
+    { h: 1, l: "Utilization", v: u, u: "%", d: `${t.booked} จาก ${t.avail} ชม. ที่พร้อมทำงาน` },
+    { l: "ชม. โปรเจกต์", v: t.booked, u: "ชม.", d: `${t.prj.size} โปรเจกต์` },
+    { l: "จัดสรรได้", v: t.flex + t.free, u: "ชม.", d: `ยังไม่ระบุ ${t.flex} · ว่าง ${t.free}` },
+    { l: "ความจุทีม", v: t.cap, u: "ชม.", d: `${shown().length} คน · ${ds.length} วัน` },
+    { l: "ลา", v: +(t.leave / slotsPerDay).toFixed(1), u: "วัน", d: `${t.leave} ชม.` },
+    { l: "วันหยุด", v: +(t.holiday / slotsPerDay).toFixed(1), u: "คน-วัน", d: `${t.holiday} ชม. ไม่นับในความจุ` },
+  ];
+  $("#kpis").innerHTML = k.map(x => `<div class="kpi${x.h ? " hero" : ""}"><span class="mono">${x.l}</span><span class="v num">${x.v}<small>${x.u}</small></span><span class="d">${x.d}</span></div>`).join("");
+}
+function slotAt(p, date, hour) { const d = p.days[date]; return d && d.slots.find(s => s.h === hour); }
+function nextWork(p, date, hour) {
+  for (const d of st.dates) { if (d < date) continue; const day = p.days[d]; if (!day) continue;
+    for (const s of day.slots) { if (d === date && s.h <= hour) continue; if (s.k === "break" || s.k === "holiday") continue; return { d, s }; } }
+  return null;
+}
+function tagHTML(s) {
+  if (!s) return `<span class="sw free"></span><span>—</span>`;
+  const name = s.k === "project" ? s.v : s.k === "flex" ? (s.v || "ยังไม่ระบุ") : { free: "ว่าง", leave: "ลา", holiday: "หยุด", break: "พักเที่ยง" }[s.k];
+  return `<span class="sw ${s.k === "project" ? "" : s.k}" style="--c:${colorOf(s.v)}"></span><span>${esc(name)}</span>`;
+}
+function drawNow() {
+  const n = bkkNow(); $("#clock").textContent = `${n.date.split("-").reverse().join("/")} · ${String(n.hour).padStart(2, "0")}:${String(n.min).padStart(2, "0")} น.`;
+  const working = st.dates.includes(n.date) && n.hour >= 9 && n.hour < 18;
+  $("#nowTitle").textContent = working ? `ขณะนี้ · ${String(n.hour).padStart(2, "0")}:00–${String(n.hour + 1).padStart(2, "0")}:00` : "นอกเวลาทำงาน";
+  $("#nowSub").textContent = working ? "ใครกำลังทำอะไรอยู่ และงานถัดไป" : "แสดงงานแรกของช่วงทำงานถัดไป";
+  $("#now").innerHTML = shown().map(p => {
+    const cur = working ? slotAt(p, n.date, n.hour) : null;
+    const nx = nextWork(p, n.date, working ? n.hour : (st.dates.includes(n.date) && n.hour < 9 ? -1 : 99));
+    const main = cur || nx?.s;
+    const nxt = cur ? nextWork(p, n.date, n.hour) : null;
+    const nxtTxt = nxt ? `ถัดไป ${nxt.d === n.date ? nxt.s.label.split("–")[0] + ":00" : fDay(nxt.d)} · ${esc(nxt.s.k === "project" || nxt.s.k === "flex" ? nxt.s.v : { free: "ว่าง", leave: "ลา" }[nxt.s.k])}` : (!cur && nx ? `${fDay(nx.d)} ${nx.s.label.split("–")[0]}:00` : "");
+    return `<button type="button" class="nowc" data-person="${esc(p.name)}"><span class="who"><b>${esc(p.name)}</b>${cur ? `<span class="status" style="--st:var(--accent)">LIVE</span>` : ""}</span><span class="task">${tagHTML(main)}</span><span class="next">${nxtTxt}</span></button>`;
+  }).join("");
+}
+function stateLegend() {
+  $("#stateLegend").innerHTML = [["flex", "ยังไม่ระบุโปรเจกต์"], ["free", "ว่าง"], ["leave", "ลา"], ["holiday", "วันหยุด"]].map(([k, l]) => `<span><i class="sw ${k}"></i>${l}</span>`).join("");
+}
+function tip(p, d, s) { const name = s.k === "project" || s.k === "flex" ? s.v : { free: "ว่าง", leave: "ลา", holiday: "วันหยุด" }[s.k]; return esc(`${p.name}|${fDay(d)} · ${s.label}:00|${name}${s.k === "flex" ? " (ยังไม่ระบุโปรเจกต์)" : ""}`); }
+function drawTimeline(ds) {
+  stateLegend();
+  const ppl = shown(), n = bkkNow();
+  if (!ds.length) { $("#timeline").innerHTML = `<div class="empty">ไม่มีข้อมูลในช่วงนี้ (วันหยุดสุดสัปดาห์ หรืออยู่นอกช่วงที่บันทึกใน Sheet)</div>`; $("#tlSub").textContent = ""; return; }
+  if (st.view === "day") {
+    const d = ds[0], slots = ppl[0].slots;
+    $("#tlTitle").textContent = "ตารางงานรายชั่วโมง"; $("#tlSub").textContent = `${fDay(d)} · ${ppl.length} คน`;
+    const cols = `88px ${slots.map(s => s.brk ? "28px" : "minmax(74px,1fr)").join(" ")}`;
+    let h = `<div class="tl" style="grid-template-columns:${cols}"><span></span>` + slots.map(s => `<span class="colh${d === n.date && s.h === n.hour ? " isnow" : ""}">${s.brk ? "" : s.label}</span>`).join("");
+    ppl.forEach(p => {
+      h += `<button type="button" class="rowname" data-person="${esc(p.name)}">${esc(p.name)}</button>`;
+      const day = p.days[d]; if (!day) { h += `<div class="blk free" style="grid-column:span ${slots.length}"><span>ไม่มีข้อมูล</span></div>`; return; }
+      for (let i = 0; i < day.slots.length;) {
+        const s = day.slots[i];
+        if (s.k === "break") { h += `<div class="brk"><i></i></div>`; i++; continue; }
+        let j = i + 1; while (j < day.slots.length && day.slots[j].k === s.k && day.slots[j].v === s.v && day.slots[j].k !== "break") j++;
+        const isNow = d === n.date && n.hour >= s.h && n.hour < day.slots[j - 1].h + 1;
+        const nm = s.k === "project" || s.k === "flex" ? s.v : { free: "ว่าง", leave: "ลา", holiday: "หยุด" }[s.k];
+        h += `<div class="blk ${s.k === "project" ? "" : s.k}${isNow ? " isnow" : ""}" style="grid-column:span ${j - i};--c:${colorOf(s.v)}" data-tip="${esc(`${p.name}|${fDay(d)} · ${s.label.split("–")[0]}:00–${day.slots[j - 1].label.split("–")[1]}:00 · ${j - i} ชม.|${nm}`)}" tabindex="0">${s.k === "project" ? `<span class="sw" style="--c:${colorOf(s.v)}"></span>` : ""}<span>${esc(nm)}</span></div>`;
+        i = j;
+      }
+    });
+    $("#timeline").innerHTML = h + "</div>";
+  } else {
+    const vert = st.view === "month";
+    $("#tlTitle").textContent = vert ? "ภาพรวมรายเดือน · 1 จุด = 1 ชั่วโมง" : "ตารางงานรายสัปดาห์ · 1 จุด = 1 ชั่วโมง";
+    $("#tlSub").textContent = `${fShort(ds[0])} – ${fShort(ds[ds.length - 1])} · ${ds.length} วันทำงาน`;
+    const cw = vert ? "minmax(30px,1fr)" : "minmax(120px,1fr)";
+    let h = `<div class="tl" style="grid-template-columns:88px repeat(${ds.length},${cw}) ${vert ? "" : ""}"><span></span>` +
+      ds.map(d => `<span class="colh${d === n.date ? " isnow" : ""}">${vert ? fmt(d, { day: "numeric" }) : fDay(d)}</span>`).join("");
+    ppl.forEach(p => {
+      h += `<button type="button" class="rowname" data-person="${esc(p.name)}">${esc(p.name)}</button>`;
+      ds.forEach(d => {
+        const day = p.days[d];
+        if (!day) { h += `<div class="dm${vert ? " v" : ""}"></div>`; return; }
+        const ss = day.slots.filter(s => s.k !== "break"); const hrs = ss.filter(s => s.k === "project").length;
+        h += `<div class="dm${vert ? " v" : ""}${d === n.date ? " istoday" : ""}">` + ss.map(s => `<i class="d ${s.k === "project" ? "" : s.k}" style="--c:${colorOf(s.v)}" data-tip="${tip(p, d, s)}"></i>`).join("") + `<span class="tot">${hrs}</span></div>`;
+      });
+    });
+    $("#timeline").innerHTML = h + "</div>";
+  }
+  const prjs = new Set(); ppl.forEach(p => ds.forEach(d => p.days[d]?.slots.forEach(s => s.k === "project" && prjs.add(s.v))));
+  $("#prjLegend").innerHTML = [...prjs].sort((a, b) => (st.colors[a] || "c9").localeCompare(st.colors[b] || "c9") || a.localeCompare(b)).map(n => `<span><i class="sw" style="--c:${colorOf(n)}"></i>${esc(n)}</span>`).join("");
+}
+function drawLoad(ds) {
+  $("#load").innerHTML = shown().map(p => {
+    const a = agg(p, ds), stt = statusOf(a.util, a.avail), cap = a.cap || 1;
+    const segs = Object.entries(a.prj).sort((x, y) => y[1] - x[1]).map(([n, v]) => `<i style="width:${v / cap * 100}%;--c:${colorOf(n)}" data-tip="${esc(`${p.name}|${n}|${v} ชม.`)}"></i>`).join("") +
+      (a.flex ? `<i class="flex" style="width:${a.flex / cap * 100}%" data-tip="${esc(`${p.name}|ยังไม่ระบุโปรเจกต์|${a.flex} ชม.`)}"></i>` : "") +
+      (a.leave ? `<i class="leave" style="width:${a.leave / cap * 100}%" data-tip="${esc(`${p.name}|ลา|${a.leave} ชม.`)}"></i>` : "");
+    return `<div class="lrow"><button type="button" class="nm" data-person="${esc(p.name)}">${esc(p.name)}</button><div class="bar">${segs}</div><div class="pct"><b class="num">${Math.round(a.util * 100)}%</b><span class="status" style="--st:${stt.c}">${stt.t}</span></div>
+      <div class="lsub num">โปรเจกต์ ${a.booked} · ยังไม่ระบุ ${a.flex} · ว่าง ${a.free} · ลา ${a.leave} / ${a.cap} ชม.</div></div>`;
+  }).join("") || `<div class="empty">ไม่มีข้อมูล</div>`;
+}
+function drawProjects(ds) {
+  const tot = {}, by = {}; let flex = 0; const fb = {};
+  shown().forEach(p => { const a = agg(p, ds); Object.entries(a.prj).forEach(([n, v]) => { tot[n] = (tot[n] || 0) + v; (by[n] = by[n] || []).push(`${p.name} ${v}`); }); flex += a.flex; if (a.flex) fb[p.name] = a.flex; });
+  const rows = Object.entries(tot).sort((a, b) => b[1] - a[1]); const max = Math.max(1, ...rows.map(r => r[1]), flex);
+  const sum = rows.reduce((s, r) => s + r[1], 0);
+  $("#prjSub").textContent = `${rows.length} โปรเจกต์ · รวม ${sum} ชม.`;
+  $("#projects").innerHTML = rows.map(([n, v]) => `<div class="prow" data-tip="${esc(`${n}|${v} ชม. · ${Math.round(v / sum * 100)}%|${by[n].join(" · ")}`)}"><span class="pn"><i class="sw" style="--c:${colorOf(n)}"></i><span>${esc(n)}</span></span><div class="ptrack"><i style="width:${v / max * 100}%;--c:${colorOf(n)}"></i></div><span class="ph num">${v}</span></div>`).join("") +
+    (flex ? `<div class="prow" data-tip="${esc(`ยังไม่ระบุโปรเจกต์|${flex} ชม.|${Object.entries(fb).map(x => x.join(" ")).join(" · ")}`)}"><span class="pn"><i class="sw flex"></i><span style="color:var(--muted)">ยังไม่ระบุ</span></span><div class="ptrack"><i class="flex" style="width:${flex / max * 100}%"></i></div><span class="ph num">${flex}</span></div>` : "") ||
+    `<div class="empty">ไม่มีชั่วโมงโปรเจกต์ในช่วงนี้</div>`;
+}
+function drawMatrix(ds) {
+  const ppl = shown(), A = ppl.map(p => agg(p, ds));
+  const prj = {}; A.forEach(a => Object.entries(a.prj).forEach(([n, v]) => prj[n] = (prj[n] || 0) + v));
+  const names = Object.keys(prj).sort((a, b) => prj[b] - prj[a]);
+  const max = Math.max(1, ...A.flatMap(a => Object.values(a.prj)));
+  if (!names.length) { $("#matrix").innerHTML = `<div class="empty">ไม่มีชั่วโมงโปรเจกต์ในช่วงนี้</div>`; return; }
+  let h = `<table><thead><tr><th>โปรเจกต์</th>${ppl.map(p => `<th>${esc(p.name)}</th>`).join("")}<th>รวม</th></tr></thead><tbody>`;
+  names.forEach(n => { h += `<tr><td><span class="pn"><i class="sw" style="--c:${colorOf(n)}"></i>${esc(n)}</span></td>` + A.map(a => { const v = a.prj[n] || 0; return v ? `<td class="h" style="--a:${(v / max).toFixed(2)}">${v}</td>` : `<td class="z">·</td>`; }).join("") + `<td class="num"><b>${prj[n]}</b></td></tr>`; });
+  h += `<tr class="tot"><td>รวม</td>${A.map(a => `<td class="num">${a.booked}</td>`).join("")}<td class="num">${A.reduce((s, a) => s + a.booked, 0)}</td></tr></tbody></table>`;
+  $("#matrix").innerHTML = h;
+}
+function drawAvail() {
+  const t = bkkNow(); const start = clampDate(t.date);
+  const ds = st.dates.filter(d => d >= start).slice(0, 10);
+  if (!ds.length) { $("#avail").innerHTML = `<div class="empty">ไม่มีตารางงานล่วงหน้าใน Sheet</div>`; return; }
+  const per = (st.people[0]?.slots.filter(s => !s.brk).length) || 8;
+  $("#avail").innerHTML = shown().map(p => {
+    const a = agg(p, ds); const open = a.flex + a.free;
+    const first = ds.find(d => p.days[d]?.slots.some(s => s.k === "flex" || s.k === "free"));
+    const cells = ds.map(d => { const day = p.days[d]; if (!day) return `<i class="off"></i>`; const ss = day.slots.filter(s => s.k !== "break"); if (ss.every(s => s.k === "holiday" || s.k === "leave")) return `<i class="off" data-tip="${esc(`${p.name}|${fDay(d)}|${ss[0].k === "leave" ? "ลา" : "วันหยุด"}`)}"></i>`; const o = ss.filter(s => s.k === "flex" || s.k === "free").length; return `<i data-tip="${esc(`${p.name}|${fDay(d)}|จัดสรรได้ ${o} จาก ${per} ชม.`)}"><b style="--p:${(o / per).toFixed(2)}"></b></i>`; }).join("");
+    return `<div class="avrow"><button type="button" class="rowname mono" data-person="${esc(p.name)}" style="background:none;border:0;text-align:left;padding:0;color:var(--ink);cursor:pointer">${esc(p.name)}</button><div><div class="avdots">${cells}</div><div class="mono" style="margin-top:4px;letter-spacing:.04em;text-transform:none">${first ? "ว่างเร็วสุด " + fDay(first) : "ไม่มีช่องว่าง"}</div></div><div class="free num">${open}<small>ชม. จัดสรรได้</small></div></div>`;
+  }).join("");
+}
+
+/* ---------- status / notices ---------- */
+function setLive(ok, txt) { $("#livePill").classList.toggle("on", ok); $("#liveTxt").textContent = txt; }
+function stamp(ts) { st.updated = ts; setLive(true, "LIVE · อัปเดต " + new Intl.DateTimeFormat("th-TH", { timeZone: "Asia/Bangkok", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date(ts))); }
+const ERR = {
+  server_not_connected: ["ยังไม่ได้เชื่อม Google Sheets", "เพิ่ม Google Sheets ที่ claude.ai → Settings → Connectors แล้วเปิดหน้านี้ใหม่"],
+  needs_reauth: ["การเชื่อมต่อ Google Sheets หมดอายุ", "เชื่อมต่อใหม่ที่ claude.ai → Settings → Connectors"],
+  selection_required: ["มี Google Sheets มากกว่าหนึ่งบัญชี", "เลือกบัญชีที่จะใช้จากหน้าต่างของ claude.ai"],
+  not_in_manifest: ["ยังไม่ได้อนุญาตให้อ่าน Google Sheets", "เปิดสิทธิ์ Google Sheets ให้หน้านี้จากเมนู Permissions ของ Artifact"],
+  blocked_by_policy: ["องค์กรปิดการใช้งาน Google Sheets สำหรับบัญชีนี้", "ติดต่อผู้ดูแลระบบ"],
+  approval_required: ["ต้องอนุญาตก่อนดึงข้อมูล", "กด “อนุญาตและโหลด” เพื่อให้หน้านี้อ่าน Sheet"],
+  tool_error: ["อ่าน Sheet ไม่สำเร็จ", "ตรวจสอบว่าบัญชีของคุณมีสิทธิ์เปิด Sheet “SETech Manhour”"],
+  server_unavailable: ["Google Sheets ไม่ตอบสนองชั่วคราว", "แสดงข้อมูลล่าสุดไว้ จะลองใหม่อัตโนมัติ"],
+};
+function notify(code, detail) {
+  const n = $("#notice");
+  if (!code) { n.hidden = true; return; }
+  const [t, d] = ERR[code] || ["เชื่อมต่อข้อมูลไม่สำเร็จ", detail || "ลองกดรีเฟรชอีกครั้ง"];
+  n.className = "notice err"; n.hidden = false;
+  n.innerHTML = `<span class="sw leave"></span><div><b>${esc(t)}</b><div style="color:var(--ink-2);font-size:13px">${esc(d)}${code === "tool_error" && detail ? " · " + esc(detail.slice(0, 160)) : ""}</div></div>` +
+    (code === "approval_required" ? `<button type="button" class="pill" id="approveBtn" style="margin-left:auto">อนุญาตและโหลด</button>` : "");
+  if (!st.people.length) setLive(false, "ออฟไลน์");
+  else setLive(false, "ข้อมูลล่าสุด " + (st.updated ? new Intl.DateTimeFormat("th-TH", { timeZone: "Asia/Bangkok", hour: "2-digit", minute: "2-digit" }).format(new Date(st.updated)) : ""));
+}
+const DENY = ["needs_reauth", "server_not_connected", "blocked_by_policy", "approval_required", "not_in_manifest", "selection_required"];
+
+/* ---------- data: Claude connector (live) ---------- */
+let mcp = null; const watches = {};
+const valuesIn = t => ({ spreadsheetId: SHEET_ID, range: `'${t.replace(/'/g, "''")}'!A1:T500` });
+function onSheet(t, ev) {
+  if (ev.type === "data") {
+    const pl = ev.result.payload || {}; const vals = pl.values || pl.valueRanges?.[0]?.values;
+    const p = parseSheet(t, vals); if (p) st.raw[t] = p; else delete st.raw[t];
+    delete st.errors[t]; if (!Object.keys(st.errors).length) notify(null);
+    stamp(ev.result.cache?.storedAt || Date.now()); rebuild(); render();
+  } else {
+    const c = ev.error?.code; st.errors[t] = c;
+    if (DENY.includes(c)) { delete st.raw[t]; rebuild(); render(); }
+    notify(c, ev.error?.message);
+  }
+}
+function syncTabs(tabs) {
+  st.tabs = tabs;
+  Object.keys(watches).forEach(t => { if (!tabs.includes(t)) { watches[t](); delete watches[t]; delete st.raw[t]; } });
+  tabs.forEach(t => { if (!watches[t]) watches[t] = mcp.watchTool(SERVER, "get_values", valuesIn(t), ev => onSheet(t, ev), { refetchInterval: POLL_MS }); });
+  rebuild(); render();
+}
+function startMcp() {
+  setLive(false, "กำลังโหลดจาก Google Sheets…");
+  mcp.watchTool(SERVER, "get_spreadsheet", { spreadsheetId: SHEET_ID, fields: ["sheets.properties.title"] }, ev => {
+    if (ev.type === "data") {
+      const sh = ev.result.payload?.sheets; const tabs = Array.isArray(sh) ? sh.map(s => s.properties?.title).filter(Boolean) : FALLBACK_TABS;
+      syncTabs(tabs);
+    } else {
+      notify(ev.error?.code, ev.error?.message);
+      if (DENY.includes(ev.error?.code)) { st.raw = {}; rebuild(); render(); }
+    }
+  }, { refetchInterval: 5 * POLL_MS });
+}
+
+/* ---------- data: public-sheet fallback (standalone hosting) ---------- */
+async function pullGviz() {
+  st.tabs = FALLBACK_TABS;
+  const res = await Promise.all(FALLBACK_TABS.map(t => fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&range=A1:T500&sheet=${encodeURIComponent(t)}`).then(r => r.ok ? r.text() : Promise.reject(r.status)).then(tx => [t, parseCSV(tx)]).catch(() => [t, null])));
+  let ok = 0; res.forEach(([t, v]) => { const p = v && parseSheet(t, v); if (p) { st.raw[t] = p; ok++; } });
+  if (ok) { notify(null); stamp(Date.now()); rebuild(); render(); }
+  else notify("offline", "เปิดหน้านี้ใน claude.ai เพื่อดึงข้อมูลผ่าน Google Sheets หรือแชร์ Sheet แบบ “ทุกคนที่มีลิงก์ดูได้”");
+}
+function startGviz() { pullGviz(); setInterval(() => { if (!document.hidden) pullGviz(); }, POLL_MS); }
+
+/* ---------- interactions ---------- */
+document.addEventListener("click", async e => {
+  const v = e.target.closest("[data-view]"); if (v) { st.view = v.dataset.view; store("mh.view", st.view); return render(); }
+  const p = e.target.closest("[data-person]"); if (p) { const n = p.dataset.person; st.person = st.person === n && n !== "ALL" ? "ALL" : n; store("mh.person", st.person); return render(); }
+  if (e.target.closest("#prev") || e.target.closest("#next")) {
+    const dir = e.target.closest("#next") ? 1 : -1, a = st.anchor;
+    if (st.view === "day") { const i = st.dates.indexOf(a); const j = Math.min(st.dates.length - 1, Math.max(0, (i < 0 ? st.dates.findIndex(d => d > a) : i) + dir)); st.anchor = st.dates[j] || a; }
+    else if (st.view === "week") st.anchor = addDays(a, 7 * dir);
+    else { const d = D(a.slice(0, 8) + "01"); d.setUTCMonth(d.getUTCMonth() + dir); st.anchor = iso(d); }
+    return render();
+  }
+  if (e.target.closest("#todayBtn")) { st.anchor = clampDate(bkkNow().date); return render(); }
+  if (e.target.closest("#refreshBtn")) { if (mcp) { try { await mcp.invalidate(SERVER); } catch (er) {} } else pullGviz(); return; }
+  if (e.target.closest("#approveBtn")) {
+    try { for (const t of st.tabs.length ? st.tabs : FALLBACK_TABS) { const r = await mcp.callTool(SERVER, "get_values", valuesIn(t), { cache: { refresh: true } }); onSheet(t, { type: "data", result: r }); } }
+    catch (er) { notify(er.code, er.message); }
+  }
+});
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input,textarea")) return;
+  if (e.key === "ArrowLeft") $("#prev").click(); if (e.key === "ArrowRight") $("#next").click();
+});
+const tipEl = $("#tip");
+function showTip(el, x, y) {
+  const [a, b, c] = el.dataset.tip.split("|");
+  tipEl.innerHTML = `<b>${a}</b>${b || ""}${c ? "<br>" + c : ""}`; tipEl.hidden = false;
+  const r = tipEl.getBoundingClientRect(); let L = x + 14, T = y + 14;
+  if (L + r.width > innerWidth - 8) L = x - r.width - 14; if (T + r.height > innerHeight - 8) T = y - r.height - 14;
+  tipEl.style.left = Math.max(8, L) + "px"; tipEl.style.top = Math.max(8, T) + "px";
+}
+document.addEventListener("pointermove", e => { const el = e.target.closest("[data-tip]"); if (el) showTip(el, e.clientX, e.clientY); else tipEl.hidden = true; });
+document.addEventListener("focusin", e => { const el = e.target.closest("[data-tip]"); if (el) { const r = el.getBoundingClientRect(); showTip(el, r.left, r.bottom); } else tipEl.hidden = true; });
+setInterval(() => { if (st.people.length) { drawNow(); } }, 30000);
+
+/* ---------- boot ---------- */
+render();
+if (window.claude?.use) window.claude.use("mcp").then(m => { mcp = m; if (mcp) startMcp(); else startGviz(); }).catch(startGviz);
+else startGviz();
+})();
+</script>
