@@ -140,6 +140,15 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
 .req{background:var(--surface);border-radius:var(--r-md);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .impact{display:flex;gap:8px;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:10px 12px;font-size:12px}
 .impact .reddot{margin-top:5px}
+.heat{min-width:0;width:auto;border-collapse:separate;border-spacing:3px}
+.heat th,.heat td{padding:0;border:0;text-align:center}
+.heat th{font-size:10px;letter-spacing:0;padding:0 0 4px}
+.heat td.name{text-align:left;padding-right:10px;font-size:13px;white-space:nowrap}
+.hm-cell{display:inline-block;width:18px;height:18px;border-radius:5px;vertical-align:middle;flex:0 0 auto}
+.c-ok{background:var(--ink)} .c-late{background:var(--accent)} .c-leave{background:var(--surface2);border:1.5px dashed var(--muted)}
+.c-miss{border:1.5px solid var(--accent)} .c-off{background:var(--surface2)} .c-none{background:var(--surface2);opacity:.4}
+.hbar{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden}
+.hbar div{height:100%;background:var(--ink);border-radius:5px}
 .impact .dk{width:8px;height:8px;border-radius:50%;background:var(--ink);margin-top:5px;flex:0 0 auto}
 
 /* capture sheet */
@@ -261,9 +270,26 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
   <!-- admin -->
   <section id="v-admin" hidden>
     <div class="row wrap" style="align-items:flex-end">
-      <div><div class="eyebrow" id="adDateLabel"></div><h1>หลังบ้าน Admin</h1></div>
+      <div><div class="eyebrow" id="adDateLabel"></div><h1 id="adTitle">หลังบ้าน Admin</h1></div>
     </div>
     <nav class="subnav" aria-label="เมนู Admin" id="subnav"></nav>
+
+    <div id="a-overview" class="stack" hidden>
+      <div class="row wrap"><label class="field" style="flex-direction:row;align-items:center"><span>เดือน</span><input type="month" id="ovMonth" style="min-height:40px;width:auto"></label></div>
+      <div class="kpis" id="ovKpis"></div>
+      <div class="card">
+        <div class="row wrap" style="margin-bottom:10px"><h2>การมาทำงานรายวัน</h2>
+          <div class="row wrap" style="gap:12px;font-size:12px;color:var(--muted)">
+            <span class="row" style="gap:6px"><span class="hm-cell c-ok"></span>ตรงเวลา</span><span class="row" style="gap:6px"><span class="hm-cell c-late"></span>สาย</span>
+            <span class="row" style="gap:6px"><span class="hm-cell c-leave"></span>ลา</span><span class="row" style="gap:6px"><span class="hm-cell c-miss"></span>ไม่ลงเวลา</span>
+            <span class="row" style="gap:6px"><span class="hm-cell c-off"></span>วันหยุด</span></div></div>
+        <div class="tablebox"><table class="heat" id="ovHeat"></table></div>
+      </div>
+      <div class="grid2">
+        <div class="card stack"><h2>ชั่วโมงทำงานรายคน</h2><div id="ovBars" class="stack" style="gap:12px"></div></div>
+        <div class="card stack"><h2>ความเคลื่อนไหวล่าสุด</h2><div class="list" id="ovFeed"></div></div>
+      </div>
+    </div>
 
     <div id="a-today" class="stack" hidden>
       <div class="row wrap"><label class="field" style="flex-direction:row;align-items:center"><span>วันที่</span><input type="date" id="adDate" style="min-height:40px;width:auto"></label></div>
@@ -319,6 +345,10 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
         <label class="field">Google Sheet ID<input type="text" id="sSheet" class="mono" style="font-size:13px"></label>
         <h2>สิทธิ์ลาต่อปี (วัน)</h2>
         <div class="fields" id="quotaFields"></div>
+        <h2>Super Admin</h2>
+        <p class="muted" style="margin:0;font-size:13px">เจ้าของหรือผู้บริหารที่ดูแลระบบทั้งหมดและไม่ต้องลงเวลา ต้องได้สิทธิ์ “แก้ไข” หน้านี้จากเมนู Share ก่อน เมื่อเปิดหน้าครั้งแรกจะเห็นปุ่มยืนยันตัวตนตามชื่อที่ตั้งไว้</p>
+        <div class="list" id="superList"></div>
+        <div class="row" style="align-items:flex-end"><label class="field" style="flex:1">เพิ่มชื่อ Super Admin<input type="text" id="saLabel" placeholder="เช่น Mann"></label><button class="btn small" type="button" id="saAdd" style="min-height:46px">เพิ่ม</button></div>
         <h2>บัญชีที่ผูกแล้ว</h2>
         <div class="list" id="linkedList"></div>
         <button class="btn primary block" type="submit">บันทึกการตั้งค่า</button>
@@ -364,7 +394,9 @@ const DEF = {
   officeName: "SETech Office", lat: null, lng: null, radius: 150,
   employees: ["OAT", "JAME", "KT", "ARYCK", "PLOY"],
   sheetId: "1EYrEf7kngDzJk6Thf5d6oLNKDiPCa52_YbDY2JK7-ag",
-  quota: { vac: 10, sick: 30, biz: 5, mat: 98, ord: 15, oth: 0 }
+  quota: { vac: 10, sick: 30, biz: 5, mat: 98, ord: 15, oth: 0 },
+  // owner-level people who run the system but never clock in; uid null = waiting for that person to claim it on first open
+  superAdmins: [{ label: "Mann", uid: null }]
 };
 const TYPES = [["vac", "ลาพักร้อน"], ["sick", "ลาป่วย"], ["biz", "ลากิจ"], ["mat", "ลาคลอด"], ["ord", "ลาบวช"], ["oth", "ลาอื่นๆ"]];
 const PARTS = [["full", "เต็มวัน"], ["am", "ครึ่งเช้า"], ["pm", "ครึ่งบ่าย"]];
@@ -376,10 +408,11 @@ const ICONS = {
   admin: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>'
 };
 const VIEWS = [["clock", "ลงเวลา"], ["leave", "ขอลา"], ["history", "ประวัติ"], ["admin", "Admin"]];
-const ADMIN_TABS = [["today", "ภาพรวมวัน"], ["requests", "คำขอลา"], ["report", "รายงานเดือน"], ["settings", "ตั้งค่า"]];
+const ADMIN_TABS = [["overview", "ภาพรวมบริษัท"], ["today", "ภาพรวมวัน"], ["requests", "คำขอลา"], ["report", "รายงานเดือน"], ["settings", "ตั้งค่า"]];
+const MANAGE_ONLY = ["overview", "settings"];
 
 const S = {
-  cfg: { ...DEF }, uid: null, admin: false, local: false, me: undefined,
+  cfg: { ...DEF }, uid: null, admin: false, owner: false, local: false, me: undefined,
   myDays: {}, myReqs: [], decisions: {}, links: {}, days: {}, reqs: {},
   view: "clock", adminTab: "today", leaveType: "vac", part: "full", lvAttach: null,
   cap: null, impact: {}, user: null, downloads: null
@@ -456,14 +489,14 @@ async function boot() {
   S.user = user; S.downloads = downloads;
   const uid = user ? await user.id() : null;
   if (db && uid) {
-    store.db = db; S.uid = uid; S.admin = await user.canEdit();
+    store.db = db; S.uid = uid; S.admin = await user.canEdit(); S.owner = await user.isOwner();
   } else {
-    S.local = true; S.uid = "local"; S.admin = true;
+    S.local = true; S.uid = "local"; S.admin = true; S.owner = true;
     showBanner("ตอนนี้ข้อมูลเก็บไว้ในเบราว์เซอร์นี้เท่านั้น เปิดผ่านลิงก์ claude.ai ด้วยบัญชีในองค์กรเพื่อใช้ร่วมกันทั้งทีม");
   }
   $("csvBtn").hidden = !downloads;
   store.sub("config/main", (d) => { S.cfg = { ...DEF, ...(d || {}), quota: { ...DEF.quota, ...((d && d.quota) || {}) } }; renderAll(); if (S.adminTab === "settings") fillSettings(); });
-  store.sub(`att/${S.uid}`, (d) => { S.me = d ? d.emp : null; renderAll(); });
+  store.sub(`att/${S.uid}`, (d) => { S.me = d ? d.emp : null; S.meSince = d && d.linkedAt ? bkkDate(d.linkedAt) : null; renderAll(); });
   store.sub(`att/${S.uid}/days`, (rows) => { S.myDays = Object.fromEntries(rows.map((r) => [r.id, r])); renderAll(); });
   store.sub(`leave/${S.uid}/req`, (rows) => { S.myReqs = rows; renderAll(); });
   store.sub("decisions", (rows) => { S.decisions = Object.fromEntries(rows.map((r) => [r.id, r])); renderAll(); });
@@ -502,7 +535,10 @@ function buildStatic() {
   $("lb").onclick = (e) => { if (e.target.id === "lb") $("lb").hidden = true; };
   $("cap").onclick = (e) => { if (e.target.id === "cap") closeCapture(); };
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeCapture(); $("lb").hidden = true; } });
-  $("who").onclick = () => { if (S.me) { S.relink = true; renderAll(); } };
+  $("who").onclick = () => { if (S.me && !mySuper()) { S.relink = true; renderAll(); } };
+  $("ovMonth").value = t.date.slice(0, 7);
+  $("ovMonth").onchange = renderAdmin;
+  $("saAdd").onclick = addSuper;
   $("leaveForm").onsubmit = submitLeave;
   ["lvFrom", "lvTo"].forEach((id) => ($(id).onchange = renderLeaveForm));
   $("lvFile").onchange = async (e) => {
@@ -518,22 +554,30 @@ function buildStatic() {
     .catch(() => toast("เบราว์เซอร์นี้ไม่ให้สิทธิ์ตำแหน่ง ใส่พิกัดเองจาก Google Maps ได้"));
 }
 function nextWorkday(d) { let x = addDays(d, 1); while (isWeekend(x)) x = addDays(x, 1); return x; }
+/* Super Admin: listed in config, has edit access, never clocks in. The owner can always manage the system. */
+const mySuper = () => (S.admin ? (S.cfg.superAdmins || []).find((s) => s.uid && s.uid === S.uid) : null);
+const canManage = () => S.admin && (!!mySuper() || S.owner);
 function go(v) { S.view = v; S.relink = false; try { history.replaceState(null, "", "#" + v); } catch { /* ignore */ } renderAll(); window.scrollTo(0, 0); }
 
 /* ---------- render ---------- */
 function renderAll() {
+  const sup = mySuper();
+  if (sup) { S.view = "admin"; S.relink = false; if (!S.adminTabSet) { S.adminTab = "overview"; S.adminTabSet = true; } }
+  if (!canManage() && MANAGE_ONLY.includes(S.adminTab)) S.adminTab = "today";
   renderNav();
-  const needLink = S.me === null || S.relink;
+  const needLink = !sup && (S.me === null || S.relink);
   $("v-link").hidden = !(needLink && S.view !== "admin");
   for (const [v] of VIEWS) $("v-" + v).hidden = needLink && v !== "admin" ? true : S.view !== v;
   if (S.view === "admin" && !S.admin) $("v-admin").hidden = true;
-  const name = S.me || (S.me === null ? "ยังไม่ได้เลือกชื่อ" : "กำลังโหลด…");
-  $("whoName").textContent = name; $("whoAv").textContent = S.me ? S.me.slice(0, 2) : "··";
+  const name = sup ? `${sup.label} · Super Admin` : S.me || (S.me === null ? "ยังไม่ได้เลือกชื่อ" : "กำลังโหลด…");
+  $("whoName").textContent = name; $("whoAv").textContent = sup ? sup.label.slice(0, 2).toUpperCase() : S.me ? S.me.slice(0, 2) : "··";
+  $("whoAv").style.background = sup ? "var(--accent)" : ""; $("whoAv").style.color = sup ? "#fff" : "";
   if (needLink) renderLink();
   renderClock(); renderLeave(); renderHistory(); renderAdmin();
 }
 function renderNav() {
-  const views = VIEWS.filter((v) => v[0] !== "admin" || S.admin);
+  const views = mySuper() ? [] : VIEWS.filter((v) => v[0] !== "admin" || S.admin);
+  $("tabbar").hidden = !views.length;
   const btn = (v, l, tab) => `<button type="button" data-v="${v}" ${S.view === v ? 'aria-current="page"' : ""}>${tab ? svg(v) : ""}${l}</button>`;
   $("topnav").innerHTML = views.map(([v, l]) => btn(v, l, false)).join("");
   $("tabbar").innerHTML = views.map(([v, l]) => btn(v, l, true)).join("");
@@ -541,7 +585,16 @@ function renderNav() {
   document.querySelectorAll("[data-v]").forEach((b) => (b.onclick = () => go(b.dataset.v)));
 }
 function renderLink() {
-  $("linkChips").innerHTML = S.cfg.employees.map((e) => `<button type="button" class="chip" data-emp="${esc(e)}" ${S.me === e ? 'aria-pressed="true"' : ""}>${esc(e)}</button>`).join("");
+  const open = S.admin ? (S.cfg.superAdmins || []).map((s, i) => [s, i]).filter(([s]) => !s.uid) : [];
+  $("linkChips").innerHTML = S.cfg.employees.map((e) => `<button type="button" class="chip" data-emp="${esc(e)}" ${S.me === e ? 'aria-pressed="true"' : ""}>${esc(e)}</button>`).join("") +
+    open.map(([s, i]) => `<button type="button" class="chip" data-claim="${i}" style="grid-column:1/-1;border-color:var(--accent)"><b>${esc(s.label)}</b> · Super Admin <span class="muted">(ไม่ต้องลงเวลา)</span></button>`).join("");
+  $("linkChips").querySelectorAll("[data-claim]").forEach((b) => (b.onclick = async () => {
+    const list = (S.cfg.superAdmins || []).map((s) => ({ ...s }));
+    const slot = list[+b.dataset.claim]; if (!slot || slot.uid) return;
+    slot.uid = S.uid; slot.claimedAt = Date.now();
+    try { await store.set("config/main", { ...S.cfg, superAdmins: list }); toast(`เข้าสู่ระบบในฐานะ ${slot.label} · Super Admin`); }
+    catch { toast("ยืนยันไม่สำเร็จ ต้องได้สิทธิ์แก้ไขหน้านี้ก่อน"); }
+  }));
   $("linkChips").querySelectorAll("[data-emp]").forEach((b) => (b.onclick = async () => {
     try { await store.set(`att/${S.uid}`, { emp: b.dataset.emp, linkedAt: Date.now() }); S.relink = false; toast(`ผูกบัญชีกับ ${b.dataset.emp} แล้ว`); }
     catch (e) { toast("บันทึกไม่สำเร็จ ลองอีกครั้ง"); }
@@ -551,11 +604,14 @@ function renderLink() {
 function approvedLeaveOn(reqs, uid, date) {
   return (reqs || []).find((r) => date >= r.from && date <= r.to && !isWeekend(date) && (S.decisions[`${r._uid || uid}~${r.id}`] || {}).status === "approved");
 }
-function dayState(rec, leave, date) {
+// days before an employee joined the system are not counted as missed
+const bkkDate = (ts) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(ts));
+function dayState(rec, leave, date, since) {
   const t = now();
   if (leave) return { label: typeLabel(leave.type) + (leave.part !== "full" && leave.from === leave.to ? " · " + partLabel(leave.part) : ""), cls: "p-leave", kind: "leave" };
   if (rec && rec.in) { const l = lateMin(rec.in.t); return l ? { label: `สาย ${l} นาที`, cls: "p-late", kind: "late" } : { label: "ตรงเวลา", cls: "p-ok", kind: "ok" }; }
   if (isWeekend(date)) return { label: "วันหยุด", cls: "p-off", kind: "off" };
+  if (since && date < since) return { label: "ยังไม่ใช้ระบบ", cls: "p-off", kind: "none" };
   if (date < t.date) return { label: "ไม่ลงเวลา", cls: "p-miss", kind: "miss" };
   if (date === t.date && t.min > toMin(S.cfg.start)) return { label: "ยังไม่เช็กอิน", cls: "p-miss", kind: "miss" };
   return { label: "—", cls: "p-off", kind: "none" };
@@ -606,7 +662,7 @@ function renderClock() {
   const t = now(); let mon = t.date; while (dowOf(mon) !== 1) mon = addDays(mon, -1);
   let total = 0;
   $("weekList").innerHTML = [0, 1, 2, 3, 4].map((i) => {
-    const d = addDays(mon, i), r = S.myDays[d], lv = approvedLeaveOn(S.myReqs, S.uid, d), st = dayState(r, lv, d);
+    const d = addDays(mon, i), r = S.myDays[d], lv = approvedLeaveOn(S.myReqs, S.uid, d), st = dayState(r, lv, d, S.meSince);
     const h = recHours(r, d); total += h;
     const times = r && r.in ? `${r.in.t} → ${r.out ? r.out.t : (d === t.date ? "ตอนนี้" : "ไม่ได้ออก")}` : "—";
     return `<div class="li"><div class="datebox"><small>${thDate(d, { weekday: "short" })}</small><div class="d doto">${+d.slice(8)}</div></div>
@@ -808,11 +864,11 @@ async function submitLeave(e) {
 
 /* ---------- history ---------- */
 function monthDays(ym) { const out = []; let d = ym + "-01"; while (d.slice(0, 7) === ym) { out.push(d); d = addDays(d, 1); } return out; }
-function summarize(days, reqs, uid, ym) {
+function summarize(days, reqs, uid, ym, since) {
   const t = now(); const r = { present: 0, late: 0, lateMin: 0, leave: 0, miss: 0, min: 0, inSum: 0 };
   for (const d of monthDays(ym)) {
     if (d > t.date) break;
-    const rec = days[d], lv = approvedLeaveOn(reqs, uid, d), st = dayState(rec, lv, d);
+    const rec = days[d], lv = approvedLeaveOn(reqs, uid, d), st = dayState(rec, lv, d, since);
     if (lv) r.leave += lv.part !== "full" && lv.from === lv.to ? 0.5 : 1;
     if (rec && rec.in) { r.present++; r.min += recHours(rec, d); r.inSum += toMin(rec.in.t); const l = lateMin(rec.in.t); if (l) { r.late++; r.lateMin += l; } }
     else if (st.kind === "miss" && d < t.date) r.miss++;
@@ -821,12 +877,12 @@ function summarize(days, reqs, uid, ym) {
 }
 function renderHistory() {
   const ym = $("histMonth").value || now().date.slice(0, 7);
-  const s = summarize(S.myDays, S.myReqs, S.uid, ym);
+  const s = summarize(S.myDays, S.myReqs, S.uid, ym, S.meSince);
   $("histKpis").innerHTML = [["มาทำงาน", s.present, "วัน"], ["มาสาย", s.late, "ครั้ง"], ["ลา", s.leave, "วัน"], ["ชั่วโมงรวม", fmtDur(s.min), "ชม."]]
     .map(([k, v, u], i) => `<div class="kpi"><div class="muted" style="font-size:13px">${k}</div><div class="v doto" ${i === 1 && s.late ? 'style="color:var(--accent)"' : ""}>${v}<small>${u}</small></div></div>`).join("");
   const t = now();
   const rows = monthDays(ym).filter((d) => d <= t.date).reverse().map((d) => {
-    const rec = S.myDays[d], lv = approvedLeaveOn(S.myReqs, S.uid, d), st = dayState(rec, lv, d);
+    const rec = S.myDays[d], lv = approvedLeaveOn(S.myReqs, S.uid, d), st = dayState(rec, lv, d, S.meSince);
     if (st.kind === "off" && !rec) return "";
     const method = rec && rec.in ? [rec.in.photo ? "รูป" : "", rec.in.gps ? (rec.in.gps.dist != null ? `GPS ${rec.in.gps.dist} ม.` : "GPS") : ""].filter(Boolean).join(" + ") : "";
     const times = rec && rec.in ? `${rec.in.t} → ${rec.out ? rec.out.t : (d === t.date ? "ตอนนี้" : "ไม่ได้ออก")}` : "—";
@@ -842,29 +898,32 @@ function teamFor(emp) { return Object.keys(S.links).filter((id) => S.links[id].e
 function empData(emp) {
   const ids = teamFor(emp), days = {}, reqs = [];
   ids.forEach((id) => { Object.assign(days, S.days[id] || {}); (S.reqs[id] || []).forEach((r) => reqs.push({ ...r, _uid: id })); });
-  return { ids, days, reqs };
+  const starts = ids.map((id) => S.links[id].linkedAt).filter(Boolean).map(bkkDate).concat(Object.keys(days)).sort();
+  return { ids, days, reqs, since: starts[0] || now().date };
 }
 function leaveFor(reqs, date) { return reqs.find((r) => date >= r.from && date <= r.to && !isWeekend(date) && reqStatus(r._uid, r) === "approved"); }
 function renderAdmin() {
   if (!S.admin) return;
-  $("subnav").innerHTML = ADMIN_TABS.map(([k, l]) => {
+  $("subnav").innerHTML = ADMIN_TABS.filter(([k]) => canManage() || !MANAGE_ONLY.includes(k)).map(([k, l]) => {
     const n = k === "requests" ? pendingList().length : 0;
     return `<button type="button" data-at="${k}" ${S.adminTab === k ? 'aria-current="page"' : ""}>${l}${n ? ` <span class="pill p-late" style="padding:0 7px">${n}</span>` : ""}</button>`;
   }).join("");
   $("subnav").querySelectorAll("[data-at]").forEach((b) => (b.onclick = () => { S.adminTab = b.dataset.at; renderAdmin(); if (S.adminTab === "settings") fillSettings(); }));
   for (const [k] of ADMIN_TABS) $("a-" + k).hidden = S.adminTab !== k;
   $("adDateLabel").textContent = thDate(now().date, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  $("adTitle").textContent = mySuper() ? "ภาพรวมทั้งระบบ" : "หลังบ้าน Admin";
+  if (S.adminTab === "overview") renderOverview();
   if (S.adminTab === "today") renderToday();
   if (S.adminTab === "requests") renderRequests();
   if (S.adminTab === "report") renderReport();
-  if (S.adminTab === "settings") renderLinked();
+  if (S.adminTab === "settings") { renderLinked(); renderSupers(); }
 }
 function renderToday() {
   const date = $("adDate").value || now().date;
   let present = 0, late = 0, onLeave = 0, missing = 0, total = 0;
   const rows = S.cfg.employees.map((emp) => {
-    const { ids, days, reqs } = empData(emp);
-    const rec = days[date], lv = leaveFor(reqs, date), st = dayState(rec, lv, date), h = recHours(rec, date);
+    const { ids, days, reqs, since } = empData(emp);
+    const rec = days[date], lv = leaveFor(reqs, date), st = dayState(rec, lv, date, since), h = recHours(rec, date);
     total += h;
     if (rec && rec.in) present++;
     if (st.kind === "late") late++;
@@ -913,7 +972,7 @@ function renderRequests() {
   const done = allReqs().filter((r) => reqStatus(r._uid, r) !== "pending").sort((a, b) => (S.decisions[`${b._uid}~${b.id}`].at || 0) - (S.decisions[`${a._uid}~${a.id}`].at || 0)).slice(0, 30);
   $("doneReqs").innerHTML = done.length ? done.map((r) => {
     const key = `${r._uid}~${r.id}`, d = S.decisions[key], st = d.status;
-    const sh = d.sheet ? (d.sheet.ok ? ` · เขียนลง Sheet ${d.sheet.cells} ช่อง` : ` · Sheet: ${esc(d.sheet.msg)}`) : "";
+    const sh = ` · โดย ${esc(whoLabel(d.by))}` + (d.sheet ? (d.sheet.ok ? ` · เขียนลง Sheet ${d.sheet.cells} ช่อง` : ` · Sheet: ${esc(d.sheet.msg)}`) : "");
     return `<div class="li"><span class="avatar">${esc(r.emp.slice(0, 2))}</span><div class="grow"><div>${esc(r.emp)} · ${esc(typeLabel(r.type))} · ${r.days} วัน</div>
       <div class="muted" style="font-size:12px">${rangeText(r)}${sh}</div></div><span class="pill p-${st}">${ST_LABEL[st]}</span>
       <button class="btn small" type="button" data-undo="${esc(key)}">ย้อนกลับ</button></div>`;
@@ -1032,12 +1091,105 @@ async function writeLeaveToSheet(r) {
   } catch (e) { return { ok: false, msg: e && e.code === "layout" ? "ไม่พบหัวตารางเวลา" : mcpMsg(e) }; }
 }
 
+/* ---------- company overview (Super Admin) ---------- */
+function whoLabel(uid) {
+  const s = (S.cfg.superAdmins || []).find((x) => x.uid && x.uid === uid);
+  if (s) return s.label;
+  if (uid === S.uid) return "คุณ";
+  return S.links[uid] && S.links[uid].emp ? S.links[uid].emp : "Admin";
+}
+function renderOverview() {
+  const ym = $("ovMonth").value || now().date.slice(0, 7), t = now(), days = monthDays(ym);
+  const std = workMin(S.cfg.start, S.cfg.end);
+  let present = 0, late = 0, leave = 0, miss = 0, min = 0, expected = 0;
+  const per = [];
+  const KIND = { ok: "c-ok", late: "c-late", leave: "c-leave", miss: "c-miss", off: "c-off", none: "c-none" };
+  const head = `<tr><th></th>${days.map((d) => `<th class="mono">${+d.slice(8)}</th>`).join("")}</tr>`;
+  const rows = S.cfg.employees.map((emp) => {
+    const { days: dd, reqs, since } = empData(emp);
+    let m = 0, cap = 0;
+    const cells = days.map((d) => {
+      const rec = dd[d], lv = leaveFor(reqs, d), st = dayState(rec, lv, d, since);
+      let c = KIND[st.kind];
+      if (d > t.date) c = isWeekend(d) ? "c-off" : "c-none";
+      else if (!isWeekend(d) && !(since && d < since)) {
+        expected++; if (rec && rec.in) present++; if (st.kind === "late") late++;
+        const lvd = lv ? (lv.part !== "full" && lv.from === lv.to ? 0.5 : 1) : 0;
+        leave += lvd; cap += std * (1 - lvd);
+        if (st.kind === "miss" && d < t.date) miss++;
+      }
+      m += recHours(rec, d);
+      const tip = `${thDate(d, { day: "numeric", month: "short" })} · ${st.label}${rec && rec.in ? ` · ${rec.in.t}${rec.out ? "–" + rec.out.t : ""}` : ""}`;
+      return `<td><span class="hm-cell ${c}" title="${esc(tip)}"></span></td>`;
+    }).join("");
+    min += m; per.push([emp, m, cap]);
+    return `<tr><td class="name">${esc(emp)}</td>${cells}</tr>`;
+  });
+  $("ovHeat").innerHTML = head + rows.join("");
+  const rate = expected - leave > 0 ? Math.round(present / (expected - leave) * 100) : 0;
+  const pend = pendingList().length;
+  $("ovKpis").innerHTML = [["อัตรามาทำงาน", rate, "%"], ["ชั่วโมงรวม", Math.round(min / 60), "ชม."], ["มาสาย", late, "ครั้ง", late], ["ลา", leave, "วัน"], ["ไม่ลงเวลา", miss, "วัน", miss], ["รออนุมัติ", pend, "คำขอ", pend]]
+    .map(([k, v, u, hot]) => `<div class="kpi"><div class="muted" style="font-size:13px">${k}</div><div class="v doto" ${hot ? 'style="color:var(--accent)"' : ""}>${v}<small>${u}</small></div></div>`).join("");
+  $("ovBars").innerHTML = per.map(([emp, m, cap]) => {
+    const pct = cap ? Math.min(100, Math.round(m / cap * 100)) : 0;
+    return `<div><div class="row" style="font-size:14px"><span>${esc(emp)}</span><span class="mono muted" style="font-size:12px">${fmtDur(m)} / ${fmtDur(cap)} ชม. · ${pct}%</span></div><div class="hbar"><div style="width:${pct}%"></div></div></div>`;
+  }).join("") + `<div class="muted" style="font-size:12px">เทียบกับชั่วโมงงานมาตรฐานของวันทำงานที่ผ่านมา หักวันลาแล้ว</div>`;
+  // recent activity: check-ins, check-outs and leave decisions, newest first
+  const ev = [];
+  for (const emp of S.cfg.employees) {
+    const { days: dd } = empData(emp);
+    for (const d of Object.keys(dd)) {
+      const r = dd[d];
+      if (r.in) ev.push({ at: r.in.ts || 0, d, html: `${esc(emp)} เข้างาน <span class="mono">${r.in.t}</span>`, pill: dayState(r, null, d) });
+      if (r.out) ev.push({ at: r.out.ts || 0, d, html: `${esc(emp)} ออกงาน <span class="mono">${r.out.t}</span>` });
+    }
+  }
+  for (const [key, dc] of Object.entries(S.decisions)) {
+    const r = reqByKey(key); if (!r) continue;
+    ev.push({ at: dc.at || 0, html: `${esc(whoLabel(dc.by))} ${dc.status === "approved" ? "อนุมัติ" : "ไม่อนุมัติ"}${esc(typeLabel(r.type))}ของ ${esc(r.emp)}`, pill: { cls: "p-" + dc.status, label: ST_LABEL[dc.status] } });
+  }
+  for (const r of allReqs()) ev.push({ at: r.createdAt || 0, html: `${esc(r.emp)} ส่งคำขอ${esc(typeLabel(r.type))} ${r.days} วัน` });
+  ev.sort((a, b) => b.at - a.at);
+  $("ovFeed").innerHTML = ev.length ? ev.slice(0, 12).map((e) => `<div class="li"><div class="grow"><div style="font-size:14px">${e.html}</div>
+    <div class="muted" style="font-size:12px">${new Date(e.at).toLocaleString("th-TH", { timeZone: TZ, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</div></div>
+    ${e.pill && e.pill.label !== "—" ? `<span class="pill ${e.pill.cls}">${esc(e.pill.label)}</span>` : ""}</div>`).join("") : `<div class="empty">ยังไม่มีความเคลื่อนไหว เมื่อพนักงานลงเวลาหรือขอลาจะแสดงที่นี่</div>`;
+}
+
+/* ---------- super admin list ---------- */
+async function writeSupers(list, msg) {
+  try { await store.set("config/main", { ...S.cfg, superAdmins: list }); toast(msg); } catch { toast("บันทึกไม่สำเร็จ"); }
+}
+function addSuper() {
+  const l = $("saLabel").value.trim().slice(0, 40);
+  if (!l) return toast("ใส่ชื่อก่อน");
+  $("saLabel").value = "";
+  writeSupers([...(S.cfg.superAdmins || []), { label: l, uid: null }], `เพิ่ม ${l} แล้ว ส่งลิงก์ให้เจ้าตัวเปิดและกดยืนยัน`);
+}
+async function renderSupers() {
+  const list = S.cfg.superAdmins || [], ids = list.map((s) => s.uid).filter(Boolean);
+  let ps = {}; try { ps = ids.length && S.user && !S.local ? await S.user.profiles(ids) : {}; } catch { ps = {}; }
+  $("superList").innerHTML = list.length ? list.map((s, i) => `<div class="li"><span class="avatar" style="background:var(--accent);color:#fff">${esc(s.label.slice(0, 2).toUpperCase())}</span>
+    <div class="grow"><div>${esc(s.label)}</div><div class="muted" style="font-size:12px" data-sa="${i}"></div></div>
+    ${s.uid ? `<button class="btn small" type="button" data-sareset="${i}">ล้างบัญชี</button>` : ""}<button class="btn small" type="button" data-sadel="${i}">ลบ</button></div>`).join("")
+    : `<div class="empty">ยังไม่มี Super Admin</div>`;
+  $("superList").querySelectorAll("[data-sa]").forEach((el) => {
+    const s = list[+el.dataset.sa];
+    el.textContent = s.uid ? ((ps[s.uid] && ps[s.uid].name) || (s.uid === S.uid ? "บัญชีของคุณ" : "ยืนยันตัวตนแล้ว")) : "รอเจ้าตัวเปิดหน้าและกดยืนยัน";
+  });
+  $("superList").querySelectorAll("[data-sareset]").forEach((b) => (b.onclick = () => {
+    const l = list.map((s) => ({ ...s })); l[+b.dataset.sareset].uid = null; writeSupers(l, "ล้างบัญชีแล้ว เจ้าตัวต้องยืนยันใหม่");
+  }));
+  $("superList").querySelectorAll("[data-sadel]").forEach((b) => (b.onclick = () => {
+    const l = list.filter((_, i) => i !== +b.dataset.sadel); writeSupers(l, "ลบ Super Admin แล้ว");
+  }));
+}
+
 /* ---------- report ---------- */
 function renderReport() {
   const ym = $("repMonth").value || now().date.slice(0, 7);
   $("repRows").innerHTML = S.cfg.employees.map((emp) => {
-    const { ids, days, reqs } = empData(emp);
-    const s = summarize(days, reqs, ids[0], ym);
+    const { ids, days, reqs, since } = empData(emp);
+    const s = summarize(days, reqs, ids[0], ym, since);
     // summarize uses decisions per uid; leave lookups need each request's own uid
     let leave = 0; for (const d of monthDays(ym)) { const lv = leaveFor(reqs, d); if (lv) leave += lv.part !== "full" && lv.from === lv.to ? 0.5 : 1; }
     const avg = s.present ? Math.round(s.inSum / s.present) : null;
@@ -1049,10 +1201,10 @@ async function exportCsv() {
   const ym = $("repMonth").value || now().date.slice(0, 7), t = now();
   const lines = [["date", "employee", "check_in", "check_out", "hours", "status", "late_min", "photo_in", "gps_dist_m", "inside", "note"]];
   for (const emp of S.cfg.employees) {
-    const { days, reqs } = empData(emp);
+    const { days, reqs, since } = empData(emp);
     for (const d of monthDays(ym)) {
       if (d > t.date) break;
-      const rec = days[d], lv = leaveFor(reqs, d), st = dayState(rec, lv, d);
+      const rec = days[d], lv = leaveFor(reqs, d), st = dayState(rec, lv, d, since);
       if (st.kind === "off" && !rec) continue;
       const g = rec && rec.in && rec.in.gps;
       lines.push([d, emp, rec && rec.in ? rec.in.t : "", rec && rec.out ? rec.out.t : "", rec && rec.in ? (recHours(rec, d) / 60).toFixed(2) : "", st.label,
@@ -1095,7 +1247,8 @@ async function saveSettings(e) {
     lat: lat === "" || isNaN(+lat) ? null : +lat, lng: lng === "" || isNaN(+lng) ? null : +lng,
     employees: $("sEmps").value.split(",").map((s) => s.trim()).filter(Boolean),
     sheetId: $("sSheet").value.trim() || DEF.sheetId,
-    quota: Object.fromEntries(TYPES.map(([k]) => [k, num(($("q-" + k) || {}).value, DEF.quota[k])]))
+    quota: Object.fromEntries(TYPES.map(([k]) => [k, num(($("q-" + k) || {}).value, DEF.quota[k])])),
+    superAdmins: S.cfg.superAdmins || []
   };
   if (!cfg.employees.length) cfg.employees = DEF.employees;
   try { await store.set("config/main", cfg); tabCache = {}; toast("บันทึกการตั้งค่าแล้ว"); } catch { toast("บันทึกไม่สำเร็จ ต้องเป็นผู้แก้ไขหน้านี้"); }
