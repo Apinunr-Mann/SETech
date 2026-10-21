@@ -198,6 +198,21 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
 <div class="banner-wrap"><div class="banner" id="banner" hidden></div></div>
 
 <main>
+  <!-- shown when this view cannot reach the shared database -->
+  <section id="v-blocked" hidden>
+    <div class="card stack" style="max-width:600px;margin:0 auto">
+      <div class="row" style="justify-content:flex-start;gap:10px"><span class="reddot"></span><span class="eyebrow">ยังเชื่อมระบบกลางไม่ได้</span></div>
+      <h1>บัญชีนี้ยังใช้ระบบลงเวลาไม่ได้</h1>
+      <p style="margin:0">ข้อมูลลงเวลาเก็บในระบบกลางของบริษัท ซึ่งเปิดให้เฉพาะบัญชี claude.ai ที่อยู่ในองค์กรเดียวกับเจ้าของระบบ และเข้าสู่ระบบแล้ว</p>
+      <div class="list" style="font-size:14px">
+        <div class="li"><span class="mono" style="color:var(--accent)">01</span><div class="grow">เข้าสู่ระบบ claude.ai ด้วยบัญชีอีเมลบริษัท แล้วเปิดลิงก์นี้ใหม่</div></div>
+        <div class="li"><span class="mono" style="color:var(--accent)">02</span><div class="grow">ถ้ายังขึ้นหน้านี้ แปลว่าบัญชีนี้ยังไม่อยู่ในองค์กรของบริษัท ให้แจ้งผู้ดูแลเพิ่มเข้าองค์กร claude.ai</div></div>
+        <div class="li"><span class="mono" style="color:var(--accent)">03</span><div class="grow">ผู้ดูแลแชร์หน้านี้ให้บัญชีนั้นจากเมนู Share (สิทธิ์ “ดู” สำหรับพนักงาน)</div></div>
+      </div>
+      <p class="muted" style="margin:0;font-size:13px" id="blockedWhy"></p>
+    </div>
+  </section>
+
   <!-- link account -->
   <section id="v-link" hidden>
     <div class="card stack" style="max-width:560px;margin:0 auto">
@@ -504,7 +519,16 @@ async function boot() {
   const uid = user ? await user.id() : null;
   if (db && uid) {
     store.db = db; S.uid = uid; S.admin = await user.canEdit(); S.owner = await user.isOwner();
+  } else if (window.claude) {
+    // inside claude.ai but without the shared store: never fall back to this browser, or records silently go nowhere
+    S.blocked = true;
+    $("blockedWhy").textContent = !db ? "สาเหตุ: หน้านี้เข้าถึงฐานข้อมูลกลางไม่ได้ในบัญชีนี้" : "สาเหตุ: ไม่พบตัวตนผู้ใช้ในองค์กร";
+    ["v-link", "v-clock", "v-leave", "v-history", "v-admin"].forEach((id) => ($(id).hidden = true));
+    $("v-blocked").hidden = false; $("topnav").innerHTML = ""; $("tabbar").hidden = true;
+    $("whoName").textContent = "ยังไม่เชื่อมต่อ";
+    return;
   } else {
+    // opened as a plain file (development preview): keep data in this browser
     S.local = true; S.uid = "local"; S.admin = true; S.owner = true;
     window.addEventListener("storage", (e) => { if (e.key === "att.local") store.subs.forEach((f) => f()); });
     showBanner("ตอนนี้ข้อมูลเก็บไว้ในเบราว์เซอร์นี้เท่านั้น เปิดผ่านลิงก์ claude.ai ด้วยบัญชีในองค์กรเพื่อใช้ร่วมกันทั้งทีม");
@@ -580,6 +604,7 @@ function go(v) { S.view = v; S.relink = false; try { history.replaceState(null, 
 
 /* ---------- render ---------- */
 function renderAll() {
+  if (S.blocked) return;
   const sup = mySuper();
   if (sup) { S.view = "admin"; S.relink = false; if (!S.adminTabSet) { S.adminTab = "overview"; S.adminTabSet = true; } }
   if (!canManage() && MANAGE_ONLY.includes(S.adminTab)) S.adminTab = "today";
@@ -616,7 +641,7 @@ function renderLink() {
   }));
   $("linkChips").querySelectorAll("[data-emp]").forEach((b) => (b.onclick = async () => {
     try { await store.set(`att/${S.uid}`, { emp: b.dataset.emp, linkedAt: Date.now() }); S.relink = false; toast(`ผูกบัญชีกับ ${b.dataset.emp} แล้ว`); }
-    catch (e) { toast("บันทึกไม่สำเร็จ ลองอีกครั้ง"); }
+    catch (e) { toast(`บันทึกไม่สำเร็จ (${(e && e.code) || "error"}) ลองอีกครั้ง`); }
   }));
 }
 
@@ -817,7 +842,7 @@ async function confirmCapture() {
     toast(k.phase === "in" ? `เข้างานแล้ว ${t.hm}` : `ออกงานแล้ว ${t.hm}`);
   } catch (e) {
     k.busy = false; renderCapHint();
-    toast(e && e.code === "quota_exceeded" ? "พื้นที่เก็บข้อมูลเต็ม แจ้ง Admin" : "บันทึกไม่สำเร็จ ลองอีกครั้ง");
+    toast(e && e.code === "quota_exceeded" ? "พื้นที่เก็บข้อมูลเต็ม แจ้ง Admin" : `บันทึกไม่สำเร็จ (${(e && e.code) || "error"}) ลองอีกครั้ง`);
   }
 }
 
