@@ -4,204 +4,287 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@500;700;900&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
 <style>
-/* Layout: one calm column of white cards on a dotted grey plane; dot-matrix numerals, one red signal colour for "live" and "now". */
+/* Layout: a black "console" hero (team gauge + live now) over a dotted plane; player cards as a ranked roster, then charts that each answer one allocation question. */
 :root{
-  --bg:#f3f3f1; --card:#ffffff; --card-2:#f6f6f4; --ink:#0a0a0a; --ink-2:#4a4a47; --muted:#8a8a85;
-  --line:#e6e6e2; --line-2:#d2d2cd; --dot:#d9d9d4; --accent:#d71921; --flex:#cfcfc9; --hol:#ececE8;
-  --good:#0a8a0a; --warn:#c98500;
+  --bg:#f3f3f1; --card:#ffffff; --card-2:#f6f6f4; --ink:#0a0a0a; --ink-2:#4a4a47; --muted:#7c7c77;
+  --line:#e6e6e2; --line-2:#d2d2cd; --dot:#d9d9d4; --accent:#d71921; --hol:#ececE8;
+  --hero:#0a0a0a; --hero-2:#161616; --hero-ink:#f4f4f1; --hero-mute:#8d8d88; --hero-line:#262626;
+  --good:#0a8a0a; --warn:#b87a00;
   --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4; --c6:#008300; --c7:#6250d6; --c0:#5c5c58;
   --f-dot:"Doto","Space Mono",ui-monospace,monospace;
   --f-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","IBM Plex Sans Thai","Helvetica Neue",system-ui,sans-serif;
   --f-mono:"Space Mono",ui-monospace,"SF Mono",Menlo,monospace;
-  --r:22px;
+  --r:24px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#000000; --card:#121212; --card-2:#1a1a1a; --ink:#f2f2ef; --ink-2:#bdbdb8; --muted:#83837e;
-  --line:#242424; --line-2:#363636; --dot:#1f1f1f; --accent:#ff3b30; --flex:#3a3a37; --hol:#1c1c1c;
+  --bg:#000000; --card:#111111; --card-2:#1a1a1a; --ink:#f2f2ef; --ink-2:#bdbdb8; --muted:#8a8a85;
+  --line:#232323; --line-2:#363636; --dot:#1c1c1c; --accent:#ff3b30; --hol:#1c1c1c;
+  --hero:#141414; --hero-2:#1d1d1d; --hero-ink:#f4f4f1; --hero-mute:#8d8d88; --hero-line:#2c2c2c;
   --good:#2fbf2f; --warn:#e0a020;
   --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9085e9; --c0:#a8a8a2;
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#000000; --card:#121212; --card-2:#1a1a1a; --ink:#f2f2ef; --ink-2:#bdbdb8; --muted:#83837e;
-  --line:#242424; --line-2:#363636; --dot:#1f1f1f; --accent:#ff3b30; --flex:#3a3a37; --hol:#1c1c1c;
+  --bg:#000000; --card:#111111; --card-2:#1a1a1a; --ink:#f2f2ef; --ink-2:#bdbdb8; --muted:#8a8a85;
+  --line:#232323; --line-2:#363636; --dot:#1c1c1c; --accent:#ff3b30; --hol:#1c1c1c;
+  --hero:#141414; --hero-2:#1d1d1d; --hero-ink:#f4f4f1; --hero-mute:#8d8d88; --hero-line:#2c2c2c;
   --good:#2fbf2f; --warn:#e0a020;
   --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9085e9; --c0:#a8a8a2;
   color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-ui);-webkit-font-smoothing:antialiased;
   background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:14px 14px}
-.wrap{max-width:1240px;margin:0 auto;padding-block:28px 64px;
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1280px;margin:0 auto;padding-block:28px 64px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   display:flex;flex-direction:column;gap:20px}
-button{font:inherit;color:inherit}
+button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .num{font-variant-numeric:tabular-nums}
+.dot{font-family:var(--f-dot);font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* header */
 header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
-.brand{display:flex;flex-direction:column;gap:2px}
-.brand h1{margin:0;font-family:var(--f-dot);font-weight:900;font-size:clamp(40px,7vw,64px);line-height:.95;letter-spacing:-.01em}
-.brand p{margin:0;color:var(--ink-2)}
-.live{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.pill{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;white-space:nowrap}
-.pill .led{width:8px;height:8px;border-radius:50%;background:var(--muted)}
-.pill.on .led{background:var(--accent);box-shadow:0 0 0 0 var(--accent);animation:pulse 2s infinite}
+.brand h1{margin:2px 0 0;font-family:var(--f-dot);font-weight:900;font-size:clamp(44px,8vw,76px);line-height:.9}
+.brand h1 i{font-style:normal;color:var(--accent)}
+.brand p{margin:4px 0 0;color:var(--ink-2)}
+.live{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;white-space:nowrap;text-decoration:none;color:var(--ink)}
+button.pill,a.pill{cursor:pointer} button.pill:hover,a.pill:hover{border-color:var(--line-2)}
+.led{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.on .led,.led.on{background:var(--accent);animation:pulse 2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
-@media (prefers-reduced-motion:reduce){.pill.on .led{animation:none}}
-a.pill,button.pill{cursor:pointer;text-decoration:none;color:var(--ink)}
-button.pill:hover,a.pill:hover{border-color:var(--line-2)}
 
 /* controls */
 .controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
   padding:10px;border-radius:999px;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border:1px solid var(--line)}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .seg{display:inline-flex;background:var(--card-2);border-radius:999px;padding:3px;gap:2px}
-.seg button{border:0;background:transparent;height:30px;padding:0 16px;border-radius:999px;cursor:pointer;font-size:14px;color:var(--ink-2)}
+.seg button{border:0;background:transparent;height:30px;padding:0 14px;border-radius:999px;cursor:pointer;font-size:14px;color:var(--ink-2)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--card);font-weight:600}
 .nav{display:inline-flex;align-items:center;gap:4px}
 .nav button{width:32px;height:32px;border-radius:50%;border:0;background:var(--card-2);cursor:pointer;font-size:16px}
-.nav button:hover{background:var(--line)}
 .nav .lbl{min-width:150px;text-align:center;font-weight:600;font-size:14px}
-.today{border:1px solid var(--line-2);background:transparent;height:30px;padding:0 12px;border-radius:999px;cursor:pointer;font-size:13px}
+.ghost{border:1px solid var(--line-2);background:transparent;height:30px;padding:0 12px;border-radius:999px;cursor:pointer;font-size:13px}
 .people{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
-.chip{border:1px solid var(--line);background:transparent;height:30px;padding:0 12px;border-radius:999px;cursor:pointer;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em}
+.chip{border:1px solid var(--line);background:transparent;height:30px;padding:0 12px;border-radius:999px;cursor:pointer;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;display:inline-flex;align-items:center;gap:6px}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
 @media (max-width:760px){.controls{border-radius:20px}.people{margin-left:0}}
 
 /* cards */
 .card{background:var(--card);border-radius:var(--r);padding:22px;border:1px solid var(--line);min-width:0}
 .card h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
-.card .sub{margin:2px 0 0;color:var(--muted);font-size:13px}
-.head{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:flex-end;margin-bottom:18px}
-.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
-@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.sub{margin:2px 0 0;color:var(--muted);font-size:13px}
+.head{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:flex-end;margin-bottom:16px}
+.g2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px}
+.g2b{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:20px}
+@media (max-width:920px){.g2,.g2b{grid-template-columns:minmax(0,1fr)}}
 
-/* KPI */
-.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-@media (max-width:1000px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:520px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
-.kpi .v{font-family:var(--f-dot);font-weight:700;font-size:40px;line-height:1;letter-spacing:-.01em}
-.kpi .v small{font-family:var(--f-ui);font-size:13px;font-weight:500;color:var(--muted);margin-left:4px;letter-spacing:0}
-.kpi .d{font-size:12px;color:var(--muted)}
-.kpi.hero{background:var(--ink);color:var(--card);border-color:var(--ink)}
-.kpi.hero .mono,.kpi.hero .d,.kpi.hero .v small{color:color-mix(in srgb,var(--card) 62%,transparent)}
+/* hero console */
+.hero{background:var(--hero);color:var(--hero-ink);border-radius:28px;padding:24px;display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:28px;position:relative;overflow:hidden;border:1px solid var(--hero-line)}
+.hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--hero-line) 1px,transparent 1.3px);background-size:12px 12px;opacity:.9;pointer-events:none}
+.hero>*{position:relative}
+@media (max-width:820px){.hero{grid-template-columns:minmax(0,1fr)}}
+.gauge{display:flex;flex-direction:column;align-items:center;gap:10px}
+.gwrap{position:relative;width:min(260px,100%);aspect-ratio:1}
+.gwrap svg{width:100%;height:100%;display:block;overflow:visible}
+.gtrack{fill:none;stroke:var(--hero-2);stroke-width:16}
+.gval{fill:none;stroke:var(--hero-ink);stroke-width:16;stroke-linecap:round;transition:stroke-dasharray 1.1s cubic-bezier(.2,.8,.2,1)}
+.gband{fill:none;stroke:var(--hero-mute);stroke-width:2;stroke-dasharray:2 4}
+.gtick{stroke:var(--hero-mute);stroke-width:2}
+.gtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+.gtxt .dot{font-size:64px}
+.gtxt .dot small{font-size:24px;margin-left:2px}
+.gst{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--hero-line)}
+.gst::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--st)}
+.hstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+.hs{background:var(--hero-2);border-radius:14px;padding:10px 12px}
+.hs .mono{color:var(--hero-mute);font-size:10px}
+.hs .dot{font-size:26px;margin-top:4px}
+.hs .dot small{font-family:var(--f-ui);font-weight:400;font-size:11px;color:var(--hero-mute);margin-left:3px}
+.nowpanel{display:flex;flex-direction:column;gap:12px;min-width:0}
+.nowhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.nowhead h2{margin:0;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.nowhead .clock{font-family:var(--f-dot);font-weight:900;font-size:34px}
+.nowlist{display:flex;flex-direction:column;gap:8px}
+.nowrow{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--hero-2);border:1px solid transparent;cursor:pointer;text-align:left;color:var(--hero-ink)}
+.nowrow:hover,.nowrow[aria-pressed="true"]{border-color:var(--hero-mute)}
+.nowrow b{font-family:var(--f-mono);letter-spacing:.08em;font-size:13px}
+.nowrow .task{display:flex;align-items:center;gap:8px;font-weight:600;min-width:0}
+.nowrow .task span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nowrow .nx{font-size:12px;color:var(--hero-mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hprog{height:3px;border-radius:2px;background:var(--hero-line);margin-top:6px;overflow:hidden}
+.hprog i{display:block;height:100%;background:var(--accent)}
+.nowrow .rt{font-family:var(--f-mono);font-size:11px;color:var(--hero-mute);text-align:right}
 
-/* now strip */
-.now{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.nowc{border-radius:16px;background:var(--card-2);padding:14px;display:flex;flex-direction:column;gap:6px;cursor:pointer;border:1px solid transparent;text-align:left}
-.nowc:hover{border-color:var(--line-2)}
-.nowc .who{display:flex;justify-content:space-between;align-items:center}
-.nowc .who b{font-family:var(--f-mono);letter-spacing:.06em;font-size:13px}
-.nowc .task{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px;min-width:0}
-.nowc .task span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nowc .next{font-size:12px;color:var(--muted)}
-
-/* swatch dots */
+/* swatches */
 .sw{width:10px;height:10px;border-radius:50%;flex:none;background:var(--c,var(--c0))}
-.sw.flex{background:var(--flex)}
 .sw.free{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line-2)}
 .sw.leave{background:transparent;box-shadow:inset 0 0 0 2px var(--accent)}
 .sw.holiday{background:var(--hol);box-shadow:inset 0 0 0 1px var(--line)}
+.hero .sw.free{box-shadow:inset 0 0 0 1.5px var(--hero-mute)}
+
+/* roster / player cards */
+.rosterhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.player{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;cursor:pointer;text-align:left;transition:transform .2s,border-color .2s;min-width:0}
+.player:hover{transform:translateY(-3px);border-color:var(--line-2)}
+.player[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.prank{position:absolute;top:14px;right:16px;font-family:var(--f-dot);font-weight:900;font-size:28px;color:var(--line-2)}
+.player.first .prank{color:var(--accent)}
+.ptop{display:flex;align-items:center;gap:12px}
+.avatar{position:relative;width:58px;height:58px;flex:none}
+.avatar svg{width:100%;height:100%;transform:rotate(-90deg)}
+.avatar .t{fill:none;stroke:var(--card-2);stroke-width:5}
+.avatar .v{fill:none;stroke:var(--st);stroke-width:5;stroke-linecap:round;transition:stroke-dasharray 1s cubic-bezier(.2,.8,.2,1)}
+.avatar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-weight:700;font-size:13px;letter-spacing:.04em}
+.pname b{display:block;font-family:var(--f-mono);font-size:15px;letter-spacing:.06em}
+.pname .lv{font-size:12px;color:var(--muted)}
+.xp{height:6px;border-radius:3px;background:var(--card-2);overflow:hidden}
+.xp i{display:block;height:100%;background:var(--ink);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.pstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.pstats div{background:var(--card-2);border-radius:12px;padding:7px 8px;min-width:0}
+.pstats .dot{font-size:20px}
+.pstats .k{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badges{display:flex;flex-wrap:wrap;gap:5px;min-height:24px}
+.bdg{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;border:1px solid var(--line-2);color:var(--ink-2)}
+.bdg svg{width:12px;height:12px}
+.bdg.hot{border-color:var(--accent);color:var(--accent)}
+.bdg.dark{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--st)}
 
 /* timeline */
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -6px;padding:0 6px 4px}
 .tl{display:grid;gap:6px;min-width:max-content}
-.tl .rowname{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;display:flex;align-items:center;gap:8px;cursor:pointer;padding-right:8px;background:none;border:0;text-align:left}
-.tl .rowname:hover{color:var(--accent)}
-.tl .colh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);text-align:center;letter-spacing:.04em;padding-bottom:2px;position:relative}
-.tl .colh.isnow{color:var(--accent);font-weight:700}
-.tl .colh.isnow::after{content:"";position:absolute;left:50%;bottom:-3px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent)}
+.rowname{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;display:flex;align-items:center;gap:8px;cursor:pointer;padding-right:8px;background:none;border:0;text-align:left;color:var(--ink)}
+.rowname:hover{color:var(--accent)}
+.colh{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);text-align:center;letter-spacing:.04em;padding-bottom:2px;position:relative}
+.colh.isnow{color:var(--accent);font-weight:700}
+.colh.isnow::after{content:"";position:absolute;left:50%;bottom:-3px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent)}
 .blk{height:46px;border-radius:12px;display:flex;align-items:center;gap:7px;padding:0 10px;min-width:0;font-size:13px;font-weight:500;
-  background:color-mix(in srgb,var(--c,var(--c0)) 16%,var(--card));color:var(--ink);overflow:hidden;cursor:default}
+  background:color-mix(in srgb,var(--c,var(--c0)) 18%,var(--card));color:var(--ink);overflow:hidden;cursor:default;transition:opacity .25s,transform .2s;box-shadow:inset 3px 0 0 var(--c,var(--c0))}
+.blk:hover{transform:translateY(-1px)}
 .blk span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.blk.flex{background:repeating-linear-gradient(135deg,var(--card-2) 0 6px,color-mix(in srgb,var(--flex) 35%,var(--card)) 6px 7px);color:var(--ink-2)}
-.blk.free{background:transparent;border:1.5px dashed var(--line-2);color:var(--muted)}
-.blk.leave{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
-.blk.holiday{background:var(--hol);color:var(--muted)}
+.blk.free{background:transparent;border:1.5px dashed var(--line-2);color:var(--muted);box-shadow:none}
+.blk.leave{background:transparent;border:1.5px solid var(--accent);color:var(--accent);box-shadow:none}
+.blk.holiday{background:var(--hol);color:var(--muted);box-shadow:none}
 .blk.isnow{box-shadow:inset 0 -3px 0 var(--accent)}
+.blk.free.isnow,.blk.leave.isnow{box-shadow:inset 0 -3px 0 var(--accent)}
 .brk{display:flex;align-items:center;justify-content:center}
 .brk i{width:4px;height:4px;border-radius:50%;background:var(--line-2)}
-/* dot matrix cells (week / month) */
 .dm{display:flex;gap:3px;padding:8px;border-radius:12px;background:var(--card-2);align-items:center;justify-content:center}
 .dm.v{flex-direction:column;padding:6px 5px;gap:3px}
-.dm .d{width:9px;height:9px;border-radius:50%;background:var(--c,var(--c0))}
+.dm .d{width:9px;height:9px;border-radius:50%;background:var(--c,var(--c0));transition:opacity .25s}
 .dm.v .d{width:8px;height:8px}
-.dm .d.flex{background:var(--flex)}
 .dm .d.free{background:transparent;box-shadow:inset 0 0 0 1.3px var(--line-2)}
 .dm .d.leave{background:transparent;box-shadow:inset 0 0 0 1.8px var(--accent)}
 .dm .d.holiday{background:var(--hol)}
 .dm.istoday{box-shadow:inset 0 0 0 1.5px var(--accent)}
 .dm .tot{font-family:var(--f-mono);font-size:10px;color:var(--muted);margin-left:4px}
 .dm.v .tot{margin:2px 0 0}
-.wkcell{display:flex;flex-direction:column;gap:4px}
+.spot .blk:not(.hit),.spot .d:not(.hit){opacity:.15}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink-2)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
+.spotbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;align-items:center}
+.spotbar .mono{margin-right:4px}
+.pchip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:12.5px}
+.pchip[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
 
-/* load bars */
-.load{display:flex;flex-direction:column;gap:16px}
-.lrow{display:grid;grid-template-columns:72px 1fr 92px;gap:12px;align-items:center}
-.lrow .nm{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;cursor:pointer;background:none;border:0;text-align:left;padding:0}
-.lrow .nm:hover{color:var(--accent)}
-.bar{display:flex;height:14px;gap:2px;border-radius:7px;overflow:hidden;background:var(--card-2)}
-.bar i{display:block;height:100%;background:var(--c,var(--c0));min-width:2px}
-.bar i.flex{background:var(--flex)} .bar i.free{background:transparent} .bar i.leave{background:var(--accent);opacity:.35}
-.lrow .pct{text-align:right;display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}
-.lrow .pct b{font-family:var(--f-dot);font-size:22px;font-weight:700}
-.status{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2);white-space:nowrap}
-.status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--st)}
-.lsub{grid-column:2/4;margin-top:-10px;font-size:12px;color:var(--muted)}
-
-/* projects */
-.prj{display:flex;flex-direction:column;gap:10px}
-.prow{display:grid;grid-template-columns:minmax(90px,150px) 1fr 54px;gap:12px;align-items:center;font-size:13px}
-.prow .pn{display:flex;align-items:center;gap:8px;min-width:0}
-.prow .pn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ptrack{height:10px;border-radius:5px;background:var(--card-2);overflow:hidden}
-.ptrack i{display:block;height:100%;border-radius:0 5px 5px 0;background:var(--c,var(--c0))}
-.ptrack i.flex{background:var(--flex)}
-.prow .ph{text-align:right;font-family:var(--f-mono);font-size:12px}
+/* svg charts */
+.chart{width:100%;display:block;overflow:visible}
+.chart text{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .hit{fill:transparent;cursor:crosshair}
+.chart .hit:hover{fill:color-mix(in srgb,var(--ink) 5%,transparent)}
+.chart .bar{transition:opacity .25s}
+.chart.spot .bar:not(.hl){opacity:.15}
+.donutwrap{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:20px;align-items:center}
+@media (max-width:520px){.donutwrap{grid-template-columns:minmax(0,1fr)}}
+.donut{position:relative;width:100%;max-width:220px;aspect-ratio:1;margin:0 auto}
+.donut svg{width:100%;height:100%;display:block}
+.donut path{cursor:pointer;transition:transform .2s,opacity .25s;transform-origin:110px 110px}
+.donut path:hover{transform:scale(1.03)}
+.donut.spot path:not(.hl){opacity:.18}
+.dcenter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:30px}
+.dcenter .dot{font-size:38px}
+.dcenter .sub{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plist{display:flex;flex-direction:column;gap:4px}
+.plist button{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:7px 10px;border-radius:10px;border:0;background:transparent;cursor:pointer;text-align:left;font-size:13px}
+.plist button:hover,.plist button[aria-pressed="true"]{background:var(--card-2)}
+.plist .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plist .h{font-family:var(--f-mono);font-size:12px}
+.plist .p{font-family:var(--f-mono);font-size:11px;color:var(--muted);min-width:36px;text-align:right}
 
 /* matrix */
 table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
 th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
 th{font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}
-td.h{font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--ink) calc(var(--a,0)*14%),var(--card))}
+td.h{font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--ink) calc(var(--a,0)*16%),var(--card))}
 td.z{color:var(--line-2)}
 tr.tot td{font-weight:600;border-bottom:0}
 td .pn{display:inline-flex;align-items:center;gap:8px}
 
-/* availability */
-.av{display:flex;flex-direction:column;gap:12px}
-.avrow{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center}
-.avdots{display:flex;gap:4px;flex-wrap:wrap}
-.avdots i{width:16px;height:28px;border-radius:5px;background:var(--card-2);display:flex;align-items:flex-end;overflow:hidden}
-.avdots i b{display:block;width:100%;background:var(--ink);height:calc(var(--p)*100%)}
-.avdots i.off{background:var(--hol);opacity:.6}
-.avrow .free{font-family:var(--f-dot);font-size:22px;font-weight:700;text-align:right}
-.avrow .free small{font-family:var(--f-ui);font-size:11px;color:var(--muted);font-weight:400;display:block}
+/* mission planner */
+.mission{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px}
+@media (max-width:920px){.mission{grid-template-columns:minmax(0,1fr)}}
+.mform{display:flex;flex-direction:column;gap:16px;background:var(--card-2);border-radius:18px;padding:18px}
+.mform label{display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--ink-2)}
+.need{display:flex;align-items:baseline;gap:6px}
+.need .dot{font-size:52px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.cands{display:flex;flex-direction:column;gap:8px}
+.cand{display:grid;grid-template-columns:34px 72px minmax(0,1fr) 110px;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;border:1px solid var(--line)}
+.cand.best{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.cand .rk{font-family:var(--f-dot);font-weight:900;font-size:22px;color:var(--muted)}
+.cand.best .rk{color:var(--accent)}
+.cand b{font-family:var(--f-mono);letter-spacing:.06em;font-size:13px}
+.cov{height:10px;border-radius:5px;background:var(--card-2);overflow:hidden}
+.cov i{display:block;height:100%;background:var(--ink);border-radius:5px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.cand .rt{text-align:right;font-size:12px;color:var(--muted);line-height:1.3}
+.cand .rt .dot{font-size:20px;color:var(--ink)}
+.combo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px;border-radius:14px;background:var(--hero);color:var(--hero-ink)}
+.combo .bdg{border-color:var(--hero-mute);color:var(--hero-ink)}
+.heat{display:grid;gap:3px;min-width:max-content}
+.heat .c{width:30px;height:24px;border-radius:6px;background:color-mix(in srgb,var(--ink) calc(var(--p,0)*85%),var(--card-2));display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:9.5px;color:var(--card)}
+.heat .c.lo{color:var(--ink-2)}
+.heat .c.off{background:repeating-linear-gradient(135deg,var(--card-2) 0 3px,var(--line) 3px 4px)}
+.heat .hd{font-family:var(--f-mono);font-size:9.5px;color:var(--muted);text-align:center}
+.heat .nm{font-family:var(--f-mono);font-size:11px;padding-right:8px;display:flex;align-items:center}
+.scale{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.scale i{width:90px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--card-2),var(--ink))}
 
 /* states */
-.notice{border-radius:16px;padding:14px 16px;background:var(--card);border:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.notice{border-radius:16px;padding:14px 16px;background:var(--card);border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .notice b{font-weight:600}
-.notice.err{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
 .empty{padding:28px;text-align:center;color:var(--muted)}
 .skel{height:120px;border-radius:16px;background:linear-gradient(90deg,var(--card-2),var(--line),var(--card-2));background-size:200% 100%;animation:sk 1.4s infinite}
+.hero .skel{background:linear-gradient(90deg,var(--hero-2),var(--hero-line),var(--hero-2));background-size:200% 100%}
 @keyframes sk{to{background-position:-200% 0}}
-@media (prefers-reduced-motion:reduce){.skel{animation:none}}
-#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--card);padding:8px 11px;border-radius:10px;font-size:12.5px;line-height:1.4;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (max-width:560px){
+  .cand{grid-template-columns:28px minmax(0,1fr) auto;row-gap:6px}
+  .cand>div{grid-column:1/-1;order:3}
+  .nowrow{grid-template-columns:52px minmax(0,1fr)}
+  .nowrow .rt{grid-column:1/-1;text-align:left;display:flex;gap:8px;align-items:baseline}
+  .nowhead .clock{font-size:26px}
+  .hero{padding:18px}
+}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--card);padding:8px 11px;border-radius:10px;font-size:12.5px;line-height:1.45;max-width:280px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
 #tip b{display:block;font-weight:600}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:var(--card);padding:10px 16px;border-radius:999px;font-size:13px;display:flex;gap:8px;align-items:center;max-width:calc(100% - 32px)}
 footer{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
 </style>
 
 <div class="wrap">
   <header>
     <div class="brand">
-      <span class="mono">SETech · Live Manhour</span>
-      <h1>MANHOUR</h1>
-      <p>ภาระงานรายชั่วโมงของทีม สำหรับวางแผนจัดสรรงานถัดไป</p>
+      <span class="mono">SETech · Live Manhour Console</span>
+      <h1>MANHOUR<i>.</i></h1>
+      <p>ใครทำอะไร ภาระงานเท่าไร และใครพร้อมรับงานถัดไป</p>
     </div>
     <div class="live">
       <span class="pill" id="livePill"><span class="led"></span><span id="liveTxt">กำลังเชื่อมต่อ…</span></span>
@@ -221,17 +304,43 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 18p
       <span class="lbl num" id="periodLbl">—</span>
       <button type="button" id="next" aria-label="ถัดไป">›</button>
     </div>
-    <button type="button" class="today" id="todayBtn">วันนี้</button>
+    <button type="button" class="ghost" id="todayBtn">วันนี้</button>
     <div class="people" id="people" role="group" aria-label="พนักงาน"></div>
   </nav>
 
   <div id="notice" hidden></div>
 
-  <section class="kpis" id="kpis" aria-label="สรุป"></section>
+  <section class="hero" aria-label="ภาพรวมทีม">
+    <div class="gauge">
+      <span class="mono" style="color:var(--hero-mute)">Team utilization</span>
+      <div class="gwrap">
+        <svg viewBox="0 0 220 220" aria-hidden="true">
+          <circle class="gtrack" cx="110" cy="110" r="88"/>
+          <circle class="gband" id="gBand" cx="110" cy="110" r="102" transform="rotate(-90 110 110)"/>
+          <circle class="gval" id="gVal" cx="110" cy="110" r="88" transform="rotate(-90 110 110)" stroke-dasharray="0 999"/>
+          <g id="gTicks"></g>
+        </svg>
+        <div class="gtxt"><span class="dot" id="gNum">0<small>%</small></span><span class="gst" id="gSt" style="--st:var(--hero-mute)">—</span></div>
+      </div>
+      <div class="hstats" id="hstats"></div>
+    </div>
+    <div class="nowpanel">
+      <div class="nowhead"><h2><span class="led on"></span><span id="nowTitle">LIVE NOW</span></h2><span class="clock" id="clock">--:--</span></div>
+      <div class="nowlist" id="now"><div class="skel"></div></div>
+      <div class="mono" style="color:var(--hero-mute);text-transform:none;letter-spacing:.04em" id="nowSub"></div>
+    </div>
+  </section>
 
-  <section class="card" id="nowCard">
-    <div class="head"><div><h2 id="nowTitle">ขณะนี้</h2><p class="sub" id="nowSub">ใครกำลังทำอะไรอยู่ และงานถัดไป</p></div><span class="mono" id="clock"></span></div>
-    <div class="now" id="now"><div class="skel"></div></div>
+  <section aria-label="ทีม">
+    <div class="rosterhead" style="margin-bottom:12px">
+      <div><h2 style="margin:0;font-size:20px">Team Roster</h2><p class="sub" id="rosterSub">เลเวลจากชั่วโมงโปรเจกต์สะสม · ตราที่ได้ในช่วงที่เลือก · กดการ์ดเพื่อโฟกัสคนนั้น</p></div>
+      <div class="seg" role="group" aria-label="จัดอันดับตาม">
+        <button type="button" data-sort="booked">ชั่วโมงงาน</button>
+        <button type="button" data-sort="free">ว่างมากสุด</button>
+        <button type="button" data-sort="level">เลเวล</button>
+      </div>
+    </div>
+    <div class="roster" id="roster"><div class="skel"></div></div>
   </section>
 
   <section class="card">
@@ -240,37 +349,66 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 18p
       <div class="legend" id="stateLegend"></div>
     </div>
     <div class="scroll"><div id="timeline"><div class="skel"></div></div></div>
-    <div class="legend" id="prjLegend" style="margin-top:16px"></div>
+    <div class="spotbar" id="spotbar"></div>
   </section>
 
-  <div class="grid2">
+  <div class="g2">
     <section class="card">
-      <div class="head"><div><h2>ภาระงานรายบุคคล</h2><p class="sub">ชั่วโมงโปรเจกต์ ÷ ชั่วโมงที่พร้อมทำงาน (ไม่นับวันหยุดและวันลา)</p></div></div>
-      <div class="load" id="load"></div>
+      <div class="head"><div><h2 id="dailyTitle">ชั่วโมงรายวัน</h2><p class="sub" id="dailySub">ชั่วโมงโปรเจกต์ซ้อนตามโปรเจกต์ เทียบชั่วโมงว่างและลา</p></div><div class="legend" id="dailyLegend"></div></div>
+      <div id="daily"></div>
     </section>
     <section class="card">
-      <div class="head"><div><h2>ชั่วโมงตามโปรเจกต์</h2><p class="sub" id="prjSub"></p></div></div>
-      <div class="prj" id="projects"></div>
+      <div class="head"><div><h2>สัดส่วนโปรเจกต์</h2><p class="sub" id="prjSub">กดโปรเจกต์เพื่อไฮไลต์ทั้งหน้า</p></div></div>
+      <div class="donutwrap"><div class="donut" id="donut"></div><div class="plist" id="plist"></div></div>
     </section>
   </div>
 
-  <div class="grid2">
+  <div class="g2b">
     <section class="card">
-      <div class="head"><div><h2>คน × โปรเจกต์</h2><p class="sub">จำนวนชั่วโมงในช่วงที่เลือก</p></div></div>
+      <div class="head"><div><h2>ชั่วโมงไหนแน่นสุด</h2><p class="sub">% ของช่องเวลาที่มีงานโปรเจกต์ แยกตามชั่วโมงของวัน</p></div></div>
+      <div id="hours"></div>
+    </section>
+    <section class="card">
+      <div class="head"><div><h2>คน × โปรเจกต์</h2><p class="sub">ชั่วโมงในช่วงที่เลือก · สีเข้ม = ชั่วโมงมาก</p></div></div>
       <div class="scroll"><div id="matrix"></div></div>
     </section>
-    <section class="card">
-      <div class="head"><div><h2>ชั่วโมงที่จัดสรรได้</h2><p class="sub">10 วันทำงานข้างหน้า · ชั่วโมงว่าง (Next Project) ที่รับงานใหม่ได้</p></div></div>
-      <div class="av" id="avail"></div>
-    </section>
   </div>
 
+  <section class="card">
+    <div class="head">
+      <div><h2>Mission Planner · หาคนรับงานใหม่</h2><p class="sub">ใส่จำนวนชั่วโมงและกรอบเวลา ระบบจัดอันดับคนที่มีชั่วโมงว่าง (Next Project) พอรับงาน</p></div>
+    </div>
+    <div class="mission">
+      <div class="mform">
+        <label>งานต้องใช้
+          <span class="need"><span class="dot" id="needNum">24</span><span>ชั่วโมง</span></span>
+          <input type="range" id="needIn" min="1" max="160" step="1" value="24" aria-label="จำนวนชั่วโมงที่ต้องใช้">
+        </label>
+        <label>ต้องเสร็จภายใน
+          <span class="seg" role="group" aria-label="กรอบเวลา" style="align-self:flex-start">
+            <button type="button" data-win="5">5 วัน</button><button type="button" data-win="10">10 วัน</button><button type="button" data-win="20">20 วัน</button>
+          </span>
+        </label>
+        <div class="sub" id="winSub"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div class="cands" id="cands"></div>
+        <div id="combo"></div>
+        <div>
+          <div class="head" style="margin-bottom:8px"><span class="mono">ชั่วโมงว่างรายวัน</span><span class="scale">0<i></i>8 ชม.</span></div>
+          <div class="scroll"><div id="heat"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer>
-    <span id="srcInfo">แหล่งข้อมูล: Google Sheet “SETech Manhour” · หนึ่งแท็บต่อหนึ่งคน</span>
-    <span>อัปเดตอัตโนมัติทุก 1 นาทีขณะเปิดหน้านี้ · เวลา Asia/Bangkok</span>
+    <span>แหล่งข้อมูล: Google Sheet “SETech Manhour” · หนึ่งแท็บต่อหนึ่งคน · “Next Project” = ว่าง, “Project อื่น” = จองแล้ว</span>
+    <span>อัปเดตอัตโนมัติทุก 1 นาที · เวลา Asia/Bangkok · ← → เปลี่ยนช่วงเวลา</span>
   </footer>
 </div>
 <div id="tip" hidden></div>
+<div id="toast" hidden role="status"></div>
 
 <script>
 (() => {
@@ -279,13 +417,15 @@ const SERVER = "Google Sheets";
 const FALLBACK_TABS = ["OAT","JAME","KT","ARYCK","PLOY"]; // used only when the tab list can't be read (standalone mode)
 const FREE = ["next project","ว่าง","tbd","รอจัดสรร"]; // planned-but-open hours; "Project อื่น" is booked work
 const POLL_MS = 60000;
+const XP_PER_LEVEL = 40; // one level per working week of booked project hours
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 $("#sheetLink").href = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`;
 
 /* ---------- state ---------- */
 const store = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } };
-const st = { view: store("mh.view") || "day", person: store("mh.person") || "ALL", anchor: null, tabs: [], raw: {}, people: [], dates: [], colors: {}, updated: null, errors: {} };
+const st = { view: store("mh.view") || "day", person: store("mh.person") || "ALL", sort: store("mh.sort") || "booked", win: +(store("mh.win") || 10), need: 24,
+  spot: null, anchor: null, tabs: [], raw: {}, people: [], dates: [], colors: {}, updated: null, errors: {}, prevNums: {}, seenLevels: null };
 
 /* ---------- time (Bangkok) ---------- */
 function bkkNow() {
@@ -299,6 +439,7 @@ const fmt = (s, o) => new Intl.DateTimeFormat("th-TH", Object.assign({ timeZone:
 const fDay = s => fmt(s, { weekday: "short", day: "numeric", month: "short" });
 const fShort = s => fmt(s, { day: "numeric", month: "short" });
 const fMonth = s => fmt(s, { month: "long", year: "numeric" });
+const pad = n => String(n).padStart(2, "0");
 
 /* ---------- parsing ---------- */
 function normDate(v) {
@@ -354,12 +495,13 @@ function rebuild() {
   const tot = {}; st.people.forEach(p => Object.values(p.days).forEach(d => d.slots.forEach(s => { if (s.k === "project") tot[s.v] = (tot[s.v] || 0) + 1; })));
   const order = Object.keys(tot).sort((a, b) => tot[b] - tot[a] || a.localeCompare(b));
   const prev = st.colors; st.colors = {};
-  const used = new Set(Object.values(prev).filter(Boolean));
   order.forEach(n => { if (prev[n] && prev[n] !== "c0") st.colors[n] = prev[n]; });
   let slot = 1;
   order.forEach(n => { if (st.colors[n]) return; while (slot <= 7 && Object.values(st.colors).includes("c" + slot)) slot++; st.colors[n] = slot <= 7 ? "c" + slot : "c0"; });
-  if (!st.anchor) { const t = bkkNow().date; st.anchor = clampDate(t); }
+  st.order = order;
+  if (!st.anchor) st.anchor = clampDate(bkkNow().date);
   if (st.person !== "ALL" && !st.people.some(p => p.name === st.person)) st.person = "ALL";
+  if (st.spot && !tot[st.spot]) st.spot = null;
 }
 const colorOf = n => `var(--${st.colors[n] || "c0"})`;
 function clampDate(t) {
@@ -373,17 +515,16 @@ function range() {
   if (st.view === "week") { const wd = (D(a).getUTCDay() + 6) % 7; const s = addDays(a, -wd); return [s, addDays(s, 6)]; }
   const s = a.slice(0, 8) + "01"; const e = D(s); e.setUTCMonth(e.getUTCMonth() + 1); e.setUTCDate(0); return [s, iso(e)];
 }
+const weekOf = a => { const wd = (D(a).getUTCDay() + 6) % 7; const s = addDays(a, -wd); return [s, addDays(s, 6)]; };
 const datesIn = ([s, e]) => st.dates.filter(d => d >= s && d <= e);
 const shown = () => st.person === "ALL" ? st.people : st.people.filter(p => p.name === st.person);
 function agg(p, dates) {
-  const a = { prj: {}, booked: 0, flex: 0, free: 0, leave: 0, holiday: 0, cap: 0, flexBy: {} };
+  const a = { prj: {}, booked: 0, free: 0, leave: 0, holiday: 0, cap: 0 };
   dates.forEach(d => { const day = p.days[d]; if (!day) return; day.slots.forEach(s => {
     if (s.k === "break") return;
     if (s.k === "holiday") { a.holiday++; return; }
     a.cap++;
-    if (s.k === "project") { a.booked++; a.prj[s.v] = (a.prj[s.v] || 0) + 1; }
-    else if (s.k === "flex") { a.flex++; a.flexBy[s.v] = (a.flexBy[s.v] || 0) + 1; }
-    else a[s.k]++;
+    if (s.k === "project") { a.booked++; a.prj[s.v] = (a.prj[s.v] || 0) + 1; } else a[s.k]++;
   }); });
   a.avail = a.cap - a.leave; a.util = a.avail ? a.booked / a.avail : 0;
   return a;
@@ -394,35 +535,99 @@ function statusOf(u, avail) {
   if (u >= .6) return { t: "เหมาะสม", c: "var(--good)" };
   return { t: "รับงานเพิ่มได้", c: "var(--warn)" };
 }
+const perDay = () => (st.people[0]?.slots.filter(s => !s.brk).length) || 8;
+const nameOf = s => s.k === "project" ? s.v : { free: "ว่าง", leave: "ลา", holiday: "วันหยุด", break: "พักเที่ยง" }[s.k];
+
+/* ---------- gamification ---------- */
+function career(p) {
+  // lifetime booked hours up to today drive the level, so it only ever goes up
+  const today = bkkNow().date; let h = 0;
+  for (const d of Object.keys(p.days)) if (d <= today) p.days[d].slots.forEach(s => { if (s.k === "project") h++; });
+  return { hours: h, level: 1 + Math.floor(h / XP_PER_LEVEL), xp: h % XP_PER_LEVEL };
+}
+function streak(p, upto) {
+  // consecutive fully booked working days ending at `upto`; holidays and weekends don't break it
+  let n = 0;
+  for (let i = st.dates.length - 1; i >= 0; i--) {
+    const d = st.dates[i]; if (d > upto) continue;
+    const day = p.days[d]; if (!day) continue;
+    const ss = day.slots.filter(s => s.k !== "break");
+    if (ss.every(s => s.k === "holiday")) continue;
+    if (ss.every(s => s.k === "project")) n++; else break;
+  }
+  return n;
+}
+const ICON = {
+  bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>', target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+  open: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 15h6"/>', layers: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+  flame: '<path d="M12 21c4 0 7-3 7-7 0-5-5-7-5-11-3 2-4 5-4 7-1-1-2-2-2-4-2 2-3 5-3 8 0 4 3 7 7 7z"/>', focus: '<circle cx="12" cy="12" r="3"/><path d="M3 8V4h4M21 8V4h-4M3 16v4h4M21 16v4h-4"/>',
+  crown: '<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>', away: '<path d="M4 20h16M7 16l3-9 4 5 3-3 3 7"/>'
+};
+const svgI = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+function badgesOf(p, a, ds, upcoming) {
+  const b = [];
+  if (a.avail && a.util >= .9) b.push(["hot", "bolt", "FULL LOAD", "ใช้เวลาเกือบเต็มทุกชั่วโมงในช่วงนี้ (≥90%)"]);
+  else if (a.avail && a.util >= .6) b.push(["", "target", "BALANCED", "ภาระงานกำลังดี 60–90%"]);
+  const sk = streak(p, ds[ds.length - 1] || bkkNow().date);
+  if (sk >= 3) b.push(["dark", "flame", `STREAK ${sk}`, `ชั่วโมงเต็มติดกัน ${sk} วันทำงาน`]);
+  const np = Object.keys(a.prj).length;
+  if (np >= 3) b.push(["", "layers", `MULTI ×${np}`, `ทำ ${np} โปรเจกต์ในช่วงนี้`]);
+  const top = Object.values(a.prj).sort((x, y) => y - x)[0] || 0;
+  if (a.booked >= 8 && top / a.booked >= .8 && np >= 1) b.push(["", "focus", "DEEP FOCUS", "มากกว่า 80% ของชั่วโมงอยู่ในโปรเจกต์เดียว"]);
+  if (upcoming >= 8) b.push(["", "open", `OPEN ${upcoming}H`, `มีชั่วโมงว่าง ${upcoming} ชม. ใน 10 วันทำงานข้างหน้า พร้อมรับงาน`]);
+  if (a.leave >= perDay()) b.push(["", "away", "TIME OFF", `ลา ${a.leave} ชม. ในช่วงนี้`]);
+  return b;
+}
+function upcomingDays(n) { const s = clampDate(bkkNow().date); return st.dates.filter(d => d >= s).slice(0, n); }
 
 /* ---------- render ---------- */
 let raf = 0;
 const render = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); };
 function draw() {
-  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === st.view));
+  document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === st.view));
+  document.querySelectorAll("[data-sort]").forEach(b => b.setAttribute("aria-pressed", b.dataset.sort === st.sort));
+  document.querySelectorAll("[data-win]").forEach(b => b.setAttribute("aria-pressed", +b.dataset.win === st.win));
   drawPeople();
   if (!st.people.length) return;
   const r = range(), ds = datesIn(r);
   $("#periodLbl").textContent = st.view === "day" ? fmt(r[0], { weekday: "short", day: "numeric", month: "short", year: "2-digit" }) : st.view === "week" ? `${fShort(r[0])} – ${fShort(addDays(r[0], 4))}` : fMonth(r[0]);
-  drawKPIs(ds); drawNow(); drawTimeline(ds); drawLoad(ds); drawProjects(ds); drawMatrix(ds); drawAvail();
+  drawHero(ds); drawNow(); drawRoster(ds); drawTimeline(ds); drawDaily(ds); drawDonut(ds); drawHours(ds); drawMatrix(ds); drawMission();
+  countUps();
+  checkLevelUps();
 }
 function drawPeople() {
   const names = ["ALL", ...st.people.map(p => p.name)];
   $("#people").innerHTML = names.map(n => `<button type="button" class="chip" data-person="${esc(n)}" aria-pressed="${st.person === n}">${n === "ALL" ? "ทุกคน" : esc(n)}</button>`).join("");
 }
-function drawKPIs(ds) {
-  const t = shown().reduce((s, p) => { const a = agg(p, ds); ["booked", "flex", "free", "leave", "holiday", "cap", "avail"].forEach(k => s[k] += a[k]); Object.keys(a.prj).forEach(n => s.prj.add(n)); return s; }, { booked: 0, flex: 0, free: 0, leave: 0, holiday: 0, cap: 0, avail: 0, prj: new Set() });
-  const u = t.avail ? Math.round(t.booked / t.avail * 100) : 0;
-  const slotsPerDay = (st.people[0]?.slots.filter(s => !s.brk).length) || 8;
-  const k = [
-    { h: 1, l: "Utilization", v: u, u: "%", d: `${t.booked} จาก ${t.avail} ชม. ที่พร้อมทำงาน` },
-    { l: "ชม. โปรเจกต์", v: t.booked, u: "ชม.", d: `${t.prj.size} โปรเจกต์` },
-    { l: "จัดสรรได้", v: t.flex + t.free, u: "ชม.", d: "ชั่วโมงว่าง (Next Project / ช่องว่าง)" },
-    { l: "ความจุทีม", v: t.cap, u: "ชม.", d: `${shown().length} คน · ${ds.length} วัน` },
-    { l: "ลา", v: +(t.leave / slotsPerDay).toFixed(1), u: "วัน", d: `${t.leave} ชม.` },
-    { l: "วันหยุด", v: +(t.holiday / slotsPerDay).toFixed(1), u: "คน-วัน", d: `${t.holiday} ชม. ไม่นับในความจุ` },
-  ];
-  $("#kpis").innerHTML = k.map(x => `<div class="kpi${x.h ? " hero" : ""}"><span class="mono">${x.l}</span><span class="v num">${x.v}<small>${x.u}</small></span><span class="d">${x.d}</span></div>`).join("");
+// numbers animate from their last value instead of snapping
+function cu(id, v, dec = 0) { return `<span class="cu" data-id="${id}" data-v="${v}" data-dec="${dec}">${(+v).toFixed(dec)}</span>`; }
+function countUps() {
+  document.querySelectorAll(".cu").forEach(el => {
+    const id = el.dataset.id, to = +el.dataset.v, dec = +el.dataset.dec, from = st.prevNums[id] ?? 0;
+    st.prevNums[id] = to;
+    if (from === to || matchMedia("(prefers-reduced-motion: reduce)").matches) { el.textContent = to.toFixed(dec); return; }
+    const t0 = performance.now(), dur = 900;
+    const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = (from + (to - from) * e).toFixed(dec); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+function teamAgg(ds) {
+  return shown().reduce((s, p) => { const a = agg(p, ds); ["booked", "free", "leave", "holiday", "cap", "avail"].forEach(k => s[k] += a[k]); Object.keys(a.prj).forEach(n => s.prj.add(n)); return s; },
+    { booked: 0, free: 0, leave: 0, holiday: 0, cap: 0, avail: 0, prj: new Set() });
+}
+function drawHero(ds) {
+  const t = teamAgg(ds), u = t.avail ? t.booked / t.avail : 0, s = statusOf(u, t.avail), C = 2 * Math.PI * 88;
+  $("#gVal").setAttribute("stroke-dasharray", `${Math.min(1, u) * C} ${C}`);
+  const R = 102, CB = 2 * Math.PI * R;
+  $("#gBand").setAttribute("stroke-dasharray", `0 ${CB * .6} ${CB * .3} ${CB}`);
+  $("#gTicks").innerHTML = [.6, .9].map(f => { const a = f * 2 * Math.PI - Math.PI / 2, x1 = 110 + 96 * Math.cos(a), y1 = 110 + 96 * Math.sin(a), x2 = 110 + 108 * Math.cos(a), y2 = 110 + 108 * Math.sin(a);
+    const lx = 110 + 118 * Math.cos(a), ly = 110 + 118 * Math.sin(a);
+    return `<line class="gtick" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" style="font:10px var(--f-mono);fill:var(--hero-mute)">${f * 100}</text>`; }).join("");
+  $("#gNum").innerHTML = `${cu("g", Math.round(u * 100))}<small>%</small>`;
+  $("#gSt").style.setProperty("--st", s.c); $("#gSt").textContent = `${s.t} · เป้า 60–90%`;
+  const pd = perDay();
+  $("#hstats").innerHTML = [["Booked", t.booked, "ชม."], ["Open", t.free, "ชม."], ["Projects", t.prj.size, ""], ["Leave", +(t.leave / pd).toFixed(1), "วัน", 1]]
+    .map(([k, v, un, dec], i) => `<div class="hs"><span class="mono">${k}</span><div class="dot">${cu("h" + i, v, dec || 0)}<small>${un}</small></div></div>`).join("");
 }
 function slotAt(p, date, hour) { const d = p.days[date]; return d && d.slots.find(s => s.h === hour); }
 function nextWork(p, date, hour) {
@@ -432,31 +637,60 @@ function nextWork(p, date, hour) {
 }
 function tagHTML(s) {
   if (!s) return `<span class="sw free"></span><span>—</span>`;
-  const name = s.k === "project" ? s.v : s.k === "flex" ? (s.v || "ยังไม่ระบุ") : { free: "ว่าง", leave: "ลา", holiday: "หยุด", break: "พักเที่ยง" }[s.k];
-  return `<span class="sw ${s.k === "project" ? "" : s.k}" style="--c:${colorOf(s.v)}"></span><span>${esc(name)}</span>`;
+  return `<span class="sw ${s.k === "project" ? "" : s.k}" style="--c:${colorOf(s.v)}"></span><span>${esc(nameOf(s))}</span>`;
 }
 function drawNow() {
-  const n = bkkNow(); $("#clock").textContent = `${n.date.split("-").reverse().join("/")} · ${String(n.hour).padStart(2, "0")}:${String(n.min).padStart(2, "0")} น.`;
+  const n = bkkNow(); $("#clock").textContent = `${pad(n.hour)}:${pad(n.min)}`;
   const working = st.dates.includes(n.date) && n.hour >= 9 && n.hour < 18;
-  $("#nowTitle").textContent = working ? `ขณะนี้ · ${String(n.hour).padStart(2, "0")}:00–${String(n.hour + 1).padStart(2, "0")}:00` : "นอกเวลาทำงาน";
-  $("#nowSub").textContent = working ? "ใครกำลังทำอะไรอยู่ และงานถัดไป" : "แสดงงานแรกของช่วงทำงานถัดไป";
+  $("#nowTitle").textContent = working ? `LIVE NOW · ${pad(n.hour)}:00–${pad(n.hour + 1)}:00` : "นอกเวลาทำงาน · งานถัดไป";
+  $("#nowSub").textContent = working ? "แถบแดง = เวลาที่ผ่านไปในชั่วโมงนี้ · กดชื่อเพื่อโฟกัส" : "แสดงงานแรกของช่วงทำงานถัดไป";
   $("#now").innerHTML = shown().map(p => {
     const cur = working ? slotAt(p, n.date, n.hour) : null;
     const nx = nextWork(p, n.date, working ? n.hour : (st.dates.includes(n.date) && n.hour < 9 ? -1 : 99));
     const main = cur || nx?.s;
     const nxt = cur ? nextWork(p, n.date, n.hour) : null;
-    const nxtTxt = nxt ? `ถัดไป ${nxt.d === n.date ? nxt.s.label.split("–")[0] + ":00" : fDay(nxt.d)} · ${esc(nxt.s.k === "project" || nxt.s.k === "flex" ? nxt.s.v : { free: "ว่าง", leave: "ลา" }[nxt.s.k])}` : (!cur && nx ? `${fDay(nx.d)} ${nx.s.label.split("–")[0]}:00` : "");
-    return `<button type="button" class="nowc" data-person="${esc(p.name)}"><span class="who"><b>${esc(p.name)}</b>${cur ? `<span class="status" style="--st:var(--accent)">LIVE</span>` : ""}</span><span class="task">${tagHTML(main)}</span><span class="next">${nxtTxt}</span></button>`;
+    const nxtTxt = nxt ? `ถัดไป ${nxt.d === n.date ? nxt.s.label.split("–")[0] + ":00" : fDay(nxt.d)} · ${esc(nameOf(nxt.s))}` : (!cur && nx ? `${fDay(nx.d)} ${nx.s.label.split("–")[0]}:00` : "");
+    return `<button type="button" class="nowrow" data-person="${esc(p.name)}" aria-pressed="${st.person === p.name}"><b>${esc(p.name)}</b>
+      <span style="min-width:0"><span class="task">${tagHTML(main)}</span>${cur ? `<div class="hprog"><i style="width:${Math.round(n.min / 60 * 100)}%"></i></div>` : ""}</span>
+      <span class="rt">${cur ? (cur.k === "project" ? "ON TASK" : cur.k === "free" ? "OPEN" : cur.k.toUpperCase()) : ""}<div class="nx">${nxtTxt}</div></span></button>`;
   }).join("");
 }
+function drawRoster(ds) {
+  const up = upcomingDays(10);
+  const rows = st.people.map(p => { const a = agg(p, ds), c = career(p), open = agg(p, up).free; return { p, a, c, open, b: badgesOf(p, a, ds, open) }; });
+  const key = { booked: r => r.a.booked, free: r => r.open, level: r => r.c.hours }[st.sort];
+  rows.sort((x, y) => key(y) - key(x) || x.p.name.localeCompare(y.p.name));
+  const C = 2 * Math.PI * 25;
+  $("#roster").innerHTML = rows.map((r, i) => {
+    const s = statusOf(r.a.util, r.a.avail);
+    return `<button type="button" class="player rise${i === 0 ? " first" : ""}" style="animation-delay:${i * 60}ms;--st:${s.c}" data-person="${esc(r.p.name)}" aria-pressed="${st.person === r.p.name}">
+      <span class="prank" aria-label="อันดับ ${i + 1}">${i === 0 ? `<span style="display:inline-block;width:22px;height:22px;vertical-align:middle">${svgI("crown")}</span>` : "#" + (i + 1)}</span>
+      <span class="ptop"><span class="avatar"><svg viewBox="0 0 58 58" aria-hidden="true"><circle class="t" cx="29" cy="29" r="25"/><circle class="v" cx="29" cy="29" r="25" stroke-dasharray="${Math.min(1, r.a.util) * C} ${C}"/></svg><span>${esc(r.p.name.slice(0, 2))}</span></span>
+        <span class="pname"><b>${esc(r.p.name)}</b><span class="lv">LV ${r.c.level} · ${r.c.xp}/${XP_PER_LEVEL} XP</span><br><span class="status">${s.t} · ${Math.round(r.a.util * 100)}%</span></span></span>
+      <span class="xp" data-tip="${esc(`${r.p.name}|เลเวล ${r.c.level} · สะสม ${r.c.hours} ชม. โปรเจกต์|อีก ${XP_PER_LEVEL - r.c.xp} ชม. ถึงเลเวล ${r.c.level + 1}`)}"><i style="width:${r.c.xp / XP_PER_LEVEL * 100}%"></i></span>
+      <span class="pstats"><div><div class="dot">${cu("pb" + r.p.name, r.a.booked)}</div><div class="k">ชม. งาน</div></div><div><div class="dot">${cu("pp" + r.p.name, Object.keys(r.a.prj).length)}</div><div class="k">โปรเจกต์</div></div><div><div class="dot">${cu("po" + r.p.name, r.open)}</div><div class="k">ว่าง 10 วัน</div></div></span>
+      <span class="badges">${r.b.map(([cls, ic, t, d]) => `<span class="bdg ${cls}" data-tip="${esc(`${t}|${d}`)}">${svgI(ic)}${esc(t)}</span>`).join("") || `<span class="bdg" style="opacity:.6">NO BADGE YET</span>`}</span>
+    </button>`;
+  }).join("");
+  $("#rosterSub").textContent = `เลเวลขึ้นทุก ${XP_PER_LEVEL} ชม. โปรเจกต์สะสม · ตราคิดจากช่วงที่เลือก · กดการ์ดเพื่อโฟกัสคนนั้น`;
+}
+function checkLevelUps() {
+  const lv = Object.fromEntries(st.people.map(p => [p.name, career(p).level]));
+  if (st.seenLevels) { const up = Object.keys(lv).filter(n => st.seenLevels[n] && lv[n] > st.seenLevels[n]); if (up.length) toast(`LEVEL UP · ${up.map(n => `${n} → LV ${lv[n]}`).join(" · ")}`); }
+  st.seenLevels = lv;
+}
+let toastT; function toast(t) { const el = $("#toast"); el.innerHTML = `<span class="led on"></span>${esc(t)}`; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 4000); }
+
 function stateLegend() {
   $("#stateLegend").innerHTML = [["free", "ว่าง · Next Project"], ["leave", "ลา"], ["holiday", "วันหยุด"]].map(([k, l]) => `<span><i class="sw ${k}"></i>${l}</span>`).join("");
 }
-function tip(p, d, s) { const name = s.k === "project" || s.k === "flex" ? s.v : { free: "ว่าง", leave: "ลา", holiday: "วันหยุด" }[s.k]; return esc(`${p.name}|${fDay(d)} · ${s.label}:00|${name}${s.k === "flex" ? " (ยังไม่ระบุโปรเจกต์)" : ""}`); }
+function tip(p, d, s) { return esc(`${p.name}|${fDay(d)} · ${s.label}:00|${nameOf(s)}`); }
+const hit = s => st.spot && s.k === "project" && s.v === st.spot ? " hit" : "";
 function drawTimeline(ds) {
   stateLegend();
   const ppl = shown(), n = bkkNow();
-  if (!ds.length) { $("#timeline").innerHTML = `<div class="empty">ไม่มีข้อมูลในช่วงนี้ (วันหยุดสุดสัปดาห์ หรืออยู่นอกช่วงที่บันทึกใน Sheet)</div>`; $("#tlSub").textContent = ""; return; }
+  $("#timeline").classList.toggle("spot", !!st.spot);
+  if (!ds.length) { $("#timeline").innerHTML = `<div class="empty">ไม่มีข้อมูลในช่วงนี้ (วันหยุดสุดสัปดาห์ หรืออยู่นอกช่วงที่บันทึกใน Sheet)</div>`; $("#tlSub").textContent = ""; drawSpotbar([]); return; }
   if (st.view === "day") {
     const d = ds[0], slots = ppl[0].slots;
     $("#tlTitle").textContent = "ตารางงานรายชั่วโมง"; $("#tlSub").textContent = `${fDay(d)} · ${ppl.length} คน`;
@@ -470,8 +704,8 @@ function drawTimeline(ds) {
         if (s.k === "break") { h += `<div class="brk"><i></i></div>`; i++; continue; }
         let j = i + 1; while (j < day.slots.length && day.slots[j].k === s.k && day.slots[j].v === s.v && day.slots[j].k !== "break") j++;
         const isNow = d === n.date && n.hour >= s.h && n.hour < day.slots[j - 1].h + 1;
-        const nm = s.k === "project" || s.k === "flex" ? s.v : { free: "ว่าง", leave: "ลา", holiday: "หยุด" }[s.k];
-        h += `<div class="blk ${s.k === "project" ? "" : s.k}${isNow ? " isnow" : ""}" style="grid-column:span ${j - i};--c:${colorOf(s.v)}" data-tip="${esc(`${p.name}|${fDay(d)} · ${s.label.split("–")[0]}:00–${day.slots[j - 1].label.split("–")[1]}:00 · ${j - i} ชม.|${nm}`)}" tabindex="0">${s.k === "project" ? `<span class="sw" style="--c:${colorOf(s.v)}"></span>` : ""}<span>${esc(nm)}</span></div>`;
+        const nm = s.k === "project" ? s.v : { free: "ว่าง", leave: "ลา", holiday: "หยุด" }[s.k];
+        h += `<div class="blk ${s.k === "project" ? "" : s.k}${isNow ? " isnow" : ""}${hit(s)}" style="grid-column:span ${j - i};--c:${colorOf(s.v)}" data-tip="${esc(`${p.name}|${fDay(d)} · ${s.label.split("–")[0]}:00–${day.slots[j - 1].label.split("–")[1]}:00 · ${j - i} ชม.|${nm}`)}" tabindex="0"><span>${esc(nm)}</span></div>`;
         i = j;
       }
     });
@@ -481,7 +715,7 @@ function drawTimeline(ds) {
     $("#tlTitle").textContent = vert ? "ภาพรวมรายเดือน · 1 จุด = 1 ชั่วโมง" : "ตารางงานรายสัปดาห์ · 1 จุด = 1 ชั่วโมง";
     $("#tlSub").textContent = `${fShort(ds[0])} – ${fShort(ds[ds.length - 1])} · ${ds.length} วันทำงาน`;
     const cw = vert ? "minmax(30px,1fr)" : "minmax(120px,1fr)";
-    let h = `<div class="tl" style="grid-template-columns:88px repeat(${ds.length},${cw}) ${vert ? "" : ""}"><span></span>` +
+    let h = `<div class="tl" style="grid-template-columns:88px repeat(${ds.length},${cw})"><span></span>` +
       ds.map(d => `<span class="colh${d === n.date ? " isnow" : ""}">${vert ? fmt(d, { day: "numeric" }) : fDay(d)}</span>`).join("");
     ppl.forEach(p => {
       h += `<button type="button" class="rowname" data-person="${esc(p.name)}">${esc(p.name)}</button>`;
@@ -489,33 +723,86 @@ function drawTimeline(ds) {
         const day = p.days[d];
         if (!day) { h += `<div class="dm${vert ? " v" : ""}"></div>`; return; }
         const ss = day.slots.filter(s => s.k !== "break"); const hrs = ss.filter(s => s.k === "project").length;
-        h += `<div class="dm${vert ? " v" : ""}${d === n.date ? " istoday" : ""}">` + ss.map(s => `<i class="d ${s.k === "project" ? "" : s.k}" style="--c:${colorOf(s.v)}" data-tip="${tip(p, d, s)}"></i>`).join("") + `<span class="tot">${hrs}</span></div>`;
+        h += `<div class="dm${vert ? " v" : ""}${d === n.date ? " istoday" : ""}">` + ss.map(s => `<i class="d ${s.k === "project" ? "" : s.k}${hit(s)}" style="--c:${colorOf(s.v)}" data-tip="${tip(p, d, s)}"></i>`).join("") + `<span class="tot">${hrs}</span></div>`;
       });
     });
     $("#timeline").innerHTML = h + "</div>";
   }
   const prjs = new Set(); ppl.forEach(p => ds.forEach(d => p.days[d]?.slots.forEach(s => s.k === "project" && prjs.add(s.v))));
-  $("#prjLegend").innerHTML = [...prjs].sort((a, b) => (st.colors[a] || "c9").localeCompare(st.colors[b] || "c9") || a.localeCompare(b)).map(n => `<span><i class="sw" style="--c:${colorOf(n)}"></i>${esc(n)}</span>`).join("");
+  drawSpotbar([...prjs]);
 }
-function drawLoad(ds) {
-  $("#load").innerHTML = shown().map(p => {
-    const a = agg(p, ds), stt = statusOf(a.util, a.avail), cap = a.cap || 1;
-    const segs = Object.entries(a.prj).sort((x, y) => y[1] - x[1]).map(([n, v]) => `<i style="width:${v / cap * 100}%;--c:${colorOf(n)}" data-tip="${esc(`${p.name}|${n}|${v} ชม.`)}"></i>`).join("") +
-      (a.flex ? `<i class="flex" style="width:${a.flex / cap * 100}%" data-tip="${esc(`${p.name}|ยังไม่ระบุโปรเจกต์|${a.flex} ชม.`)}"></i>` : "") +
-      (a.leave ? `<i class="leave" style="width:${a.leave / cap * 100}%" data-tip="${esc(`${p.name}|ลา|${a.leave} ชม.`)}"></i>` : "");
-    return `<div class="lrow"><button type="button" class="nm" data-person="${esc(p.name)}">${esc(p.name)}</button><div class="bar">${segs}</div><div class="pct"><b class="num">${Math.round(a.util * 100)}%</b><span class="status" style="--st:${stt.c}">${stt.t}</span></div>
-      <div class="lsub num">โปรเจกต์ ${a.booked} · ว่าง ${a.free} · ลา ${a.leave} / ${a.cap} ชม.</div></div>`;
-  }).join("") || `<div class="empty">ไม่มีข้อมูล</div>`;
+function drawSpotbar(prjs) {
+  prjs.sort((a, b) => st.order.indexOf(a) - st.order.indexOf(b));
+  $("#spotbar").innerHTML = prjs.length ? `<span class="mono">Spotlight</span>` + prjs.map(n => `<button type="button" class="pchip" data-spot="${esc(n)}" aria-pressed="${st.spot === n}"><i class="sw" style="--c:${colorOf(n)}"></i>${esc(n)}</button>`).join("") +
+    (st.spot ? `<button type="button" class="ghost" data-spot="">ล้าง</button>` : "") : "";
 }
-function drawProjects(ds) {
-  const tot = {}, by = {}; let flex = 0; const fb = {};
-  shown().forEach(p => { const a = agg(p, ds); Object.entries(a.prj).forEach(([n, v]) => { tot[n] = (tot[n] || 0) + v; (by[n] = by[n] || []).push(`${p.name} ${v}`); }); flex += a.flex; if (a.flex) fb[p.name] = a.flex; });
-  const rows = Object.entries(tot).sort((a, b) => b[1] - a[1]); const max = Math.max(1, ...rows.map(r => r[1]), flex);
-  const sum = rows.reduce((s, r) => s + r[1], 0);
-  $("#prjSub").textContent = `${rows.length} โปรเจกต์ · รวม ${sum} ชม.`;
-  $("#projects").innerHTML = rows.map(([n, v]) => `<div class="prow" data-tip="${esc(`${n}|${v} ชม. · ${Math.round(v / sum * 100)}%|${by[n].join(" · ")}`)}"><span class="pn"><i class="sw" style="--c:${colorOf(n)}"></i><span>${esc(n)}</span></span><div class="ptrack"><i style="width:${v / max * 100}%;--c:${colorOf(n)}"></i></div><span class="ph num">${v}</span></div>`).join("") +
-    (flex ? `<div class="prow" data-tip="${esc(`ยังไม่ระบุโปรเจกต์|${flex} ชม.|${Object.entries(fb).map(x => x.join(" ")).join(" · ")}`)}"><span class="pn"><i class="sw flex"></i><span style="color:var(--muted)">ยังไม่ระบุ</span></span><div class="ptrack"><i class="flex" style="width:${flex / max * 100}%"></i></div><span class="ph num">${flex}</span></div>` : "") ||
-    `<div class="empty">ไม่มีชั่วโมงโปรเจกต์ในช่วงนี้</div>`;
+
+/* daily stacked columns: one column per day, project hours stacked in fixed colour order, then open, then leave */
+function drawDaily(ds) {
+  const days = st.view === "day" ? datesIn(weekOf(st.anchor)) : ds;
+  $("#dailyTitle").textContent = st.view === "day" ? "ชั่วโมงรายวัน · สัปดาห์นี้" : "ชั่วโมงรายวัน";
+  if (!days.length) { $("#daily").innerHTML = `<div class="empty">ไม่มีข้อมูล</div>`; $("#dailyLegend").innerHTML = ""; return; }
+  const ppl = shown(), n = bkkNow();
+  const cols = days.map(d => { const prj = {}; let free = 0, leave = 0; ppl.forEach(p => p.days[d]?.slots.forEach(s => { if (s.k === "project") prj[s.v] = (prj[s.v] || 0) + 1; else if (s.k === "free") free++; else if (s.k === "leave") leave++; })); return { d, prj, free, leave, tot: Object.values(prj).reduce((a, b) => a + b, 0) }; });
+  const max = Math.max(perDay(), ...cols.map(c => c.tot + c.free + c.leave));
+  const step = max <= 10 ? 2 : max <= 24 ? 4 : max <= 48 ? 8 : 16, top = Math.ceil(max / step) * step;
+  const W = Math.max(320, $("#daily").clientWidth || 600), H = 240, L = 30, B = 26, T = 8, iw = W - L - 4, ih = H - B - T;
+  const bw = iw / cols.length, w = Math.max(6, Math.min(34, bw * .62)), y = v => T + ih - v / top * ih;
+  let g = "";
+  for (let v = 0; v <= top; v += step) g += `<line class="grid" x1="${L}" x2="${W - 4}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${v}</text>`;
+  let bars = "", hits = "", lbls = "";
+  const every = Math.ceil(cols.length / 12);
+  cols.forEach((c, i) => {
+    const x = L + bw * i + (bw - w) / 2; let acc = 0;
+    const segs = Object.entries(c.prj).sort((a, b) => st.order.indexOf(a[0]) - st.order.indexOf(b[0]));
+    segs.forEach(([nm, v]) => { const y0 = y(acc), y1 = y(acc + v); bars += `<rect class="bar${st.spot === nm ? " hl" : ""}" x="${x}" y="${y1 + 1}" width="${w}" height="${Math.max(0, y0 - y1 - 2)}" rx="3" style="fill:${colorOf(nm)}"/>`; acc += v; });
+    if (c.free) { const y0 = y(acc), y1 = y(acc + c.free); bars += `<rect class="bar" x="${x + .75}" y="${y1 + 1.75}" width="${w - 1.5}" height="${Math.max(0, y0 - y1 - 3.5)}" rx="3" style="fill:none;stroke:var(--line-2);stroke-width:1.5;stroke-dasharray:3 2"/>`; acc += c.free; }
+    if (c.leave) { const y0 = y(acc), y1 = y(acc + c.leave); bars += `<rect class="bar" x="${x + .75}" y="${y1 + 1.75}" width="${w - 1.5}" height="${Math.max(0, y0 - y1 - 3.5)}" rx="3" style="fill:none;stroke:var(--accent);stroke-width:1.5"/>`; }
+    const today = c.d === n.date;
+    if (i % every === 0 || today) lbls += `<text x="${x + w / 2}" y="${H - 8}" text-anchor="middle" style="${today ? "fill:var(--accent);font-weight:700" : ""}">${days.length > 7 ? fmt(c.d, { day: "numeric" }) : fmt(c.d, { weekday: "short", day: "numeric" })}</text>`;
+    const top3 = segs.sort((a, b) => b[1] - a[1]).slice(0, 4).map(([nm, v]) => `${nm} ${v}`).join(" · ");
+    hits += `<rect class="hit" x="${L + bw * i}" y="${T}" width="${bw}" height="${ih}" data-tip="${esc(`${fDay(c.d)}|โปรเจกต์ ${c.tot} · ว่าง ${c.free} · ลา ${c.leave} ชม.|${top3 || "ไม่มีงานโปรเจกต์"}`)}"/>`;
+  });
+  $("#daily").innerHTML = `<svg class="chart${st.spot ? " spot" : ""}" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="ชั่วโมงรายวัน">${g}${bars}${lbls}${hits}</svg>`;
+  const used = [...new Set(cols.flatMap(c => Object.keys(c.prj)))].sort((a, b) => st.order.indexOf(a) - st.order.indexOf(b));
+  $("#dailyLegend").innerHTML = used.slice(0, 7).map(nm => `<span><i class="sw" style="--c:${colorOf(nm)}"></i>${esc(nm)}</span>`).join("") + `<span><i class="sw free"></i>ว่าง</span><span><i class="sw leave"></i>ลา</span>`;
+}
+/* project share: top 5 + other, part-to-whole */
+function drawDonut(ds) {
+  const tot = {}, by = {};
+  shown().forEach(p => { const a = agg(p, ds); Object.entries(a.prj).forEach(([n, v]) => { tot[n] = (tot[n] || 0) + v; (by[n] = by[n] || []).push(`${p.name} ${v}`); }); });
+  const rows = Object.entries(tot).sort((a, b) => b[1] - a[1]), sum = rows.reduce((s, r) => s + r[1], 0);
+  $("#prjSub").textContent = `${rows.length} โปรเจกต์ · ${sum} ชม. · กดเพื่อไฮไลต์ทั้งหน้า`;
+  if (!sum) { $("#donut").innerHTML = `<div class="empty">ไม่มีชั่วโมงโปรเจกต์</div>`; $("#plist").innerHTML = ""; return; }
+  const head = rows.slice(0, 5), rest = rows.slice(5), other = rest.reduce((s, r) => s + r[1], 0);
+  const segs = head.map(([n, v]) => ({ n, v, c: colorOf(n), tip: by[n].join(" · ") })).concat(other ? [{ n: null, v: other, c: "var(--c0)", tip: rest.map(r => `${r[0]} ${r[1]}`).join(" · ") }] : []);
+  const R = 100, r0 = 66, cx = 110, gap = segs.length > 1 ? .012 : 0; let a = -Math.PI / 2;
+  const arc = (a0, a1) => { const big = a1 - a0 > Math.PI ? 1 : 0, p = (rr, t) => `${cx + rr * Math.cos(t)} ${cx + rr * Math.sin(t)}`;
+    return `M${p(R, a0)} A${R} ${R} 0 ${big} 1 ${p(R, a1)} L${p(r0, a1)} A${r0} ${r0} 0 ${big} 0 ${p(r0, a0)}Z`; };
+  const paths = segs.map(s => { const da = s.v / sum * Math.PI * 2, a0 = a + gap, a1 = a + da - gap; a += da;
+    const d = segs.length === 1 ? `M${cx} ${cx - R}A${R} ${R} 0 1 1 ${cx - .01} ${cx - R}L${cx - .01} ${cx - r0}A${r0} ${r0} 0 1 0 ${cx} ${cx - r0}Z` : arc(a0, Math.max(a0 + .001, a1));
+    return `<path d="${d}" style="fill:${s.c}" class="${st.spot && s.n === st.spot ? "hl" : ""}" ${s.n ? `data-spot="${esc(s.n)}"` : ""} data-tip="${esc(`${s.n || "อื่นๆ"}|${s.v} ชม. · ${Math.round(s.v / sum * 100)}%|${s.tip}`)}"/>`; }).join("");
+  const sel = st.spot && tot[st.spot] ? [st.spot, tot[st.spot]] : null;
+  $("#donut").className = "donut" + (st.spot ? " spot" : "");
+  $("#donut").innerHTML = `<svg viewBox="0 0 220 220" role="img" aria-label="สัดส่วนชั่วโมงตามโปรเจกต์">${paths}</svg><div class="dcenter"><span class="dot">${cu("dn", sel ? sel[1] : sum)}</span><span class="sub">${sel ? esc(sel[0]) + " · " + Math.round(sel[1] / sum * 100) + "%" : "ชม. ทั้งหมด"}</span></div>`;
+  $("#plist").innerHTML = rows.slice(0, 8).map(([n, v]) => `<button type="button" data-spot="${esc(n)}" aria-pressed="${st.spot === n}"><i class="sw" style="--c:${colorOf(n)}"></i><span class="n">${esc(n)}</span><span class="h">${v}</span><span class="p">${Math.round(v / sum * 100)}%</span></button>`).join("") +
+    (rows.length > 8 ? `<div class="sub" style="padding:4px 10px">และอีก ${rows.length - 8} โปรเจกต์</div>` : "");
+}
+/* hour-of-day load: one series, so one colour; the peak is called out */
+function drawHours(ds) {
+  const ppl = shown(), slots = (ppl[0] || st.people[0]).slots.filter(s => !s.brk);
+  const v = slots.map(sl => { let b = 0, a = 0; ppl.forEach(p => ds.forEach(d => { const s = p.days[d]?.slots.find(x => x.h === sl.h); if (!s || s.k === "holiday" || s.k === "leave" || s.k === "break") return; a++; if (s.k === "project") b++; })); return { sl, p: a ? b / a : 0, b, a }; });
+  if (!v.some(x => x.a)) { $("#hours").innerHTML = `<div class="empty">ไม่มีข้อมูล</div>`; return; }
+  const W = Math.max(300, $("#hours").clientWidth || 400), H = 220, L = 30, B = 24, T = 18, iw = W - L - 4, ih = H - B - T, bw = iw / v.length, w = Math.min(30, bw * .6);
+  const y = p => T + ih - p * ih, peak = Math.max(...v.map(x => x.p)), peakAt = v.findIndex(x => x.p === peak);
+  let g = ""; [0, .5, 1].forEach(p => g += `<line class="grid" x1="${L}" x2="${W - 4}" y1="${y(p)}" y2="${y(p)}"/><text x="${L - 6}" y="${y(p) + 3}" text-anchor="end">${p * 100}</text>`);
+  const n = bkkNow();
+  const bars = v.map((x, i) => { const bx = L + bw * i + (bw - w) / 2, isPeak = i === peakAt && peak > 0, now = n.hour === x.sl.h;
+    return `<rect x="${bx}" y="${y(x.p)}" width="${w}" height="${Math.max(0, ih - (y(x.p) - T))}" rx="4" style="fill:${isPeak ? "var(--accent)" : "var(--ink)"};opacity:${isPeak ? 1 : .85}"/>` +
+      (isPeak ? `<text x="${bx + w / 2}" y="${y(x.p) - 6}" text-anchor="middle" style="fill:var(--accent);font-weight:700">PEAK ${Math.round(x.p * 100)}%</text>` : "") +
+      `<text x="${bx + w / 2}" y="${H - 8}" text-anchor="middle" style="${now ? "fill:var(--accent);font-weight:700" : ""}">${pad(x.sl.h)}</text>` +
+      `<rect class="hit" x="${L + bw * i}" y="${T}" width="${bw}" height="${ih}" data-tip="${esc(`${x.sl.label}:00|มีงาน ${Math.round(x.p * 100)}% · ${x.b} จาก ${x.a} ชั่วโมงทำงาน|ว่าง ${x.a - x.b} ชม. ในช่วงนี้`)}"/>`; }).join("");
+  $("#hours").innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="ความหนาแน่นรายชั่วโมง">${g}${bars}</svg>`;
 }
 function drawMatrix(ds) {
   const ppl = shown(), A = ppl.map(p => agg(p, ds));
@@ -524,21 +811,41 @@ function drawMatrix(ds) {
   const max = Math.max(1, ...A.flatMap(a => Object.values(a.prj)));
   if (!names.length) { $("#matrix").innerHTML = `<div class="empty">ไม่มีชั่วโมงโปรเจกต์ในช่วงนี้</div>`; return; }
   let h = `<table><thead><tr><th>โปรเจกต์</th>${ppl.map(p => `<th>${esc(p.name)}</th>`).join("")}<th>รวม</th></tr></thead><tbody>`;
-  names.forEach(n => { h += `<tr><td><span class="pn"><i class="sw" style="--c:${colorOf(n)}"></i>${esc(n)}</span></td>` + A.map(a => { const v = a.prj[n] || 0; return v ? `<td class="h" style="--a:${(v / max).toFixed(2)}">${v}</td>` : `<td class="z">·</td>`; }).join("") + `<td class="num"><b>${prj[n]}</b></td></tr>`; });
+  names.forEach(n => { h += `<tr><td><span class="pn"><i class="sw" style="--c:${colorOf(n)}"></i>${esc(n)}</span></td>` + A.map((a, i) => { const v = a.prj[n] || 0; return v ? `<td class="h" style="--a:${(v / max).toFixed(2)}" data-tip="${esc(`${ppl[i].name} · ${n}|${v} ชม.`)}">${v}</td>` : `<td class="z">·</td>`; }).join("") + `<td class="num"><b>${prj[n]}</b></td></tr>`; });
   h += `<tr class="tot"><td>รวม</td>${A.map(a => `<td class="num">${a.booked}</td>`).join("")}<td class="num">${A.reduce((s, a) => s + a.booked, 0)}</td></tr></tbody></table>`;
   $("#matrix").innerHTML = h;
 }
-function drawAvail() {
-  const t = bkkNow(); const start = clampDate(t.date);
-  const ds = st.dates.filter(d => d >= start).slice(0, 10);
-  if (!ds.length) { $("#avail").innerHTML = `<div class="empty">ไม่มีตารางงานล่วงหน้าใน Sheet</div>`; return; }
-  const per = (st.people[0]?.slots.filter(s => !s.brk).length) || 8;
-  $("#avail").innerHTML = shown().map(p => {
-    const a = agg(p, ds); const open = a.flex + a.free;
-    const first = ds.find(d => p.days[d]?.slots.some(s => s.k === "flex" || s.k === "free"));
-    const cells = ds.map(d => { const day = p.days[d]; if (!day) return `<i class="off"></i>`; const ss = day.slots.filter(s => s.k !== "break"); if (ss.every(s => s.k === "holiday" || s.k === "leave")) return `<i class="off" data-tip="${esc(`${p.name}|${fDay(d)}|${ss[0].k === "leave" ? "ลา" : "วันหยุด"}`)}"></i>`; const o = ss.filter(s => s.k === "flex" || s.k === "free").length; return `<i data-tip="${esc(`${p.name}|${fDay(d)}|จัดสรรได้ ${o} จาก ${per} ชม.`)}"><b style="--p:${(o / per).toFixed(2)}"></b></i>`; }).join("");
-    return `<div class="avrow"><button type="button" class="rowname mono" data-person="${esc(p.name)}" style="background:none;border:0;text-align:left;padding:0;color:var(--ink);cursor:pointer">${esc(p.name)}</button><div><div class="avdots">${cells}</div><div class="mono" style="margin-top:4px;letter-spacing:.04em;text-transform:none">${first ? "ว่างเร็วสุด " + fDay(first) : "ไม่มีช่องว่าง"}</div></div><div class="free num">${open}<small>ชม. จัดสรรได้</small></div></div>`;
+/* mission planner: who has enough open hours inside the window */
+function drawMission() {
+  const days = upcomingDays(st.win), need = st.need, pd = perDay();
+  $("#needNum").textContent = need;
+  $("#winSub").textContent = days.length ? `${fShort(days[0])} – ${fShort(days[days.length - 1])} · ${days.length} วันทำงานที่มีใน Sheet` : "ไม่มีตารางงานล่วงหน้าใน Sheet";
+  if (!days.length) { $("#cands").innerHTML = ""; $("#combo").innerHTML = ""; $("#heat").innerHTML = ""; return; }
+  const rows = st.people.map(p => { const a = agg(p, days), first = days.find(d => p.days[d]?.slots.some(s => s.k === "free")); return { p, free: a.free, first, util: a.util }; })
+    .sort((a, b) => b.free - a.free || a.util - b.util);
+  $("#cands").innerHTML = rows.map((r, i) => {
+    const cov = Math.min(1, r.free / need), ok = r.free >= need;
+    return `<div class="cand${i === 0 && r.free ? " best" : ""}"><span class="rk">${i + 1}</span><b>${esc(r.p.name)}</b>
+      <div><div class="cov" data-tip="${esc(`${r.p.name}|ว่าง ${r.free} ชม. ใน ${days.length} วัน|ครอบคลุม ${Math.round(cov * 100)}% ของงาน`)}"><i style="width:${cov * 100}%"></i></div>
+      <div class="sub" style="font-size:11.5px">${r.first ? "ว่างเร็วสุด " + fDay(r.first) : "ไม่มีชั่วโมงว่างในกรอบนี้"}${ok ? ` · <span style="color:var(--good)">● รับได้ทั้งงาน</span>` : ""}</div></div>
+      <span class="rt"><span class="dot">${r.free}</span> ชม.<br>${Math.round(cov * 100)}% ของงาน</span></div>`;
   }).join("");
+  // smallest set of people that covers the hours, taking the most available first
+  let left = need; const team = [];
+  for (const r of rows) { if (left <= 0 || !r.free) break; const take = Math.min(left, r.free); team.push([r.p.name, take]); left -= take; }
+  const got = need - Math.max(0, left);
+  $("#combo").innerHTML = rows[0].free >= need
+    ? `<div class="combo"><span class="led on"></span><b>แนะนำ: ${esc(rows[0].p.name)}</b><span style="color:var(--hero-mute)">รับได้คนเดียวครบ ${need} ชม. เหลือว่างอีก ${rows[0].free - need} ชม.</span></div>`
+    : `<div class="combo"><span class="led on"></span><b>${left > 0 ? "ทั้งทีมยังไม่พอ" : "แบ่งงานเป็นทีม"}</b>${team.map(([n, h]) => `<span class="bdg">${esc(n)} ${h} ชม.</span>`).join("")}<span style="color:var(--hero-mute)">= ${got}/${need} ชม.${left > 0 ? ` · ขาด ${left} ชม. ลองขยายกรอบเวลา` : ""}</span></div>`;
+  let h = `<div class="heat" style="grid-template-columns:64px repeat(${days.length},30px)"><span></span>` + days.map(d => `<span class="hd">${fmt(d, { day: "numeric" })}<br>${fmt(d, { weekday: "narrow" })}</span>`).join("");
+  rows.forEach(r => {
+    h += `<span class="nm">${esc(r.p.name)}</span>`;
+    days.forEach(d => { const day = r.p.days[d]; const ss = day ? day.slots.filter(s => s.k !== "break") : [];
+      if (!ss.length || ss.every(s => s.k === "holiday" || s.k === "leave")) { h += `<span class="c off" data-tip="${esc(`${r.p.name}|${fDay(d)}|${ss.length && ss[0].k === "leave" ? "ลา" : "วันหยุด"}`)}"></span>`; return; }
+      const o = ss.filter(s => s.k === "free").length;
+      h += `<span class="c${o / pd < .5 ? " lo" : ""}" style="--p:${(o / pd).toFixed(2)}" data-tip="${esc(`${r.p.name}|${fDay(d)}|ว่าง ${o} จาก ${pd} ชม.`)}">${o || ""}</span>`; });
+  });
+  $("#heat").innerHTML = h + "</div>";
 }
 
 /* ---------- status / notices ---------- */
@@ -558,7 +865,7 @@ function notify(code, detail) {
   const n = $("#notice");
   if (!code) { n.hidden = true; return; }
   const [t, d] = ERR[code] || ["เชื่อมต่อข้อมูลไม่สำเร็จ", detail || "ลองกดรีเฟรชอีกครั้ง"];
-  n.className = "notice err"; n.hidden = false;
+  n.className = "notice"; n.hidden = false;
   n.innerHTML = `<span class="sw leave"></span><div><b>${esc(t)}</b><div style="color:var(--ink-2);font-size:13px">${esc(d)}${code === "tool_error" && detail ? " · " + esc(detail.slice(0, 160)) : ""}</div></div>` +
     (code === "approval_required" ? `<button type="button" class="pill" id="approveBtn" style="margin-left:auto">อนุญาตและโหลด</button>` : "");
   if (!st.people.length) setLive(false, "ออฟไลน์");
@@ -613,6 +920,9 @@ function startGviz() { pullGviz(); setInterval(() => { if (!document.hidden) pul
 /* ---------- interactions ---------- */
 document.addEventListener("click", async e => {
   const v = e.target.closest("[data-view]"); if (v) { st.view = v.dataset.view; store("mh.view", st.view); return render(); }
+  const so = e.target.closest("[data-sort]"); if (so) { st.sort = so.dataset.sort; store("mh.sort", st.sort); return render(); }
+  const w = e.target.closest("[data-win]"); if (w) { st.win = +w.dataset.win; store("mh.win", st.win); return render(); }
+  const sp = e.target.closest("[data-spot]"); if (sp) { const n = sp.dataset.spot; st.spot = !n || st.spot === n ? null : n; return render(); }
   const p = e.target.closest("[data-person]"); if (p) { const n = p.dataset.person; st.person = st.person === n && n !== "ALL" ? "ALL" : n; store("mh.person", st.person); return render(); }
   if (e.target.closest("#prev") || e.target.closest("#next")) {
     const dir = e.target.closest("#next") ? 1 : -1, a = st.anchor;
@@ -628,9 +938,11 @@ document.addEventListener("click", async e => {
     catch (er) { notify(er.code, er.message); }
   }
 });
+$("#needIn").addEventListener("input", e => { st.need = +e.target.value; if (st.people.length) drawMission(); else $("#needNum").textContent = st.need; });
 document.addEventListener("keydown", e => {
-  if (e.target.closest("input,textarea")) return;
+  if (e.target.closest("input,textarea,select")) return;
   if (e.key === "ArrowLeft") $("#prev").click(); if (e.key === "ArrowRight") $("#next").click();
+  if (e.key === "Escape" && st.spot) { st.spot = null; render(); }
 });
 const tipEl = $("#tip");
 function showTip(el, x, y) {
@@ -642,7 +954,8 @@ function showTip(el, x, y) {
 }
 document.addEventListener("pointermove", e => { const el = e.target.closest("[data-tip]"); if (el) showTip(el, e.clientX, e.clientY); else tipEl.hidden = true; });
 document.addEventListener("focusin", e => { const el = e.target.closest("[data-tip]"); if (el) { const r = el.getBoundingClientRect(); showTip(el, r.left, r.bottom); } else tipEl.hidden = true; });
-setInterval(() => { if (st.people.length) { drawNow(); } }, 30000);
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (st.people.length) { const ds = datesIn(range()); drawDaily(ds); drawHours(ds); } }, 150); });
+setInterval(() => { if (st.people.length) drawNow(); }, 30000);
 
 /* ---------- boot ---------- */
 render();
