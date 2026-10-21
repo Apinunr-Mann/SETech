@@ -155,6 +155,8 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
 @keyframes beat{0%{box-shadow:0 0 0 0 var(--accent)}100%{box-shadow:0 0 0 10px transparent}}
 .li.fresh{animation:fresh 15s ease-out;border-radius:12px;padding-inline:10px}
 @keyframes fresh{0%,40%{background:var(--surface2)}100%{background:transparent}}
+.offsite{border:1px solid var(--accent);border-radius:var(--r-md);padding:4px 14px 12px;display:flex;flex-direction:column;gap:6px}
+.p-site{background:var(--surface2);border-color:var(--ink)}
 .impact .dk{width:8px;height:8px;border-radius:50%;background:var(--ink);margin-top:5px;flex:0 0 auto}
 
 /* capture sheet */
@@ -380,7 +382,11 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
       <div class="kv"><span>ระยะจากสำนักงาน</span><span id="gpsDist">—</span></div>
       <button class="linkbtn" type="button" id="gpsRetry">หาตำแหน่งอีกครั้ง</button>
     </div>
-    <label class="field">หมายเหตุ (ถ้ามี)<input type="text" id="capNote" placeholder="เช่น ออกหน้างานลูกค้า"></label>
+    <div id="offBlock" class="offsite" hidden>
+      <label class="check" style="border:0;min-height:44px"><span><b>ทำงานนอกสถานที่</b><br><span class="muted" style="font-size:12px">เช่น ไซต์งาน ประชุมลูกค้า อบรม</span></span><input type="checkbox" id="offChk"></label>
+      <label class="field" id="offPlaceWrap" hidden>สถานที่ / ลูกค้า<input type="text" id="offPlace" maxlength="120" placeholder="เช่น ไซต์งานลูกค้า ABC บางนา"></label>
+    </div>
+    <label class="field">หมายเหตุ (ถ้ามี)<input type="text" id="capNote" placeholder="ไม่บังคับ"></label>
     <div class="muted" style="font-size:13px" id="capHint"></div>
     <button class="btn primary block" type="button" id="capOk" disabled>ยืนยัน</button>
   </div>
@@ -539,6 +545,8 @@ function buildStatic() {
   $("bigBtn").onclick = openCapture;
   $("capClose").onclick = closeCapture;
   $("capFile").onchange = onPhoto;
+  $("offChk").onchange = () => { $("offPlaceWrap").hidden = !$("offChk").checked; if ($("offChk").checked) $("offPlace").focus(); renderCapHint(); };
+  $("offPlace").oninput = renderCapHint;
   $("capOk").onclick = confirmCapture;
   $("gpsRetry").onclick = locate;
   $("lbClose").onclick = () => ($("lb").hidden = true);
@@ -666,7 +674,7 @@ function renderClock() {
   $("bigTh").textContent = done ? "บันทึกครบแล้ววันนี้" : rec && rec.in ? "ออกงาน" : "เข้างาน";
   let note = "";
   if (leave) note = `วันนี้คุณ${typeLabel(leave.type)} (อนุมัติแล้ว)`;
-  else if (rec && rec.in) { const st = dayState(rec, null, now().date); note = `เข้างาน ${rec.in.t} · ${st.label}` + (rec.out ? ` · ออก ${rec.out.t}` : ""); }
+  else if (rec && rec.in) { const st = dayState(rec, null, now().date); note = `เข้างาน ${rec.in.t} · ${st.label}` + (rec.out ? ` · ออก ${rec.out.t}` : "") + (rec.in.offsite ? ` · นอกสถานที่: ${rec.in.offsite.place}` : ""); }
   else note = `เริ่มงาน ${c.start} · ผ่อนผัน ${+c.grace || 0} นาที`;
   $("todayNote").textContent = note;
   // week
@@ -707,6 +715,7 @@ function openCapture() {
   $("capTitle").textContent = S.cap.phase === "in" ? "ยืนยันเข้างาน" : "ยืนยันออกงาน";
   $("capPhotoBlock").hidden = !S.cfg.allowPhoto; $("capGpsBlock").hidden = !S.cfg.allowGps;
   $("capImg").hidden = true; $("capOval").hidden = false; $("capFile").value = ""; $("capNote").value = "";
+  $("offChk").checked = false; $("offPlace").value = ""; $("offPlaceWrap").hidden = true; $("offBlock").hidden = true;
   $("capFileLabel").textContent = "ถ่ายรูป";
   $("cap").hidden = false; $("capTime").textContent = now().hm;
   if (S.cfg.allowGps) locate();
@@ -768,13 +777,18 @@ function shrink(file, max, q, stamp) {
 function capReady() {
   const c = S.cfg, k = S.cap; if (!k) return { ok: false, why: "" };
   const hasP = !!k.photo, hasG = !!k.pos;
+  const outside = hasG && k.pos.inside === false;
+  const off = $("offChk").checked, place = $("offPlace").value.trim();
+  $("offBlock").hidden = !(outside || (k.gpsErr && c.allowGps));
+  if (off && !place) return { ok: false, why: "ระบุสถานที่ที่ไปทำงาน" };
+  if (outside && !off) return { ok: false, why: `คุณอยู่ห่างสำนักงาน ${k.pos.dist.toLocaleString()} ม. (เกินรัศมี ${c.radius} ม.) ถ้าทำงานนอกสถานที่ ให้เลือกด้านบนและระบุสถานที่` };
   if (c.requireBoth) {
     if (c.allowPhoto && !hasP) return { ok: false, why: "ถ่ายรูปก่อน แล้วรอระบบหาตำแหน่ง" };
     if (c.allowGps && !hasG) return { ok: false, why: k.gpsErr ? `${k.gpsErr} บริษัทกำหนดให้ต้องใช้ GPS ด้วย` : "รอระบบหาตำแหน่ง" };
     return { ok: true, why: "" };
   }
   if (!c.allowPhoto && !c.allowGps) return { ok: true, why: "" };
-  if (hasP || hasG) return { ok: true, why: hasG && k.pos.inside === false ? "คุณอยู่นอกพื้นที่สำนักงาน ระบบจะบันทึกว่า “นอกพื้นที่” ให้ Admin เห็น" : "" };
+  if (hasP || hasG) return { ok: true, why: off ? `จะบันทึกเป็นทำงานนอกสถานที่ · ${place}` : "" };
   if (c.allowPhoto && c.allowGps) return { ok: false, why: k.gpsErr ? `${k.gpsErr} ให้ถ่ายรูปยืนยันแทน` : "ถ่ายรูป หรือรอระบบหาตำแหน่ง" };
   return { ok: false, why: c.allowPhoto ? "ถ่ายรูปเพื่อยืนยัน" : (k.gpsErr || "รอระบบหาตำแหน่ง") };
 }
@@ -791,7 +805,8 @@ async function confirmCapture() {
   const k = S.cap; if (!k || !capReady().ok) return;
   k.busy = true; renderCapHint();
   const t = now(), rec = S.myDays[t.date];
-  const stamp = { t: t.hm, ts: Date.now(), photo: k.photo || null, gps: k.pos || null, note: $("capNote").value.trim().slice(0, 200) || null };
+  const stamp = { t: t.hm, ts: Date.now(), photo: k.photo || null, gps: k.pos || null, note: $("capNote").value.trim().slice(0, 200) || null,
+    offsite: $("offChk").checked && !$("offBlock").hidden ? { place: $("offPlace").value.trim().slice(0, 120) } : null };
   const doc = rec ? { ...rec } : { date: t.date, emp: S.me };
   delete doc.id;
   if (k.phase === "in") doc.in = stamp; else doc.out = stamp;
@@ -895,7 +910,7 @@ function renderHistory() {
   const rows = monthDays(ym).filter((d) => d <= t.date).reverse().map((d) => {
     const rec = S.myDays[d], lv = approvedLeaveOn(S.myReqs, S.uid, d), st = dayState(rec, lv, d, S.meSince);
     if (st.kind === "off" && !rec) return "";
-    const method = rec && rec.in ? [rec.in.photo ? "รูป" : "", rec.in.gps ? (rec.in.gps.dist != null ? `GPS ${rec.in.gps.dist} ม.` : "GPS") : ""].filter(Boolean).join(" + ") : "";
+    const method = rec && rec.in ? [rec.in.offsite ? `นอกสถานที่: ${esc(rec.in.offsite.place)}` : "", rec.in.photo ? "รูป" : "", rec.in.gps ? (rec.in.gps.dist != null ? `GPS ${rec.in.gps.dist} ม.` : "GPS") : ""].filter(Boolean).join(" + ") : "";
     const times = rec && rec.in ? `${rec.in.t} → ${rec.out ? rec.out.t : (d === t.date ? "ตอนนี้" : "ไม่ได้ออก")}` : "—";
     return `<div class="li"><div class="datebox"><small>${thDate(d, { weekday: "short" })}</small><div class="d doto">${+d.slice(8)}</div></div>
       <div class="grow"><div class="mono" style="font-size:14px">${times}</div><div class="muted" style="font-size:12px">${[method, rec && rec.in ? fmtDur(recHours(rec, d)) + " ชม." : "", rec && rec.in && rec.in.note ? esc(rec.in.note) : ""].filter(Boolean).join(" · ")}</div></div>
@@ -942,7 +957,9 @@ function renderToday() {
     if (st.kind === "miss") missing++;
     const ph = (s) => s && s.photo ? `<button class="thumb" type="button" data-photo="${esc(emp)}|${date}|${s === rec.in ? "in" : "out"}" aria-label="ดูรูป${s === rec.in ? "เข้า" : "ออก"}งานของ ${esc(emp)}"><img class="thumb" src="${s.photo}" alt=""></button>` : "";
     const g = rec && rec.in && rec.in.gps;
-    const loc = g ? `${g.dist != null ? g.dist.toLocaleString() + " ม." : "พิกัด"} ${g.inside === false ? '<span class="pill p-out">นอกพื้นที่</span>' : ""}` : (rec && rec.in ? '<span class="muted">ไม่มี GPS</span>' : "—");
+    const site = rec && rec.in && rec.in.offsite;
+    const loc = site ? `<span class="pill p-site">นอกสถานที่</span><div style="font-size:12px">${esc(site.place)}${g && g.dist != null ? ` · ${g.dist.toLocaleString()} ม.` : ""}</div>`
+      : g ? `${g.dist != null ? g.dist.toLocaleString() + " ม." : "พิกัด"} ${g.inside === false ? '<span class="pill p-out">นอกพื้นที่</span>' : ""}` : (rec && rec.in ? '<span class="muted">ไม่มี GPS</span>' : "—");
     return `<tr><td><div style="display:flex;align-items:center;gap:10px"><span class="avatar">${esc(emp.slice(0, 2))}</span><div>${esc(emp)}${ids.length ? "" : '<div class="muted" style="font-size:11px">ยังไม่ผูกบัญชี</div>'}</div></div></td>
       <td class="mono">${rec && rec.in ? rec.in.t : "—"}</td><td class="mono">${rec && rec.out ? rec.out.t : "—"}</td>
       <td><div style="display:flex;gap:6px">${rec ? ph(rec.in) + ph(rec.out) : ""}</div></td><td>${loc}</td>
@@ -1163,7 +1180,7 @@ function collectEvents() {
     const { days: dd } = empData(emp);
     for (const d of Object.keys(dd)) {
       const r = dd[d];
-      if (r.in) { const st = dayState(r, null, d); ev.push({ key: `in:${emp}:${d}`, at: r.in.ts || 0, html: `${esc(emp)} เข้างาน <span class="mono">${r.in.t}</span>`, text: `${emp} เข้างาน ${r.in.t} · ${st.label}`, pill: st }); }
+      if (r.in) { const st = dayState(r, null, d); ev.push({ key: `in:${emp}:${d}`, at: r.in.ts || 0, html: `${esc(emp)} เข้างาน <span class="mono">${r.in.t}</span>`, text: `${emp} เข้างาน ${r.in.t} · ${st.label}${r.in.offsite ? ` · นอกสถานที่: ${r.in.offsite.place}` : ""}`, pill: r.in.offsite ? { cls: "p-site", label: "นอกสถานที่" } : st }); }
       if (r.out) ev.push({ key: `out:${emp}:${d}`, at: r.out.ts || 0, html: `${esc(emp)} ออกงาน <span class="mono">${r.out.t}</span>`, text: `${emp} ออกงาน ${r.out.t}` });
     }
   }
@@ -1243,7 +1260,7 @@ function renderReport() {
 }
 async function exportCsv() {
   const ym = $("repMonth").value || now().date.slice(0, 7), t = now();
-  const lines = [["date", "employee", "check_in", "check_out", "hours", "status", "late_min", "photo_in", "gps_dist_m", "inside", "note"]];
+  const lines = [["date", "employee", "check_in", "check_out", "hours", "status", "late_min", "photo_in", "gps_dist_m", "inside", "offsite_place", "note"]];
   for (const emp of S.cfg.employees) {
     const { days, reqs, since } = empData(emp);
     for (const d of monthDays(ym)) {
@@ -1252,7 +1269,7 @@ async function exportCsv() {
       if (st.kind === "off" && !rec) continue;
       const g = rec && rec.in && rec.in.gps;
       lines.push([d, emp, rec && rec.in ? rec.in.t : "", rec && rec.out ? rec.out.t : "", rec && rec.in ? (recHours(rec, d) / 60).toFixed(2) : "", st.label,
-        rec && rec.in ? lateMin(rec.in.t) : "", rec && rec.in && rec.in.photo ? "yes" : "", g && g.dist != null ? g.dist : "", g && g.inside != null ? g.inside : "", rec && rec.in && rec.in.note ? rec.in.note : ""]);
+        rec && rec.in ? lateMin(rec.in.t) : "", rec && rec.in && rec.in.photo ? "yes" : "", g && g.dist != null ? g.dist : "", g && g.inside != null ? g.inside : "", rec && rec.in && rec.in.offsite ? rec.in.offsite.place : "", rec && rec.in && rec.in.note ? rec.in.note : ""]);
     }
   }
   const csv = "﻿" + lines.map((l) => l.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
