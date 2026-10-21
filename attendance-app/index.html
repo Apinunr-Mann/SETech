@@ -149,6 +149,12 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
 .c-miss{border:1.5px solid var(--accent)} .c-off{background:var(--surface2)} .c-none{background:var(--surface2);opacity:.4}
 .hbar{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden}
 .hbar div{height:100%;background:var(--ink);border-radius:5px}
+.live{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--surface);font-size:11px;letter-spacing:.08em}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.pulse.beat{animation:beat 1.2s ease-out}
+@keyframes beat{0%{box-shadow:0 0 0 0 var(--accent)}100%{box-shadow:0 0 0 10px transparent}}
+.li.fresh{animation:fresh 15s ease-out;border-radius:12px;padding-inline:10px}
+@keyframes fresh{0%,40%{background:var(--surface2)}100%{background:transparent}}
 .impact .dk{width:8px;height:8px;border-radius:50%;background:var(--ink);margin-top:5px;flex:0 0 auto}
 
 /* capture sheet */
@@ -271,6 +277,7 @@ td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:middle;font-
   <section id="v-admin" hidden>
     <div class="row wrap" style="align-items:flex-end">
       <div><div class="eyebrow" id="adDateLabel"></div><h1 id="adTitle">หลังบ้าน Admin</h1></div>
+      <span class="live" id="livePill" role="status" aria-live="polite"><span class="pulse" id="livePulse"></span><span class="mono" id="liveText">กำลังเชื่อมต่อ…</span></span>
     </div>
     <nav class="subnav" aria-label="เมนู Admin" id="subnav"></nav>
 
@@ -415,7 +422,8 @@ const S = {
   cfg: { ...DEF }, uid: null, admin: false, owner: false, local: false, me: undefined,
   myDays: {}, myReqs: [], decisions: {}, links: {}, days: {}, reqs: {},
   view: "clock", adminTab: "today", leaveType: "vac", part: "full", lvAttach: null,
-  cap: null, impact: {}, user: null, downloads: null
+  cap: null, impact: {}, user: null, downloads: null,
+  bootAt: Date.now(), seen: new Set(), fresh: {}, liveAt: 0, setDirty: false
 };
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -455,9 +463,9 @@ const store = {
   docParts: (p) => p.split("/").length % 2 === 0,
   sub(path, cb) {
     if (this.db) {
-      const onErr = (e) => showBanner(`โหลดข้อมูลไม่สำเร็จ (${e.code})`);
-      if (this.docParts(path)) return this.db.doc(path).onSnapshot((s) => cb(s.exists ? s.data() : null), onErr);
-      return this.db.collection(path).onSnapshot((q) => cb(q.docs.map((d) => ({ id: d.id, ...d.data() }))), onErr);
+      const onErr = (e) => { markLive(false); showBanner(`การเชื่อมต่อสดหยุดลง (${e.code}) รีเฟรชหน้าเพื่อเชื่อมใหม่`); };
+      if (this.docParts(path)) return this.db.doc(path).onSnapshot((s) => { markLive(!s.metadata.fromCache); cb(s.exists ? s.data() : null); }, onErr);
+      return this.db.collection(path).onSnapshot((q) => { markLive(!q.metadata.fromCache); cb(q.docs.map((d) => ({ id: d.id, ...d.data() }))); }, onErr);
     }
     const fn = () => cb(this.localRead(path));
     this.subs.push(fn); fn();
@@ -492,14 +500,16 @@ async function boot() {
     store.db = db; S.uid = uid; S.admin = await user.canEdit(); S.owner = await user.isOwner();
   } else {
     S.local = true; S.uid = "local"; S.admin = true; S.owner = true;
+    window.addEventListener("storage", (e) => { if (e.key === "att.local") store.subs.forEach((f) => f()); });
     showBanner("ตอนนี้ข้อมูลเก็บไว้ในเบราว์เซอร์นี้เท่านั้น เปิดผ่านลิงก์ claude.ai ด้วยบัญชีในองค์กรเพื่อใช้ร่วมกันทั้งทีม");
   }
   $("csvBtn").hidden = !downloads;
-  store.sub("config/main", (d) => { S.cfg = { ...DEF, ...(d || {}), quota: { ...DEF.quota, ...((d && d.quota) || {}) } }; renderAll(); if (S.adminTab === "settings") fillSettings(); });
+  markLive();
+  store.sub("config/main", (d) => { S.cfg = { ...DEF, ...(d || {}), quota: { ...DEF.quota, ...((d && d.quota) || {}) } }; renderAll(); if (S.adminTab === "settings" && !S.setDirty) fillSettings(); });
   store.sub(`att/${S.uid}`, (d) => { S.me = d ? d.emp : null; S.meSince = d && d.linkedAt ? bkkDate(d.linkedAt) : null; renderAll(); });
   store.sub(`att/${S.uid}/days`, (rows) => { S.myDays = Object.fromEntries(rows.map((r) => [r.id, r])); renderAll(); });
   store.sub(`leave/${S.uid}/req`, (rows) => { S.myReqs = rows; renderAll(); });
-  store.sub("decisions", (rows) => { S.decisions = Object.fromEntries(rows.map((r) => [r.id, r])); renderAll(); });
+  store.sub("decisions", (rows) => { S.decisions = Object.fromEntries(rows.map((r) => [r.id, r])); renderAll(); noticeChanges(); });
   if (S.admin) watchTeam();
   renderAll();
 }
@@ -510,8 +520,8 @@ function watchTeam() {
     for (const id of Object.keys(S.links)) {
       if (teamSubs[id]) continue;
       teamSubs[id] = [
-        store.sub(`att/${id}/days`, (d) => { S.days[id] = Object.fromEntries(d.map((r) => [r.id, r])); renderAdmin(); }),
-        store.sub(`leave/${id}/req`, (d) => { S.reqs[id] = d; renderAdmin(); })
+        store.sub(`att/${id}/days`, (d) => { S.days[id] = Object.fromEntries(d.map((r) => [r.id, r])); renderAdmin(); noticeChanges(); }),
+        store.sub(`leave/${id}/req`, (d) => { S.reqs[id] = d; renderAdmin(); noticeChanges(); })
       ];
     }
     renderAdmin();
@@ -550,6 +560,7 @@ function buildStatic() {
   $("adDate").onchange = renderAdmin;
   $("csvBtn").onclick = exportCsv;
   $("a-settings").onsubmit = saveSettings;
+  $("a-settings").oninput = () => (S.setDirty = true);
   $("sHere").onclick = () => getPos().then((p) => { $("sLat").value = p.coords.latitude.toFixed(6); $("sLng").value = p.coords.longitude.toFixed(6); toast("ใส่พิกัดปัจจุบันแล้ว กดบันทึกเพื่อใช้งาน"); })
     .catch(() => toast("เบราว์เซอร์นี้ไม่ให้สิทธิ์ตำแหน่ง ใส่พิกัดเองจาก Google Maps ได้"));
 }
@@ -952,6 +963,8 @@ function allReqs() { const out = []; for (const id of Object.keys(S.reqs)) (S.re
 function pendingList() { return allReqs().filter((r) => reqStatus(r._uid, r) === "pending").sort((a, b) => a.from.localeCompare(b.from)); }
 function renderRequests() {
   const pend = pendingList();
+  const typed = {}; document.querySelectorAll('[id^="note-"]').forEach((el) => { if (el.value) typed[el.id] = el.value; });
+  const focused = document.activeElement && document.activeElement.id;
   $("pendingReqs").innerHTML = pend.length ? pend.map((r) => {
     const key = `${r._uid}~${r.id}`, imp = S.impact[key];
     const impTxt = !imp ? "กำลังตรวจชั่วโมงใน Manhour Sheet…" : imp.err ? esc(imp.err) :
@@ -968,6 +981,8 @@ function renderRequests() {
         <button class="btn" type="button" data-dec="rejected" data-key="${esc(key)}">ไม่อนุมัติ</button>
         <button class="btn primary" type="button" data-dec="approved" data-key="${esc(key)}">อนุมัติ</button></div></div>`;
   }).join("") : `<div class="card empty" style="grid-column:1/-1">ไม่มีคำขอที่รออนุมัติ</div>`;
+  for (const [id, v] of Object.entries(typed)) { const el = $(id); if (el) el.value = v; }
+  if (focused && focused.startsWith("note-") && $(focused)) $(focused).focus();
   pend.forEach((r) => { const key = `${r._uid}~${r.id}`; if (!S.impact[key]) loadImpact(key, r); });
   const done = allReqs().filter((r) => reqStatus(r._uid, r) !== "pending").sort((a, b) => (S.decisions[`${b._uid}~${b.id}`].at || 0) - (S.decisions[`${a._uid}~${a.id}`].at || 0)).slice(0, 30);
   $("doneReqs").innerHTML = done.length ? done.map((r) => {
@@ -1134,25 +1149,54 @@ function renderOverview() {
     const pct = cap ? Math.min(100, Math.round(m / cap * 100)) : 0;
     return `<div><div class="row" style="font-size:14px"><span>${esc(emp)}</span><span class="mono muted" style="font-size:12px">${fmtDur(m)} / ${fmtDur(cap)} ชม. · ${pct}%</span></div><div class="hbar"><div style="width:${pct}%"></div></div></div>`;
   }).join("") + `<div class="muted" style="font-size:12px">เทียบกับชั่วโมงงานมาตรฐานของวันทำงานที่ผ่านมา หักวันลาแล้ว</div>`;
-  // recent activity: check-ins, check-outs and leave decisions, newest first
+  const ev = collectEvents(), nowTs = Date.now();
+  $("ovFeed").innerHTML = ev.length ? ev.slice(0, 12).map((e) => `<div class="li${S.fresh[e.key] && nowTs - S.fresh[e.key] < 15000 ? " fresh" : ""}"><div class="grow"><div style="font-size:14px">${e.html}</div>
+    <div class="muted" style="font-size:12px">${new Date(e.at).toLocaleString("th-TH", { timeZone: TZ, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</div></div>
+    ${e.pill && e.pill.label !== "—" ? `<span class="pill ${e.pill.cls}">${esc(e.pill.label)}</span>` : ""}</div>`).join("") : `<div class="empty">ยังไม่มีความเคลื่อนไหว เมื่อพนักงานลงเวลาหรือขอลาจะแสดงที่นี่</div>`;
+}
+
+/* ---------- live updates ---------- */
+// every check-in, check-out, request and decision as one timeline, newest first
+function collectEvents() {
   const ev = [];
   for (const emp of S.cfg.employees) {
     const { days: dd } = empData(emp);
     for (const d of Object.keys(dd)) {
       const r = dd[d];
-      if (r.in) ev.push({ at: r.in.ts || 0, d, html: `${esc(emp)} เข้างาน <span class="mono">${r.in.t}</span>`, pill: dayState(r, null, d) });
-      if (r.out) ev.push({ at: r.out.ts || 0, d, html: `${esc(emp)} ออกงาน <span class="mono">${r.out.t}</span>` });
+      if (r.in) { const st = dayState(r, null, d); ev.push({ key: `in:${emp}:${d}`, at: r.in.ts || 0, html: `${esc(emp)} เข้างาน <span class="mono">${r.in.t}</span>`, text: `${emp} เข้างาน ${r.in.t} · ${st.label}`, pill: st }); }
+      if (r.out) ev.push({ key: `out:${emp}:${d}`, at: r.out.ts || 0, html: `${esc(emp)} ออกงาน <span class="mono">${r.out.t}</span>`, text: `${emp} ออกงาน ${r.out.t}` });
     }
   }
   for (const [key, dc] of Object.entries(S.decisions)) {
     const r = reqByKey(key); if (!r) continue;
-    ev.push({ at: dc.at || 0, html: `${esc(whoLabel(dc.by))} ${dc.status === "approved" ? "อนุมัติ" : "ไม่อนุมัติ"}${esc(typeLabel(r.type))}ของ ${esc(r.emp)}`, pill: { cls: "p-" + dc.status, label: ST_LABEL[dc.status] } });
+    const t = `${whoLabel(dc.by)} ${dc.status === "approved" ? "อนุมัติ" : "ไม่อนุมัติ"}${typeLabel(r.type)}ของ ${r.emp}`;
+    ev.push({ key: `dec:${key}:${dc.at}`, at: dc.at || 0, html: esc(t), text: t, pill: { cls: "p-" + dc.status, label: ST_LABEL[dc.status] } });
   }
-  for (const r of allReqs()) ev.push({ at: r.createdAt || 0, html: `${esc(r.emp)} ส่งคำขอ${esc(typeLabel(r.type))} ${r.days} วัน` });
-  ev.sort((a, b) => b.at - a.at);
-  $("ovFeed").innerHTML = ev.length ? ev.slice(0, 12).map((e) => `<div class="li"><div class="grow"><div style="font-size:14px">${e.html}</div>
-    <div class="muted" style="font-size:12px">${new Date(e.at).toLocaleString("th-TH", { timeZone: TZ, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</div></div>
-    ${e.pill && e.pill.label !== "—" ? `<span class="pill ${e.pill.cls}">${esc(e.pill.label)}</span>` : ""}</div>`).join("") : `<div class="empty">ยังไม่มีความเคลื่อนไหว เมื่อพนักงานลงเวลาหรือขอลาจะแสดงที่นี่</div>`;
+  for (const r of allReqs()) { const t = `${r.emp} ส่งคำขอ${typeLabel(r.type)} ${r.days} วัน`; ev.push({ key: `req:${r._uid}:${r.id}`, at: r.createdAt || 0, html: esc(t), text: t }); }
+  return ev.sort((a, b) => b.at - a.at);
+}
+// announce what changed since this page opened; earlier history is never announced
+let noticeT;
+function noticeChanges() {
+  if (!S.admin) return;
+  clearTimeout(noticeT);
+  noticeT = setTimeout(() => {
+    const fresh = collectEvents().filter((e) => e.at > S.bootAt && !S.seen.has(e.key));
+    fresh.forEach((e) => { S.seen.add(e.key); S.fresh[e.key] = Date.now(); });
+    if (!fresh.length) return;
+    toast(fresh.length === 1 ? fresh[0].text : `มีความเคลื่อนไหวใหม่ ${fresh.length} รายการ · ${fresh[0].text}`);
+    if (S.adminTab === "overview") renderOverview();
+    setTimeout(() => { if (S.adminTab === "overview") renderOverview(); }, 15500);
+  }, 400);
+}
+function markLive(server) {
+  if (server === false && S.liveAt) return;
+  if (server) S.liveAt = Date.now();
+  const el = $("liveText"); if (!el) return;
+  if (S.local) { el.textContent = "เฉพาะเครื่องนี้"; return; }
+  if (!S.liveAt) { el.textContent = "กำลังเชื่อมต่อ…"; return; }
+  el.textContent = "LIVE · " + new Date(S.liveAt).toLocaleTimeString("en-GB", { timeZone: TZ });
+  const p = $("livePulse"); p.classList.remove("beat"); void p.offsetWidth; p.classList.add("beat");
 }
 
 /* ---------- super admin list ---------- */
@@ -1217,6 +1261,7 @@ async function exportCsv() {
 
 /* ---------- settings ---------- */
 function fillSettings() {
+  S.setDirty = false;
   const c = S.cfg;
   $("sStart").value = c.start; $("sEnd").value = c.end; $("sL1").value = c.lunchStart; $("sL2").value = c.lunchEnd; $("sGrace").value = c.grace;
   $("sPhoto").checked = !!c.allowPhoto; $("sGps").checked = !!c.allowGps; $("sBoth").checked = !!c.requireBoth;
@@ -1251,7 +1296,7 @@ async function saveSettings(e) {
     superAdmins: S.cfg.superAdmins || []
   };
   if (!cfg.employees.length) cfg.employees = DEF.employees;
-  try { await store.set("config/main", cfg); tabCache = {}; toast("บันทึกการตั้งค่าแล้ว"); } catch { toast("บันทึกไม่สำเร็จ ต้องเป็นผู้แก้ไขหน้านี้"); }
+  try { await store.set("config/main", cfg); tabCache = {}; S.setDirty = false; toast("บันทึกการตั้งค่าแล้ว"); } catch { toast("บันทึกไม่สำเร็จ ต้องเป็นผู้แก้ไขหน้านี้"); }
 }
 
 /* ---------- misc ---------- */
