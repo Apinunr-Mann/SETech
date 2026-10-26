@@ -1,0 +1,732 @@
+<title>Volt Club Mockups</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,500;0,600;0,700;1,600;1,700;1,800;1,900&family=Prompt:wght@400;500;600&display=swap">
+<style>
+/* Layout: dark Volt "energy" stage (navy + electric glow); device frames grouped by user; back-office screens switch to a light work UI */
+:root{
+  --n950:#060A2B;--n900:#0B1247;--n800:#13207A;--n700:#1B2C9E;
+  --blue:#2F6BFF;--cyan:#19C3F0;--yel:#FFE11A;--pur:#8A4DFF;
+  --wh:#FFFFFF;--mut:#AEB8EC;--line:rgba(255,255,255,.14);--glass:rgba(255,255,255,.07);
+  --ink:#0B1247;--lbg:#F2F4FB;--lline:#DCE1F3;--lmut:#525C8A;
+  --ok:#17A866;--warn:#B87400;--bad:#D93A40;
+  --display:'Kanit','Prompt',sans-serif;--body:'Prompt','Kanit',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--n950);color:var(--wh);font:400 14px/1.45 var(--body);padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.wrap{max-width:1360px;margin:0 auto}
+svg.i{width:1em;height:1em;fill:currentColor;flex:none}
+
+/* page header */
+.hero{position:relative;padding:40px 0 28px;display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 80% 0%,rgba(47,107,255,.35),transparent 70%);pointer-events:none}
+.logo{font:italic 900 clamp(44px,8vw,84px)/.9 var(--display);letter-spacing:-.02em;color:var(--wh);display:flex;align-items:center;gap:6px;text-shadow:0 0 24px rgba(47,107,255,.8)}
+.logo svg{width:.6em;height:.8em;fill:var(--yel);filter:drop-shadow(0 0 10px rgba(255,225,26,.7))}
+.hero p{color:var(--mut);max-width:58ch;position:relative}
+.hero .tag{font:italic 700 15px var(--display);letter-spacing:.08em;color:var(--yel);text-transform:uppercase}
+.toc{position:relative;display:flex;flex-wrap:wrap;gap:8px}
+.toc a{color:var(--wh);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:500;background:var(--glass)}
+.toc a:hover{border-color:var(--yel);color:var(--yel)}
+section.grp{padding-top:44px}
+.gh{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-bottom:22px}
+.gh h2{font:italic 800 clamp(24px,3.4vw,36px)/1.1 var(--display);text-transform:uppercase;letter-spacing:.01em;text-wrap:balance}
+.gh h2 em{font-style:inherit;color:var(--yel)}
+.gh span{color:var(--mut)}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:36px 24px;justify-items:center}
+figure{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;min-width:0}
+figcaption{text-align:center;max-width:340px}
+figcaption b{display:block;font:italic 700 17px var(--display)}
+figcaption b i{font-style:normal;color:var(--yel);margin-right:6px}
+figcaption span{color:var(--mut);font-size:13px}
+
+/* phone */
+.ph{width:min(360px,100%);height:760px;border-radius:46px;background:#000;padding:10px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 30px 60px rgba(0,0,0,.5),0 0 60px rgba(47,107,255,.25)}
+.scr{height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.dk{background:radial-gradient(120% 60% at 50% 0%,#1A2A9A 0%,var(--n900) 55%,var(--n950) 100%);color:var(--wh)}
+.lt{background:var(--lbg);color:var(--ink)}
+.bar{height:58px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px 0}
+.bar b{font:italic 700 18px var(--display)}
+.x{width:40px;height:40px;border-radius:50%;border:0;background:var(--glass);display:grid;place-items:center;font-size:16px}
+.lt .x{background:#E3E7F6}
+.bd{flex:1;min-height:0;padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:14px}
+.lt .card{background:#fff;border-color:var(--lline)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:14px;border:0;font:italic 700 16px var(--display);letter-spacing:.01em;text-decoration:none;cursor:pointer}
+.by{background:var(--yel);color:var(--n900);box-shadow:0 6px 20px rgba(255,225,26,.25)}
+.bn{background:var(--n900);color:var(--wh)}
+.bo{background:transparent;border:1.5px solid var(--line);color:inherit}
+.lt .bo{border-color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:500;background:var(--glass);border:1px solid var(--line)}
+.chip.y{background:var(--yel);color:var(--n900);border-color:var(--yel);font-weight:600}
+.lt .chip{background:#E8ECF8;border-color:var(--lline)}
+.mut{color:var(--mut)}.lt .mut{color:var(--lmut)}
+.num{font:italic 800 1em var(--display);font-variant-numeric:tabular-nums}
+.h3{font:italic 700 16px var(--display)}
+.sp{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ai{border:1px solid rgba(25,195,240,.6);background:rgba(25,195,240,.1);border-radius:14px;padding:10px 12px;font-size:13px}
+.ai b{color:var(--cyan);font:italic 700 12px var(--display);letter-spacing:.06em}
+.lt .ai b{color:#0A7FA6}
+.ok{color:#4BE39A}.warn{color:#FFC14D}.bad{color:#FF7A7F}
+.lt .ok{color:var(--ok)}.lt .warn{color:var(--warn)}.lt .bad{color:var(--bad)}
+
+/* cans */
+.can{position:relative;display:inline-block;width:34px;height:64px;border-radius:7px 7px 9px 9px;flex:none;box-shadow:inset -6px 0 0 rgba(0,0,0,.18),inset 4px 0 0 rgba(255,255,255,.25)}
+.can::before{content:"";position:absolute;left:3px;right:3px;top:-4px;height:6px;border-radius:3px;background:#C9CFE6}
+.can b{position:absolute;inset:0;display:grid;place-items:center;writing-mode:vertical-rl;transform:rotate(180deg);font:italic 900 15px/1 var(--display);color:var(--n900);letter-spacing:-.02em}
+.can.c{background:var(--cyan)}.can.y{background:var(--yel)}.can.p{background:var(--pur)}.can.p b{color:#fff}
+.can.lg{width:52px;height:98px}.can.lg b{font-size:22px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dot.y{background:var(--yel)}.dot.c{background:var(--cyan)}.dot.p{background:var(--pur)}
+
+/* LINE chat */
+.lhead{background:#fff;color:#111;height:58px;flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px 0}
+.av{width:34px;height:34px;border-radius:50%;background:var(--n900);display:grid;place-items:center;flex:none}
+.av svg{width:16px;height:20px;fill:var(--yel)}
+.chat{flex:1;min-height:0;background:#8CABD9;padding:12px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.bub{max-width:82%;background:#fff;color:#111;border-radius:16px;padding:9px 12px;font-size:13px;align-self:flex-start}
+.bub.me{align-self:flex-end;background:#9BE36B}
+.flex{align-self:flex-start;width:82%;border-radius:16px;overflow:hidden;background:var(--n900);color:#fff}
+.flex .art{height:104px;position:relative;background:radial-gradient(80% 90% at 70% 40%,#2F6BFF,#0B1247);display:flex;align-items:flex-end;justify-content:flex-end;gap:6px;padding:10px 14px}
+.flex .art em{position:absolute;left:12px;top:12px;font:italic 900 22px/1 var(--display);color:var(--yel)}
+.rich{flex:none;background:var(--n900);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;border-top:1px solid #000}
+.rich a{min-height:82px;background:var(--n900);color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:500;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.rich a svg{width:24px;height:24px;fill:none;stroke:var(--yel);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rich a.hl{background:var(--yel);color:var(--n900)}.rich a.hl svg{stroke:var(--n900)}
+.rmbar{flex:none;background:#fff;color:#444;height:30px;display:grid;place-items:center;font-size:11px}
+
+/* member card */
+.mcard{border-radius:22px;padding:16px;background:linear-gradient(135deg,#2F6BFF 0%,#1B2C9E 45%,#0B1247 100%);border:1px solid rgba(255,255,255,.2);position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(47,107,255,.35)}
+.mcard .bg{position:absolute;right:-14px;top:-10px;width:130px;height:170px;fill:rgba(255,225,26,.16)}
+.lvl{font:italic 800 13px var(--display);background:var(--yel);color:var(--n900);border-radius:999px;padding:2px 10px}
+.prog{height:8px;border-radius:4px;background:rgba(255,255,255,.2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--yel);border-radius:4px;box-shadow:0 0 10px var(--yel)}
+.qr{align-self:center;width:176px;height:176px;background:#fff;border-radius:18px;padding:12px;box-shadow:0 0 0 4px rgba(255,225,26,.6),0 0 30px rgba(255,225,26,.35)}
+.qr svg{width:100%;height:100%;display:block}
+
+/* segmented / lists */
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg span{text-align:center;padding:8px 0;border-radius:10px;font-weight:500;font-size:13px}
+.seg span.on{background:var(--yel);color:var(--n900);font-weight:600}
+.drop{border:2px dashed rgba(255,225,26,.6);border-radius:18px;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:14px;background:rgba(255,225,26,.05)}
+.drop svg{width:34px;height:34px;fill:none;stroke:var(--yel);stroke-width:1.8}
+.li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--glass);border:1px solid var(--line);font-size:13px}
+.li .t{flex:1;min-width:0}
+.li .t b{display:block;font-weight:600;font-size:13.5px}
+.lt .li{background:#fff;border-color:var(--lline)}
+.thumb{width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;overflow:hidden;background:rgba(255,255,255,.1)}
+.mini{padding:4px 12px;min-height:34px;border-radius:10px;font:italic 700 13px var(--display);border:0;background:var(--yel);color:var(--n900)}
+.mini.o{background:transparent;border:1.5px solid var(--yel);color:var(--yel)}
+.pin{border:1.5px solid var(--yel);border-radius:18px;padding:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:rgba(255,225,26,.06)}
+.rw{border-radius:14px;background:rgba(255,255,255,.08);padding:8px;display:flex;flex-direction:column;gap:4px;font-size:12.5px}
+.rw .im{height:60px;border-radius:10px;display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:6px;background:radial-gradient(70% 80% at 50% 30%,#2F6BFF,#0B1247)}
+.rw b{font-weight:600}
+.opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:16px;padding:12px;cursor:pointer}
+.opt.on{border-color:var(--yel);background:rgba(255,225,26,.07)}
+.opt input{accent-color:var(--yel);width:20px;height:20px}
+.tiers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.tiers span{text-align:center;padding:8px 0;border-radius:12px;font:italic 800 14px var(--display);border:1px solid var(--line);color:var(--mut)}
+.tiers span.done{background:rgba(255,255,255,.12);color:#fff}
+.tiers span.on{background:var(--yel);color:var(--n900);border-color:var(--yel);box-shadow:0 0 16px rgba(255,225,26,.45)}
+.chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--yel);flex:none;display:grid;place-items:center;font-size:13px;color:var(--n900)}
+.chk.on{background:var(--yel)}
+.hist{display:flex;flex-direction:column;font-size:13px}
+.hist div{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+
+/* shop (light) */
+.shead{background:var(--n900);color:#fff;padding:14px 16px 16px;flex:none;display:flex;flex-direction:column;gap:2px}
+.shead small{color:var(--mut)}
+.cam{height:150px;border-radius:18px;background:#1C2138;display:grid;place-items:center;position:relative;overflow:hidden}
+.cam i{width:110px;height:110px;border:3px solid var(--yel);border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+.cam::after{content:"";position:absolute;left:24%;right:24%;top:50%;height:2px;background:var(--yel);box-shadow:0 0 12px var(--yel)}
+.step{display:flex;align-items:center;gap:10px}
+.step button{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--lline);background:#fff;font-size:18px;color:var(--ink)}
+.step b{width:18px;text-align:center}
+.kpi2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi2 .card b{display:block;font:italic 800 26px/1.1 var(--display)}
+
+/* desktop frames */
+.dtw{width:100%;max-width:100%;aspect-ratio:1280/900;position:relative;overflow:hidden;border-radius:14px;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 30px 60px rgba(0,0,0,.5)}
+.dt{position:absolute;left:0;top:0;width:1280px;height:900px;transform-origin:0 0;display:flex;flex-direction:column;overflow:hidden}
+.chrome{height:36px;flex:none;background:#1A1F3D;display:flex;align-items:center;gap:7px;padding:0 14px}
+.chrome i{width:11px;height:11px;border-radius:50%;background:#3A4170}
+.chrome span{margin-left:14px;background:#262C52;border-radius:7px;padding:3px 14px;font-size:12px;color:var(--mut);width:360px}
+.drow{grid-template-columns:1fr}
+.dtfig{width:100%}
+.dtfig figcaption{max-width:none}
+
+/* consumer desktop */
+.cd{flex:1;min-height:0;display:flex;flex-direction:column}
+.cnav{display:flex;align-items:center;gap:28px;padding:16px 40px;border-bottom:1px solid var(--line)}
+.cnav .logo{font-size:34px;text-shadow:none}
+.cnav nav{display:flex;gap:22px;flex:1;font-weight:500}
+.cnav nav a{color:var(--mut);text-decoration:none}.cnav nav a.on{color:#fff}
+.cbody{flex:1;min-height:0;padding:22px 40px;display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto;align-content:start;gap:18px}
+.banner{grid-column:1/-1;height:200px;border-radius:22px;position:relative;overflow:hidden;background:radial-gradient(60% 120% at 75% 50%,#2F6BFF 0%,#13207A 45%,#060A2B 100%);display:flex;align-items:center;padding:0 40px;gap:30px}
+.banner h3{font:italic 900 46px/.95 var(--display);text-transform:uppercase}
+.banner h3 em{font-style:inherit;color:var(--yel)}
+.banner .cans{margin-left:auto;display:flex;align-items:flex-end;gap:14px;padding-right:20px}
+.rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+
+/* back office (light) */
+.bo{flex:1;min-height:0;display:flex;background:var(--lbg);color:var(--ink)}
+.side{width:224px;flex:none;background:var(--n900);color:#fff;padding:18px 12px;display:flex;flex-direction:column;gap:4px}
+.side .logo{font-size:30px;text-shadow:none;padding:0 10px 2px}
+.side small{color:var(--mut);padding:0 10px 16px;font-size:12px}
+.side a{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;color:#D5DBFA;text-decoration:none;font-size:14px;font-weight:500}
+.side a.on{background:var(--yel);color:var(--n900);font-weight:600}
+.side a em{font-style:normal;font-size:11px;background:var(--bad);color:#fff;border-radius:999px;padding:1px 7px}
+.main{flex:1;min-width:0;padding:22px 26px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.mh{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mh h3{font:italic 800 26px var(--display)}
+.filt{display:flex;gap:6px}
+.filt span{border:1px solid var(--lline);background:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:500}
+.filt span.on{background:var(--n900);color:#fff;border-color:var(--n900)}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.kpi{background:#fff;border:1px solid var(--lline);border-radius:14px;padding:12px 14px}
+.kpi small{color:var(--lmut);font-size:12.5px}
+.kpi b{display:block;font:italic 800 28px/1.15 var(--display);font-variant-numeric:tabular-nums}
+.kpi em{font-style:normal;font-size:12px;font-weight:600;color:var(--ok)}
+.pn{background:#fff;border:1px solid var(--lline);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pn h4{font:italic 700 15px var(--display)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex:1;min-height:0}
+.vb{flex:1;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid var(--lline);padding:0 4px;min-height:0}
+.vb div{flex:1;display:flex;flex-direction:column-reverse;align-self:stretch;gap:2px}
+.vb{min-height:150px}
+.vb i{display:block;border-radius:3px 3px 0 0}
+.xl{display:flex;gap:8px;padding:0 4px;font-size:11px;color:var(--lmut)}.xl span{flex:1;text-align:center}
+.hb{display:grid;grid-template-columns:86px 1fr 40px;gap:8px;align-items:center;font-size:12.5px;margin:3px 0}
+.hb i{height:14px;border-radius:0 4px 4px 0;background:var(--n800);display:block}
+.hb b{text-align:right;font-variant-numeric:tabular-nums}
+.leg{display:flex;gap:12px;font-size:11.5px;color:var(--lmut)}.leg span{display:flex;align-items:center;gap:5px}
+.al{font-size:13px;border-radius:10px;padding:8px 10px}
+.al.r{background:#FDECEC;color:#9E1F25}.al.a{background:#FFF4DC;color:#7A4C00}.al.g{background:#E6F7EE;color:#0F6B40}
+.tbl{background:#fff;border:1px solid var(--lline);border-radius:14px;overflow:hidden;font-size:13px}
+.tr{display:grid;gap:10px;padding:11px 14px;align-items:center;border-top:1px solid #EEF1FA}
+.tr.th{border-top:0;font-size:12px;color:var(--lmut);background:#F8F9FE}
+.tr.sel{background:#FFFBE0;box-shadow:inset 3px 0 0 var(--yel)}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+.pill.r{background:#FDECEC;color:#9E1F25}.pill.a{background:#FFF4DC;color:#7A4C00}.pill.g{background:#E6F7EE;color:#0F6B40}.pill.n{background:#E8ECF8;color:var(--ink)}
+.lbtn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;border-radius:10px;font:italic 700 14px var(--display);border:0;cursor:pointer}
+.lbtn.y{background:var(--yel);color:var(--n900)}.lbtn.n{background:var(--n900);color:#fff}.lbtn.o{background:#fff;border:1.5px solid var(--n900);color:var(--n900)}.lbtn.r{background:#fff;border:1.5px solid var(--bad);color:var(--bad)}
+.rcpt{border-radius:12px;background:repeating-linear-gradient(0deg,#fff 0 18px,#F1F3FA 18px 19px);border:1px solid var(--lline);padding:16px;font:12px/1.6 ui-monospace,monospace;color:#333;filter:blur(.4px)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:13.5px}.kv span:nth-child(odd){color:var(--lmut)}
+.inp{min-height:40px;border:1.5px solid var(--lline);border-radius:10px;padding:0 12px;background:#fff}
+.meter{display:flex;align-items:center;gap:8px;font-size:12px;font-variant-numeric:tabular-nums}
+.meter span{flex:1;height:8px;border-radius:4px;background:#E8ECF8;position:relative;overflow:hidden}
+.meter span i{position:absolute;inset:0 auto 0 0;border-radius:4px}
+.meter span u{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink)}
+.aibox{background:#fff;border:1.5px solid var(--cyan);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.aibox h4{color:#0A7FA6;font:italic 700 15px var(--display)}
+.air{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px}
+.map{height:130px;border-radius:12px;background:#E3E8F6;position:relative;overflow:hidden}
+.map::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 48%,#fff 48% 52%,transparent 52%),linear-gradient(0deg,transparent 40%,#fff 40% 45%,transparent 45%)}
+.map i{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--bad);border:2px solid #fff}
+.map b{position:absolute;left:46%;top:36%;width:60px;height:60px;border-radius:50%;border:2px dashed var(--n800)}
+.fld{display:grid;grid-template-columns:1fr 84px;gap:8px 12px;align-items:center;font-size:13.5px}
+.fld input{min-height:36px;border:1.5px solid var(--lline);border-radius:8px;padding:0 10px;font:600 14px var(--body);background:#fff;color:var(--ink);width:100%}
+.note{font-size:12px;color:var(--lmut)}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--mut);font-size:13px}
+@media (prefers-reduced-motion:no-preference){.by{transition:transform .15s}.by:hover{transform:translateY(-1px)}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="bolt" viewBox="0 0 24 32"><path d="M15 0L2 18h8l-3 14L22 12h-8l4-12z"/></symbol>
+</svg>
+
+<div class="wrap">
+<header class="hero">
+  <div style="position:relative;display:flex;flex-direction:column;gap:10px">
+    <span class="tag">Consumer Campaign 2027 · Mockups</span>
+    <div class="logo" aria-label="VOLT Club">VOLT<svg viewBox="0 0 24 32" aria-hidden="true"><use href="#bolt"/></svg>CLUB</div>
+    <p>หน้าจอจริงตาม wireframe ทั้ง 16 หน้า: ลูกค้าบน LINE OA, ร้านโชห่วย, เว็บ Desktop และหลังบ้าน · ตัวเลขทุกจุดเป็นข้อมูลตัวอย่าง</p>
+  </div>
+  <nav class="toc" aria-label="ส่วนของหน้า">
+    <a href="#consumer">ลูกค้า · มือถือ</a><a href="#shop">ร้านโชห่วย</a><a href="#desktop">ลูกค้า · Desktop</a><a href="#backoffice">หลังบ้าน · Desktop</a><a href="#bomobile">หลังบ้าน · มือถือ</a>
+  </nav>
+</header>
+
+<!-- ============ CONSUMER MOBILE ============ -->
+<section class="grp" id="consumer">
+  <div class="gh"><h2>หน้าบ้าน · <em>ลูกค้า</em></h2><span>LINE OA + LIFF · 6 หน้าจอ</span></div>
+  <div class="row">
+
+  <figure>
+    <div class="ph"><div class="scr" style="background:#8CABD9">
+      <div class="lhead"><span class="av"><svg viewBox="0 0 24 32"><use href="#bolt"/></svg></span><div><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE Official Account</span></div></div>
+      <div class="chat">
+                <div class="flex">
+          <div class="art"><em>X2<br>POINTS</em><span class="can c"><b>VOLT</b></span><span class="can y lg"><b>VOLT</b></span><span class="can p"><b>VOLT</b></span></div>
+          <div style="padding:10px 12px;display:flex;flex-direction:column;gap:8px"><b style="font-size:14px">ซื้อ 310 ml วันนี้ รับแต้ม x2</b><span style="font-size:12px;color:var(--mut)">ทุกวัน 18:00–21:00 · ถึง 31 ม.ค.</span><a class="btn by" style="min-height:40px;font-size:14px" href="#c3">ส่งใบเสร็จ</a></div>
+        </div>
+        <div class="bub" style="border:1.5px solid var(--cyan)"><b style="color:#0A7FA6;font-size:11px">AI · PUSH</b><br>อีก 12 แต้มแลก “กระเป๋า Volt × 3MD” ได้แล้ว</div>
+        <div class="bub me">แต้มฉันเหลือเท่าไร</div>
+        <div class="bub" style="border:1.5px solid var(--cyan)"><b style="color:#0A7FA6;font-size:11px">AI · PULL</b><br>คุณมี 148 แต้ม (LF2) · ดูรางวัลที่แลกได้ ›</div>
+      </div>
+      <div class="rich">
+        <a class="hl" href="#c2"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v7h-6"/></svg>บัตรสมาชิก / QR</a>
+        <a href="#c3"><svg viewBox="0 0 24 24"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2zM9 7h6M9 11h6M9 15h4"/></svg>ส่งใบเสร็จ / รหัส</a>
+        <a href="#c4"><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7c-2-4-6-4-6-1s6 1 6 1zm0 0c2-4 6-4 6-1s-6 1-6 1z"/></svg>แลกรางวัล</a>
+        <a href="#c6"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>Tier / ภารกิจ</a>
+        <a href="#c6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>ประวัติแต้ม</a>
+        <a href="#s2"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>ร้านใกล้ฉัน</a>
+      </div>
+      <div class="rmbar">เมนู ▾</div>
+    </div></div>
+    <figcaption><b><i>C1</i>LINE OA + Rich Menu</b><span>ประตูเข้าทุกฟีเจอร์ · AI Noti แบบ Push / Pull</span></figcaption>
+  </figure>
+
+  <figure id="c2">
+    <div class="ph"><div class="scr dk">
+      <div class="bar"><b>บัตรสมาชิก</b><button class="x" aria-label="ปิด">✕</button></div>
+      <div class="bd">
+        <div class="mcard">
+          <svg class="bg" viewBox="0 0 24 32" aria-hidden="true"><use href="#bolt"/></svg>
+          <div class="sp" style="position:relative"><span>คุณมายด์</span><span class="lvl">LF2</span></div>
+          <div style="position:relative;margin:6px 0 10px"><span class="num" style="font-size:48px;line-height:1">148</span> <span class="mut">แต้ม</span></div>
+          <div class="prog"><i style="width:74%"></i></div>
+          <div class="mut" style="font-size:12px;margin-top:6px;position:relative">อีก 52 แต้มขึ้น LF3 · ซื้อต่อเนื่อง 3 สัปดาห์แล้ว</div>
+        </div>
+        <div class="qr" role="img" aria-label="QR สมาชิกสำหรับให้ร้านสแกน"><svg viewBox="0 0 21 21" shape-rendering="crispEdges"><path fill="#0B1247" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"/><path fill="#fff" d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"/><path fill="#0B1247" d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h1v2H8zM10 1h2v1h-2zM9 3h2v2H9zM12 4h1v3h-1zM8 6h2v1H8zM0 8h2v1H0zM3 8h3v1H3zM7 8h1v3H7zM9 8h3v1H9zM13 8h2v2h-2zM16 8h2v1h-2zM19 8h2v2h-2zM1 10h2v2H1zM4 10h2v1H4zM9 10h1v3H9zM11 10h2v2h-2zM15 10h3v1h-3zM17 12h3v1h-3zM0 12h1v1H0zM5 12h3v1H5zM14 12h2v3h-2zM10 14h3v1h-3zM8 15h1v3H8zM17 14h2v2h-2zM10 16h2v2h-2zM13 16h3v1h-3zM19 17h2v1h-2zM15 18h3v1h-3zM9 19h3v2H9zM13 19h1v2h-1zM18 19h1v2h-1z"/></svg></div>
+        <div style="text-align:center;font-size:13px">ให้ร้านสแกนเพื่อสะสมแต้ม · QR ใหม่ใน <b class="num" style="color:var(--yel)">0:42</b></div>
+        <div class="ai"><b>หลังร้านสแกน</b><br>จะมีหน้าต่างให้คุณกดยืนยันจำนวนกระป๋องก่อนแต้มเข้า</div>
+        <div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px">
+          <a class="btn bo" style="font-size:14px" href="#c3">ใบเสร็จ</a><a class="btn bo" style="font-size:14px" href="#c3">กรอกรหัส</a><a class="btn by" style="font-size:14px" href="#c4">แลกรางวัล</a>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b><i>C2</i>บัตรสมาชิก + Dynamic QR</b><span>QR เปลี่ยนทุก 60 วินาที ให้ร้านโชห่วยสแกน</span></figcaption>
+  </figure>
+
+  <figure id="c3">
+    <div class="ph"><div class="scr dk">
+      <div class="bar"><b>สะสมแต้ม</b><button class="x" aria-label="ปิด">✕</button></div>
+      <div class="bd">
+        <div class="seg"><span class="on">ใบเสร็จ</span><span>รหัสใต้ห่วง</span><span>ออนไลน์</span></div>
+        <div class="drop">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
+          <b>ถ่ายรูปใบเสร็จ</b>
+          <span class="mut" style="font-size:12px">เห็นชื่อร้าน วันที่ และรายการ Volt ชัด · ภายใน 7 วันหลังซื้อ</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">รสที่ซื้อ (ถ้าใบเสร็จไม่ระบุ)</span>
+          <div style="display:flex;gap:6px"><span class="chip y"><i class="dot y" style="border:1px solid var(--n900)"></i>Tropical</span><span class="chip"><i class="dot c"></i>Blueberry</span><span class="chip"><i class="dot p"></i>Forest Fruit</span></div></div>
+        <div class="h3" style="margin-top:4px">สถานะล่าสุด</div>
+        <div class="li"><div class="t"><b>7-Eleven สาขาสยาม</b><span class="mut">310 ml × 2 · 24 ม.ค.</span></div><b class="ok">+4 อนุมัติ</b></div>
+        <div class="li"><div class="t"><b>Lawson สาขาอโศก</b><span class="mut">310 ml × 1 · 25 ม.ค.</span></div><b class="warn">ทีมตรวจ ≤24 ชม.</b></div>
+        <div class="li"><div class="t"><b>ใบเสร็จซ้ำ</b><span class="mut">ส่งแล้วเมื่อ 24 ม.ค.</span></div><b class="bad">ไม่ผ่าน</b></div>
+        <button class="btn by" style="margin-top:auto">ส่งใบเสร็จ</button>
+      </div>
+    </div></div>
+    <figcaption><b><i>C3</i>ส่งใบเสร็จ / รหัส / ออเดอร์</b><span>AI ตรวจทันที · เคสไม่ชัดส่งทีมตรวจ</span></figcaption>
+  </figure>
+
+  <figure id="c4">
+    <div class="ph"><div class="scr dk">
+      <div class="bar"><b>แลกรางวัล</b><span class="chip y">148 แต้ม · LF2</span></div>
+      <div class="bd" style="gap:10px">
+        <div class="ai"><b>AI NOTI</b> · อีก 12 แต้มแลก “กระเป๋า Volt × 3MD” · ซื้อ 310 ml วันนี้ได้ x2</div>
+        <div class="sp"><span class="h3">📌 Pin · เฉพาะ LF2</span><span class="mut" style="font-size:12px">ปลดล็อกแล้ว</span></div>
+        <div class="pin">
+          <div class="rw"><div class="im"><span class="can y"><b>VOLT</b></span></div><b>เสื้อ Volt × 3MD</b><span class="num" style="color:var(--yel)">120 แต้ม</span></div>
+          <div class="rw"><div class="im" style="background:radial-gradient(70% 80% at 50% 30%,#8A4DFF,#0B1247)"><svg class="i" style="width:34px;height:34px;fill:var(--yel)"><use href="#bolt"/></svg></div><b>ลุ้น Backstage 3MD</b><span class="num" style="color:var(--yel)">40 แต้ม · 7-11</span></div>
+        </div>
+        <span class="h3">Top Redeem</span>
+        <div class="li"><span class="thumb" style="background:#0F7B3F;color:#fff;font:italic 800 12px var(--display)">7-11</span><div class="t"><b>คูปอง Volt ที่ 7-Eleven 10฿</b><span class="mut">30 แต้ม · เหลือ 1,240 สิทธิ์</span></div><button class="mini">แลก</button></div>
+        <div class="li"><span class="thumb" style="background:#EE4D2D;color:#fff;font:italic 800 12px var(--display)">S</span><div class="t"><b>Shopee Voucher 100฿</b><span class="mut">90 หรือ 60 + 29฿</span></div><button class="mini o">แลก+เติม</button></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip y">ทั้งหมด</span><span class="chip">E-voucher</span><span class="chip">Merch</span><span class="chip">Lucky Draw</span><span class="chip">ประมูล</span><span class="chip">Flash</span></div>
+        <div class="li"><span class="thumb" style="background:var(--pur)"><svg class="i" style="width:22px;height:22px;fill:var(--yel)"><use href="#bolt"/></svg></span><div class="t"><b>ลุ้นบัตรคอนเสิร์ต 3MD</b><span class="mut">20 แต้ม/สิทธิ์ · สูงสุด 5</span></div><button class="mini o">ลุ้น</button></div>
+      </div>
+    </div></div>
+    <figcaption><b><i>C4</i>หน้ารางวัล</b><span>Pin ตาม Tier · Top Redeem · ทั้งหมด</span></figcaption>
+  </figure>
+
+  <figure id="c5">
+    <div class="ph"><div class="scr dk">
+      <div class="bar"><button class="x" aria-label="กลับ">‹</button><b style="flex:1">Shopee Voucher 100฿</b></div>
+      <div class="bd">
+        <div style="height:150px;border-radius:20px;background:radial-gradient(80% 90% at 50% 30%,#EE4D2D,#7A1E10);display:grid;place-items:center"><span style="font:italic 900 40px var(--display);color:#fff">฿100</span></div>
+        <span class="mut" style="font-size:12.5px">ใช้ได้ถึง 31 ก.ค. 2027 · ส่งโค้ดทาง LINE ทันที · 2 สิทธิ์/คน/เดือน</span>
+        <span class="h3">เลือกวิธีแลก</span>
+        <label class="opt"><input type="radio" name="pay"><span style="flex:1"><b>แลกด้วยแต้ม</b><br><span class="mut" style="font-size:12.5px">90 แต้ม · เหลือ 58</span></span><span class="num" style="font-size:18px">90</span></label>
+        <label class="opt on"><input type="radio" name="pay" checked><span style="flex:1"><b>แลก + เติมเงิน</b><br><span class="mut" style="font-size:12.5px">60 แต้ม + 29฿ ผ่าน PromptPay · เหลือ 88</span></span><span class="num" style="font-size:18px;color:var(--yel)">60+29฿</span></label>
+        <div class="card" style="font-size:12.5px"><b>ยืนยันเบอร์ด้วย OTP</b><br><span class="mut">ครั้งแรกที่แลก · ที่อยู่จัดส่งจะขึ้นเฉพาะรางวัลที่เป็นสินค้า</span></div>
+        <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px"><div class="sp"><span>ชำระเพิ่ม</span><b class="num" style="font-size:20px">29฿</b></div><button class="btn by">ยืนยันแลก + ชำระ 29฿</button></div>
+      </div>
+    </div></div>
+    <figcaption><b><i>C5</i>แลก / แลก + เติมเงิน</b><span>ลูกค้าแลกได้เร็วขึ้น · ลดต้นทุนรางวัล</span></figcaption>
+  </figure>
+
+  <figure id="c6">
+    <div class="ph"><div class="scr dk">
+      <div class="bar"><b>Tier ของฉัน</b><button class="x" aria-label="ปิด">✕</button></div>
+      <div class="bd" style="gap:10px">
+        <div class="tiers"><span class="done">LF1</span><span class="on">LF2</span><span>LF3</span><span>LF4</span><span>LF5</span></div>
+        <span class="mut" style="font-size:12.5px">ขึ้น LF3: ซื้ออย่างน้อย 1 ครั้ง/สัปดาห์ ติดกัน 4 สัปดาห์ (ตอนนี้ 3/4)</span>
+        <span class="h3">ภารกิจสัปดาห์นี้</span>
+        <div class="li"><span class="chk on">✓</span><span class="t">ซื้อครบ 3 รส</span><b class="num" style="color:var(--yel)">+10</b></div>
+        <div class="li"><span class="chk"></span><span class="t">ควิซเพลง Three Man Down</span><b class="num" style="color:var(--yel)">+5</b></div>
+        <div class="li"><span class="chk"></span><span class="t">ชวนเพื่อนสมัคร (สูงสุด 3)</span><b class="num" style="color:var(--yel)">+5/คน</b></div>
+        <div class="sp"><span class="h3">ประวัติแต้ม</span><span class="mut" style="font-size:11.5px">7-11 64 · โชห่วย 52 · ออนไลน์ 12</span></div>
+        <div class="hist">
+          <div><span>ร้านเจ๊หน่อย (สแกน) · 190 ml × 3</span><b class="ok">+3</b></div>
+          <div><span>7-Eleven · 310 ml × 2 · x2</span><b class="ok">+8</b></div>
+          <div><span>แลก คูปอง Volt 10฿</span><b class="bad">−30</b></div>
+        </div>
+        <div class="card sp" style="margin-top:auto;padding:10px 12px"><span style="font-size:13px"><b>Community</b> · อันดับเดือนนี้ <b class="num" style="color:var(--yel)">#1,284</b></span><button class="mini">แชร์</button></div>
+      </div>
+    </div></div>
+    <figcaption><b><i>C6</i>Tier + ภารกิจ + ประวัติ</b><span>ขึ้น Tier จากความถี่การซื้อ ไม่ใช่ยอดก้อนเดียว</span></figcaption>
+  </figure>
+  </div>
+</section>
+
+<!-- ============ SHOP ============ -->
+<section class="grp" id="shop">
+  <div class="gh"><h2>หน้าบ้าน · <em>ร้านโชห่วย</em></h2><span>Merchant LIFF · หน้าจอสว่าง อ่านง่ายในร้าน</span></div>
+  <div class="row">
+  <figure id="s1">
+    <div class="ph"><div class="scr lt">
+      <div class="shead" style="padding-top:22px"><b style="font:italic 700 18px var(--display)">สแกนสะสมแต้ม</b><small>ร้านเจ๊หน่อย · บางแค</small></div>
+      <div class="bd" style="gap:10px">
+        <div class="cam"><i></i></div>
+        <div class="card sp" style="padding:10px 12px"><span><b>คุณมายด์</b> · LF2</span><b class="ok" style="font-size:13px">✓ สแกนแล้ว</b></div>
+        <div class="card" style="display:flex;flex-direction:column;gap:8px;padding:12px">
+          <div class="sp"><b>กระป๋อง 190 ml</b><span class="chip">1 แต้ม/กระป๋อง</span></div>
+          <div class="sp"><span><i class="dot y"></i> Tropical</span><span class="step"><button aria-label="ลด">−</button><b>2</b><button aria-label="เพิ่ม">+</button></span></div>
+          <div class="sp"><span><i class="dot c"></i> Blueberry</span><span class="step"><button aria-label="ลด">−</button><b>1</b><button aria-label="เพิ่ม">+</button></span></div>
+          <div class="sp"><span><i class="dot p"></i> Forest Fruit</span><span class="step"><button aria-label="ลด">−</button><b>0</b><button aria-label="เพิ่ม">+</button></span></div>
+        </div>
+        <div class="card sp" style="padding:10px 12px"><b>310 ml · PET ใหม่</b><span class="mut">เพิ่ม ›</span></div>
+        <div class="sp" style="font-size:15px;padding:0 2px"><b>รวม 3 กระป๋อง</b><b class="num" style="font-size:20px">+3 แต้ม</b></div>
+        <button class="btn bn">ส่งให้ลูกค้ายืนยัน</button>
+        <span class="mut" style="text-align:center;font-size:12px">โควตาวันนี้ 38/120 · ลูกค้านี้ร่วมได้อีก 2 ครั้ง</span>
+      </div>
+    </div></div>
+    <figcaption><b><i>S1</i>สแกน → เลือก SKU/รส → ยืนยัน</b><span>ได้ข้อมูลรสทุกการซื้อ · ลูกค้ากดยืนยันเอง</span></figcaption>
+  </figure>
+
+  <figure id="s2">
+    <div class="ph"><div class="scr lt">
+      <div class="shead" style="padding-top:22px"><div class="sp"><b style="font:italic 800 22px var(--display)">VOLT <span style="color:var(--yel)">PARTNER</span></b><span class="chip y">ยืนยันแล้ว</span></div><small>ร้านเจ๊หน่อย · บางแค · เซลส์: คุณต้น</small></div>
+      <div class="bd">
+        <a class="btn by" href="#s1" style="min-height:64px;font-size:20px"><svg class="i" style="width:18px;height:24px"><use href="#bolt"/></svg>สแกน QR ลูกค้า</a>
+        <div class="kpi2">
+          <div class="card"><span class="mut" style="font-size:12px">โควตาวันนี้</span><b>38<span class="mut" style="font-size:16px">/120</span></b><div class="prog" style="background:#E3E7F6;margin-top:6px"><i style="width:32%;background:var(--n800);box-shadow:none"></i></div></div>
+          <div class="card"><span class="mut" style="font-size:12px">แต้มร้าน</span><b>412</b><span class="mut" style="font-size:12px">แลกส่วนลดสั่งของ</span></div>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <b class="h3">แลกแต้มร้าน</b>
+          <div class="sp"><span>ส่วนลดสั่ง Volt 1 แพ็ก 50฿</span><b class="num">300</b></div>
+          <div class="sp"><span>ป้าย “ร้านสะสมแต้ม Volt”</span><b class="num">ฟรี</b></div>
+        </div>
+        <span class="h3">สแกนล่าสุด</span>
+        <div class="li"><div class="t"><b>14:32 · คุณม**</b><span class="mut">190 ml × 3</span></div><b class="ok">ยืนยันแล้ว</b></div>
+        <div class="li"><div class="t"><b>13:05 · คุณก**</b><span class="mut">190 ml × 2</span></div><b class="ok">ยืนยันแล้ว</b></div>
+        <div class="li"><div class="t"><b>12:40 · คุณจ**</b><span class="mut">190 ml × 6</span></div><b class="bad">ลูกค้าปฏิเสธ</b></div>
+      </div>
+    </div></div>
+    <figcaption><b><i>S2</i>หน้าร้าน: โควตา + แต้มร้าน</b><span>โควตาตามยอดของที่ร้านรับเข้า</span></figcaption>
+  </figure>
+  </div>
+</section>
+
+<!-- ============ CONSUMER DESKTOP ============ -->
+<section class="grp" id="desktop">
+  <div class="gh"><h2>หน้าบ้าน · <em>Desktop</em></h2><span>เว็บ CRM ฝั่งลูกค้า เปิดจาก LINE Login บนคอม</span></div>
+  <figure class="dtfig">
+    <div class="dtw"><div class="dt dk" style="background:var(--n950)">
+      <div class="chrome"><i></i><i></i><i></i><span>club.volt.co.th</span></div>
+      <div class="cd">
+        <div class="cnav"><span class="logo">VOLT</span><nav><a class="on" href="#desktop">หน้าแรก</a><a href="#desktop">สะสมแต้ม</a><a href="#desktop">แลกรางวัล</a><a href="#desktop">Tier &amp; ภารกิจ</a><a href="#desktop">ร้านสะสมแต้ม</a></nav><span class="chip y" style="font-size:13px;padding:6px 14px">คุณมายด์ · LF2 · 148 แต้ม</span></div>
+        <div class="cbody">
+          <div class="banner">
+            <div><span class="tag" style="font:italic 700 13px var(--display);letter-spacing:.1em;color:var(--cyan)">THREE MAN DOWN × VOLT</span><h3>The root of<br><em>your energy</em></h3><p class="mut" style="margin-top:8px">สะสมแต้มจากทุกกระป๋อง ลุ้นบัตรคอนเสิร์ตและ Backstage</p></div>
+            <div class="cans"><span class="can c lg" style="height:110px;width:56px"><b>VOLT</b></span><span class="can y lg" style="height:150px;width:74px"><b style="font-size:32px">VOLT</b></span><span class="can p lg" style="height:110px;width:56px"><b>VOLT</b></span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;min-height:0">
+            <div class="mcard" style="display:flex;gap:18px;align-items:center">
+              <svg class="bg" viewBox="0 0 24 32" aria-hidden="true"><use href="#bolt"/></svg>
+              <div class="qr" style="width:132px;height:132px;padding:10px;position:relative"><svg viewBox="0 0 21 21" shape-rendering="crispEdges"><path fill="#0B1247" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM9 2h3v3H9zM8 8h5v2H8zM14 9h4v3h-4zM9 13h3v5H9zM15 15h4v4h-4z"/><path fill="#fff" d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"/><path fill="#0B1247" d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2z"/></svg></div>
+              <div style="position:relative;display:flex;flex-direction:column;gap:6px;flex:1"><span class="lvl" style="align-self:flex-start">LF2</span><span><span class="num" style="font-size:44px;line-height:1">148</span> <span class="mut">แต้ม</span></span><div class="prog"><i style="width:74%"></i></div><span class="mut" style="font-size:12.5px">อีก 52 แต้มขึ้น LF3 · ใช้ QR บนมือถือที่ร้าน</span></div>
+            </div>
+            <div class="card" style="display:flex;flex-direction:column;gap:10px">
+              <span class="h3">ส่งใบเสร็จ / รหัส</span>
+              <div class="drop" style="min-height:120px"><b style="font-size:13px">ลากไฟล์ใบเสร็จมาวาง หรือคลิกเพื่อเลือก</b></div>
+              <div style="display:flex;gap:8px"><input aria-label="รหัสใต้ห่วงหรือเลขออเดอร์" placeholder="รหัสใต้ห่วง / เลขออเดอร์" style="flex:1;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--glass);padding:0 12px"><button class="btn by" style="padding:0 18px;min-height:44px;font-size:14px">ส่ง</button></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;min-height:0">
+            <div class="sp"><span class="h3">รางวัลสำหรับคุณ</span><span class="mut" style="font-size:13px">Pin LF2 · Top Redeem · ทั้งหมด</span></div>
+            <div class="rgrid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+              <div class="rw" style="border:1.5px solid var(--yel)"><div class="im" style="height:64px"><span class="can y"><b>VOLT</b></span></div><b>เสื้อ Volt × 3MD</b><span class="num" style="color:var(--yel)">PIN · 120</span></div>
+              <div class="rw"><div class="im" style="height:64px;background:#0F7B3F"><b style="font:italic 900 22px var(--display);color:#fff;align-self:center">7-11</b></div><b>คูปอง Volt 10฿</b><span class="num" style="color:var(--yel)">TOP · 30</span></div>
+              <div class="rw"><div class="im" style="height:64px;background:#EE4D2D"><b style="font:italic 900 22px var(--display);color:#fff;align-self:center">฿100</b></div><b>Shopee 100฿</b><span class="num" style="color:var(--yel)">90 / 60+29฿</span></div>
+              <div class="rw"><div class="im" style="height:64px;background:var(--pur)"><svg class="i" style="width:28px;height:28px;fill:var(--yel);align-self:center"><use href="#bolt"/></svg></div><b>ลุ้นคอนเสิร์ต 3MD</b><span class="num" style="color:var(--yel)">20/สิทธิ์</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b><i>CD</i>ลูกค้า Desktop (Web CRM)</b><span>ฟีเจอร์เดียวกับมือถือในหน้าเดียว</span></figcaption>
+  </figure>
+</section>
+
+<!-- ============ BACK OFFICE DESKTOP ============ -->
+<section class="grp" id="backoffice">
+  <div class="gh"><h2>หลังบ้าน · <em>Back Office</em></h2><span>Desktop · UI สว่างสำหรับทำงานทั้งวัน แถบเมนู Volt navy</span></div>
+  <div class="row drow">
+
+  <figure class="dtfig" id="b1">
+    <div class="dtw"><div class="dt">
+      <div class="chrome"><i></i><i></i><i></i><span>admin.volt-club.co.th/dashboard</span></div>
+      <div class="bo">
+        <nav class="side" aria-label="เมนูหลังบ้าน"><span class="logo">VOLT</span><small>Back Office</small><a class="on" href="#b1">Dashboard</a><a href="#b2">ตรวจใบเสร็จ <em>86</em></a><a href="#b3">รางวัล + AI Pacing</a><a href="#b4">ร้านค้า <em>17</em></a><a href="#b5">กติกาแต้ม</a><a href="#b1">สมาชิก</a><a href="#b1">Audit Log</a></nav>
+        <div class="main">
+          <div class="mh"><h3>ภาพรวมแคมเปญ · Real-time</h3><div class="filt"><span class="on">7 วัน</span><span>ทุกช่องทาง ▾</span><span>ทุก SKU ▾</span><span>Export</span></div></div>
+          <div class="kpis">
+            <div class="kpi"><small>สมาชิกทั้งหมด</small><b>48,210</b><em>+1,208 วันนี้</em></div>
+            <div class="kpi"><small>กระป๋องที่บันทึก</small><b>312K</b><em>+12.4K วันนี้</em></div>
+            <div class="kpi"><small>Repeat rate</small><b>38%</b><em>+4 จุด/สัปดาห์</em></div>
+            <div class="kpi"><small>แต้มออก / ใช้</small><b>1.2M/0.4M</b><em style="color:var(--lmut)">burn 33%</em></div>
+            <div class="kpi"><small>ใช้งบรางวัล</small><b>31%</b><em style="color:var(--lmut)">แผน 29%</em></div>
+          </div>
+          <div class="g3">
+            <div class="pn"><h4>กระป๋องรายวัน แยก SKU</h4>
+              <div class="vb">
+                <div><i style="height:40%;background:var(--n800)"></i><i style="height:22%;background:var(--yel)"></i></div><div><i style="height:44%;background:var(--n800)"></i><i style="height:24%;background:var(--yel)"></i></div><div><i style="height:42%;background:var(--n800)"></i><i style="height:28%;background:var(--yel)"></i></div><div><i style="height:48%;background:var(--n800)"></i><i style="height:30%;background:var(--yel)"></i></div><div><i style="height:50%;background:var(--n800)"></i><i style="height:34%;background:var(--yel)"></i></div><div><i style="height:56%;background:var(--n800)"></i><i style="height:36%;background:var(--yel)"></i></div><div><i style="height:52%;background:var(--n800)"></i><i style="height:40%;background:var(--yel)"></i></div>
+              </div>
+              <div class="xl"><span>จ</span><span>อ</span><span>พ</span><span>พฤ</span><span>ศ</span><span>ส</span><span>อา</span></div>
+              <div class="leg"><span><i class="dot" style="background:var(--n800)"></i>190 ml</span><span><i class="dot" style="background:var(--yel);border:1px solid #C9A800"></i>310 ml</span></div>
+            </div>
+            <div class="pn"><h4>First-time vs Repeat</h4>
+              <svg viewBox="0 0 300 150" style="flex:1;width:100%" role="img" aria-label="เส้นผู้ซื้อครั้งแรกลดลง ผู้ซื้อซ้ำเพิ่มขึ้นใน 6 สัปดาห์"><g stroke="#E8ECF8"><path d="M0 30H300M0 70H300M0 110H300"/></g><path d="M0 40 60 52 120 66 180 78 240 86 300 92" fill="none" stroke="#13207A" stroke-width="3"/><path d="M0 128 60 116 120 100 180 84 240 70 300 56" fill="none" stroke="#19C3F0" stroke-width="3"/><circle cx="300" cy="56" r="5" fill="#19C3F0"/><circle cx="300" cy="92" r="5" fill="#13207A"/></svg>
+              <div class="leg"><span><i class="dot" style="background:var(--n800)"></i>ครั้งแรก</span><span><i class="dot c"></i>ซื้อซ้ำ</span><span>สัปดาห์ 1–6</span></div>
+            </div>
+            <div class="pn"><h4>ช่องทาง</h4>
+              <div class="hb"><span>7-Eleven</span><i style="width:100%"></i><b>46%</b></div>
+              <div class="hb"><span>โชห่วย</span><i style="width:70%"></i><b>32%</b></div>
+              <div class="hb"><span>Lawson</span><i style="width:20%"></i><b>9%</b></div>
+              <div class="hb"><span>Makro</span><i style="width:15%"></i><b>7%</b></div>
+              <div class="hb"><span>ออนไลน์</span><i style="width:13%"></i><b>6%</b></div>
+            </div>
+            <div class="pn"><h4>RFM Segment</h4>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;flex:1">
+                <div style="background:var(--n800);color:#fff;border-radius:10px;padding:8px"><b class="num" style="font-size:20px">6.1K</b><br><span style="font-size:12px">Champions</span></div>
+                <div style="background:#3E52C4;color:#fff;border-radius:10px;padding:8px"><b class="num" style="font-size:20px">11.4K</b><br><span style="font-size:12px">Loyal</span></div>
+                <div style="background:#FFF4DC;color:#7A4C00;border-radius:10px;padding:8px"><b class="num" style="font-size:20px">8.9K</b><br><span style="font-size:12px">At risk</span></div>
+                <div style="background:#E8ECF8;border-radius:10px;padding:8px"><b class="num" style="font-size:20px">21.8K</b><br><span style="font-size:12px">New</span></div>
+              </div>
+              <span class="note">คลิก segment → ส่ง AI Noti / Broadcast</span>
+            </div>
+            <div class="pn"><h4>รส × ช่วงเวลา</h4>
+              <div style="display:grid;grid-template-columns:70px repeat(6,minmax(0,1fr));gap:3px;font-size:11px;align-items:center;flex:1">
+                <span></span><span class="note">6</span><span class="note">9</span><span class="note">12</span><span class="note">15</span><span class="note">18</span><span class="note">21</span>
+                <span>Tropical</span><i style="height:20px;border-radius:3px;background:#FFF6B3"></i><i style="height:20px;border-radius:3px;background:#FFEB66"></i><i style="height:20px;border-radius:3px;background:#FFE11A"></i><i style="height:20px;border-radius:3px;background:#FFEB66"></i><i style="height:20px;border-radius:3px;background:#E6C800"></i><i style="height:20px;border-radius:3px;background:#FFEB66"></i>
+                <span>Blueberry</span><i style="height:20px;border-radius:3px;background:#D4F2FC"></i><i style="height:20px;border-radius:3px;background:#A3E5F8"></i><i style="height:20px;border-radius:3px;background:#A3E5F8"></i><i style="height:20px;border-radius:3px;background:#5FD3F3"></i><i style="height:20px;border-radius:3px;background:#19C3F0"></i><i style="height:20px;border-radius:3px;background:#5FD3F3"></i>
+                <span>Forest</span><i style="height:20px;border-radius:3px;background:#EDE4FF"></i><i style="height:20px;border-radius:3px;background:#EDE4FF"></i><i style="height:20px;border-radius:3px;background:#D2BEFF"></i><i style="height:20px;border-radius:3px;background:#D2BEFF"></i><i style="height:20px;border-radius:3px;background:#AF8BFF"></i><i style="height:20px;border-radius:3px;background:#8A4DFF"></i>
+              </div>
+            </div>
+            <div class="pn"><h4>ต้องดูวันนี้</h4>
+              <div class="al r">ร้าน T-0412 สแกนเกินโควตา 3 วันติด</div>
+              <div class="al a">คูปอง 7-Eleven ใช้เร็วกว่าแผน 18%</div>
+              <div class="al g">x2 ช่วงเย็น ดัน 310 ml +22%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b><i>B1</i>Dashboard</b><span>Real-time · First-time vs Repeat · ช่องทาง · RFM · รส × เวลา</span></figcaption>
+  </figure>
+
+  <figure class="dtfig" id="b2">
+    <div class="dtw"><div class="dt">
+      <div class="chrome"><i></i><i></i><i></i><span>admin.volt-club.co.th/review</span></div>
+      <div class="bo">
+        <nav class="side" aria-label="เมนูหลังบ้าน"><span class="logo">VOLT</span><small>Back Office</small><a href="#b1">Dashboard</a><a class="on" href="#b2">ตรวจใบเสร็จ <em>86</em></a><a href="#b3">รางวัล + AI Pacing</a><a href="#b4">ร้านค้า <em>17</em></a><a href="#b5">กติกาแต้ม</a><a href="#b2">สมาชิก</a><a href="#b2">Audit Log</a></nav>
+        <div class="main">
+          <div class="mh"><h3>คิวตรวจ · AI Score &lt; 0.80</h3><span class="note" style="font-size:13px">วันนี้ AI อนุมัติเอง <b>2,914</b> · รอคน <b>86</b> · SLA 24 ชม.</span></div>
+          <div style="display:grid;grid-template-columns:400px 1fr;gap:14px;flex:1;min-height:0">
+            <div class="tbl">
+              <div class="tr th" style="grid-template-columns:1fr 60px 110px"><span>รายการ</span><span>Score</span><span>เหตุผล</span></div>
+              <div class="tr sel" style="grid-template-columns:1fr 60px 110px"><span><b>Lawson อโศก</b><br>310 ml × 1</span><span class="pill a">0.62</span><span>ภาพเบลอ</span></div>
+              <div class="tr" style="grid-template-columns:1fr 60px 110px"><span><b>7-Eleven บางนา</b><br>310 ml × 12</span><span class="pill r">0.41</span><span>จำนวนผิดปกติ</span></div>
+              <div class="tr" style="grid-template-columns:1fr 60px 110px"><span><b>Makro รังสิต</b><br>190 ml × 24</span><span class="pill r">0.55</span><span>ฟอนต์วันที่ต่าง</span></div>
+              <div class="tr" style="grid-template-columns:1fr 60px 110px"><span><b>Shopee #2401…</b><br>แพ็ก 12</span><span class="pill a">0.70</span><span>ไม่ใช่ร้าน Official</span></div>
+              <div class="tr" style="grid-template-columns:1fr 60px 110px"><span><b>CJ ลาดพร้าว</b><br>310 ml × 2</span><span class="pill a">0.74</span><span>ใบเสร็จยับ</span></div>
+            </div>
+            <div class="pn" style="display:grid;grid-template-columns:300px 1fr;gap:18px">
+              <div class="rcpt">LAWSON 108 · สาขาอโศก<br>TAX# 0105xxxxxxxxx<br>25/01/2027 18:42<br>เลขที่ L-0098-55120<br>--------------------------<br>VOLT 310ML TROPICAL &nbsp;17.00<br>???? ??? ????? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;25.00<br>--------------------------<br>รวม &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;42.00</div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <h4>OCR อ่านได้</h4>
+                <div class="kv"><span>ร้าน / สาขา</span><span>Lawson อโศก</span><span>วันที่</span><span>25 ม.ค. 2027 18:42</span><span>เลขใบเสร็จ</span><span>L-0098-55120</span><span>รายการ</span><span>Volt 310 ml Tropical × 1</span></div>
+                <h4>AI ตรวจ</h4>
+                <div style="display:flex;flex-direction:column;gap:4px;font-size:13.5px"><span class="ok">✓ ไม่ซ้ำ (hash + เลขใบเสร็จ)</span><span class="ok">✓ ไม่พบการตัดต่อ</span><span class="bad">✕ ภาพเบลอ อ่านรายการได้ 1/2</span><span class="ok">✓ ผู้ใช้ไม่มีประวัติเสี่ยง</span></div>
+                <label style="font-size:13px;font-weight:600" for="b2q">จำนวนที่อนุมัติ</label><input id="b2q" class="inp" value="1" style="width:120px">
+                <div style="display:flex;gap:8px;margin-top:auto"><button class="lbtn y">อนุมัติ +2 แต้ม</button><button class="lbtn o">ขอรูปใหม่</button><button class="lbtn r">ปฏิเสธ</button></div>
+                <span class="note">บันทึก Audit Log · แจ้งผลลูกค้าทาง LINE อัตโนมัติ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b><i>B2</i>Review Console (AI + คน)</b><span>เคสที่ AI ไม่มั่นใจ ส่งให้ทีมตัดสินใน 1 คลิก</span></figcaption>
+  </figure>
+
+  <figure class="dtfig" id="b3">
+    <div class="dtw"><div class="dt">
+      <div class="chrome"><i></i><i></i><i></i><span>admin.volt-club.co.th/rewards</span></div>
+      <div class="bo">
+        <nav class="side" aria-label="เมนูหลังบ้าน"><span class="logo">VOLT</span><small>Back Office</small><a href="#b1">Dashboard</a><a href="#b2">ตรวจใบเสร็จ <em>86</em></a><a class="on" href="#b3">รางวัล + AI Pacing</a><a href="#b4">ร้านค้า <em>17</em></a><a href="#b5">กติกาแต้ม</a><a href="#b3">สมาชิก</a><a href="#b3">Audit Log</a></nav>
+        <div class="main">
+          <div class="mh"><h3>รางวัล + AI Pacing</h3><button class="lbtn y">+ เพิ่มรางวัล</button></div>
+          <div class="aibox"><h4>⚡ AI แนะนำสัปดาห์นี้</h4>
+            <div class="air"><span>คูปอง 7-Eleven 10฿ ใช้เร็วกว่าแผน 18% → ลดปล่อยจาก 5,000 เป็น 4,100 สิทธิ์</span><span style="display:flex;gap:6px"><button class="lbtn n">ใช้คำแนะนำ</button><button class="lbtn o">ข้าม</button></span></div>
+            <div class="air"><span>เสื้อ Volt × 3MD ช้ากว่าแผน 30% → เปิดแลก + เติมเงิน 80 แต้ม + 49฿</span><span style="display:flex;gap:6px"><button class="lbtn n">ใช้คำแนะนำ</button><button class="lbtn o">ข้าม</button></span></div>
+          </div>
+          <div class="tbl">
+            <div class="tr th" style="grid-template-columns:2fr 1fr .8fr 1fr .8fr 2.2fr 1fr"><span>รางวัล</span><span>ประเภท</span><span>แต้ม</span><span>แลก+เติม</span><span>Tier</span><span>ใช้จริง vs แผน (เส้นดำ)</span><span>สถานะ</span></div>
+            <div class="tr" style="grid-template-columns:2fr 1fr .8fr 1fr .8fr 2.2fr 1fr"><b>คูปอง Volt 7-Eleven 10฿</b><span>E-voucher</span><span>30</span><span>–</span><span>ทุก Tier</span><span class="meter"><span><i style="width:72%;background:var(--warn)"></i><u style="left:54%"></u></span>72%</span><span class="pill a">เร็วกว่าแผน</span></div>
+            <div class="tr" style="grid-template-columns:2fr 1fr .8fr 1fr .8fr 2.2fr 1fr"><b>Shopee Voucher 100฿</b><span>E-voucher</span><span>90</span><span>60 + 29฿</span><span>ทุก Tier</span><span class="meter"><span><i style="width:48%;background:var(--n800)"></i><u style="left:50%"></u></span>48%</span><span class="pill g">ตามแผน</span></div>
+            <div class="tr" style="grid-template-columns:2fr 1fr .8fr 1fr .8fr 2.2fr 1fr"><b>เสื้อ Volt × 3MD</b><span>Merch</span><span>120</span><span>80 + 49฿</span><span>LF2+</span><span class="meter"><span><i style="width:20%;background:var(--n800)"></i><u style="left:50%"></u></span>20%</span><span class="pill a">ช้ากว่าแผน</span></div>
+            <div class="tr" style="grid-template-columns:2fr 1fr .8fr 1fr .8fr 2.2fr 1fr"><b>ลุ้นบัตรคอนเสิร์ต 3MD</b><span>Lucky Draw</span><span>20</span><span>–</span><span>ทุก Tier</span><span>18,420 สิทธิ์ · จับ 30 มี.ค.</span><span class="pill n">เปิดรับ</span></div>
+            <div class="tr" style="grid-template-columns:2fr 1fr .8fr 1fr .8fr 2.2fr 1fr"><b>Backstage 3MD (7-Eleven)</b><span>Lucky Draw</span><span>40</span><span>–</span><span>LF2+</span><span>เงื่อนไข: แต้ม 7-Eleven ≥ 30</span><span class="pill n">เปิดรับ</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:12px;flex:1;min-height:0">
+            <div class="pn"><h4>งบรางวัล 4 เดือน (ล้านบาท)</h4>
+              <svg viewBox="0 0 400 120" style="flex:1;width:100%" role="img" aria-label="งบรางวัลใช้จริงใกล้เคียงแผนในสัปดาห์ที่ 1 ถึง 5"><g stroke="#E8ECF8"><path d="M30 10H400M30 60H400M30 110H400"/></g><g font-size="10" fill="#525C8A"><text x="0" y="14">3.0</text><text x="0" y="64">1.5</text><text x="8" y="114">0</text></g><path d="M30 110 400 10" stroke="#9AA3C9" stroke-dasharray="5 5" fill="none" stroke-width="2"/><path d="M30 110 76 98 122 85 168 70 214 58" stroke="#13207A" stroke-width="3" fill="none"/><circle cx="214" cy="58" r="5" fill="#FFE11A" stroke="#13207A" stroke-width="2"/></svg>
+              <div class="leg"><span><i class="dot" style="background:var(--n800)"></i>ใช้จริง</span><span><i class="dot" style="background:#9AA3C9"></i>แผน</span><span>สัปดาห์ 1–16</span></div>
+            </div>
+            <div class="pn"><h4>จัดส่งถึงบ้าน</h4><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center"><div><b class="num" style="font-size:24px">124</b><br><span class="note">รอแพ็ก</span></div><div><b class="num" style="font-size:24px">860</b><br><span class="note">ส่งแล้ว</span></div><div><b class="num bad" style="font-size:24px">6</b><br><span class="note">ตีกลับ</span></div></div><span class="note">ส่งเลข Tracking ทาง LINE อัตโนมัติ</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b><i>B3</i>รางวัล + AI Pacing</b><span>คุมสต็อกให้มีพอตลอด 4 เดือน ไม่เฟ้อ ไม่หมด</span></figcaption>
+  </figure>
+
+  <figure class="dtfig" id="b4">
+    <div class="dtw"><div class="dt">
+      <div class="chrome"><i></i><i></i><i></i><span>admin.volt-club.co.th/shops</span></div>
+      <div class="bo">
+        <nav class="side" aria-label="เมนูหลังบ้าน"><span class="logo">VOLT</span><small>Back Office</small><a href="#b1">Dashboard</a><a href="#b2">ตรวจใบเสร็จ <em>86</em></a><a href="#b3">รางวัล + AI Pacing</a><a class="on" href="#b4">ร้านค้า <em>17</em></a><a href="#b5">กติกาแต้ม</a><a href="#b4">สมาชิก</a><a href="#b4">Audit Log</a></nav>
+        <div class="main">
+          <div class="mh"><h3>ร้านโชห่วย · Volt Partner Shop</h3><div style="display:flex;gap:8px"><button class="lbtn o">นำเข้าร้าน (CSV)</button><button class="lbtn y">รออนุมัติ 42</button></div></div>
+          <div class="kpis" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+            <div class="kpi"><small>ร้านที่ใช้งาน</small><b>3,180</b></div>
+            <div class="kpi"><small>สแกนวันนี้</small><b>9,412</b></div>
+            <div class="kpi"><small>ลูกค้าปฏิเสธ</small><b>1.4%</b></div>
+            <div class="kpi" style="border-color:var(--bad)"><small>ร้านเสี่ยง (AI)</small><b class="bad">17</b></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;flex:1;min-height:0">
+            <div class="tbl">
+              <div class="tr th" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span>ร้าน / พื้นที่</span><span>ของเข้า/เดือน</span><span>โควตา/วัน</span><span>ใช้วันนี้</span><span>Risk</span></div>
+              <div class="tr sel" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span><b>T-0412 ร้านป้าแดง</b><br>ลำลูกกา</span><span>40 แพ็ก</span><span>120</span><b class="bad">168</b><span class="pill r">สูง</span></div>
+              <div class="tr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span><b>T-0088 ร้านเจ๊หน่อย</b><br>บางแค</span><span>40 แพ็ก</span><span>120</span><span>38</span><span class="pill g">ต่ำ</span></div>
+              <div class="tr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span><b>T-1203 ร้านลุงชัย</b><br>หาดใหญ่</span><span>25 แพ็ก</span><span>80</span><span>61</span><span class="pill a">กลาง</span></div>
+              <div class="tr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span><b>T-2290 ร้านเฮียกิม</b><br>เชียงใหม่</span><span>30 แพ็ก</span><span>90</span><span>22</span><span class="pill g">ต่ำ</span></div>
+            </div>
+            <div class="pn" style="gap:10px"><h4>T-0412 ร้านป้าแดง</h4>
+              <div class="map"><b></b><i style="left:52%;top:46%"></i><i style="left:20%;top:22%"></i><i style="left:80%;top:70%"></i></div>
+              <span style="font-weight:600;font-size:13.5px">AI พบ</span>
+              <span style="font-size:13px">• สแกนเกินโควตา 3 วันติด<br>• ลูกค้า 4 คนเดิม = 61% ของการสแกน<br>• สแกนนอกรัศมีร้าน 2 ครั้ง</span>
+              <div class="fld"><label for="b4q">ปรับโควตา/วัน</label><input id="b4q" value="80"></div>
+              <div style="display:flex;gap:8px;margin-top:auto"><button class="lbtn n" style="flex:1">ระงับชั่วคราว</button><button class="lbtn o" style="flex:1">ส่งเซลส์ตรวจ</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b><i>B4</i>ร้านค้า + โควตา</b><span>AI จับร้านเสี่ยง · ระงับ / ส่งเซลส์ตรวจ</span></figcaption>
+  </figure>
+
+  <figure class="dtfig" id="b5">
+    <div class="dtw"><div class="dt">
+      <div class="chrome"><i></i><i></i><i></i><span>admin.volt-club.co.th/rules</span></div>
+      <div class="bo">
+        <nav class="side" aria-label="เมนูหลังบ้าน"><span class="logo">VOLT</span><small>Back Office</small><a href="#b1">Dashboard</a><a href="#b2">ตรวจใบเสร็จ <em>86</em></a><a href="#b3">รางวัล + AI Pacing</a><a href="#b4">ร้านค้า <em>17</em></a><a class="on" href="#b5">กติกาแต้ม</a><a href="#b5">สมาชิก</a><a href="#b5">Audit Log</a></nav>
+        <div class="main">
+          <div class="mh"><h3>กติกาแต้ม + แคมเปญ</h3><span class="pill a">แก้กติกาต้องอนุมัติ 2 คน</span></div>
+          <div class="g3" style="flex:none">
+            <div class="pn"><h4>แต้มต่อ SKU</h4><div class="fld">
+              <label for="r1"><span class="can c" style="width:14px;height:26px;vertical-align:middle;margin-right:8px"></span>190 ml (10฿)</label><input id="r1" value="1">
+              <label for="r2"><span class="can y" style="width:16px;height:30px;vertical-align:middle;margin-right:8px"></span>310 ml (17฿)</label><input id="r2" value="2">
+              <label for="r3"><span class="can p" style="width:18px;height:34px;vertical-align:middle;margin-right:8px"></span>PET ใหม่ (TBD)</label><input id="r3" value="TBD"></div></div>
+            <div class="pn"><h4>Cap กันสายล่ารางวัล</h4><div class="fld">
+              <label for="r4">แต้มสูงสุด/คน/วัน</label><input id="r4" value="20">
+              <label for="r5">ใบเสร็จสูงสุด/คน/วัน</label><input id="r5" value="5">
+              <label for="r6">สิทธิ์ Lucky Draw/คน/รอบ</label><input id="r6" value="5"></div></div>
+            <div class="pn"><h4>Tier LF1–LF5</h4>
+              <div style="display:flex;flex-direction:column;gap:5px;font-size:13px">
+                <div class="sp"><span class="pill n">LF1</span><span>สมัครสมาชิก</span></div>
+                <div class="sp"><span class="pill n">LF2</span><span>ซื้อ 2 สัปดาห์ติด</span></div>
+                <div class="sp"><span class="pill n">LF3</span><span>ซื้อ 4 สัปดาห์ติด</span></div>
+                <div class="sp"><span class="pill n">LF4</span><span>8 สัปดาห์ + ครบ 3 รส</span></div>
+                <div class="sp"><span class="pill" style="background:var(--yel)">LF5</span><span>12 สัปดาห์ + 7-11 ≥ 30</span></div>
+              </div></div>
+          </div>
+          <div class="pn" style="flex:1"><div class="sp"><h4>โปรโมชันโบนัส · x2 · Flash Deal · ภารกิจ</h4><button class="lbtn y">+ สร้างโปรฯ</button></div>
+            <div class="tbl" style="border:0">
+              <div class="tr th" style="grid-template-columns:2fr 1fr 2fr 1.6fr 1fr"><span>ชื่อ</span><span>ประเภท</span><span>เงื่อนไข</span><span>ช่วงเวลา</span><span>สถานะ</span></div>
+              <div class="tr" style="grid-template-columns:2fr 1fr 2fr 1.6fr 1fr"><b>x2 ช่วงเย็น 310 ml</b><span>ตัวคูณ</span><span>SKU 310 · ทุกช่องทาง</span><span>ทุกวัน 18:00–21:00</span><span class="pill g">กำลังรัน</span></div>
+              <div class="tr" style="grid-template-columns:2fr 1fr 2fr 1.6fr 1fr"><b>7-Eleven Week</b><span>โบนัส</span><span>7-Eleven +1/กระป๋อง</span><span>1–7 ก.พ.</span><span class="pill n">ตั้งเวลาแล้ว</span></div>
+              <div class="tr" style="grid-template-columns:2fr 1fr 2fr 1.6fr 1fr"><b>Flash: เสื้อ 3MD 50 ตัว</b><span>Flash Deal</span><span>LF2+ · คนละ 1</span><span>ศ. 20:00</span><span class="pill n">ตั้งเวลาแล้ว</span></div>
+              <div class="tr" style="grid-template-columns:2fr 1fr 2fr 1.6fr 1fr"><b>เปิดตัว PET ขวดใหญ่</b><span>ภารกิจ</span><span>ซื้อ PET ครั้งแรก +10</span><span>รอวันวางขาย</span><span class="pill a">ร่าง</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <figcaption><b><i>B5</i>กติกาแต้ม + แคมเปญ</b><span>ปรับแต้ม · Cap · Tier · โปรโมชันได้เองไม่ต้องแก้โค้ด</span></figcaption>
+  </figure>
+  </div>
+</section>
+
+<!-- ============ BACK OFFICE MOBILE ============ -->
+<section class="grp" id="bomobile">
+  <div class="gh"><h2>หลังบ้าน · <em>มือถือ</em></h2><span>ผู้บริหารดูภาพรวม · ทีมตรวจใบเสร็จนอกออฟฟิศ</span></div>
+  <div class="row">
+  <figure id="bm1">
+    <div class="ph"><div class="scr lt">
+      <div class="shead" style="padding-top:22px"><div class="sp"><b style="font:italic 900 24px var(--display)">VOLT</b><button class="x" aria-label="เมนู" style="background:rgba(255,255,255,.12);color:#fff">☰</button></div><small>Back Office · ภาพรวม</small></div>
+      <div class="bd">
+        <div class="filt"><span class="on">วันนี้</span><span>7 วัน</span><span>ทั้งแคมเปญ</span></div>
+        <div class="kpi2">
+          <div class="kpi"><small>กระป๋องวันนี้</small><b>12.4K</b></div><div class="kpi"><small>สมาชิกใหม่</small><b>1,208</b></div>
+          <div class="kpi"><small>Repeat rate</small><b>38%</b></div><div class="kpi"><small>งบรางวัลใช้แล้ว</small><b>31%</b></div>
+        </div>
+        <div class="pn"><h4>ยอดเทียบ baseline (เป้า +10–15%)</h4>
+          <svg viewBox="0 0 300 90" style="width:100%" role="img" aria-label="ยอดขายจริงสูงกว่า baseline 12 เปอร์เซ็นต์"><path d="M0 70H300" stroke="#9AA3C9" stroke-dasharray="5 5"/><path d="M0 70 60 64 120 56 180 48 240 44 300 38" fill="none" stroke="#13207A" stroke-width="3"/><circle cx="300" cy="38" r="5" fill="#FFE11A" stroke="#13207A" stroke-width="2"/><text x="236" y="28" font-size="13" font-weight="700" fill="#13207A">+12%</text></svg></div>
+        <div class="pn"><h4>ช่องทาง</h4><div class="hb"><span>7-Eleven</span><i style="width:100%"></i><b>46%</b></div><div class="hb"><span>โชห่วย</span><i style="width:70%"></i><b>32%</b></div><div class="hb"><span>อื่น ๆ</span><i style="width:48%"></i><b>22%</b></div></div>
+        <div class="al r">ร้านเสี่ยง 17 ร้าน</div>
+        <a class="btn bn" href="#bm2" style="margin-top:auto">ไปตรวจใบเสร็จ · 86</a>
+      </div>
+    </div></div>
+    <figcaption><b><i>BM1</i>Dashboard มือถือ</b><span>ดูยอดเทียบเป้าและเรื่องต้องดูได้ในหน้าเดียว</span></figcaption>
+  </figure>
+
+  <figure id="bm2">
+    <div class="ph"><div class="scr lt">
+      <div class="shead" style="padding-top:22px"><div class="sp"><b style="font:italic 700 18px var(--display)">ตรวจใบเสร็จ</b><span class="chip y">1 / 86</span></div><small>Lawson อโศก · AI Score 0.62</small></div>
+      <div class="bd">
+        <div class="rcpt" style="height:250px">LAWSON 108 · สาขาอโศก<br>25/01/2027 18:42<br>เลขที่ L-0098-55120<br>----------------------<br>VOLT 310ML TROPICAL 17.00<br>???? ??? ????? &nbsp;&nbsp;25.00<br>----------------------<br>รวม &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;42.00</div>
+        <div class="sp"><b>310 ml × 1 · Tropical</b><span class="pill a">0.62</span></div>
+        <div class="kv" style="font-size:13px;grid-template-columns:90px 1fr"><span>วันที่</span><span>25 ม.ค. 2027 18:42</span><span>AI</span><span>เบลอ · ไม่ซ้ำ · ไม่ตัดต่อ</span></div>
+        <div style="margin-top:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><button class="lbtn r" style="min-height:52px">ปฏิเสธ</button><button class="lbtn o" style="min-height:52px">ขอรูปใหม่</button><button class="lbtn y" style="min-height:52px">อนุมัติ</button></div>
+        <span class="note" style="text-align:center">ปัดซ้าย = ปฏิเสธ · ปัดขวา = อนุมัติ</span>
+      </div>
+    </div></div>
+    <figcaption><b><i>BM2</i>ตรวจใบเสร็จบนมือถือ</b><span>ทีมตรวจทำงานนอกออฟฟิศได้ ทัน SLA 24 ชม.</span></figcaption>
+  </figure>
+  </div>
+</section>
+
+<footer>Volt Club Mockups · อ้างอิง wireframe ชุด C1–BM2 · ข้อมูลและชื่อบุคคลทั้งหมดเป็นตัวอย่าง · ไม่ใช้ภาพศิลปินบนตัวสินค้าตามกติกาค่าย</footer>
+</div>
+
+<script>
+function fit(){document.querySelectorAll('.dtw').forEach(function(w){w.firstElementChild.style.transform='scale('+(w.clientWidth/1280)+')';});}
+addEventListener('resize',fit);fit();
+document.querySelectorAll('.opt input').forEach(function(r){r.addEventListener('change',function(){document.querySelectorAll('.opt').forEach(function(o){o.classList.toggle('on',o.querySelector('input').checked);});});});
+</script>
