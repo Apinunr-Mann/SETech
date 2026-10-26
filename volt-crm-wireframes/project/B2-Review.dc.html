@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>B2 Review Console</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2457D6}a:hover{color:#1A3FA0}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 960px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Thai', sans-serif; color: #1E1E26; background: #F4F4F7">
+  <nav style="flex: 1 1 220px; max-width: 260px; background: #FFFFFF; border-right: 1px solid #CFCFD8; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px">
+    <b style="font-size: 16px; padding: 0 10px 14px">Volt Back Office</b>
+    <a href="B1-Dashboard.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">Dashboard</a>
+    <a href="B2-Review.dc.html" style="padding: 10px; border-radius: 8px; background: #1E1E26; color: #FFFFFF; text-decoration: none; font-size: 14px">ตรวจใบเสร็จ <span style="font-family: 'IBM Plex Mono', monospace">· 86</span></a>
+    <a href="B3-Rewards.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">รางวัล + AI Pacing</a>
+    <a href="B4-Shops.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">ร้านค้า</a>
+    <a href="B5-Rules.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">กติกาแต้ม + แคมเปญ</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">สมาชิก</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">Audit Log</a>
+  </nav>
+  <main style="flex: 999 1 560px; min-width: 0; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+      <b style="font-size: 22px">คิวตรวจ (AI Score ต่ำกว่า 0.80)</b>
+      <span style="font-size: 13px; color: #5E5E6C">วันนี้ AI อนุมัติเอง 2,914 · รอคน 86 · SLA 24 ชม.</span>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+      <div style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: 1fr 70px 90px; padding: 10px 14px; font-size: 12px; color: #5E5E6C; border-bottom: 1px solid #CFCFD8"><span>รายการ</span><span>Score</span><span>เหตุผล</span></div>
+        <div style="display: grid; grid-template-columns: 1fr 70px 90px; padding: 12px 14px; font-size: 13px; background: #EEEEF2; border-left: 3px solid #1E1E26"><span><b>Lawson อโศก</b><br>310 ml × 1</span><span style="font-family: 'IBM Plex Mono', monospace">0.62</span><span>ภาพเบลอ</span></div>
+        <div style="display: grid; grid-template-columns: 1fr 70px 90px; padding: 12px 14px; font-size: 13px; border-top: 1px solid #E4E4EA"><span><b>7-Eleven บางนา</b><br>310 ml × 12</span><span style="font-family: 'IBM Plex Mono', monospace">0.41</span><span>จำนวนผิดปกติ</span></div>
+        <div style="display: grid; grid-template-columns: 1fr 70px 90px; padding: 12px 14px; font-size: 13px; border-top: 1px solid #E4E4EA"><span><b>Makro รังสิต</b><br>190 ml × 24</span><span style="font-family: 'IBM Plex Mono', monospace">0.55</span><span>ฟอนต์วันที่ต่าง</span></div>
+        <div style="display: grid; grid-template-columns: 1fr 70px 90px; padding: 12px 14px; font-size: 13px; border-top: 1px solid #E4E4EA"><span><b>Shopee #2401…</b><br>แพ็ก 12</span><span style="font-family: 'IBM Plex Mono', monospace">0.70</span><span>ไม่ใช่ร้าน Official</span></div>
+      </div>
+      <div style="flex: 2 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 16px; display: flex; flex-wrap: wrap; gap: 16px">
+        <div style="flex: 1 1 220px; height: 420px; border-radius: 10px; background: #E4E4EA; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[ภาพใบเสร็จ · ซูม / หมุน]</div>
+        <div style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+          <b style="font-size: 15px">OCR อ่านได้</b>
+          <div style="display: grid; grid-template-columns: 110px 1fr; gap: 6px 10px"><span style="color: #5E5E6C">ร้าน / สาขา</span><span>Lawson อโศก</span><span style="color: #5E5E6C">วันที่</span><span>25 ม.ค. 2027 18:42</span><span style="color: #5E5E6C">เลขใบเสร็จ</span><span style="font-family: 'IBM Plex Mono', monospace">L-0098-55120</span><span style="color: #5E5E6C">รายการ</span><span>Volt 310 ml เหลือง × 1</span></div>
+          <b style="font-size: 15px">AI ตรวจ</b>
+          <div style="display: flex; flex-direction: column; gap: 4px; font-size: 13px"><span>✓ ไม่ซ้ำ (hash + เลขใบเสร็จ)</span><span>✓ ไม่พบการตัดต่อ</span><span>✕ ความคมชัดต่ำ อ่านรายการได้ 1/2</span><span>✓ ผู้ใช้ไม่มีประวัติเสี่ยง</span></div>
+          <label for="fix-qty" style="font-size: 13px; font-weight: 600">แก้จำนวนก่อนอนุมัติ</label>
+          <input id="fix-qty" value="1" style="min-height: 40px; border: 1.5px solid #CFCFD8; border-radius: 8px; padding: 0 10px; font: 400 14px 'IBM Plex Sans Thai', sans-serif">
+          <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px">
+            <button type="button" style="flex: 1; min-height: 44px; border: 0; border-radius: 10px; background: #1E1E26; color: #FFFFFF; font: 600 14px 'IBM Plex Sans Thai', sans-serif">อนุมัติ +2 แต้ม</button>
+            <button type="button" style="flex: 1; min-height: 44px; border: 1.5px solid #1E1E26; border-radius: 10px; background: #FFFFFF; font: 600 14px 'IBM Plex Sans Thai', sans-serif">ขอรูปใหม่</button>
+            <button type="button" style="flex: 1; min-height: 44px; border: 1.5px solid #B2382C; border-radius: 10px; background: #FFFFFF; color: #B2382C; font: 600 14px 'IBM Plex Sans Thai', sans-serif">ปฏิเสธ</button>
+          </div>
+          <span style="font-size: 12px; color: #5E5E6C">ทุกการตัดสินบันทึกใน Audit Log · ผลแจ้งลูกค้าทาง LINE อัตโนมัติ</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

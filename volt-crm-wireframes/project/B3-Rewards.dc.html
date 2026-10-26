@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>B3 รางวัล + AI Pacing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2457D6}a:hover{color:#1A3FA0}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 960px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Thai', sans-serif; color: #1E1E26; background: #F4F4F7">
+  <nav style="flex: 1 1 220px; max-width: 260px; background: #FFFFFF; border-right: 1px solid #CFCFD8; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px">
+    <b style="font-size: 16px; padding: 0 10px 14px">Volt Back Office</b>
+    <a href="B1-Dashboard.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">Dashboard</a>
+    <a href="B2-Review.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">ตรวจใบเสร็จ <span style="font-family: 'IBM Plex Mono', monospace">· 86</span></a>
+    <a href="B3-Rewards.dc.html" style="padding: 10px; border-radius: 8px; background: #1E1E26; color: #FFFFFF; text-decoration: none; font-size: 14px">รางวัล + AI Pacing</a>
+    <a href="B4-Shops.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">ร้านค้า</a>
+    <a href="B5-Rules.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">กติกาแต้ม + แคมเปญ</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">สมาชิก</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">Audit Log</a>
+  </nav>
+  <main style="flex: 999 1 560px; min-width: 0; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+      <b style="font-size: 22px">รางวัล + AI Pacing</b>
+      <span style="font-size: 14px; border-radius: 10px; background: #1E1E26; color: #FFFFFF; padding: 8px 14px">+ เพิ่มรางวัล</span>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #2457D6; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+      <b style="font-size: 15px; color: #2457D6">AI แนะนำสัปดาห์นี้</b>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 14px"><span>คูปอง 7-Eleven 10฿ ใช้เร็วกว่าแผน 18% → ลดปล่อยสัปดาห์นี้จาก 5,000 เป็น 4,100 สิทธิ์</span><span style="display: flex; gap: 8px"><span style="border-radius: 8px; background: #1E1E26; color: #FFFFFF; padding: 6px 12px">ใช้คำแนะนำ</span><span style="border: 1px solid #CFCFD8; border-radius: 8px; padding: 6px 12px">ข้าม</span></span></div>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 14px"><span>เสื้อ Volt × 3MD ช้ากว่าแผน 30% → เปิด “แลก + เติมเงิน” 80 แต้ม + 49฿</span><span style="display: flex; gap: 8px"><span style="border-radius: 8px; background: #1E1E26; color: #FFFFFF; padding: 6px 12px">ใช้คำแนะนำ</span><span style="border: 1px solid #CFCFD8; border-radius: 8px; padding: 6px 12px">ข้าม</span></span></div>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; overflow-x: auto">
+      <div style="min-width: 860px">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr 1fr; gap: 10px; padding: 10px 14px; font-size: 12px; color: #5E5E6C; border-bottom: 1px solid #CFCFD8"><span>รางวัล</span><span>ประเภท</span><span>แต้ม</span><span>แลก+เติม</span><span>Tier</span><span>สต็อก: ใช้จริง vs แผน</span><span>สถานะ</span></div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr 1fr; gap: 10px; padding: 12px 14px; font-size: 13px; align-items: center; border-bottom: 1px solid #E4E4EA"><span>คูปอง Volt 7-Eleven 10฿</span><span>E-voucher</span><span>30</span><span>–</span><span>ทุก Tier</span><span style="display: flex; align-items: center; gap: 6px"><span style="flex: 1; height: 8px; background: #E4E4EA; border-radius: 4px"><span style="display: block; width: 72%; height: 8px; background: #8A5A00; border-radius: 4px"></span></span>72% / 54%</span><span style="color: #8A5A00">เร็วกว่าแผน</span></div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr 1fr; gap: 10px; padding: 12px 14px; font-size: 13px; align-items: center; border-bottom: 1px solid #E4E4EA"><span>Shopee Voucher 100฿</span><span>E-voucher</span><span>90</span><span>60 + 29฿</span><span>ทุก Tier</span><span style="display: flex; align-items: center; gap: 6px"><span style="flex: 1; height: 8px; background: #E4E4EA; border-radius: 4px"><span style="display: block; width: 48%; height: 8px; background: #1E1E26; border-radius: 4px"></span></span>48% / 50%</span><span style="color: #1F7A4C">ตามแผน</span></div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr 1fr; gap: 10px; padding: 12px 14px; font-size: 13px; align-items: center; border-bottom: 1px solid #E4E4EA"><span>เสื้อ Volt × 3MD</span><span>Merch</span><span>120</span><span>80 + 49฿</span><span>LF2+</span><span style="display: flex; align-items: center; gap: 6px"><span style="flex: 1; height: 8px; background: #E4E4EA; border-radius: 4px"><span style="display: block; width: 20%; height: 8px; background: #1E1E26; border-radius: 4px"></span></span>20% / 50%</span><span style="color: #8A5A00">ช้ากว่าแผน</span></div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr 1fr; gap: 10px; padding: 12px 14px; font-size: 13px; align-items: center"><span>ลุ้นบัตรคอนเสิร์ต 3MD</span><span>Lucky Draw</span><span>20/สิทธิ์</span><span>–</span><span>ทุก Tier</span><span>สิทธิ์ 18,420 · จับ 30 มี.ค.</span><span>เปิดรับ</span></div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">งบรางวัล 4 เดือน</b><div style="height: 150px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[Burn-down: ใช้จริง vs แผน รายสัปดาห์]</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">จัดส่งถึงบ้าน</b><div style="font-size: 13px; display: flex; flex-direction: column; gap: 6px"><span>รอแพ็ก 124 · ส่งแล้ว 860 · ตีกลับ 6</span><span style="color: #5E5E6C">Tracking ส่งให้ลูกค้าทาง LINE อัตโนมัติ</span></div></div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

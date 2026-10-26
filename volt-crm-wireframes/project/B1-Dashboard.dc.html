@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>B1 Dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2457D6}a:hover{color:#1A3FA0}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 960px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Thai', sans-serif; color: #1E1E26; background: #F4F4F7">
+  <nav style="flex: 1 1 220px; max-width: 260px; background: #FFFFFF; border-right: 1px solid #CFCFD8; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px">
+    <b style="font-size: 16px; padding: 0 10px 14px">Volt Back Office</b>
+    <a href="B1-Dashboard.dc.html" style="padding: 10px; border-radius: 8px; background: #1E1E26; color: #FFFFFF; text-decoration: none; font-size: 14px">Dashboard</a>
+    <a href="B2-Review.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">ตรวจใบเสร็จ <span style="font-family: 'IBM Plex Mono', monospace">· 86</span></a>
+    <a href="B3-Rewards.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">รางวัล + AI Pacing</a>
+    <a href="B4-Shops.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">ร้านค้า</a>
+    <a href="B5-Rules.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">กติกาแต้ม + แคมเปญ</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">สมาชิก</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">Audit Log</a>
+  </nav>
+  <main style="flex: 999 1 560px; min-width: 0; padding: 24px 28px; display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+      <b style="font-size: 22px">ภาพรวมแคมเปญ · Real-time</b>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px">
+        <span style="border: 1.5px solid #1E1E26; border-radius: 999px; padding: 4px 12px">7 วัน</span><span style="border: 1px solid #CFCFD8; border-radius: 999px; padding: 4px 12px">ทุกช่องทาง ▾</span><span style="border: 1px solid #CFCFD8; border-radius: 999px; padding: 4px 12px">ทุก SKU ▾</span><span style="border: 1px solid #CFCFD8; border-radius: 999px; padding: 4px 12px">Export CSV</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">สมาชิกทั้งหมด</span><br><b style="font-size: 26px; font-family: 'IBM Plex Mono', monospace">[48,210]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">กระป๋องที่บันทึก</span><br><b style="font-size: 26px; font-family: 'IBM Plex Mono', monospace">[312K]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">Repeat rate</span><br><b style="font-size: 26px; font-family: 'IBM Plex Mono', monospace">[38%]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">แต้มออก / แต้มใช้</span><br><b style="font-size: 26px; font-family: 'IBM Plex Mono', monospace">[1.2M/0.4M]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">ใช้งบรางวัลแล้ว</span><br><b style="font-size: 26px; font-family: 'IBM Plex Mono', monospace">[31%]</b></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">กระป๋องรายวัน แยก SKU</b><div style="height: 180px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[Stacked bar: 190 / 310 / PET]</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">First-time vs Repeat</b><div style="height: 180px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[Line 2 เส้น รายสัปดาห์]</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">ช่องทาง</b><div style="height: 180px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[Bar: 7-Eleven · โชห่วย · Lawson · Makro · ออนไลน์]</div></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">RFM Segment</b><div style="height: 150px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[Grid: Champions · Loyal · At risk · New]</div><span style="font-size: 12px; color: #5E5E6C">คลิก segment → ส่ง AI Noti / LINE Broadcast</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">รส × ช่วงเวลา</b><div style="height: 150px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[Heatmap รส × ชั่วโมง]</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 15px">แจ้งเตือน</b>
+        <div style="font-size: 13px; border-left: 3px solid #B2382C; padding-left: 8px">ร้าน #T-0412 สแกนเกินโควตา 3 วันติด</div>
+        <div style="font-size: 13px; border-left: 3px solid #8A5A00; padding-left: 8px">คูปอง 7-Eleven ใช้เร็วกว่าแผน 18%</div>
+        <div style="font-size: 13px; border-left: 3px solid #1F7A4C; padding-left: 8px">x2 ช่วงเย็น ดัน 310 ml +22%</div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>B4 ร้านค้า + โควตา</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2457D6}a:hover{color:#1A3FA0}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 960px; display: flex; flex-wrap: wrap; font-family: 'IBM Plex Sans Thai', sans-serif; color: #1E1E26; background: #F4F4F7">
+  <nav style="flex: 1 1 220px; max-width: 260px; background: #FFFFFF; border-right: 1px solid #CFCFD8; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px">
+    <b style="font-size: 16px; padding: 0 10px 14px">Volt Back Office</b>
+    <a href="B1-Dashboard.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">Dashboard</a>
+    <a href="B2-Review.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">ตรวจใบเสร็จ <span style="font-family: 'IBM Plex Mono', monospace">· 86</span></a>
+    <a href="B3-Rewards.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">รางวัล + AI Pacing</a>
+    <a href="B4-Shops.dc.html" style="padding: 10px; border-radius: 8px; background: #1E1E26; color: #FFFFFF; text-decoration: none; font-size: 14px">ร้านค้า</a>
+    <a href="B5-Rules.dc.html" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">กติกาแต้ม + แคมเปญ</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">สมาชิก</a>
+    <a href="#" style="padding: 10px; border-radius: 8px; color: #1E1E26; text-decoration: none; font-size: 14px">Audit Log</a>
+  </nav>
+  <main style="flex: 999 1 560px; min-width: 0; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+      <b style="font-size: 22px">ร้านโชห่วย (Volt Partner Shop)</b>
+      <div style="display: flex; gap: 8px; font-size: 14px"><span style="border: 1px solid #CFCFD8; border-radius: 10px; padding: 8px 14px">นำเข้าร้านจากเซลส์ / ยี่ปั๊ว (CSV)</span><span style="border-radius: 10px; background: #1E1E26; color: #FFFFFF; padding: 8px 14px">รออนุมัติ 42</span></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">ร้านที่ใช้งาน</span><br><b style="font-size: 24px; font-family: 'IBM Plex Mono', monospace">[3,180]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">สแกนวันนี้</span><br><b style="font-size: 24px; font-family: 'IBM Plex Mono', monospace">[9,412]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">ลูกค้าปฏิเสธ</span><br><b style="font-size: 24px; font-family: 'IBM Plex Mono', monospace">[1.4%]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #B2382C; border-radius: 12px; padding: 14px"><span style="font-size: 13px; color: #5E5E6C">ร้านเสี่ยง (AI)</span><br><b style="font-size: 24px; font-family: 'IBM Plex Mono', monospace; color: #B2382C">[17]</b></div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+      <div style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; overflow-x: auto">
+        <div style="min-width: 640px">
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 10px; padding: 10px 14px; font-size: 12px; color: #5E5E6C; border-bottom: 1px solid #CFCFD8"><span>ร้าน / พื้นที่</span><span>ของเข้า/เดือน</span><span>โควตา/วัน</span><span>ใช้วันนี้</span><span>Risk</span></div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 10px; padding: 12px 14px; font-size: 13px; border-bottom: 1px solid #E4E4EA; background: #EEEEF2"><span><b>T-0412 ร้านป้าแดง</b><br>ลำลูกกา</span><span>40 แพ็ก</span><span>120</span><span style="color: #B2382C">168</span><span style="color: #B2382C">สูง</span></div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 10px; padding: 12px 14px; font-size: 13px; border-bottom: 1px solid #E4E4EA"><span><b>T-0088 ร้านเจ๊หน่อย</b><br>บางแค</span><span>40 แพ็ก</span><span>120</span><span>38</span><span style="color: #1F7A4C">ต่ำ</span></div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 10px; padding: 12px 14px; font-size: 13px"><span><b>T-1203 ร้านลุงชัย</b><br>หาดใหญ่</span><span>25 แพ็ก</span><span>80</span><span>61</span><span style="color: #8A5A00">กลาง</span></div>
+        </div>
+      </div>
+      <div style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px">
+        <b style="font-size: 16px">T-0412 ร้านป้าแดง</b>
+        <div style="height: 120px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #5E5E6C">[แผนที่ + พิกัดสแกน]</div>
+        <b style="font-size: 14px">AI พบ</b>
+        <span style="font-size: 13px">• สแกนเกินโควตา 3 วันติด<br>• ลูกค้า 4 คนเดิมคิดเป็น 61% ของการสแกน<br>• สแกนนอกรัศมีร้าน 2 ครั้ง</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px">
+          <button type="button" style="flex: 1; min-height: 42px; border: 0; border-radius: 10px; background: #1E1E26; color: #FFFFFF; font: 600 13px 'IBM Plex Sans Thai', sans-serif">ระงับชั่วคราว</button>
+          <button type="button" style="flex: 1; min-height: 42px; border: 1.5px solid #1E1E26; border-radius: 10px; background: #FFFFFF; font: 600 13px 'IBM Plex Sans Thai', sans-serif">ส่งเซลส์ตรวจ</button>
+        </div>
+        <label for="quota" style="font-size: 13px; font-weight: 600">ปรับโควตา/วัน</label>
+        <input id="quota" value="80" style="min-height: 40px; border: 1.5px solid #CFCFD8; border-radius: 8px; padding: 0 10px; font: 400 14px 'IBM Plex Sans Thai', sans-serif">
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

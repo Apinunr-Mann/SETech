@@ -1,0 +1,29 @@
+{"v":3,"createdOnFiles":{"v":1,"at":"2026-10-26T12:10:00Z"},"title":"Volt CRM Wireframes","launch":{"view":"canvas"},"pages":[],
+"boards":{
+"Main.dc.html":{"x":0,"y":0,"w":390,"h":844,"title":"C1 · LINE OA + Rich Menu"},
+"C2-MemberCard.dc.html":{"x":470,"y":0,"w":390,"h":844,"title":"C2 · บัตรสมาชิก + QR"},
+"C3-Receipt.dc.html":{"x":940,"y":0,"w":390,"h":844,"title":"C3 · ส่งใบเสร็จ / รหัส"},
+"C4-Rewards.dc.html":{"x":1410,"y":0,"w":390,"h":844,"title":"C4 · แลกรางวัล"},
+"C5-Redeem.dc.html":{"x":1880,"y":0,"w":390,"h":844,"title":"C5 · แลก / แลก + เติมเงิน"},
+"C6-Tier.dc.html":{"x":2350,"y":0,"w":390,"h":844,"title":"C6 · Tier + ภารกิจ + ประวัติ"},
+"S1-ShopScan.dc.html":{"x":0,"y":1240,"w":390,"h":844,"title":"S1 · ร้านสแกน + เลือก SKU"},
+"S2-ShopHome.dc.html":{"x":470,"y":1240,"w":390,"h":844,"title":"S2 · หน้าร้าน: โควตา + แต้มร้าน"},
+"CD-ConsumerDesktop.dc.html":{"x":940,"y":1240,"w":1280,"h":900,"expand":"fill","title":"CD · ลูกค้า Desktop (Web CRM)"},
+"B1-Dashboard.dc.html":{"x":0,"y":2520,"w":1440,"h":960,"expand":"fill","title":"B1 · Dashboard"},
+"B2-Review.dc.html":{"x":1520,"y":2520,"w":1440,"h":960,"expand":"fill","title":"B2 · Review Console (AI + คน)"},
+"B3-Rewards.dc.html":{"x":3040,"y":2520,"w":1440,"h":960,"expand":"fill","title":"B3 · รางวัล + AI Pacing"},
+"B4-Shops.dc.html":{"x":4560,"y":2520,"w":1440,"h":960,"expand":"fill","title":"B4 · ร้านค้า + โควตา"},
+"B5-Rules.dc.html":{"x":6080,"y":2520,"w":1440,"h":960,"expand":"fill","title":"B5 · กติกาแต้ม + แคมเปญ"},
+"BM1-Dashboard.dc.html":{"x":0,"y":3880,"w":390,"h":844,"title":"BM1 · Dashboard มือถือ"},
+"BM2-Review.dc.html":{"x":470,"y":3880,"w":390,"h":844,"title":"BM2 · ตรวจใบเสร็จบนมือถือ"}
+},
+"order":["Main.dc.html","C2-MemberCard.dc.html","C3-Receipt.dc.html","C4-Rewards.dc.html","C5-Redeem.dc.html","C6-Tier.dc.html","S1-ShopScan.dc.html","S2-ShopHome.dc.html","CD-ConsumerDesktop.dc.html","B1-Dashboard.dc.html","B2-Review.dc.html","B3-Rewards.dc.html","B4-Shops.dc.html","B5-Rules.dc.html","BM1-Dashboard.dc.html","BM2-Review.dc.html"],
+"notes":{
+"tA":{"x":0,"y":-280,"text":"หน้าบ้าน · ลูกค้า (มือถือ · LINE OA + LIFF)","kind":"title1","maxW":2740},
+"sA":{"x":2820,"y":0,"w":420,"fill":"blue","text":"Flow ลูกค้า\nC1 แชต LINE OA → Rich Menu เปิด LIFF\nC2 บัตรสมาชิก + Dynamic QR ให้ร้านโชห่วยสแกน\nC3 ส่งใบเสร็จ / กรอกรหัส / ผูกเลขออเดอร์ออนไลน์ → AI ตรวจ\nC4 หน้ารางวัล: Pin ตาม Tier · Top Redeem · ทั้งหมด\nC5 แลก หรือ แลก + เติมเงิน (PromptPay) + ที่อยู่จัดส่ง\nC6 Tier LF1–LF5 · ภารกิจ · ประวัติแต้มแยกช่องทาง"},
+"tB":{"x":0,"y":960,"text":"หน้าบ้าน · ร้านโชห่วย (มือถือ) + ลูกค้า Desktop","kind":"title1","maxW":2220},
+"tC":{"x":0,"y":2240,"text":"หลังบ้าน · Back Office (Desktop)","kind":"title1","maxW":7520},
+"tD":{"x":0,"y":3600,"text":"หลังบ้าน · มือถือ (ผู้บริหาร + ทีมตรวจ)","kind":"title1","maxW":860},
+"sD":{"x":940,"y":3880,"w":440,"fill":"blue","text":"สมมติฐาน\n• ตัวเลขทุกจุดเป็นตัวอย่างประกอบ wireframe ไม่ใช่ข้อมูลจริง\n• LF1–LF5 = ระดับสมาชิกตามไวท์บอร์ด รอยืนยันชื่อ/เกณฑ์\n• 190 ml = 1 แต้ม · 310 ml = 2 แต้ม เป็นค่าตัวอย่าง\n• Back Office ใช้ร่วมกันระหว่างทีม Volt และทีมงาน แยกสิทธิ์ตามบทบาท"}
+},
+"designSystems":[]}

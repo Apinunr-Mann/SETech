@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>BM1 Dashboard มือถือ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2457D6}a:hover{color:#1A3FA0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; font-family: 'IBM Plex Sans Thai', sans-serif; color: #1E1E26; background: #F4F4F7">
+  <div style="height: 52px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; background: #FFFFFF; border-bottom: 1px solid #CFCFD8">
+    <b style="font-size: 16px">Volt Back Office</b>
+    <button type="button" aria-label="เมนู" style="width: 44px; height: 44px; border: 0; background: none; font-size: 20px">☰</button>
+  </div>
+  <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden">
+    <div style="display: flex; gap: 6px; font-size: 13px"><span style="border: 1.5px solid #1E1E26; border-radius: 999px; padding: 4px 12px; background: #FFFFFF">วันนี้</span><span style="border: 1px solid #CFCFD8; border-radius: 999px; padding: 4px 12px; background: #FFFFFF">7 วัน</span><span style="border: 1px solid #CFCFD8; border-radius: 999px; padding: 4px 12px; background: #FFFFFF">ทั้งแคมเปญ</span></div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 12px"><span style="font-size: 12px; color: #5E5E6C">กระป๋องวันนี้</span><br><b style="font-size: 22px; font-family: 'IBM Plex Mono', monospace">[12.4K]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 12px"><span style="font-size: 12px; color: #5E5E6C">สมาชิกใหม่</span><br><b style="font-size: 22px; font-family: 'IBM Plex Mono', monospace">[1,208]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 12px"><span style="font-size: 12px; color: #5E5E6C">Repeat rate</span><br><b style="font-size: 22px; font-family: 'IBM Plex Mono', monospace">[38%]</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 12px"><span style="font-size: 12px; color: #5E5E6C">งบรางวัลใช้แล้ว</span><br><b style="font-size: 22px; font-family: 'IBM Plex Mono', monospace">[31%]</b></div>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 14px">ยอดเทียบเป้า +10–15%</b><div style="height: 120px; border-radius: 8px; background: #EEEEF2; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #5E5E6C">[Line: ยอดจริง vs baseline]</div></div>
+    <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px"><b style="font-size: 14px">ช่องทาง</b>
+      <div style="display: grid; grid-template-columns: 90px 1fr 44px; gap: 6px; align-items: center; font-size: 12px"><span>7-Eleven</span><span style="height: 10px; background: #1E1E26; border-radius: 0 4px 4px 0; width: 100%"></span><span>46%</span><span>โชห่วย</span><span style="height: 10px; background: #1E1E26; border-radius: 0 4px 4px 0; width: 70%"></span><span>32%</span><span>อื่น ๆ</span><span style="height: 10px; background: #1E1E26; border-radius: 0 4px 4px 0; width: 48%"></span><span>22%</span></div>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #CFCFD8; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 13px"><b style="font-size: 14px">ต้องดู</b>
+      <span style="border-left: 3px solid #B2382C; padding-left: 8px">ร้านเสี่ยง 17 ร้าน</span>
+      <span style="border-left: 3px solid #8A5A00; padding-left: 8px">คิวตรวจใบเสร็จ 86 รายการ</span>
+    </div>
+    <a href="BM2-Review.dc.html" style="margin-top: auto; min-height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #1E1E26; color: #FFFFFF; text-decoration: none; font-size: 15px; font-weight: 600">ไปตรวจใบเสร็จ</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>S1 ร้านสแกน + เลือก SKU</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2457D6}a:hover{color:#1A3FA0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; font-family: 'IBM Plex Sans Thai', sans-serif; color: #1E1E26; background: #FFFFFF">
+  <div style="height: 52px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #CFCFD8">
+    <b style="font-size: 16px">สแกนสะสมแต้ม</b>
+    <span style="font-size: 12px; color: #5E5E6C">ร้านเจ๊หน่อย · บางแค</span>
+  </div>
+  <div style="flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+    <div style="height: 150px; border-radius: 12px; background: #3A3A46; display: flex; align-items: center; justify-content: center">
+      <span style="width: 96px; height: 96px; border: 3px solid #FFFFFF; border-radius: 10px"></span>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #CFCFD8; border-radius: 10px; padding: 10px 12px; font-size: 14px"><span><b>คุณมายด์</b> · LF2</span><span style="color: #1F7A4C; font-size: 13px">✓ สแกนแล้ว</span></div>
+    <div style="border: 1.5px solid #1E1E26; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; justify-content: space-between; font-size: 14px"><b>กระป๋อง 190 ml</b><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px">1 แต้ม/กระป๋อง</span></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px"><span>เหลือง</span><span style="display: flex; align-items: center; gap: 10px"><button type="button" aria-label="ลด" style="width: 36px; height: 36px; border: 1px solid #CFCFD8; border-radius: 8px; background: #FFFFFF">−</button><b style="width: 16px; text-align: center">2</b><button type="button" aria-label="เพิ่ม" style="width: 36px; height: 36px; border: 1px solid #CFCFD8; border-radius: 8px; background: #FFFFFF">+</button></span></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px"><span>ฟ้า</span><span style="display: flex; align-items: center; gap: 10px"><button type="button" aria-label="ลด" style="width: 36px; height: 36px; border: 1px solid #CFCFD8; border-radius: 8px; background: #FFFFFF">−</button><b style="width: 16px; text-align: center">1</b><button type="button" aria-label="เพิ่ม" style="width: 36px; height: 36px; border: 1px solid #CFCFD8; border-radius: 8px; background: #FFFFFF">+</button></span></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px"><span>ม่วง</span><span style="display: flex; align-items: center; gap: 10px"><button type="button" aria-label="ลด" style="width: 36px; height: 36px; border: 1px solid #CFCFD8; border-radius: 8px; background: #FFFFFF">−</button><b style="width: 16px; text-align: center">0</b><button type="button" aria-label="เพิ่ม" style="width: 36px; height: 36px; border: 1px solid #CFCFD8; border-radius: 8px; background: #FFFFFF">+</button></span></div>
+    </div>
+    <div style="border: 1px solid #CFCFD8; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; font-size: 14px"><b>กระป๋อง 310 ml · PET ใหม่</b><span style="color: #5E5E6C">แตะเพื่อเพิ่ม ›</span></div>
+    <div style="display: flex; justify-content: space-between; font-size: 15px; padding: 4px 2px"><b>รวม 3 กระป๋อง</b><b style="font-family: 'IBM Plex Mono', monospace">+3 แต้ม</b></div>
+    <button type="button" style="min-height: 50px; border: 0; border-radius: 12px; background: #1E1E26; color: #FFFFFF; font: 600 15px 'IBM Plex Sans Thai', sans-serif">ส่งให้ลูกค้ายืนยัน</button>
+    <span style="text-align: center; font-size: 12px; color: #5E5E6C">โควตาวันนี้ 38 / 120 แต้ม · ลูกค้านี้ร่วมได้อีก 2 ครั้งวันนี้</span>
+    <a href="S2-ShopHome.dc.html" style="text-align: center; font-size: 14px">กลับหน้าร้าน</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
