@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
+<style>
+  .wrap { padding: 4px 4px 6px; display: flex; flex-direction: column; gap: 14px; height: 100%; }
+  .cols { flex: 1; display: grid; grid-template-columns: 1.55fr 1fr 1fr 1fr; gap: 16px; }
+  .c { background: var(--paper); border: 2px solid var(--line); border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .c.star { border: 3px solid var(--accent); background: #fffaf2; }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .c h3 { font: 600 28px/1.2 'Prompt'; color: var(--navy); }
+  .c .who { font-size: 16.5px; color: var(--muted); margin-top: 2px; }
+  .badge { flex: none; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 3px 10px; background: var(--lav); color: var(--navy); }
+  .badge.go { background: var(--green); color: #fff; }
+  .badge.wait { background: #f3e1c2; color: #7a5a20; }
+  .sec { font-size: 15.5px; font-weight: 600; color: var(--navy-2); letter-spacing: .03em; }
+  .c ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .c li { font-size: 18.5px; line-height: 1.4; padding-left: 13px; position: relative; }
+  .c li:before { content: ''; position: absolute; left: 0; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .data { margin-top: auto; font-size: 15.5px; font-weight: 500; color: var(--navy); background: var(--lav); border-radius: 10px; padding: 6px 10px; }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .st { background: var(--navy); color: #fff; border-radius: 14px; padding: 12px 12px; position: relative; }
+  .st i { font: italic 600 22px/1 'Prompt'; color: var(--accent); display: block; margin-bottom: 4px; }
+  .st b { display: block; font-size: 17px; font-weight: 600; line-height: 1.25; }
+  .st span { display: block; font-size: 14px; opacity: .8; line-height: 1.3; margin-top: 3px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .star li { font-size: 17px; }
+  .star .two .sec { margin-bottom: 8px; }
+
+  .foot { flex: none; display: grid; grid-template-columns: 220px 1fr 1fr 1fr; gap: 12px; }
+  .foot .lbl { background: var(--navy); color: #fff; border-radius: 16px; padding: 10px 16px; display: flex; flex-direction: column; justify-content: center; }
+  .foot .lbl b { font: italic 600 20px/1.15 'Prompt'; }
+  .foot .lbl span { font-size: 13px; opacity: .8; }
+  .foot .f { background: var(--paper); border: 2px solid var(--line); border-radius: 16px; padding: 10px 14px; font-size: 15.5px; line-height: 1.35; }
+  .foot .f b { color: var(--navy); display: block; font-size: 16px; }
+</style></head>
+<body><div class="wrap">
+
+  <div class="cols">
+    <div class="c star">
+      <div class="top">
+        <div><h3>Shop QR Scan · ร้านโชห่วย</h3><div class="who">กระป๋อง 190 ml (หลัก) · ร้านที่ไม่มีใบเสร็จ · ตู้ vending ที่มีคนดูแล</div></div>
+        <span class="badge go">เปิดได้วันแรก</span>
+      </div>
+      <div class="steps">
+        <div class="st"><i>1</i><b>ลูกค้าเปิด QR สมาชิก</b><span>ใน LINE OA · QR เปลี่ยนทุก 60 วิ กันแคปหน้าจอไปใช้ซ้ำ</span></div>
+        <div class="st"><i>2</i><b>ร้านสแกนด้วยมือถือ</b><span>Merchant LIFF ใน LINE ของร้าน ไม่ต้องลงแอป</span></div>
+        <div class="st"><i>3</i><b>เลือก SKU · รส · จำนวน</b><span>ได้ข้อมูลรสทุกครั้ง แม้ไม่มีรหัสแยกตามรส</span></div>
+        <div class="st"><i>4</i><b>ลูกค้ากดยืนยัน</b><span>แต้มเข้าทันที · ร้านได้ “แต้มร้าน” ด้วย</span></div>
+      </div>
+      <div class="two">
+        <div>
+          <div class="sec">กันโกง</div>
+          <ul>
+            <li>ร้านต้องลงทะเบียน + ยืนยันโดยเซลส์/ยี่ปั๊ว</li>
+            <li>โควตาแต้มต่อร้าน ผูกกับยอดของที่ร้านรับเข้า</li>
+            <li>GPS ร้าน · จำกัดครั้ง/ลูกค้า/วัน</li>
+            <li>AI จับคู่ร้าน–ลูกค้าเดิมซ้ำ ๆ · สุ่มตรวจร้าน</li>
+          </ul>
+        </div>
+        <div>
+          <div class="sec">ทำไมร้านอยากร่วม</div>
+          <ul>
+            <li>แต้มร้านแลกส่วนลดสั่งของ Volt รอบถัดไป</li>
+            <li>ป้าย “ร้านสะสมแต้ม Volt” ดึงลูกค้าเข้าร้าน</li>
+            <li>ลูกค้าเลือกซื้อร้านที่สแกนได้ → ดันยอดกระป๋องสั้น</li>
+          </ul>
+        </div>
+      </div>
+      <div class="data">Data: ร้าน · พิกัด · SKU · รส · จำนวน · เวลา · ลูกค้า</div>
+    </div>
+
+    <div class="c">
+      <div class="top"><div><h3>ใบเสร็จ</h3><div class="who">7-Eleven · Lawson · Villa · Makro · CJ</div></div><span class="badge go">วันแรก</span></div>
+      <div class="sec">วิธีตรวจ</div>
+      <ul>
+        <li>OCR อ่านร้าน สาขา วันที่ เลขใบเสร็จ รายการ</li>
+        <li>เช็ก hash ภาพ + เลขใบเสร็จ กันส่งซ้ำ</li>
+        <li>AI ตรวจภาพตัดต่อ ฟอนต์/ระยะผิดรูป</li>
+        <li>ส่งได้ภายใน 7 วันหลังซื้อ</li>
+        <li>คะแนนต่ำ → ทีมตรวจภายใน 24 ชม.</li>
+        <li>เฟส 2: เชื่อม API 7-Eleven ถ้าตกลงได้</li>
+      </ul>
+      <div class="data">Data: ร้าน · สาขา · SKU · รส · ราคา</div>
+    </div>
+
+    <div class="c">
+      <div class="top"><div><h3>รหัสใต้ห่วง</h3><div class="who">ทุกกระป๋อง (Scenario A)</div></div><span class="badge wait">รอซัพพลายเออร์</span></div>
+      <div class="sec">วิธีตรวจ</div>
+      <ul>
+        <li>ระบบสร้างรหัสสุ่มไม่ซ้ำ ส่งโรงงานพิมพ์</li>
+        <li>ใช้ได้ครั้งเดียว · ผูกกับบัญชีทันที</li>
+        <li>กรอกผิดเกิน 5 ครั้ง → ล็อกชั่วคราว</li>
+        <li>ชุดรหัสแยก Size (ถ้าแยกรสไม่ได้ ให้ผู้ใช้เลือกรส)</li>
+        <li>เสียบเข้าระบบได้ทีหลัง ไม่ต้องรื้อของเดิม</li>
+      </ul>
+      <div class="data">Data: Size · Lot ผลิต · (รสที่ผู้ใช้เลือก)</div>
+    </div>
+
+    <div class="c">
+      <div class="top"><div><h3>ออนไลน์</h3><div class="who">Shopee · Lazada · Web · อื่น ๆ</div></div><span class="badge go">วันแรก</span></div>
+      <div class="sec">วิธีตรวจ</div>
+      <ul>
+        <li>กรอกเลขออเดอร์ + ภาพหน้าคำสั่งซื้อ</li>
+        <li>ร้าน Official ของ Volt: เทียบไฟล์/API ออเดอร์</li>
+        <li>ให้แต้มหลังสถานะ “ได้รับสินค้า”</li>
+        <li>1 เลขออเดอร์ใช้ได้ครั้งเดียว</li>
+        <li>ช่องทางอื่น ๆ → คิวทีมตรวจ</li>
+      </ul>
+      <div class="data">Data: Platform · SKU · จำนวนแพ็ก</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="lbl"><b>ทุกทาง → 1 Ledger</b><span>แต้มทุกแต้มรู้ที่มา</span></div>
+    <div class="f"><b>แต้มตามมูลค่า SKU</b>190 ml = 1 แต้ม · 310 ml = 2 แต้ม · PET ใหม่ = ตามราคา (ปรับได้ใน Back Office)</div>
+    <div class="f"><b>ยืนยันช่องทางได้</b>รางวัลพิเศษเช็กจากแต้มที่มาจาก 7-Eleven เท่านั้น แม้ลูกค้าสะสมหลายร้าน</div>
+    <div class="f"><b>ข้อเสนอ Scenario B+</b>ใบเสร็จ + Shop QR + ออนไลน์ เปิดปลาย ม.ค. ได้ ไม่ตัดใครออก · รหัสใต้ห่วงเป็น option</div>
+  </div>
+
+</div></body></html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
+<style>
+  .row { display: flex; gap: 34px; padding: 2px 6px 0; justify-content: center; height: 100%; }
+  .col { display: flex; flex-direction: column; align-items: center; width: 520px; }
+  .pair { display: flex; gap: 18px; align-items: flex-start; }
+  .cap { margin-top: 14px; text-align: center; }
+  .cap b { display: block; font: 600 21px/1.2 'Prompt'; color: var(--navy); }
+  .cap span { display: block; font: 400 15.5px/1.35 'Prompt'; color: var(--muted); margin-top: 3px; }
+  .cap .tag { margin: 0 0 6px; font-size: 15px; color: #fff; font-weight: 500; display: inline-block; }
+  .cap .tag.accent { color: var(--navy); }
+  .phone { width: 310px; height: 640px; }
+
+  .scr { font-size: 13.5px; }
+  .lbar { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 8px; font-weight: 600; color: #fff; background: #06c755; padding-top: 6px; }
+  .lbar small { font-weight: 400; font-size: 11px; opacity: .9; }
+  .top34 { height: 34px; flex: none; background: #06c755; }
+  .mbar { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 8px; font-weight: 600; color: var(--navy); }
+  .body { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
+  .card { border-radius: 16px; padding: 12px; color: #fff; background: linear-gradient(135deg, var(--navy), #5a3d8f); }
+  .card .t { display: flex; justify-content: space-between; align-items: center; }
+  .card .lv { background: var(--accent); color: var(--navy); font-weight: 700; border-radius: 999px; padding: 1px 9px; font-size: 12px; }
+  .card .pt { font: 600 26px/1.1 'Prompt'; margin-top: 6px; }
+  .card .pt small { font-size: 12px; font-weight: 400; opacity: .8; }
+  .prog { height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); margin-top: 6px; }
+  .prog i { display: block; height: 100%; width: 64%; border-radius: 3px; background: var(--accent); }
+  .card .nx { font-size: 11px; opacity: .85; margin-top: 4px; }
+  .qr { align-self: center; width: 150px; height: 150px; border-radius: 12px; border: 2px solid #eee; padding: 8px; background: #fff; }
+  .qr svg { width: 100%; height: 100%; }
+  .qrnote { text-align: center; font-size: 11.5px; color: var(--muted); margin-top: -4px; }
+  .qrnote b { color: var(--green); }
+  .acts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: auto; }
+  .acts div { background: var(--lav); border-radius: 10px; padding: 8px 4px; text-align: center; font-size: 11.5px; font-weight: 600; color: var(--navy); }
+
+  .cust { border-radius: 12px; background: #f6f5fb; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; }
+  .cust b { color: var(--navy); }
+  .ok { color: var(--green); font-weight: 600; font-size: 11.5px; }
+  .sku { border: 1.5px solid #e6e5ee; border-radius: 10px; padding: 7px 9px; }
+  .sku .h { display: flex; justify-content: space-between; font-weight: 600; color: var(--navy); font-size: 12.5px; }
+  .fl { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; font-size: 12px; }
+  .fl .d { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+  .stp { display: flex; align-items: center; gap: 7px; }
+  .stp i { width: 20px; height: 20px; border-radius: 6px; background: var(--lav); display: grid; place-items: center; font-style: normal; font-weight: 700; color: var(--navy); }
+  .stp b { width: 14px; text-align: center; }
+  .sum { display: flex; justify-content: space-between; align-items: center; background: var(--accent-soft); border-radius: 10px; padding: 7px 10px; font-weight: 600; color: var(--navy); }
+  .btn { background: var(--navy); color: #fff; text-align: center; border-radius: 12px; padding: 10px; font-weight: 600; font-size: 13.5px; }
+  .shopq { font-size: 11px; color: var(--muted); text-align: center; }
+
+  .noti { border-radius: 12px; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.12); padding: 8px 10px; font-size: 11.5px; line-height: 1.35; border-left: 4px solid #b04fb0; }
+  .noti b { color: #b04fb0; }
+  .sh { display: flex; justify-content: space-between; align-items: baseline; font-weight: 600; color: var(--navy); font-size: 13px; }
+  .sh small { font-weight: 400; color: var(--muted); font-size: 11px; }
+  .pin { border: 2px solid #e26bd0; border-radius: 12px; padding: 7px; display: flex; gap: 6px; }
+  .rw { flex: 1; border-radius: 9px; background: #faf9fd; padding: 6px; }
+  .rw .im { height: 40px; border-radius: 7px; background: linear-gradient(135deg, #e3e2ef, #cfcde0); margin-bottom: 4px; }
+  .rw .im.a { background: linear-gradient(135deg, #f7d9a6, #e9a23b); }
+  .rw b { display: block; font-size: 11px; line-height: 1.25; color: var(--ink); }
+  .rw span { font-size: 10.5px; color: var(--navy); font-weight: 600; }
+  .list { display: flex; flex-direction: column; gap: 5px; }
+  .li { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0eff5; padding-bottom: 5px; }
+  .li .im { width: 34px; height: 34px; border-radius: 8px; background: #e3e2ef; flex: none; }
+  .li div { flex: 1; font-size: 11.5px; line-height: 1.3; }
+  .li div span { color: var(--muted); font-size: 10.5px; }
+  .li em { font-style: normal; font-size: 10.5px; font-weight: 600; color: #fff; background: var(--navy); border-radius: 7px; padding: 3px 7px; }
+  .li em.t { background: var(--accent); color: var(--navy); }
+
+  .notes { display: flex; flex-direction: column; gap: 16px; width: 330px; padding-top: 12px; }
+  .nt { border-left: 4px solid var(--accent); padding: 2px 0 2px 10px; }
+  .nt b { display: block; font-size: 18px; color: var(--navy); font-weight: 600; line-height: 1.25; }
+  .nt span { display: block; font-size: 15px; color: var(--muted); line-height: 1.35; }
+</style></head>
+<body><div class="row">
+
+  <!-- Customer: member card + QR -->
+  <div class="col" style="width:340px">
+    <div class="phone"><div class="scr">
+      <div class="notch"></div>
+      <div class="top34"></div>
+      <div class="lbar">Volt Club <small>LINE OA · บัตรสมาชิก</small></div>
+      <div class="body">
+        <div class="card">
+          <div class="t"><span>คุณมายด์</span><span class="lv">LF2</span></div>
+          <div class="pt">148 <small>แต้ม</small></div>
+          <div class="prog"><i></i></div>
+          <div class="nx">อีก 52 แต้มขึ้น LF3 · ซื้อต่อเนื่อง 3 สัปดาห์แล้ว</div>
+        </div>
+        <div class="qr"><svg viewBox="0 0 21 21" shape-rendering="crispEdges"><path fill="#1d1d2b" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"/><path fill="#fff" d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"/><path fill="#1d1d2b" d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h1v2H8zM10 1h2v1h-2zM9 3h2v2H9zM12 4h1v3h-1zM8 6h2v1H8zM0 8h2v1H0zM3 8h3v1H3zM7 8h1v3H7zM9 8h3v1H9zM13 8h2v2h-2zM16 8h2v1h-2zM19 8h2v2h-2zM1 10h2v2H1zM4 10h2v1H4zM9 10h1v3H9zM11 10h2v2h-2zM15 10h3v1h-3zM17 12h3v1h-3zM0 12h1v1H0zM5 12h3v1H5zM14 12h2v3h-2zM10 14h3v1h-3zM8 15h1v3H8zM17 14h2v2h-2zM10 16h2v2h-2zM13 16h3v1h-3zM19 17h2v1h-2zM15 18h3v1h-3zM9 19h3v2H9zM13 19h1v2h-1zM18 19h1v2h-1z"/></svg></div>
+        <div class="qrnote">ให้ร้านสแกน · QR เปลี่ยนใน <b>0:42</b></div>
+        <div class="acts"><div>ส่งใบเสร็จ</div><div>กรอกรหัส</div><div>แลกรางวัล</div></div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="tag">ลูกค้า · LINE OA</span><b>บัตรสมาชิก + QR สะสมแต้ม</b><span>Rich Menu พาเข้า LIFF ไม่ต้องลงแอป</span></div>
+  </div>
+
+  <!-- Shop: scan & select SKU -->
+  <div class="col" style="width:340px">
+    <div class="phone"><div class="scr">
+      <div class="notch"></div>
+      <div class="status"></div>
+      <div class="mbar">สแกนสะสมแต้ม <span style="font-size:11px;color:#888;font-weight:400">ร้านเจ๊หน่อย · บางแค</span></div>
+      <div class="body" style="padding-top:2px">
+        <div class="cust"><div><b>คุณมายด์</b> · LF2<br><span style="font-size:11px;color:#888">สมาชิก Volt Club</span></div><span class="ok">✓ สแกนแล้ว</span></div>
+        <div class="sku">
+          <div class="h">กระป๋อง 190 ml <span>1 แต้ม/กระป๋อง</span></div>
+          <div class="fl"><span><i class="d" style="background:#f2c230"></i>เหลือง</span><div class="stp"><i>−</i><b>2</b><i>+</i></div></div>
+          <div class="fl"><span><i class="d" style="background:#3b8fe0"></i>ฟ้า</span><div class="stp"><i>−</i><b>1</b><i>+</i></div></div>
+          <div class="fl"><span><i class="d" style="background:#7a4fb5"></i>ม่วง</span><div class="stp"><i>−</i><b>0</b><i>+</i></div></div>
+        </div>
+        <div class="sku">
+          <div class="h">กระป๋อง 310 ml <span>2 แต้ม/กระป๋อง</span></div>
+          <div class="fl"><span><i class="d" style="background:#f2c230"></i>เหลือง</span><div class="stp"><i>−</i><b>1</b><i>+</i></div></div>
+        </div>
+        <div class="sum"><span>รวม 4 กระป๋อง</span><span>+5 แต้ม</span></div>
+        <div class="btn">ส่งให้ลูกค้ายืนยัน</div>
+        <div class="shopq">โควตาร้านวันนี้ 38 / 120 แต้ม · แต้มร้าน +5</div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="tag accent">ร้านโชห่วย · Merchant LIFF</span><b>สแกน → เลือก SKU/รส → ยืนยัน</b><span>ได้ข้อมูลรสทุกการซื้อ · มีโควตากันโกง</span></div>
+  </div>
+
+  <!-- Rewards page -->
+  <div class="col" style="width:340px">
+    <div class="phone"><div class="scr">
+      <div class="notch"></div>
+      <div class="status"></div>
+      <div class="mbar">แลกรางวัล <span style="font-size:12px;color:var(--accent)">148 แต้ม</span></div>
+      <div class="body" style="padding-top:2px;gap:7px">
+        <div class="noti"><b>AI Noti</b> · อีก 12 แต้มแลก “กระเป๋า Volt × 3MD” ได้ ซื้อ 310 ml วันนี้ได้ x2</div>
+        <div class="sh">📌 Pin · เฉพาะ LF2 <small>ปลดล็อกแล้ว</small></div>
+        <div class="pin">
+          <div class="rw"><div class="im a"></div><b>เสื้อ Volt × 3MD</b><span>120 แต้ม</span></div>
+          <div class="rw"><div class="im a"></div><b>สิทธิ์ลุ้น Backstage</b><span>40 แต้ม · 7-11</span></div>
+        </div>
+        <div class="sh">Top Redeem</div>
+        <div class="list">
+          <div class="li"><div class="im"></div><div>คูปอง Volt 7-Eleven 10฿<br><span>30 แต้ม</span></div><em>แลก</em></div>
+          <div class="li"><div class="im"></div><div>Shopee Voucher 100฿<br><span>90 แต้ม หรือ 60 แต้ม + 29฿</span></div><em class="t">แลก+เติม</em></div>
+        </div>
+        <div class="sh">ทั้งหมด <small>Lucky Draw · ประมูล · Flash</small></div>
+        <div class="list">
+          <div class="li"><div class="im"></div><div>ลุ้นบัตรคอนเสิร์ต 3MD<br><span>20 แต้ม/สิทธิ์ · สูงสุด 5 สิทธิ์</span></div><em>ลุ้น</em></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span class="tag">ลูกค้า · หน้ารางวัล</span><b>Pin · Top Redeem · ทั้งหมด</b><span>แลก หรือ แลก + เติมเงิน · AI Push/Pull</span></div>
+  </div>
+
+  <div class="notes">
+    <div class="nt"><b>QR เปลี่ยนทุก 60 วิ</b><span>แคปจอไปให้ร้านอื่นสแกนแทนไม่ได้</span></div>
+    <div class="nt"><b>ลูกค้ากดยืนยันทุกครั้ง</b><span>ร้านใส่จำนวนเกินไม่ได้ถ้าลูกค้าไม่ยอมรับ</span></div>
+    <div class="nt"><b>โควตาร้าน</b><span>ตามยอดของที่ร้านรับเข้า · ร้านที่ดีขยายโควตาได้</span></div>
+    <div class="nt"><b>Pin ตาม Tier</b><span>รางวัลดีสงวนให้คนซื้อสม่ำเสมอ ไม่ใช่สายล่ารางวัล</span></div>
+    <div class="nt"><b>แลก + เติมเงิน</b><span>ลูกค้าแลกได้เร็วขึ้น · ลดต้นทุนรางวัลต่อชิ้น</span></div>
+    <div class="nt"><b>จำกัดสิทธิ์ Lucky Draw</b><span>ต่อคนต่อรอบ · ใบอนุญาตจับรางวัล + Audit Log</span></div>
+  </div>
+
+</div></body></html>

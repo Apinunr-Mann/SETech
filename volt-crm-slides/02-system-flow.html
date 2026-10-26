@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
+<style>
+  .wrap { padding: 4px 4px 6px; display: flex; flex-direction: column; gap: 16px; height: 100%; }
+  .lane { flex: 1; display: grid; grid-template-columns: 150px 1fr; gap: 14px; }
+  .tl { border-radius: 18px; background: var(--navy); color: #fff; padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; }
+  .tl b { font: italic 600 22px/1.15 'Prompt'; }
+  .tl span { font-size: 15px; opacity: .8; margin-top: 4px; line-height: 1.35; }
+  .tl.acc { background: var(--accent); color: var(--navy); }
+  .nodes { display: grid; grid-template-columns: 1fr 22px 1fr 22px 1fr 22px 1fr 22px 1fr; align-items: stretch; }
+  .ar { display: grid; place-items: center; }
+  .ar svg { width: 16px; height: 26px; fill: var(--navy); }
+  .n { background: var(--paper); border: 2px solid var(--line); border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .n.hi { border-color: var(--navy); }
+  .n.ac { border-color: var(--accent); background: #fffaf2; }
+  .n .h { display: flex; align-items: baseline; gap: 8px; }
+  .n .h i { font: italic 600 32px/1 'Prompt'; color: var(--accent); }
+  .n .h b { font-size: 23px; color: var(--navy); font-weight: 600; line-height: 1.2; }
+  .n .sub { font-size: 15px; color: var(--muted); margin-top: -4px; }
+  .n ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .n li { font-size: 16.5px; line-height: 1.4; color: var(--ink); padding-left: 12px; position: relative; }
+  .n li:before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .n .grp { font-size: 15px; font-weight: 600; color: var(--navy-2); margin-top: 2px; }
+  .ai { margin-top: auto; align-self: flex-start; font-size: 14px; font-weight: 600; color: #fff; background: #b04fb0; border-radius: 8px; padding: 3px 9px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chips span { font-size: 15px; border-radius: 999px; padding: 2px 9px; background: var(--lav); color: var(--navy); font-weight: 500; }
+  .chips span.on { background: var(--navy); color: #fff; }
+  .foot { flex: none; display: flex; gap: 12px; }
+  .foot div { flex: 1; background: var(--lav); border-radius: 14px; padding: 8px 14px; font-size: 15px; color: var(--navy); line-height: 1.35; }
+  .foot b { font-weight: 600; }
+</style></head>
+<body><div class="wrap">
+
+  <div class="lane">
+    <div class="tl"><b>EARN</b><span>เก็บแต้มจากการซื้อจริง ทุกช่องทาง</span></div>
+    <div class="nodes">
+      <div class="n">
+        <div class="h"><i>1</i><b>ช่องทางซื้อ</b></div>
+        <div class="grp">Online</div>
+        <ul><li>Shopee · Lazada · Web</li><li>อื่น ๆ (กรอกเอง)</li></ul>
+        <div class="grp">Offline</div>
+        <ul><li>ใบเสร็จ Modern trade</li><li>รหัสใต้ห่วง (Scenario A)</li><li><b>ร้านโชห่วยสแกน QR</b></li><li>อื่น ๆ (ส่งรูป)</li></ul>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n hi">
+        <div class="h"><i>2</i><b>In · LINE OA</b></div>
+        <div class="sub">Gateway เข้าเว็บ CRM (LIFF)</div>
+        <ul><li>Rich Menu: สะสมแต้ม · แลกรางวัล · บัตรสมาชิก</li><li>ถ่าย/อัปโหลดใบเสร็จ</li><li>กรอกรหัส · ผูกเลขออเดอร์</li><li>Dynamic QR ให้ร้านสแกน</li></ul>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n ac">
+        <div class="h"><i>3</i><b>Check</b></div>
+        <div class="sub">ตรวจด้วย AI + คน</div>
+        <ul><li>OCR อ่านร้าน วันที่ SKU รส</li><li>AI Fraud Score: ใบซ้ำ ภาพตัดต่อ ความถี่ผิดปกติ</li><li>คะแนนสูง → อนุมัติอัตโนมัติ</li><li>คะแนนต่ำ → คิวทีมตรวจ</li></ul>
+        <span class="ai">AI</span>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n hi">
+        <div class="h"><i>4</i><b>DB</b></div>
+        <div class="sub">Member + Point Ledger กลาง</div>
+        <ul><li>โปรไฟล์ LINE + ความยินยอม PDPA</li><li>ทุกรายการติดป้าย: ช่องทาง · ร้าน · SKU · รส · เวลา</li><li>แต้มตามราคา SKU (310 ml > 190 ml)</li></ul>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n">
+        <div class="h"><i>5</i><b>Display</b></div>
+        <div class="sub">Dashboard Volt + ทีมงาน</div>
+        <div class="chips"><span class="on">Real-time</span><span class="on">RFM</span><span>อื่น ๆ</span></div>
+        <ul><li>First-time vs Repeat</li><li>รส · ช่วงเวลา · ร้าน · ภาค</li><li>ยอดแลกรางวัล · กระป๋องรวม</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="tl acc"><b>MANAGE · BURN · ENGAGE</b><span>คุมรางวัล ใช้แต้ม สร้างคนดื่มตัวจริง</span></div>
+    <div class="nodes">
+      <div class="n">
+        <div class="h"><i>6</i><b>Management</b></div>
+        <div class="sub">Back Office · กติกาแคมเปญ</div>
+        <ul><li>ตั้งแต้มต่อ SKU · โบนัส · Cap ต่อคน</li><li>จัดการรางวัลและสต็อก</li><li>AI ดูยอดแลกเทียบแผน ปล่อยสต็อกเป็นรอบ</li></ul>
+        <span class="ai">AI Pacing</span>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n ac">
+        <div class="h"><i>7</i><b>Gamification</b></div>
+        <div class="sub">Get Point &lt; ซื้อ / ทำกิจกรรม</div>
+        <div class="chips"><span>LF1</span><span class="on">LF2</span><span>LF3</span><span>LF4</span><span>LF5</span></div>
+        <ul><li>Tier ขึ้นตามความถี่การซื้อ ไม่ใช่ยอดครั้งเดียว</li><li>ภารกิจ / เกม Three Man Down</li></ul>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n hi">
+        <div class="h"><i>8</i><b>รางวัล</b></div>
+        <div class="sub">หน้าแลกรางวัลใน LIFF</div>
+        <ul><li><b>Pin:</b> เฉพาะ Tier ของฉัน (เช่น LF2)</li><li><b>Top Redeem</b> · ทั้งหมด</li><li>แลก / แลก + เติมเงิน</li><li>สิทธิ์เฉพาะคนซื้อ 7-Eleven</li></ul>
+        <span class="ai">AI Noti · Push / Pull</span>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n">
+        <div class="h"><i>9</i><b>Burn Point</b></div>
+        <div class="sub">ใช้แต้มให้สนุก ไม่เฟ้อ</div>
+        <ul><li>Lucky Draw (บัตรคอนเสิร์ต · รางวัลใหญ่)</li><li>ประมูลแต้ม (Merch ลิมิเต็ด)</li><li>Flash Deal ตามเวลา</li><li><b>x2</b> แต้มตามช่วงเวลา / โปรฯ</li></ul>
+      </div>
+      <div class="ar"><svg viewBox="0 0 16 26"><path d="M0 0l16 13L0 26z"/></svg></div>
+      <div class="n">
+        <div class="h"><i>10</i><b>Community</b></div>
+        <div class="sub">+ Social</div>
+        <ul><li>อันดับคนดื่ม Volt รายเดือน</li><li>แชร์ Tier / รางวัลลงโซเชียล</li><li>ชวนเพื่อนได้แต้ม (มี Cap)</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div><b>1 บัญชี LINE = 1 สมาชิก</b> · ทุกช่องทางเข้า Point Ledger เดียวกัน</div>
+    <div><b>AI Noti:</b> Push “อีก 6 แต้มแลก ... ได้” · Pull ถามแชตแล้วพาไปหน้ารางวัล</div>
+    <div><b>Audit Log</b> ทุกแต้ม ทุกการสุ่ม ทุกการแก้ไขจาก Admin</div>
+  </div>
+
+</div></body></html>
