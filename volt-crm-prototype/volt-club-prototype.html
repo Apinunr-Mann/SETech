@@ -1,0 +1,607 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Volt Club Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,500;0,600;0,700;1,600;1,700;1,800;1,900&family=Prompt:wght@400;500;600&display=swap">
+<style>
+/* Layout: one live demo stage — customer phone, shop phone and an event feed side by side, the back office below; all share one state */
+:root{
+  --n950:#060A2B;--n900:#0B1247;--n800:#13207A;--blue:#2F6BFF;--cyan:#19C3F0;--yel:#FFE11A;--pur:#8A4DFF;
+  --wh:#FFFFFF;--mut:#AEB8EC;--line:rgba(255,255,255,.14);--glass:rgba(255,255,255,.07);
+  --ink:#0B1247;--lbg:#F2F4FB;--lline:#DCE1F3;--lmut:#525C8A;--ok:#17A866;--warn:#B87400;--bad:#D93A40;
+  --display:'Kanit','Prompt',sans-serif;--body:'Prompt','Kanit',sans-serif;color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--n950);color:var(--wh);font:400 14px/1.45 var(--body);padding-block:0 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.wrap{max-width:1380px;margin:0 auto}
+svg.i{width:18px;height:24px;fill:currentColor;flex:none}
+.hero{position:relative;padding:32px 0 22px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 80% 0%,rgba(47,107,255,.35),transparent 70%);pointer-events:none}
+.logo{font:italic 900 clamp(40px,7vw,72px)/.9 var(--display);letter-spacing:-.02em;display:flex;align-items:center;gap:6px;text-shadow:0 0 24px rgba(47,107,255,.8)}
+.logo svg{width:.6em;height:.8em;fill:var(--yel)}
+.hero p{color:var(--mut);max-width:62ch;position:relative}
+.kick{font:italic 700 14px var(--display);letter-spacing:.08em;color:var(--yel);text-transform:uppercase}
+.hctl{position:relative;display:flex;gap:8px;flex-wrap:wrap}
+.stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:28px 22px;margin-top:26px;align-items:start}
+.col{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
+.lab{font:italic 700 16px var(--display);display:flex;align-items:center;gap:8px}
+.lab i{font-style:normal;color:var(--n900);background:var(--yel);border-radius:6px;padding:0 7px;font-size:12px}
+.ph{width:min(360px,100%);height:760px;border-radius:46px;background:#000;padding:10px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 30px 60px rgba(0,0,0,.5),0 0 60px rgba(47,107,255,.25)}
+.scr{height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.dk{background:radial-gradient(120% 60% at 50% 0%,#1A2A9A 0%,var(--n900) 55%,var(--n950) 100%);color:var(--wh)}
+.lt{background:var(--lbg);color:var(--ink)}
+.bar{height:60px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px 0}
+.bar b{font:italic 700 18px var(--display);flex:1}
+.x{width:40px;height:40px;border-radius:50%;border:0;background:var(--glass);display:grid;place-items:center;font-size:16px;flex:none}
+.lt .x{background:#E3E7F6}
+.bd{flex:1;min-height:0;padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;scrollbar-width:thin}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:14px}
+.lt .card{background:#fff;border-color:var(--lline)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:14px;border:0;font:italic 700 16px var(--display);text-decoration:none;padding:0 14px;flex:none}
+.by{background:var(--yel);color:var(--n900);box-shadow:0 6px 20px rgba(255,225,26,.25)}
+.bn{background:var(--n900);color:#fff}
+.bo{background:transparent;border:1.5px solid var(--line);color:inherit}
+.lt .bo{border-color:var(--ink)}
+.bsm{min-height:36px;font-size:13px;border-radius:10px;padding:0 12px}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 11px;font-size:12.5px;font-weight:500;background:var(--glass);border:1px solid var(--line)}
+button.chip{min-height:32px}
+.chip.y,.chip[aria-pressed=true]{background:var(--yel);color:var(--n900);border-color:var(--yel);font-weight:600}
+.lt .chip{background:#E8ECF8;border-color:var(--lline)}
+.mut{color:var(--mut)}.lt .mut{color:var(--lmut)}
+.num{font:italic 800 1em var(--display);font-variant-numeric:tabular-nums}
+.h3{font:italic 700 16px var(--display)}
+.sp{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ai{border:1px solid rgba(25,195,240,.6);background:rgba(25,195,240,.1);border-radius:14px;padding:10px 12px;font-size:13px}
+.ai b{color:var(--cyan);font:italic 700 12px var(--display);letter-spacing:.06em}
+.ok{color:#4BE39A}.warn{color:#FFC14D}.bad{color:#FF7A7F}
+.lt .ok,.bo-ui .ok{color:var(--ok)}.lt .warn,.bo-ui .warn{color:var(--warn)}.lt .bad,.bo-ui .bad{color:var(--bad)}
+.f{display:flex;flex-direction:column;gap:5px;font-size:13px}
+.f>span{font-weight:600}
+.in{min-height:44px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.08);padding:0 12px;width:100%}
+.in option{color:#111}
+.lt .in,.bo-ui .in{background:#fff;border:1.5px solid var(--lline);color:var(--ink)}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px}
+.chk input{width:18px;height:18px;accent-color:var(--yel)}
+.can{position:relative;display:inline-block;width:34px;height:64px;border-radius:7px 7px 9px 9px;flex:none;box-shadow:inset -6px 0 0 rgba(0,0,0,.18),inset 4px 0 0 rgba(255,255,255,.25)}
+.can::before{content:"";position:absolute;left:3px;right:3px;top:-4px;height:6px;border-radius:3px;background:#C9CFE6}
+.can b{position:absolute;inset:0;display:grid;place-items:center;writing-mode:vertical-rl;transform:rotate(180deg);font:italic 900 15px/1 var(--display);color:var(--n900)}
+.can.c{background:var(--cyan)}.can.y{background:var(--yel)}.can.p{background:var(--pur)}.can.p b{color:#fff}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dot.y{background:var(--yel)}.dot.c{background:var(--cyan)}.dot.p{background:var(--pur)}
+/* LINE */
+.lhead{background:#fff;color:#111;height:60px;flex:none;display:flex;align-items:center;gap:10px;padding:12px 14px 0}
+.av{width:34px;height:34px;border-radius:50%;background:var(--n900);display:grid;place-items:center;flex:none}
+.av svg{width:16px;height:20px;fill:var(--yel)}
+.chat{flex:1;min-height:0;background:#8CABD9;padding:12px;display:flex;flex-direction:column;gap:9px;overflow-y:auto}
+.bub{max-width:84%;background:#fff;color:#111;border-radius:16px;padding:8px 12px;font-size:13px;align-self:flex-start;white-space:pre-line}
+.bub.me{align-self:flex-end;background:#9BE36B}
+.bub.ai{border:1.5px solid var(--cyan)}
+.bub.ai::before{content:"AI · " attr(data-k);display:block;color:#0A7FA6;font:italic 700 11px var(--display)}
+.promo{align-self:flex-start;width:84%;border-radius:16px;overflow:hidden;background:var(--n900);color:#fff;flex:none}
+.promo .art{height:96px;position:relative;background:radial-gradient(80% 90% at 70% 40%,#2F6BFF,#0B1247);display:flex;align-items:flex-end;justify-content:flex-end;gap:6px;padding:10px 14px}
+.promo .art em{position:absolute;left:12px;top:12px;font:italic 900 22px/1 var(--display);color:var(--yel)}
+.qrep{flex:none;display:flex;gap:6px;padding:8px 10px;background:#fff;overflow-x:auto}
+.qrep button{flex:none;border:1px solid #B9C4E4;background:#fff;color:#123;border-radius:999px;padding:5px 12px;font-size:12px}
+.rich{flex:none;background:var(--n900);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px}
+.rich button{min-height:74px;background:var(--n900);color:#fff;border:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12px;font-weight:500}
+.rich button svg{width:22px;height:22px;fill:none;stroke:var(--yel);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rich button:first-child{background:var(--yel);color:var(--n900)}.rich button:first-child svg{stroke:var(--n900)}
+/* card */
+.mcard{border-radius:22px;padding:16px;background:linear-gradient(135deg,#2F6BFF 0%,#1B2C9E 45%,#0B1247 100%);border:1px solid rgba(255,255,255,.2);position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(47,107,255,.35);flex:none}
+.mcard .bg{position:absolute;right:-14px;top:-10px;width:130px;height:170px;fill:rgba(255,225,26,.16)}
+.lvl{font:italic 800 13px var(--display);background:var(--yel);color:var(--n900);border-radius:999px;padding:2px 10px}
+.prog{height:8px;border-radius:4px;background:rgba(255,255,255,.2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--yel);border-radius:4px}
+.qr{align-self:center;width:172px;height:172px;background:#fff;border-radius:18px;padding:12px;box-shadow:0 0 0 4px rgba(255,225,26,.6),0 0 30px rgba(255,225,26,.35);flex:none}
+.qr svg{width:100%;height:100%;display:block}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px;flex:none}
+.seg button{border:0;background:none;padding:8px 0;border-radius:10px;font-weight:500;font-size:13px}
+.seg button[aria-pressed=true]{background:var(--yel);color:var(--n900);font-weight:600}
+.li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--glass);border:1px solid var(--line);font-size:13px;flex:none}
+.li .t{flex:1;min-width:0}.li .t b{display:block;font-weight:600}
+.lt .li{background:#fff;border-color:var(--lline)}
+.thumb{width:44px;height:44px;border-radius:12px;flex:none;display:grid;place-items:center;font:italic 800 12px var(--display);color:#fff;background:var(--n800)}
+.thumb svg{width:20px;height:24px;fill:var(--yel)}
+.mini{padding:0 12px;min-height:34px;border-radius:10px;font:italic 700 13px var(--display);border:0;background:var(--yel);color:var(--n900);flex:none}
+.mini.o{background:transparent;border:1.5px solid var(--yel);color:var(--yel)}
+.lock{font-size:11.5px;color:var(--mut);flex:none;text-align:right}
+.pin{border:1.5px solid var(--yel);border-radius:18px;padding:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:rgba(255,225,26,.06);flex:none}
+.rw{border-radius:14px;background:rgba(255,255,255,.08);padding:8px;display:flex;flex-direction:column;gap:4px;font-size:12.5px;text-align:left;border:0;color:inherit}
+.rw .im{height:58px;border-radius:10px;display:grid;place-items:center;background:radial-gradient(70% 80% at 50% 30%,#2F6BFF,#0B1247)}
+.rw .im svg{width:26px;height:30px;fill:var(--yel)}
+.opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:16px;padding:12px;cursor:pointer;flex:none}
+.opt.on{border-color:var(--yel);background:rgba(255,225,26,.07)}
+.opt input{accent-color:var(--yel);width:20px;height:20px}
+.tiers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;flex:none}
+.tiers span{text-align:center;padding:8px 0;border-radius:12px;font:italic 800 14px var(--display);border:1px solid var(--line);color:var(--mut)}
+.tiers span.done{background:rgba(255,255,255,.12);color:#fff}
+.tiers span.on{background:var(--yel);color:var(--n900);border-color:var(--yel);box-shadow:0 0 16px rgba(255,225,26,.45)}
+.tick{width:22px;height:22px;border-radius:7px;border:2px solid var(--yel);flex:none;display:grid;place-items:center;font-size:13px;color:var(--n900)}
+.tick.on{background:var(--yel)}
+.hist{display:flex;flex-direction:column;font-size:13px}
+.hist div{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+.big{font:italic 900 34px/1 var(--display)}
+.center{text-align:center;align-items:center}
+/* modal inside a phone */
+.sheet{position:absolute;inset:0;background:rgba(3,6,30,.72);display:flex;align-items:flex-end;z-index:5}
+.sheet>div{width:100%;background:var(--n900);border-top:2px solid var(--yel);border-radius:26px 26px 0 0;padding:18px 16px 22px;display:flex;flex-direction:column;gap:12px}
+.lt .sheet>div{background:#fff;color:var(--ink)}
+/* shop */
+.shead{background:var(--n900);color:#fff;padding:24px 16px 14px;flex:none;display:flex;flex-direction:column;gap:2px}
+.shead small{color:var(--mut)}
+.cam{height:170px;border-radius:18px;background:#1C2138;display:grid;place-items:center;position:relative;overflow:hidden;flex:none;border:0;width:100%;color:#fff}
+.cam i{width:110px;height:110px;border:3px solid var(--yel);border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+.cam::after{content:"";position:absolute;left:24%;right:24%;top:50%;height:2px;background:var(--yel);box-shadow:0 0 12px var(--yel)}
+.cam span{position:absolute;bottom:10px;font-size:12px;font-weight:600}
+.step{display:flex;align-items:center;gap:8px}
+.step button{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--lline);background:#fff;font-size:18px;color:var(--ink)}
+.step b{width:20px;text-align:center}
+.kpi2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;flex:none}
+.kpi2 .card b{display:block;font:italic 800 26px/1.1 var(--display)}
+/* feed */
+.feed{width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.panel h3{font:italic 800 18px var(--display)}
+.ev{display:flex;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line)}
+.ev i{font-style:normal;flex:none;font-size:11px;font-weight:600;border-radius:6px;padding:1px 6px;height:fit-content;margin-top:2px}
+.ev i.c{background:var(--yel);color:var(--n900)}.ev i.s{background:var(--cyan);color:var(--n900)}.ev i.b{background:#fff;color:var(--n900)}.ev i.a{background:var(--pur);color:#fff}
+.ev time{color:var(--mut);font-size:11px;flex:none;margin-left:auto}
+.try{display:flex;flex-direction:column;gap:6px;font-size:13px;list-style:none;counter-reset:t}
+.try li{display:flex;gap:8px;counter-increment:t}
+.try li::before{content:counter(t);flex:none;width:20px;height:20px;border-radius:50%;background:var(--yel);color:var(--n900);font:italic 800 12px/20px var(--display);text-align:center}
+.try li.done{color:var(--mut);text-decoration:line-through}
+/* desktop */
+.dtbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:34px 0 12px}
+.dtbar h2{font:italic 800 clamp(22px,3vw,30px) var(--display);margin-right:auto;text-transform:uppercase}
+.dtbar h2 em{font-style:inherit;color:var(--yel)}
+.dtw{width:100%;max-width:100%;aspect-ratio:1280/840;position:relative;overflow:hidden;border-radius:14px;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 30px 60px rgba(0,0,0,.5)}
+.dt{position:absolute;left:0;top:0;width:1280px;height:840px;transform-origin:0 0;display:flex;flex-direction:column;overflow:hidden}
+.chrome{height:36px;flex:none;background:#1A1F3D;display:flex;align-items:center;gap:7px;padding:0 14px}
+.chrome i{width:11px;height:11px;border-radius:50%;background:#3A4170}
+.chrome span{margin-left:14px;background:#262C52;border-radius:7px;padding:3px 14px;font-size:12px;color:var(--mut);width:380px}
+.bo-ui{flex:1;min-height:0;display:flex;background:var(--lbg);color:var(--ink)}
+.side{width:220px;flex:none;background:var(--n900);color:#fff;padding:18px 12px;display:flex;flex-direction:column;gap:4px}
+.side .logo{font-size:30px;text-shadow:none;padding:0 10px 2px}
+.side small{color:var(--mut);padding:0 10px 14px;font-size:12px}
+.side button{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;color:#D5DBFA;background:none;border:0;font-size:14px;font-weight:500;text-align:left}
+.side button[aria-current=page]{background:var(--yel);color:var(--n900);font-weight:600}
+.side em{font-style:normal;font-size:11px;background:var(--bad);color:#fff;border-radius:999px;padding:1px 7px}
+.main{flex:1;min-width:0;padding:20px 24px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.mh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.mh h3{font:italic 800 26px var(--display)}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.kpi{background:#fff;border:1px solid var(--lline);border-radius:14px;padding:12px 14px}
+.kpi small{color:var(--lmut);font-size:12.5px}
+.kpi b{display:block;font:italic 800 26px/1.15 var(--display);font-variant-numeric:tabular-nums}
+.kpi em{font-style:normal;font-size:12px;font-weight:600;color:var(--ok)}
+.pn{background:#fff;border:1px solid var(--lline);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pn h4{font:italic 700 15px var(--display)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hb{display:grid;grid-template-columns:86px 1fr 46px;gap:8px;align-items:center;font-size:12.5px}
+.hb i{height:14px;border-radius:0 4px 4px 0;background:var(--n800);display:block}
+.hb b{text-align:right;font-variant-numeric:tabular-nums}
+.vb{height:150px;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid var(--lline);padding:0 4px}
+.vb div{flex:1;display:flex;flex-direction:column-reverse;height:100%;gap:2px}
+.vb i{display:block;border-radius:3px 3px 0 0}
+.xl{display:flex;gap:8px;padding:0 4px;font-size:11px;color:var(--lmut)}.xl span{flex:1;text-align:center}
+.leg{display:flex;gap:12px;font-size:11.5px;color:var(--lmut)}.leg span{display:flex;align-items:center;gap:5px}
+.al{font-size:13px;border-radius:10px;padding:8px 10px;border:0;text-align:left}
+.al.r{background:#FDECEC;color:#9E1F25}.al.a{background:#FFF4DC;color:#7A4C00}.al.g{background:#E6F7EE;color:#0F6B40}
+.tbl{background:#fff;border:1px solid var(--lline);border-radius:14px;overflow:hidden;font-size:13px}
+.tr{display:grid;gap:10px;padding:10px 14px;align-items:center;border-top:1px solid #EEF1FA;width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;color:inherit}
+.tr.th{border-top:0;font-size:12px;color:var(--lmut);background:#F8F9FE}
+button.tr:hover{background:#F8F9FE}
+.tr.sel{background:#FFFBE0;box-shadow:inset 3px 0 0 var(--yel)}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;width:fit-content}
+.pill.r{background:#FDECEC;color:#9E1F25}.pill.a{background:#FFF4DC;color:#7A4C00}.pill.g{background:#E6F7EE;color:#0F6B40}.pill.n{background:#E8ECF8;color:var(--ink)}
+.lbtn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border-radius:10px;font:italic 700 14px var(--display);border:0}
+.lbtn.y{background:var(--yel);color:var(--n900)}.lbtn.n{background:var(--n900);color:#fff}.lbtn.o{background:#fff;border:1.5px solid var(--n900);color:var(--n900)}.lbtn.r{background:#fff;border:1.5px solid var(--bad);color:var(--bad)}
+.rcpt{border-radius:12px;background:repeating-linear-gradient(0deg,#fff 0 18px,#F1F3FA 18px 19px);border:1px solid var(--lline);padding:16px;font:12px/1.6 ui-monospace,monospace;color:#333}
+.rcpt.blur{filter:blur(.8px)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:13.5px}.kv span:nth-child(odd){color:var(--lmut)}
+.meter{display:flex;align-items:center;gap:8px;font-size:12px;font-variant-numeric:tabular-nums}
+.meter span{flex:1;height:8px;border-radius:4px;background:#E8ECF8;position:relative;overflow:hidden}
+.meter span i{position:absolute;inset:0 auto 0 0;border-radius:4px}
+.meter span u{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink)}
+.aibox{background:#fff;border:1.5px solid var(--cyan);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.aibox h4{color:#0A7FA6;font:italic 700 15px var(--display)}
+.air{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px}
+.fld{display:grid;grid-template-columns:1fr 90px;gap:8px 12px;align-items:center;font-size:13.5px}
+.fld input{min-height:36px;border:1.5px solid var(--lline);border-radius:8px;padding:0 10px;font:600 14px var(--body);background:#fff;color:var(--ink);width:100%}
+.tog{width:44px;height:26px;border-radius:13px;border:0;background:#C5CBE3;position:relative;flex:none}
+.tog::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.tog[aria-pressed=true]{background:var(--ok)}.tog[aria-pressed=true]::after{left:21px}
+.note{font-size:12px;color:var(--lmut)}
+.empty{padding:24px;text-align:center;color:var(--lmut);font-size:13px}
+/* consumer desktop */
+.cdk{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--n950);color:#fff;overflow-y:auto}
+.cnav{display:flex;align-items:center;gap:26px;padding:14px 40px;border-bottom:1px solid var(--line)}
+.cnav .logo{font-size:32px;text-shadow:none}
+.cnav nav{display:flex;gap:20px;flex:1;font-weight:500;color:var(--mut)}
+.cbody{padding:22px 40px;display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:18px;align-content:start}
+.banner{grid-column:1/-1;height:180px;border-radius:22px;position:relative;overflow:hidden;background:radial-gradient(60% 120% at 75% 50%,#2F6BFF 0%,#13207A 45%,#060A2B 100%);display:flex;align-items:center;padding:0 40px;gap:30px}
+.banner h3{font:italic 900 42px/.95 var(--display);text-transform:uppercase}
+.banner h3 em{font-style:inherit;color:var(--yel)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--yel);color:var(--n900);font-weight:600;border-radius:14px;padding:12px 18px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:50;max-width:min(520px,calc(100% - 32px))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="bolt" viewBox="0 0 24 32"><path d="M15 0L2 18h8l-3 14L22 12h-8l4-12z"/></symbol></svg>
+
+<div class="wrap">
+  <header class="hero">
+    <div style="position:relative;display:flex;flex-direction:column;gap:8px">
+      <span class="kick">Interactive Prototype · กดเล่นได้ทุกฟีเจอร์</span>
+      <div class="logo" aria-label="VOLT Club">VOLT<svg viewBox="0 0 24 32" aria-hidden="true"><use href="#bolt"/></svg>CLUB</div>
+      <p>มือถือลูกค้า มือถือร้านโชห่วย และหลังบ้าน ใช้ข้อมูลชุดเดียวกัน ทำอะไรในเครื่องหนึ่ง อีกเครื่องเห็นผลทันที · ข้อมูลทั้งหมดเป็นตัวอย่าง</p>
+    </div>
+    <div class="hctl"><button class="btn bo bsm" data-a="week">⏭ ข้ามไปสัปดาห์ถัดไป</button><button class="btn by bsm" data-a="reset">รีเซ็ตเดโม</button></div>
+  </header>
+
+  <div class="stage">
+    <div class="col"><div class="lab"><i>C</i>ลูกค้า · LINE OA</div><div class="ph"><div class="scr" id="cust"></div></div></div>
+    <div class="col"><div class="lab"><i>S</i>ร้านโชห่วย · Merchant</div><div class="ph"><div class="scr lt" id="shop"></div></div></div>
+    <div class="col"><div class="feed" id="feed"></div></div>
+  </div>
+
+  <div class="dtbar"><h2>หลังบ้าน · <em>Desktop</em></h2><button class="chip" data-a="dtview" data-v="bo" id="tab-bo">Back Office</button><button class="chip" data-a="dtview" data-v="cd" id="tab-cd">ลูกค้า Desktop</button></div>
+  <div class="dtw"><div class="dt" id="desk"></div></div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const bolt=(c)=>`<svg class="${c||''}" viewBox="0 0 24 32" aria-hidden="true"><use href="#bolt"/></svg>`;
+const SKU={s190:{n:'กระป๋อง 190 ml',s:'190 ml'},s310:{n:'กระป๋อง 310 ml',s:'310 ml'},pet:{n:'PET ขวดใหญ่',s:'PET'}};
+const FL={y:'Tropical',c:'Blueberry',p:'Forest Fruit'};
+const TIER=[{k:'LF1',w:0,d:'สมัครสมาชิก'},{k:'LF2',w:2,d:'ซื้อ 2 สัปดาห์ติด'},{k:'LF3',w:4,d:'ซื้อ 4 สัปดาห์ติด'},{k:'LF4',w:8,d:'8 สัปดาห์ + ครบ 3 รส'},{k:'LF5',w:12,d:'12 สัปดาห์ + 7-11 ≥ 30'}];
+const CODES={'VOLT-7K2P-9QX4':'s310','VOLT-3MDX-2027':'s310','VOLT-A1B2-C3D4':'s190'};
+const now=()=>new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+
+function seed(){return{
+  user:{name:'มายด์',pts:148,streak:3,week:true,otp:false,codeFails:0,earnedToday:0,scansToday:0,flav:{y:true,c:false,p:false},cans:0},
+  rules:{s190:1,s310:2,pet:3,x2:true,cap:40,maxScan:3,promo7:false},
+  hist:[{l:'ภารกิจ ครบ 3 รส',p:10,ch:'ภารกิจ'},{l:'7-Eleven · 310 ml × 2 · x2',p:8,ch:'7-Eleven'},{l:'ร้านเจ๊หน่อย · 190 ml × 3',p:3,ch:'โชห่วย'},{l:'ยอดยกมา',p:127,ch:'ยกมา',seven:56,shop:49,online:12,mission:10}],
+  receipts:[
+    {id:'r1',me:true,store:'7-Eleven สาขาสยาม',no:'S-1123-88001',sku:'s310',fl:'y',qty:2,st:'ok',score:.96,why:'',pts:8,ch:'7-Eleven'},
+    {id:'r2',me:true,store:'Lawson สาขาอโศก',no:'L-0098-55120',sku:'s310',fl:'y',qty:1,st:'review',score:.62,why:'ภาพเบลอ',blur:true,ch:'Lawson'},
+    {id:'r3',me:false,who:'คุณบ**',store:'7-Eleven สาขาบางนา',no:'S-2201-10442',sku:'s310',fl:'c',qty:12,st:'review',score:.41,why:'จำนวนผิดปกติ',ch:'7-Eleven'},
+    {id:'r4',me:false,who:'คุณก**',store:'Makro สาขารังสิต',no:'M-0441-77812',sku:'s190',fl:'p',qty:24,st:'review',score:.55,why:'ฟอนต์วันที่ต่าง',ch:'Makro'}],
+  rewards:[
+    {id:'w1',n:'คูปอง Volt ที่ 7-Eleven 10฿',t:'ev',pts:30,tier:0,stock:5000,used:3600,plan:54,logo:'7-11',bg:'#0F7B3F'},
+    {id:'w2',n:'Shopee Voucher 100฿',t:'ev',pts:90,mix:{p:60,c:29},tier:0,stock:3000,used:1440,plan:50,logo:'S',bg:'#EE4D2D',lim:2},
+    {id:'w3',n:'เสื้อ Volt × 3MD',t:'merch',pts:120,tier:1,stock:2000,used:400,plan:50,logo:'TEE',bg:'#13207A'},
+    {id:'w4',n:'กระเป๋า Volt × 3MD',t:'merch',pts:160,tier:1,stock:1500,used:600,plan:45,logo:'BAG',bg:'#13207A'},
+    {id:'w5',n:'ลุ้นบัตรคอนเสิร์ต 3MD',t:'lucky',pts:20,tier:0,cap:5,mine:0,entries:18420,logo:'3MD',bg:'#8A4DFF'},
+    {id:'w6',n:'ลุ้น Backstage กับ 3MD',t:'lucky',pts:40,tier:1,cap:2,mine:0,entries:2310,need7:30,logo:'VIP',bg:'#8A4DFF'},
+    {id:'w7',n:'ประมูล: กีตาร์ลายเซ็น 3MD',t:'auction',pts:860,tier:0,bid:860,lead:false,logo:'BID',bg:'#B87400'},
+    {id:'w8',n:'Flash: เสื้อลิมิเต็ด 50 ตัว',t:'flash',pts:100,tier:1,left:12,claimed:false,logo:'⚡',bg:'#D93A40'},
+    {id:'w9',n:'บัตรเติมน้ำมัน 50฿',t:'ev',pts:60,tier:2,stock:2000,used:300,plan:40,logo:'50฿',bg:'#2F6BFF'}],
+  missions:[{id:'m1',n:'ซื้อครบ 3 รส',p:10,done:true},{id:'m2',n:'ควิซเพลง Three Man Down',p:5,done:false},{id:'m3',n:'ชวนเพื่อนสมัคร (สูงสุด 3)',p:5,done:false,cnt:0}],
+  shops:[
+    {id:'T-0088',n:'ร้านเจ๊หน่อย',a:'บางแค',stockIn:40,quota:120,used:38,risk:'ต่ำ',why:[],sus:false,pts:412},
+    {id:'T-0412',n:'ร้านป้าแดง',a:'ลำลูกกา',stockIn:40,quota:120,used:168,risk:'สูง',why:['สแกนเกินโควตา 3 วันติด','ลูกค้า 4 คนเดิม = 61% ของการสแกน','สแกนนอกรัศมีร้าน 2 ครั้ง'],sus:false,pts:960},
+    {id:'T-1203',n:'ร้านลุงชัย',a:'หาดใหญ่',stockIn:25,quota:80,used:61,risk:'กลาง',why:['สแกนช่วงตี 2 บ่อยผิดปกติ'],sus:false,pts:220},
+    {id:'T-2290',n:'ร้านเฮียกิม',a:'เชียงใหม่',stockIn:30,quota:90,used:22,risk:'ต่ำ',why:[],sus:false,pts:130}],
+  scans:[{t:'14:32',who:'คุณม**',d:'190 ml × 3',st:'ok'},{t:'13:05',who:'คุณก**',d:'190 ml × 2',st:'ok'},{t:'12:40',who:'คุณจ**',d:'190 ml × 6',st:'no'}],
+  ai:[{id:'a1',t:'คูปอง 7-Eleven 10฿ ใช้เร็วกว่าแผน 18% → ลดปล่อยสัปดาห์นี้จาก 5,000 เป็น 4,100 สิทธิ์',k:'w1'},{id:'a2',t:'เสื้อ Volt × 3MD ช้ากว่าแผน 30% → เปิด “แลก + เติมเงิน” 80 แต้ม + 49฿',k:'w3'}],
+  promos:[{id:'p1',n:'x2 ช่วงเย็น 310 ml',ty:'ตัวคูณ',c:'SKU 310 · ทุกช่องทาง',w:'ทุกวัน 18:00–21:00',on:true},{id:'p2',n:'7-Eleven Week',ty:'โบนัส',c:'7-Eleven +1/กระป๋อง',w:'1–7 ก.พ.',on:false},{id:'p3',n:'เปิดตัว PET ขวดใหญ่',ty:'ภารกิจ',c:'ซื้อ PET ครั้งแรก +10',w:'รอวันวางขาย',on:false}],
+  chat:[{f:'oa',k:'promo'},{f:'oa',k:'ai',kk:'PUSH',x:'อีก 12 แต้มแลก “กระเป๋า Volt × 3MD” ได้แล้ว'}],
+  log:[], red:[], kpi:{mem:48210,cans:312000,newMem:1208,ptsOut:1200000,ptsUse:400000,budget:0.31,ch:{'7-Eleven':46,'โชห่วย':32,'Lawson':9,'Makro':7,'ออนไลน์':6}},
+  pending:null, ui:{c:'chat',tab:'receipt',rf:'all',rd:null,quiz:null,sheet:null,s:'home',cart:null,b:'dash',sel:'r2',shopSel:'T-0412',dt:'bo',addRw:false,done:{}}
+}}
+let S;try{S=JSON.parse(localStorage.getItem('voltProto2')||'null')}catch(e){S=null}
+if(!S||!S.ui)S=seed();
+const save=()=>{try{localStorage.setItem('voltProto2',JSON.stringify(S))}catch(e){}};
+const log=(who,t)=>{S.log.unshift({w:who,t,at:now()});S.log=S.log.slice(0,60)};
+let toastT;const toast=t=>{const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2600)};
+const tierIdx=()=>{let i=0;TIER.forEach((t,k)=>{if(S.user.streak>=t.w)i=k});return Math.min(i,S.user.streak>=12?4:S.user.streak>=8?3:i)};
+const seven=()=>S.hist.reduce((a,h)=>a+(h.ch==='7-Eleven'&&h.p>0?h.p:0)+(h.seven||0),0);
+const rate=(sku,ch)=>{let r=S.rules[sku]||0;if(sku==='s310'&&S.rules.x2&&S.promos[0].on)r*=2;if(S.promos[1].on&&ch==='7-Eleven')r+=1;return r};
+const done=k=>{S.ui.done[k]=true};
+
+function addPts(p,label,ch,cans){
+  const room=Math.max(0,S.rules.cap-S.user.earnedToday);const got=Math.min(p,room);
+  S.user.pts+=got;S.user.earnedToday+=got;S.user.cans+=cans||0;
+  S.hist.unshift({l:label,p:got,ch});
+  if(cans){S.kpi.cans+=cans;S.kpi.ptsOut+=got;const key=ch.startsWith('7')?'7-Eleven':ch;if(S.kpi.ch[key]!=null)S.kpi.ch[key]+=cans/400;}
+  if(cans&&!S.user.week){S.user.week=true;S.user.streak++;const ti=tierIdx();if(TIER[ti].w===S.user.streak){S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ยินดีด้วย! คุณขึ้น ${TIER[ti].k} แล้ว 🎉 รางวัล Pin ใหม่ปลดล็อก`});log('ระบบ',`ลูกค้าขึ้น Tier ${TIER[ti].k}`)}}
+  if(got<p)S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`วันนี้คุณได้แต้มครบเพดาน ${S.rules.cap} แต้มแล้ว ได้เพิ่ม ${got} จาก ${p} แต้ม`});
+  nudge();return got;
+}
+function nudge(){const ti=tierIdx();const c=S.rewards.filter(r=>r.tier<=ti&&r.t!=='auction'&&r.pts>S.user.pts).sort((a,b)=>a.pts-b.pts)[0];if(c){const x=`อีก ${c.pts-S.user.pts} แต้มแลก “${c.n}” ได้`;const last=S.chat[S.chat.length-1];if(!last||last.x!==x)S.chat.push({f:'oa',k:'ai',kk:'PUSH',x})}}
+function aiLine(){const ti=tierIdx();const c=S.rewards.filter(r=>r.tier<=ti&&r.t!=='auction'&&r.pts>S.user.pts).sort((a,b)=>a.pts-b.pts)[0];return c?`อีก ${c.pts-S.user.pts} แต้มแลก “${esc(c.n)}” · ซื้อ 310 ml ช่วงเย็นได้ x2`:'แต้มพอแลกทุกรางวัลใน Tier ของคุณแล้ว'}
+
+/* ---------- QR token ---------- */
+let qrLeft=60,qrSeed=Math.floor(Math.random()*1e6);
+function qrSvg(seed){let r=seed,p='';const rnd=()=>{r=(r*9301+49297)%233280;return r/233280};for(let y=0;y<21;y++)for(let x=0;x<21;x++){const f=(x<8&&y<8)||(x>12&&y<8)||(x<8&&y>12);if(!f&&rnd()>.52)p+=`M${x} ${y}h1v1h-1z`}
+  return `<svg viewBox="0 0 21 21" shape-rendering="crispEdges" role="img" aria-label="QR สมาชิก"><path fill="#0B1247" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"/><path fill="#fff" d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"/><path fill="#0B1247" d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2z${p}"/></svg>`}
+setInterval(()=>{qrLeft--;if(qrLeft<=0){qrLeft=60;qrSeed=Math.floor(Math.random()*1e6);if(S.ui.c==='card')renderCust()}const el=$('#qrt');if(el)el.textContent='0:'+String(qrLeft).padStart(2,'0')},1000);
+
+/* ---------- CUSTOMER ---------- */
+const close=`<button class="x" data-a="c" data-v="chat" aria-label="กลับไปแชต">✕</button>`;
+function cTop(t,back){return `<div class="bar">${back?`<button class="x" data-a="c" data-v="${back}" aria-label="กลับ">‹</button>`:''}<b>${t}</b>${back?'':close}</div>`}
+function renderCust(){
+  const el=$('#cust');const u=S.user,ui=S.ui,ti=tierIdx();let h='';
+  el.className='scr '+(ui.c==='chat'?'':'dk');
+  if(ui.c==='chat'){
+    h=`<div class="lhead"><span class="av">${bolt()}</span><div><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE Official Account</span></div></div><div class="chat" id="chatbox">`+
+    S.chat.map(m=>m.k==='promo'?`<div class="promo"><div class="art"><em>X2<br>POINTS</em><span class="can c"><b>VOLT</b></span><span class="can y" style="width:44px;height:84px"><b style="font-size:20px">VOLT</b></span><span class="can p"><b>VOLT</b></span></div><div style="padding:10px 12px;display:flex;flex-direction:column;gap:8px"><b style="font-size:14px">ซื้อ 310 ml ช่วงเย็น รับแต้ม x2</b><span style="font-size:12px;color:var(--mut)">ทุกวัน 18:00–21:00</span><button class="btn by" style="min-height:40px;font-size:14px" data-a="c" data-v="collect">ส่งใบเสร็จ</button></div></div>`:
+      `<div class="bub ${m.f==='me'?'me':m.k==='ai'?'ai':''}" ${m.k==='ai'?`data-k="${m.kk}"`:''}>${esc(m.x)}</div>`).join('')+`</div>
+    <div class="qrep"><button data-a="ask" data-v="pts">แต้มฉันเหลือเท่าไร</button><button data-a="ask" data-v="near">ร้านสะสมแต้มใกล้ฉัน</button><button data-a="ask" data-v="how">สะสมแต้มยังไง</button><button data-a="ask" data-v="tier">ขึ้น Tier ยังไง</button></div>
+    <div class="rich">
+      <button data-a="c" data-v="card"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v7h-6"/></svg>บัตรสมาชิก / QR</button>
+      <button data-a="c" data-v="collect"><svg viewBox="0 0 24 24"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2zM9 7h6M9 11h6M9 15h4"/></svg>ส่งใบเสร็จ / รหัส</button>
+      <button data-a="c" data-v="rewards"><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7c-2-4-6-4-6-1s6 1 6 1zm0 0c2-4 6-4 6-1s-6 1-6 1z"/></svg>แลกรางวัล</button>
+      <button data-a="c" data-v="tier"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg>Tier / ภารกิจ</button>
+      <button data-a="c" data-v="hist"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>ประวัติแต้ม</button>
+      <button data-a="c" data-v="near"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>ร้านใกล้ฉัน</button>
+    </div>`;
+  }
+  else if(ui.c==='card'){
+    const nx=TIER[ti+1];
+    h=cTop('บัตรสมาชิก')+`<div class="bd"><div class="mcard">${bolt('bg')}<div class="sp" style="position:relative"><span>คุณ${u.name}</span><span class="lvl">${TIER[ti].k}</span></div><div style="position:relative;margin:6px 0 10px"><span class="num" style="font-size:48px;line-height:1">${fmt(u.pts)}</span> <span class="mut">แต้ม</span></div><div class="prog"><i style="width:${nx?Math.min(100,u.streak/nx.w*100):100}%"></i></div><div class="mut" style="font-size:12px;margin-top:6px;position:relative">${nx?`ซื้อต่อเนื่อง ${u.streak}/${nx.w} สัปดาห์ เพื่อขึ้น ${nx.k}`:'Tier สูงสุดแล้ว'}</div></div>
+    <div class="qr">${qrSvg(qrSeed)}</div><div style="text-align:center;font-size:13px">ให้ร้านสแกนเพื่อสะสมแต้ม · QR ใหม่ใน <b class="num" id="qrt" style="color:var(--yel)">0:${String(qrLeft).padStart(2,'0')}</b></div>
+    <div class="ai"><b>เดโม</b> · ไปที่มือถือร้านโชห่วยแล้วกด “สแกน QR ลูกค้า” จะมีหน้าต่างให้คุณยืนยันที่เครื่องนี้</div>
+    <div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px"><button class="btn bo" style="font-size:14px" data-a="c" data-v="collect">ใบเสร็จ</button><button class="btn bo" style="font-size:14px" data-a="collectTab" data-v="code">กรอกรหัส</button><button class="btn by" style="font-size:14px" data-a="c" data-v="rewards">แลกรางวัล</button></div></div>`;
+  }
+  else if(ui.c==='collect'){
+    const t=ui.tab;const mine=S.receipts.filter(r=>r.me).slice().reverse();
+    h=cTop('สะสมแต้ม')+`<div class="bd"><div class="seg" role="group" aria-label="ประเภท"><button data-a="collectTab" data-v="receipt" aria-pressed="${t==='receipt'}">ใบเสร็จ</button><button data-a="collectTab" data-v="code" aria-pressed="${t==='code'}">รหัสใต้ห่วง</button><button data-a="collectTab" data-v="online" aria-pressed="${t==='online'}">ออนไลน์</button></div>`;
+    if(t==='receipt')h+=`<label class="f"><span>รูปใบเสร็จ</span><input type="file" accept="image/*" id="rfile" class="in" style="padding-top:10px"></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label class="f"><span>ร้าน</span><select class="in" id="rstore"><option>7-Eleven</option><option>Lawson</option><option>Makro</option><option>CJ</option><option>Villa Market</option></select></label><label class="f"><span>เลขใบเสร็จ</span><input class="in" id="rno" value="R-${Math.floor(1000+Math.random()*8999)}-${Math.floor(10000+Math.random()*89999)}"></label>
+      <label class="f"><span>สินค้า</span><select class="in" id="rsku"><option value="s310">310 ml</option><option value="s190">190 ml</option><option value="pet">PET ขวดใหญ่</option></select></label><label class="f"><span>จำนวน</span><input class="in" id="rqty" type="number" min="1" max="48" value="2"></label></div>
+      <div class="f"><span>รส</span><div style="display:flex;gap:6px;flex-wrap:wrap">${Object.keys(FL).map(k=>`<button class="chip" data-a="fl" data-v="${k}" aria-pressed="${ui.fl===k||(!ui.fl&&k==='y')}"><i class="dot ${k}"></i>${FL[k]}</button>`).join('')}</div></div>
+      <label class="chk"><input type="checkbox" id="rblur"> จำลองรูปเบลอ (ให้ AI ส่งคนตรวจ)</label>
+      <span class="mut" style="font-size:12px">ลองส่งเลขซ้ำ <b>S-1123-88001</b> เพื่อดู AI จับใบเสร็จซ้ำ</span>
+      <button class="btn by" data-a="sendReceipt">ส่งใบเสร็จ</button>`;
+    else if(t==='code')h+=`<label class="f"><span>รหัสใต้ห่วง</span><input class="in" id="ccode" placeholder="VOLT-XXXX-XXXX" autocomplete="off" ${u.codeFails>=5?'disabled':''}></label>
+      <span class="mut" style="font-size:12px">รหัสทดลอง: VOLT-7K2P-9QX4 · VOLT-3MDX-2027 · VOLT-A1B2-C3D4 · ใช้ได้ครั้งเดียว</span>
+      ${u.codeFails?`<span class="${u.codeFails>=5?'bad':'warn'}" style="font-size:13px">${u.codeFails>=5?'กรอกผิดครบ 5 ครั้ง ล็อก 15 นาที':'กรอกผิด '+u.codeFails+'/5 ครั้ง'}</span>`:''}
+      <button class="btn by" data-a="sendCode" ${u.codeFails>=5?'disabled':''}>ยืนยันรหัส</button>`;
+    else h+=`<label class="f"><span>ร้านค้าออนไลน์</span><select class="in" id="oplat"><option value="off">Volt Official Store (Shopee)</option><option value="off2">Volt Official Store (Lazada)</option><option value="other">ร้านอื่นใน Shopee / Lazada</option></select></label>
+      <label class="f"><span>เลขออเดอร์</span><input class="in" id="ono" value="2401${Math.floor(100000+Math.random()*899999)}"></label>
+      <label class="f"><span>สินค้า</span><select class="in" id="osku"><option value="6">310 ml แพ็ก 6</option><option value="12">310 ml แพ็ก 12</option></select></label>
+      <span class="mut" style="font-size:12px">ร้าน Official เทียบกับไฟล์ออเดอร์อัตโนมัติ · ร้านอื่นส่งทีมตรวจ</span>
+      <button class="btn by" data-a="sendOnline">ผูกออเดอร์</button>`;
+    h+=`<span class="h3" style="margin-top:4px">สถานะล่าสุด</span>`+mine.map(r=>`<div class="li"><div class="t"><b>${esc(r.store)}</b><span class="mut">${SKU[r.sku]?SKU[r.sku].s:esc(r.sku)} × ${r.qty} · ${esc(r.no)}</span></div><b class="${r.st==='ok'?'ok':r.st==='review'||r.st==='checking'?'warn':'bad'}">${r.st==='ok'?'+'+r.pts+' อนุมัติ':r.st==='checking'?'AI กำลังตรวจ…':r.st==='review'?'ทีมตรวจ ≤24 ชม.':r.st==='resubmit'?'ขอรูปใหม่':r.st==='dup'?'ใบเสร็จซ้ำ':'ไม่ผ่าน'}</b></div>`).join('')+`</div>`;
+  }
+  else if(ui.c==='rewards'){
+    const f=ui.rf;const pin=S.rewards.filter(r=>r.tier===ti&&ti>0);const nxt=S.rewards.filter(r=>r.tier===ti+1);
+    const top=S.rewards.filter(r=>r.t==='ev'||r.t==='merch').slice().sort((a,b)=>(b.used||0)-(a.used||0)).slice(0,2);
+    const all=S.rewards.filter(r=>f==='all'||r.t===f);
+    const item=r=>{const lk=r.tier>ti?`ปลดล็อก ${TIER[r.tier].k}`:r.need7&&seven()<r.need7?`ต้องมีแต้ม 7-11 ≥ ${r.need7}`:'';const price=r.t==='auction'?`ราคาสูงสุด ${fmt(r.bid)} แต้ม`:r.t==='lucky'?`${r.pts} แต้ม/สิทธิ์ · มี ${r.mine}/${r.cap}`:r.t==='flash'?`${r.pts} แต้ม · เหลือ ${r.left} ชิ้น`:`${r.pts} แต้ม${r.mix?` หรือ ${r.mix.p} + ${r.mix.c}฿`:''}`;
+      return `<div class="li"><span class="thumb" style="background:${r.bg}">${esc(r.logo)}</span><div class="t"><b>${esc(r.n)}</b><span class="mut">${price}</span></div>${lk?`<span class="lock">🔒 ${lk}</span>`:`<button class="mini ${r.mix||r.t!=='ev'?'o':''}" data-a="openRw" data-v="${r.id}">${r.t==='lucky'?'ลุ้น':r.t==='auction'?'ประมูล':r.t==='flash'?'รับเลย':r.mix?'แลก+เติม':'แลก'}</button>`}</div>`};
+    h=`<div class="bar"><b>แลกรางวัล</b><span class="chip y">${fmt(u.pts)} แต้ม · ${TIER[ti].k}</span>${close}</div><div class="bd" style="gap:10px"><div class="ai"><b>AI NOTI</b> · ${aiLine()}</div>`+
+      (pin.length?`<div class="sp"><span class="h3">📌 Pin · เฉพาะ ${TIER[ti].k}</span><span class="mut" style="font-size:12px">ปลดล็อกแล้ว</span></div><div class="pin">${pin.slice(0,4).map(r=>`<button class="rw" data-a="openRw" data-v="${r.id}"><span class="im" style="background:${r.bg}">${bolt()}</span><b>${esc(r.n)}</b><span class="num" style="color:var(--yel)">${r.pts} แต้ม</span></button>`).join('')}</div>`:`<div class="card" style="font-size:13px">📌 Pin รางวัลพิเศษจะปลดล็อกเมื่อขึ้น LF2</div>`)+
+      (nxt.length?`<span class="mut" style="font-size:12px">🔒 ขึ้น ${TIER[ti+1].k} เพื่อปลดล็อก: ${nxt.map(r=>esc(r.n)).join(', ')}</span>`:'')+
+      `<span class="h3">Top Redeem</span>${top.map(item).join('')}
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${[['all','ทั้งหมด'],['ev','E-voucher'],['merch','Merch'],['lucky','Lucky Draw'],['auction','ประมูล'],['flash','Flash']].map(([k,l])=>`<button class="chip" data-a="rf" data-v="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div>${all.map(item).join('')}</div>`;
+  }
+  else if(ui.c==='redeem'){h=redeemView()}
+  else if(ui.c==='tier'||ui.c==='hist'){
+    const nx=TIER[ti+1];
+    h=cTop(ui.c==='tier'?'Tier ของฉัน':'ประวัติแต้ม')+`<div class="bd" style="gap:10px"><div class="tiers">${TIER.map((t,k)=>`<span class="${k<ti?'done':k===ti?'on':''}">${t.k}</span>`).join('')}</div>
+      <span class="mut" style="font-size:12.5px">${nx?`ขึ้น ${nx.k}: ${nx.d} (ตอนนี้ ${u.streak}/${nx.w}) · สัปดาห์นี้${u.week?'ซื้อแล้ว ✓':'ยังไม่ได้ซื้อ'}`:'คุณอยู่ Tier สูงสุด'}</span>
+      <span class="h3">ภารกิจสัปดาห์นี้</span>${S.missions.map(m=>`<div class="li"><span class="tick ${m.done?'on':''}">${m.done?'✓':''}</span><span class="t">${m.n}${m.cnt?` (${m.cnt}/3)`:''}</span>${m.done?`<b class="num" style="color:var(--yel)">+${m.p}</b>`:`<button class="mini" data-a="mission" data-v="${m.id}">${m.id==='m3'?'ชวน':'ทำ'} +${m.p}</button>`}</div>`).join('')}
+      <div class="sp"><span class="h3">ประวัติแต้ม</span><span class="mut" style="font-size:11.5px">7-11 ${seven()} แต้ม</span></div>
+      <div class="hist">${S.hist.filter(x=>x.ch!=='ยกมา').slice(0,12).map(x=>`<div><span>${esc(x.l)}</span><b class="${x.p>=0?'ok':'bad'}">${x.p>=0?'+':''}${x.p}</b></div>`).join('')}<div><span>ยอดยกมา</span><b>127</b></div></div>
+      <div class="card sp" style="padding:10px 12px"><span style="font-size:13px"><b>Community</b> · อันดับเดือนนี้ <b class="num" style="color:var(--yel)">#${fmt(Math.max(12,1284-u.pts*2+296))}</b></span><button class="mini" data-a="share">แชร์ Tier</button></div></div>`;
+  }
+  else if(ui.c==='near'){
+    h=cTop('ร้านสะสมแต้มใกล้ฉัน')+`<div class="bd"><div style="height:200px;border-radius:18px;background:#1C2A6E;position:relative;overflow:hidden;flex:none">${S.shops.map((s,i)=>`<span style="position:absolute;left:${18+i*20}%;top:${25+(i%2)*35}%;width:16px;height:16px;border-radius:50%;background:${s.sus?'#666':'var(--yel)'};box-shadow:0 0 12px var(--yel)"></span>`).join('')}<span style="position:absolute;left:45%;top:50%;width:14px;height:14px;border-radius:50%;background:var(--cyan);border:3px solid #fff"></span></div>`+
+    S.shops.map((s,i)=>`<div class="li"><span class="thumb" style="background:var(--n800)">${bolt()}</span><div class="t"><b>${s.n}</b><span class="mut">${s.a} · ${(0.3+i*0.6).toFixed(1)} กม.</span></div>${s.sus?'<span class="lock">ปิดชั่วคราว</span>':'<span class="chip">สแกนได้</span>'}</div>`).join('')+`</div>`;
+  }
+  if(S.pending)h+=`<div class="sheet" role="dialog" aria-label="ยืนยันการสะสมแต้ม"><div><span class="kick" style="font-size:12px">ร้านสแกน QR ของคุณ</span><b class="h3" style="font-size:20px">${esc(S.pending.shop)} บันทึกการซื้อ</b>
+    ${S.pending.lines.map(l=>`<div class="sp" style="font-size:14px"><span>${l.t}</span><b>× ${l.q}</b></div>`).join('')}
+    <div class="sp" style="border-top:1px solid var(--line);padding-top:10px"><b>รับแต้ม</b><b class="num" style="font-size:26px;color:var(--yel)">+${S.pending.pts}</b></div>
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:8px"><button class="btn bo" data-a="pend" data-v="no">ไม่ถูกต้อง</button><button class="btn by" data-a="pend" data-v="yes">ยืนยัน รับแต้ม</button></div></div></div>`;
+  if(ui.quiz)h+=`<div class="sheet" role="dialog" aria-label="ควิซ"><div><b class="h3" style="font-size:18px">ควิซเพลง Three Man Down</b><span>ศิลปินคู่กับ Volt เปิดตัวพรีเซนเตอร์ในเดือนอะไร?</span>${['มิถุนายน 2026','กันยายน 2026','ธันวาคม 2026'].map((o,i)=>`<button class="btn bo" style="font-size:15px" data-a="quiz" data-v="${i}">${o}</button>`).join('')}</div></div>`;
+  el.innerHTML=h;const cb=$('#chatbox');if(cb)cb.scrollTop=cb.scrollHeight;
+}
+function redeemView(){
+  const r=S.rewards.find(x=>x.id===S.ui.rd.id);const d=S.ui.rd;const u=S.user;let b='';
+  const head=`<div style="height:120px;border-radius:20px;background:radial-gradient(80% 90% at 50% 30%,${r.bg},#0B1247);display:grid;place-items:center;flex:none"><span style="font:italic 900 34px var(--display)">${esc(r.logo)}</span></div><b class="h3" style="font-size:19px">${esc(r.n)}</b>`;
+  if(d.step==='done')b=`<div class="center" style="display:flex;flex-direction:column;gap:12px;padding-top:20px"><span style="font-size:52px">⚡</span><b class="big">สำเร็จ!</b><span>${esc(d.msg)}</span>${d.code?`<div class="card num" style="font-size:22px;letter-spacing:.08em;color:var(--yel)">${d.code}</div>`:''}<span class="mut">คงเหลือ ${fmt(u.pts)} แต้ม · แจ้งใน LINE แล้ว</span><button class="btn by" data-a="c" data-v="rewards" style="width:100%">กลับหน้ารางวัล</button></div>`;
+  else if(d.step==='otp')b=head+`<span>ยืนยันเบอร์โทรด้วย OTP (ครั้งแรกที่แลก)</span><label class="f"><span>รหัส OTP 6 หลัก ส่งไปที่ 08x-xxx-4521</span><input class="in" id="otp" inputmode="numeric" maxlength="6" placeholder="ใส่เลขอะไรก็ได้ 6 หลัก"></label><button class="btn by" data-a="otp">ยืนยัน OTP</button>`;
+  else if(d.step==='addr')b=head+`<span class="h3">ที่อยู่จัดส่ง</span><label class="f"><span>ชื่อผู้รับ</span><input class="in" id="ad1" value="คุณมายด์"></label><label class="f"><span>ที่อยู่</span><input class="in" id="ad2" value="99/1 ถ.พหลโยธิน แขวงสามเสนใน กรุงเทพฯ 10400"></label><button class="btn by" data-a="addr">ยืนยันที่อยู่</button>`;
+  else if(d.step==='pay')b=head+`<span class="h3">ชำระ ${r.mix.c}฿ ผ่าน PromptPay</span><div class="qr" style="width:160px;height:160px">${qrSvg(77)}</div><span class="mut center" style="display:block">สแกนด้วยแอปธนาคาร · หมดอายุใน 10 นาที</span><button class="btn by" data-a="paid">จำลอง: ชำระเงินสำเร็จ</button>`;
+  else if(r.t==='lucky')b=head+`<span class="mut" style="font-size:13px">${fmt(r.entries)} สิทธิ์ในระบบ · จับรางวัล 30 มี.ค. · สูงสุด ${r.cap} สิทธิ์/คน · มีแล้ว ${r.mine}</span><div class="sp card"><span>จำนวนสิทธิ์</span><span class="step"><button class="bo x" data-a="ent" data-v="-1" aria-label="ลด">−</button><b class="num" style="font-size:20px;width:24px;text-align:center">${d.n}</b><button class="bo x" data-a="ent" data-v="1" aria-label="เพิ่ม">+</button></span></div><div class="sp"><span>ใช้แต้ม</span><b class="num" style="font-size:22px">${r.pts*d.n}</b></div><button class="btn by" data-a="confirmRw" ${r.mine+d.n>r.cap||u.pts<r.pts*d.n?'disabled':''}>${r.mine>=r.cap?'ครบสิทธิ์แล้ว':u.pts<r.pts*d.n?'แต้มไม่พอ':'ยืนยันลุ้น'}</button>`;
+  else if(r.t==='auction')b=head+`<div class="card sp"><span>ราคาสูงสุดตอนนี้</span><b class="num" style="font-size:24px;color:var(--yel)">${fmt(r.bid)}</b></div><span class="${r.lead?'ok':'mut'}" style="font-size:13px">${r.lead?'คุณนำอยู่ · แต้มถูกกันไว้จนจบประมูล':'บิดขั้นต่ำ +10 แต้ม · ถ้ามีคนบิดสูงกว่า แต้มคืนอัตโนมัติ'}</span><label class="f"><span>แต้มที่จะบิด</span><input class="in" id="bid" type="number" value="${r.bid+10}" min="${r.bid+10}"></label><button class="btn by" data-a="confirmRw">บิด</button>`;
+  else{const can=r.pts<=u.pts,canMix=r.mix&&r.mix.p<=u.pts;
+    b=head+`<span class="mut" style="font-size:12.5px">${r.t==='merch'?'ส่งถึงบ้านทั่วประเทศ ภายใน 7 วัน':r.t==='flash'?`เหลือ ${r.left} ชิ้น · คนละ 1 ชิ้น`:'ส่งโค้ดทาง LINE ทันที'}${r.lim?` · ${r.lim} สิทธิ์/คน/เดือน`:''}</span><span class="h3">เลือกวิธีแลก</span>
+    <label class="opt ${d.mode==='pts'?'on':''}"><input type="radio" name="pm" data-a="mode" data-v="pts" ${d.mode==='pts'?'checked':''}><span style="flex:1"><b>แลกด้วยแต้ม</b><br><span class="mut" style="font-size:12.5px">${r.pts} แต้ม · ${can?'เหลือ '+(u.pts-r.pts):'แต้มไม่พอ'}</span></span></label>`+
+    (r.mix?`<label class="opt ${d.mode==='mix'?'on':''}"><input type="radio" name="pm" data-a="mode" data-v="mix" ${d.mode==='mix'?'checked':''}><span style="flex:1"><b>แลก + เติมเงิน</b><br><span class="mut" style="font-size:12.5px">${r.mix.p} แต้ม + ${r.mix.c}฿ PromptPay</span></span></label>`:'')+
+    `<button class="btn by" style="margin-top:auto" data-a="confirmRw" ${(d.mode==='pts'&&!can)||(d.mode==='mix'&&!canMix)||(r.t==='flash'&&(r.claimed||r.left<1))?'disabled':''}>${r.t==='flash'&&r.claimed?'รับไปแล้ว':d.mode==='mix'?`ยืนยันแลก + ชำระ ${r.mix.c}฿`:'ยืนยันแลก'}</button>`}
+  return `<div class="bar"><button class="x" data-a="c" data-v="rewards" aria-label="กลับ">‹</button><b>แลกรางวัล</b><span class="chip y">${fmt(u.pts)}</span></div><div class="bd">${b}</div>`;
+}
+
+/* ---------- SHOP ---------- */
+const myShop=()=>S.shops[0];
+function cartPts(){let p=0,q=0;const c=S.ui.cart;for(const k in c){for(const f in c[k]){p+=c[k][f]*rate(k,'โชห่วย');q+=c[k][f]}}return{p,q}}
+function renderShop(){
+  const el=$('#shop');const s=myShop(),ui=S.ui;let h=`<div class="shead"><div class="sp"><b style="font:italic 800 21px var(--display)">VOLT <span style="color:var(--yel)">PARTNER</span></b><span class="chip ${s.sus?'':'y'}" style="${s.sus?'background:var(--bad);color:#fff;border-color:var(--bad)':''}">${s.sus?'ระงับชั่วคราว':'ยืนยันแล้ว'}</span></div><small>${s.n} · ${s.a} · เซลส์: คุณต้น</small></div><div class="bd">`;
+  if(ui.s==='home'){
+    h+=`<button class="btn by" data-a="scan" style="min-height:62px;font-size:20px" ${s.sus?'disabled':''}>${bolt('i')}สแกน QR ลูกค้า</button>${s.sus?'<span class="bad" style="font-size:13px">ร้านถูกระงับโดยหลังบ้าน ติดต่อเซลส์ของคุณ</span>':''}
+    <div class="kpi2"><div class="card"><span class="mut" style="font-size:12px">โควตาวันนี้</span><b>${s.used}<span class="mut" style="font-size:16px">/${s.quota}</span></b><div class="prog" style="background:#E3E7F6;margin-top:6px"><i style="width:${Math.min(100,s.used/s.quota*100)}%;background:${s.used>s.quota?'var(--bad)':'var(--n800)'}"></i></div></div><div class="card"><span class="mut" style="font-size:12px">แต้มร้าน</span><b>${fmt(s.pts)}</b><span class="mut" style="font-size:12px">แลกส่วนลดสั่งของ</span></div></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:8px;font-size:13px"><b class="h3">แลกแต้มร้าน</b><div class="sp"><span>ส่วนลดสั่ง Volt 1 แพ็ก 50฿ · 300</span><button class="mini" style="background:var(--n900);color:#fff" data-a="shopRedeem" data-v="300" ${s.pts<300?'disabled':''}>แลก</button></div><div class="sp"><span>ป้าย “ร้านสะสมแต้ม Volt” · ฟรี</span><button class="mini" style="background:var(--n900);color:#fff" data-a="shopRedeem" data-v="0">ขอรับ</button></div></div>
+    <span class="h3">สแกนล่าสุด</span>${S.scans.slice(0,5).map(x=>`<div class="li"><div class="t"><b>${x.t} · ${x.who}</b><span class="mut">${x.d}</span></div><b class="${x.st==='ok'?'ok':x.st==='wait'?'warn':'bad'}">${x.st==='ok'?'ยืนยันแล้ว':x.st==='wait'?'รอยืนยัน':'ลูกค้าปฏิเสธ'}</b></div>`).join('')}`;
+  }else if(ui.s==='scan'){
+    h+=`<button class="cam" data-a="doScan" aria-label="แตะเพื่อสแกน QR ลูกค้า"><i></i><span>แตะเพื่อสแกน QR บนมือถือลูกค้า</span></button><span class="mut center" style="display:block;font-size:12.5px">ระบบตรวจว่า QR ยังไม่หมดอายุ (เปลี่ยนทุก 60 วิ)</span><button class="btn bo" data-a="s" data-v="home">ยกเลิก</button>`;
+  }else if(ui.s==='sku'){
+    const {p,q}=cartPts();const over=s.used+p>s.quota;const scanMax=S.user.scansToday>=S.rules.maxScan;
+    const row=(k,f)=>`<div class="sp"><span><i class="dot ${f}"></i> ${FL[f]}</span><span class="step"><button data-a="qty" data-v="${k}|${f}|-1" aria-label="ลด ${FL[f]}">−</button><b>${ui.cart[k][f]}</b><button data-a="qty" data-v="${k}|${f}|1" aria-label="เพิ่ม ${FL[f]}">+</button></span></div>`;
+    h+=`<div class="card sp" style="padding:10px 12px"><span><b>คุณ${S.user.name}</b> · ${TIER[tierIdx()].k}</span><b class="ok" style="font-size:13px">✓ สแกนแล้ว</b></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:8px;padding:12px"><div class="sp"><b>กระป๋อง 190 ml</b><span class="chip">${rate('s190','โชห่วย')} แต้ม</span></div>${row('s190','y')}${row('s190','c')}${row('s190','p')}</div>
+    <div class="card" style="display:flex;flex-direction:column;gap:8px;padding:12px"><div class="sp"><b>กระป๋อง 310 ml</b><span class="chip">${rate('s310','โชห่วย')} แต้ม${S.rules.x2&&S.promos[0].on?' · x2':''}</span></div>${row('s310','y')}${row('s310','c')}</div>
+    <div class="sp" style="font-size:15px"><b>รวม ${q} กระป๋อง</b><b class="num" style="font-size:22px">+${p} แต้ม</b></div>
+    ${over?`<span class="bad" style="font-size:13px">เกินโควตาวันนี้ (${s.used}/${s.quota}) ติดต่อเซลส์เพื่อขยายโควตา</span>`:''}${scanMax?`<span class="bad" style="font-size:13px">ลูกค้านี้ร่วมครบ ${S.rules.maxScan} ครั้งวันนี้แล้ว</span>`:''}
+    <button class="btn bn" data-a="sendCart" ${!q||over||scanMax?'disabled':''}>ส่งให้ลูกค้ายืนยัน</button><button class="btn bo" data-a="s" data-v="home">ยกเลิก</button>`;
+  }else if(ui.s==='wait'){
+    h+=`<div class="center" style="display:flex;flex-direction:column;gap:12px;padding-top:40px"><span style="font-size:46px">⏳</span><b class="h3" style="font-size:20px">รอลูกค้ายืนยัน</b><span class="mut">ลูกค้าจะเห็นหน้าต่างยืนยันในมือถือ (เครื่องซ้าย)</span><b class="num" style="font-size:28px">+${S.pending?S.pending.pts:0} แต้ม</b></div>`;
+  }else if(ui.s==='done'){
+    h+=`<div class="center" style="display:flex;flex-direction:column;gap:12px;padding-top:40px"><span style="font-size:46px">✅</span><b class="h3" style="font-size:20px">${ui.sRes==='ok'?'ลูกค้ายืนยันแล้ว':'ลูกค้าปฏิเสธรายการ'}</b><span class="mut">${ui.sRes==='ok'?'แต้มร้านเพิ่มแล้ว · โควตาอัปเดต':'กรุณาตรวจจำนวนกับลูกค้าแล้วสแกนใหม่'}</span><button class="btn bn" data-a="s" data-v="home">กลับหน้าร้าน</button></div>`;
+  }
+  el.innerHTML=h+'</div>';
+}
+
+/* ---------- FEED ---------- */
+const TRY=[['qr','ร้านสแกน QR ลูกค้า แล้วลูกค้ากดยืนยัน'],['receipt','ส่งใบเสร็จ (ลองติ๊กรูปเบลอ หรือส่งเลขซ้ำ)'],['review','หลังบ้านอนุมัติใบเสร็จในคิวตรวจ'],['redeem','แลกรางวัลแบบ แลก + เติมเงิน'],['lucky','ลุ้น Lucky Draw / ประมูล / Flash'],['rule','หลังบ้านปิด x2 หรือเปลี่ยนแต้มต่อ SKU แล้วสแกนใหม่'],['suspend','หลังบ้านระงับร้านเจ๊หน่อย แล้วดูมือถือร้าน'],['tier','กด “ข้ามสัปดาห์” แล้วซื้อซ้ำจนขึ้น LF3']];
+function renderFeed(){
+  $('#feed').innerHTML=`<div class="panel"><h3>ลองเล่นตามนี้</h3><ol class="try">${TRY.map(([k,t])=>`<li class="${S.ui.done[k]?'done':''}">${t}</li>`).join('')}</ol></div>
+  <div class="panel"><div class="sp"><h3>สิ่งที่เกิดขึ้นในระบบ</h3><span class="mut" style="font-size:12px">Audit Log</span></div><div>${S.log.length?S.log.slice(0,9).map(l=>`<div class="ev"><i class="${l.w==='ลูกค้า'?'c':l.w==='ร้าน'?'s':l.w==='หลังบ้าน'?'b':'a'}">${l.w}</i><span>${esc(l.t)}</span><time>${l.at}</time></div>`).join(''):'<span class="mut" style="font-size:13px">ยังไม่มีเหตุการณ์ ลองกดที่มือถือลูกค้าหรือร้านดู</span>'}</div></div>`;
+}
+
+/* ---------- DESKTOP ---------- */
+function renderDesk(){
+  const el=$('#desk');$('#tab-bo').setAttribute('aria-pressed',S.ui.dt==='bo');$('#tab-cd').setAttribute('aria-pressed',S.ui.dt==='cd');
+  if(S.ui.dt==='cd'){el.innerHTML=`<div class="chrome"><i></i><i></i><i></i><span>club.volt.co.th</span></div>`+custDesk();return}
+  const q=S.receipts.filter(r=>r.st==='review');const risky=S.shops.filter(s=>s.risk==='สูง'&&!s.sus).length;const b=S.ui.b;
+  const nav=[['dash','Dashboard'],['review','ตรวจใบเสร็จ',q.length],['rewards','รางวัล + AI Pacing',S.ai.length],['shops','ร้านค้า',risky],['rules','กติกาแต้ม'],['members','สมาชิก'],['audit','Audit Log']];
+  el.innerHTML=`<div class="chrome"><i></i><i></i><i></i><span>admin.volt-club.co.th/${b}</span></div><div class="bo-ui"><nav class="side" aria-label="เมนูหลังบ้าน"><span class="logo">VOLT</span><small>Back Office</small>${nav.map(([k,l,n])=>`<button data-a="b" data-v="${k}" ${b===k?'aria-current="page"':''}>${l}${n?`<em>${n}</em>`:''}</button>`).join('')}</nav><div class="main">${({dash:bDash,review:bReview,rewards:bRewards,shops:bShops,rules:bRules,members:bMembers,audit:bAudit})[b]()}</div></div>`;
+}
+function bDash(){const k=S.kpi;const tot=Object.values(k.ch).reduce((a,b)=>a+b,0);const q=S.receipts.filter(r=>r.st==='review').length;
+  const days=[[40,22],[44,24],[42,28],[48,30],[50,34],[56,36],[52+Math.min(30,S.user.cans/2),40]];
+  return `<div class="mh"><h3>ภาพรวมแคมเปญ · Real-time</h3><span class="pill g">● อัปเดตสด</span></div>
+  <div class="kpis"><div class="kpi"><small>สมาชิกทั้งหมด</small><b>${fmt(k.mem)}</b><em>+${fmt(k.newMem)} วันนี้</em></div><div class="kpi"><small>กระป๋องที่บันทึก</small><b>${fmt(k.cans)}</b><em>+${fmt(S.user.cans)} จากเดโมนี้</em></div><div class="kpi"><small>Repeat rate</small><b>${38+Math.min(9,S.user.streak-3)}%</b><em>+4 จุด/สัปดาห์</em></div><div class="kpi"><small>แต้มออก / ใช้</small><b>${(k.ptsOut/1e6).toFixed(2)}M/${(k.ptsUse/1e6).toFixed(2)}M</b><em style="color:var(--lmut)">burn ${Math.round(k.ptsUse/k.ptsOut*100)}%</em></div><div class="kpi"><small>ใช้งบรางวัล</small><b>${(k.budget*100).toFixed(1)}%</b><em style="color:var(--lmut)">แผน 29%</em></div></div>
+  <div class="g3"><div class="pn"><h4>กระป๋องรายวัน แยก SKU</h4><div class="vb">${days.map(d=>`<div><i style="height:${d[0]}%;background:var(--n800)"></i><i style="height:${d[1]}%;background:var(--yel)"></i></div>`).join('')}</div><div class="xl"><span>จ</span><span>อ</span><span>พ</span><span>พฤ</span><span>ศ</span><span>ส</span><span>วันนี้</span></div><div class="leg"><span><i class="dot" style="background:var(--n800)"></i>190 ml</span><span><i class="dot y"></i>310 ml</span></div></div>
+  <div class="pn"><h4>ช่องทาง (สัดส่วนกระป๋อง)</h4>${Object.entries(k.ch).map(([n,v])=>`<div class="hb"><span>${n}</span><i style="width:${v/Math.max(...Object.values(k.ch))*100}%"></i><b>${(v/tot*100).toFixed(1)}%</b></div>`).join('')}</div>
+  <div class="pn"><h4>ต้องดูวันนี้</h4>${S.shops.filter(s=>s.risk==='สูง'&&!s.sus).map(s=>`<button class="al r" data-a="goShop" data-v="${s.id}">ร้าน ${s.id} ${s.n}: ${s.why[0]} ›</button>`).join('')}${q?`<button class="al a" data-a="b" data-v="review">คิวตรวจใบเสร็จ ${q} รายการ ›</button>`:''}${S.ai.length?`<button class="al a" data-a="b" data-v="rewards">AI แนะนำปรับรางวัล ${S.ai.length} เรื่อง ›</button>`:''}<div class="al g">x2 ช่วงเย็น ดัน 310 ml +22%</div></div></div>
+  <div class="g3"><div class="pn"><h4>RFM Segment</h4><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px">${[['Champions','6.1K','var(--n800)','#fff'],['Loyal','11.4K','#3E52C4','#fff'],['At risk','8.9K','#FFF4DC','#7A4C00'],['New','21.8K','#E8ECF8','var(--ink)']].map(([n,v,bg,c])=>`<button data-a="rfm" data-v="${n}" style="background:${bg};color:${c};border:0;border-radius:10px;padding:8px;text-align:left"><b class="num" style="font-size:20px">${v}</b><br><span style="font-size:12px">${n} · ส่ง Noti ›</span></button>`).join('')}</div></div>
+  <div class="pn"><h4>First-time vs Repeat</h4><svg viewBox="0 0 300 120" role="img" aria-label="ผู้ซื้อซ้ำเพิ่มขึ้นทุกสัปดาห์"><g stroke="#E8ECF8"><path d="M0 30H300M0 70H300M0 110H300"/></g><path d="M0 40 60 52 120 66 180 78 240 86 300 92" fill="none" stroke="#13207A" stroke-width="3"/><path d="M0 110 60 100 120 88 180 74 240 62 300 50" fill="none" stroke="#19C3F0" stroke-width="3"/><circle cx="300" cy="50" r="5" fill="#19C3F0"/></svg><div class="leg"><span><i class="dot" style="background:var(--n800)"></i>ครั้งแรก</span><span><i class="dot c"></i>ซื้อซ้ำ</span></div></div>
+  <div class="pn"><h4>ล่าสุดจากระบบ</h4>${S.log.slice(0,5).map(l=>`<div style="font-size:12.5px;border-bottom:1px solid #EEF1FA;padding:4px 0">${l.at} · ${esc(l.t)}</div>`).join('')||'<span class="note">ยังไม่มีเหตุการณ์</span>'}</div></div>`}
+function bReview(){const q=S.receipts.filter(r=>r.st==='review');const r=S.receipts.find(x=>x.id===S.ui.sel&&x.st==='review')||q[0];
+  if(!q.length)return `<div class="mh"><h3>คิวตรวจใบเสร็จ</h3></div><div class="pn empty">ไม่มีรายการรอตรวจ 🎉 ลองส่งใบเสร็จแบบรูปเบลอจากมือถือลูกค้า</div>`;
+  return `<div class="mh"><h3>คิวตรวจ · AI Score &lt; 0.80</h3><span class="note" style="font-size:13px">วันนี้ AI อนุมัติเอง <b>2,914</b> · รอคน <b>${q.length}</b> · SLA 24 ชม.</span></div>
+  <div style="display:grid;grid-template-columns:380px 1fr;gap:14px"><div class="tbl"><div class="tr th" style="grid-template-columns:1fr 56px 110px"><span>รายการ</span><span>Score</span><span>เหตุผล</span></div>${q.map(x=>`<button class="tr ${x===r?'sel':''}" style="grid-template-columns:1fr 56px 110px" data-a="sel" data-v="${x.id}"><span><b>${esc(x.store)}</b><br>${SKU[x.sku].s} × ${x.qty} · ${x.me?'คุณมายด์':x.who}</span><span class="pill ${x.score<.6?'r':'a'}">${x.score.toFixed(2)}</span><span>${esc(x.why)}</span></button>`).join('')}</div>
+  <div class="pn" style="display:grid;grid-template-columns:280px 1fr;gap:18px"><div class="rcpt ${r.blur?'blur':''}">${esc(r.store.toUpperCase())}<br>TAX# 0105xxxxxxxxx<br>${new Date().toLocaleDateString('th-TH')} 18:42<br>เลขที่ ${esc(r.no)}<br>------------------------<br>VOLT ${SKU[r.sku].s.toUpperCase()} ${FL[r.fl].toUpperCase()}<br>&nbsp;&nbsp;x${r.qty} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${(r.qty*(r.sku==='s190'?10:17)).toFixed(2)}<br>------------------------<br>รวม ${(r.qty*(r.sku==='s190'?10:17)).toFixed(2)}</div>
+  <div style="display:flex;flex-direction:column;gap:10px"><h4>OCR อ่านได้</h4><div class="kv"><span>ร้าน</span><span>${esc(r.store)}</span><span>เลขใบเสร็จ</span><span>${esc(r.no)}</span><span>รายการ</span><span>Volt ${SKU[r.sku].s} ${FL[r.fl]} × ${r.qty}</span><span>ผู้ส่ง</span><span>${r.me?'คุณมายด์ (LF'+(tierIdx()+1)+')':r.who}</span></div>
+  <h4>AI ตรวจ</h4><div style="display:flex;flex-direction:column;gap:3px;font-size:13.5px"><span class="ok">✓ ไม่ซ้ำ (hash + เลขใบเสร็จ)</span><span class="${r.why==='ฟอนต์วันที่ต่าง'?'bad':'ok'}">${r.why==='ฟอนต์วันที่ต่าง'?'✕ ฟอนต์วันที่ไม่ตรงกับส่วนอื่น':'✓ ไม่พบการตัดต่อ'}</span><span class="${r.blur?'bad':'ok'}">${r.blur?'✕ ภาพเบลอ อ่านรายการได้บางส่วน':'✓ ภาพคมชัด'}</span><span class="${r.qty>6?'bad':'ok'}">${r.qty>6?'✕ จำนวนสูงผิดปกติ':'✓ จำนวนปกติ'}</span></div>
+  <div class="fld" style="grid-template-columns:auto 90px;justify-content:start"><label for="aq">จำนวนที่อนุมัติ</label><input id="aq" type="number" min="0" value="${r.qty}"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="lbtn y" data-a="rv" data-v="ok">อนุมัติ</button><button class="lbtn o" data-a="rv" data-v="resubmit">ขอรูปใหม่</button><button class="lbtn r" data-a="rv" data-v="no">ปฏิเสธ</button></div><span class="note">ผลแจ้งลูกค้าทาง LINE อัตโนมัติ · บันทึก Audit Log</span></div></div></div>`}
+function bRewards(){return `<div class="mh"><h3>รางวัล + AI Pacing</h3><button class="lbtn y" data-a="addRw">+ เพิ่มรางวัล</button></div>
+  ${S.ui.addRw?`<div class="pn" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;align-items:end"><label class="f"><span>ชื่อรางวัล</span><input class="in" id="nwn" value="คูปอง Grab 50฿"></label><label class="f"><span>ประเภท</span><select class="in" id="nwt"><option value="ev">E-voucher</option><option value="merch">Merch</option></select></label><label class="f"><span>แต้ม</span><input class="in" id="nwp" type="number" value="50"></label><label class="f"><span>Tier</span><select class="in" id="nwr">${TIER.map((t,i)=>`<option value="${i}">${t.k}+</option>`).join('')}</select></label><button class="lbtn n" data-a="saveRw">บันทึก</button></div>`:''}
+  ${S.ai.length?`<div class="aibox"><h4>⚡ AI แนะนำสัปดาห์นี้</h4>${S.ai.map(a=>`<div class="air"><span>${a.t}</span><span style="display:flex;gap:6px;flex:none"><button class="lbtn n" data-a="ai" data-v="${a.id}|1">ใช้คำแนะนำ</button><button class="lbtn o" data-a="ai" data-v="${a.id}|0">ข้าม</button></span></div>`).join('')}</div>`:''}
+  <div class="tbl"><div class="tr th" style="grid-template-columns:2fr 1fr .7fr 1fr .7fr 2fr 1fr"><span>รางวัล</span><span>ประเภท</span><span>แต้ม</span><span>แลก+เติม</span><span>Tier</span><span>ใช้จริง vs แผน (เส้นดำ)</span><span>สถานะ</span></div>
+  ${S.rewards.map(r=>{const pct=r.stock?Math.round(r.used/r.stock*100):0;const st=r.stock?(pct>r.plan+10?['a','เร็วกว่าแผน']:pct<r.plan-10?['a','ช้ากว่าแผน']:['g','ตามแผน']):['n','เปิดรับ'];
+    return `<div class="tr" style="grid-template-columns:2fr 1fr .7fr 1fr .7fr 2fr 1fr"><b>${esc(r.n)}</b><span>${{ev:'E-voucher',merch:'Merch',lucky:'Lucky Draw',auction:'ประมูล',flash:'Flash Deal'}[r.t]}</span><span>${r.t==='auction'?fmt(r.bid):r.pts}</span><span>${r.mix?r.mix.p+' + '+r.mix.c+'฿':'–'}</span><span>${TIER[r.tier].k}+</span>${r.stock?`<span class="meter"><span><i style="width:${pct}%;background:${st[1]==='เร็วกว่าแผน'?'var(--warn)':'var(--n800)'}"></i><u style="left:${r.plan}%"></u></span>${fmt(r.used)}/${fmt(r.stock)}</span>`:`<span>${r.t==='lucky'?fmt(r.entries)+' สิทธิ์':r.t==='flash'?'เหลือ '+r.left:'บิดสูงสุด '+fmt(r.bid)}</span>`}<span class="pill ${st[0]}">${st[1]}</span></div>`}).join('')}</div>`}
+function bShops(){const s=S.shops.find(x=>x.id===S.ui.shopSel);return `<div class="mh"><h3>ร้านโชห่วย · Volt Partner Shop</h3><span class="note">โควตาคิดจากยอดของที่ร้านรับเข้า × 3 แต้ม/แพ็ก</span></div>
+  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:14px"><div class="tbl"><div class="tr th" style="grid-template-columns:2fr 1fr .8fr .8fr .8fr"><span>ร้าน / พื้นที่</span><span>ของเข้า/เดือน</span><span>โควตา</span><span>ใช้วันนี้</span><span>Risk</span></div>${S.shops.map(x=>`<button class="tr ${x.id===s.id?'sel':''}" style="grid-template-columns:2fr 1fr .8fr .8fr .8fr" data-a="shopSel" data-v="${x.id}"><span><b>${x.id} ${x.n}</b><br>${x.a}${x.sus?' · <span class="bad">ระงับ</span>':''}</span><span>${x.stockIn} แพ็ก</span><span>${x.quota}</span><b class="${x.used>x.quota?'bad':''}">${x.used}</b><span class="pill ${x.risk==='สูง'?'r':x.risk==='กลาง'?'a':'g'}">${x.risk}</span></button>`).join('')}</div>
+  <div class="pn" style="gap:10px"><h4>${s.id} ${s.n}</h4><span class="note">${s.a} · แต้มร้าน ${fmt(s.pts)}</span><span style="font-weight:600;font-size:13.5px">AI พบ</span><span style="font-size:13px">${s.why.length?s.why.map(w=>'• '+w).join('<br>'):'ไม่พบความผิดปกติใน 30 วัน'}</span>
+  <div class="fld"><label for="squota">โควตา/วัน</label><input id="squota" type="number" value="${s.quota}"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="lbtn n" data-a="saveQuota">บันทึกโควตา</button><button class="lbtn ${s.sus?'y':'r'}" data-a="suspend">${s.sus?'ยกเลิกระงับ':'ระงับชั่วคราว'}</button><button class="lbtn o" data-a="sendSales">ส่งเซลส์ตรวจ</button></div>${s.id==='T-0088'?'<span class="note">ร้านนี้คือมือถือร้านด้านบน ลองระงับแล้วดูผล</span>':''}</div></div>`}
+function bRules(){const r=S.rules;return `<div class="mh"><h3>กติกาแต้ม + แคมเปญ</h3><button class="lbtn y" data-a="saveRules">บันทึกกติกา</button></div>
+  <div class="g3"><div class="pn"><h4>แต้มต่อ SKU</h4><div class="fld"><label for="r190">190 ml (10฿)</label><input id="r190" type="number" min="0" value="${r.s190}"><label for="r310">310 ml (17฿)</label><input id="r310" type="number" min="0" value="${r.s310}"><label for="rpet">PET ใหม่</label><input id="rpet" type="number" min="0" value="${r.pet}"></div></div>
+  <div class="pn"><h4>Cap กันสายล่ารางวัล</h4><div class="fld"><label for="rcap">แต้มสูงสุด/คน/วัน</label><input id="rcap" type="number" value="${r.cap}"><label for="rscan">สแกนร้าน/คน/วัน</label><input id="rscan" type="number" value="${r.maxScan}"></div><span class="note">ลูกค้าวันนี้ได้ไปแล้ว ${S.user.earnedToday} แต้ม</span></div>
+  <div class="pn"><h4>Tier LF1–LF5</h4>${TIER.map(t=>`<div class="sp" style="font-size:13px"><span class="pill n">${t.k}</span><span>${t.d}</span></div>`).join('')}</div></div>
+  <div class="pn"><h4>โปรโมชันโบนัส</h4><div class="tbl" style="border:0">${S.promos.map(p=>`<div class="tr" style="grid-template-columns:2fr 1fr 2fr 1.5fr 60px"><b>${p.n}</b><span>${p.ty}</span><span>${p.c}</span><span>${p.w}</span><button class="tog" data-a="promo" data-v="${p.id}" aria-pressed="${p.on}" aria-label="เปิดปิด ${p.n}"></button></div>`).join('')}</div><span class="note">เปิด/ปิดมีผลทันทีกับการสแกนและใบเสร็จถัดไป · ต้องอนุมัติ 2 คนในระบบจริง</span></div>`}
+function bMembers(){const ti=tierIdx();const rows=[['คุณมายด์',TIER[ti].k,S.user.pts,seven(),'วันนี้'],['คุณบอส','LF4',612,220,'เมื่อวาน'],['คุณแพร','LF3',305,48,'2 วันก่อน'],['คุณต้นข้าว','LF1',22,0,'5 วันก่อน']];
+  return `<div class="mh"><h3>สมาชิก</h3><span class="note">ค้นหา · แบ่ง Segment · ส่งข้อความ LINE</span></div><div class="tbl"><div class="tr th" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><span>สมาชิก</span><span>Tier</span><span>แต้ม</span><span>แต้ม 7-11</span><span>ซื้อล่าสุด</span></div>${rows.map(r=>`<div class="tr" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><b>${r[0]}</b><span class="pill n">${r[1]}</span><span>${fmt(r[2])}</span><span>${r[3]}</span><span>${r[4]}</span></div>`).join('')}</div>`}
+function bAudit(){return `<div class="mh"><h3>Audit Log</h3><span class="note">ทุกแต้ม ทุกการสุ่ม ทุกการแก้ไขของ Admin</span></div><div class="tbl"><div class="tr th" style="grid-template-columns:80px 100px 1fr"><span>เวลา</span><span>ผู้ทำ</span><span>รายการ</span></div>${S.log.map(l=>`<div class="tr" style="grid-template-columns:80px 100px 1fr"><span>${l.at}</span><span class="pill n">${l.w}</span><span>${esc(l.t)}</span></div>`).join('')||'<div class="empty">ยังไม่มีเหตุการณ์</div>'}</div>`}
+function custDesk(){const u=S.user,ti=tierIdx();return `<div class="cdk"><div class="cnav"><span class="logo">VOLT</span><nav><span style="color:#fff">หน้าแรก</span><span>สะสมแต้ม</span><span>แลกรางวัล</span><span>Tier &amp; ภารกิจ</span></nav><span class="chip y" style="font-size:13px;padding:6px 14px">คุณ${u.name} · ${TIER[ti].k} · ${fmt(u.pts)} แต้ม</span></div>
+  <div class="cbody"><div class="banner"><div><span style="font:italic 700 13px var(--display);letter-spacing:.1em;color:var(--cyan)">THREE MAN DOWN × VOLT</span><h3>The root of<br><em>your energy</em></h3></div><div style="margin-left:auto;display:flex;align-items:flex-end;gap:14px;padding-right:20px"><span class="can c" style="height:100px;width:52px"><b style="font-size:20px">VOLT</b></span><span class="can y" style="height:140px;width:70px"><b style="font-size:30px">VOLT</b></span><span class="can p" style="height:100px;width:52px"><b style="font-size:20px">VOLT</b></span></div></div>
+  <div class="mcard">${bolt('bg')}<span class="lvl" style="position:relative">${TIER[ti].k}</span><div style="position:relative;margin:8px 0"><span class="num" style="font-size:52px;line-height:1">${fmt(u.pts)}</span> <span class="mut">แต้ม</span></div><span class="mut" style="position:relative;font-size:13px">ใช้ QR บนมือถือที่ร้านโชห่วย · แต้ม 7-11 สะสม ${seven()}</span></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:10px"><span class="h3">กรอกรหัส / เลขออเดอร์</span><input class="in" id="dcode" placeholder="VOLT-7K2P-9QX4"><button class="btn by" data-a="deskCode">ยืนยันรหัส</button><span class="mut" style="font-size:12px">ผลลัพธ์ไปที่บัญชีเดียวกับมือถือ</span></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:8px"><span class="h3">รางวัลสำหรับคุณ</span>${S.rewards.filter(r=>r.tier<=ti&&r.t!=='auction').slice(0,4).map(r=>`<div class="sp" style="font-size:13px"><span>${esc(r.n)}</span><button class="mini" data-a="openRw" data-v="${r.id}">${r.pts} แต้ม</button></div>`).join('')}<span class="mut" style="font-size:12px">กดแลกแล้วไปยืนยันต่อที่มือถือ (เครื่องซ้ายบน)</span></div></div></div>`}
+
+/* ---------- ACTIONS ---------- */
+const A={
+  c:(v)=>{S.ui.c=v;if(v==='rewards')S.ui.rd=null},
+  collectTab:(v)=>{S.ui.c='collect';S.ui.tab=v},
+  fl:(v)=>{S.ui.fl=v},
+  rf:(v)=>{S.ui.rf=v},
+  ask:(v)=>{const ti=tierIdx();const q={pts:'แต้มฉันเหลือเท่าไร',near:'ร้านสะสมแต้มใกล้ฉัน',how:'สะสมแต้มยังไง',tier:'ขึ้น Tier ยังไง'}[v];S.chat.push({f:'me',x:q});
+    S.chat.push({f:'oa',k:'ai',kk:'PULL',x:v==='pts'?`คุณมี ${fmt(S.user.pts)} แต้ม (${TIER[ti].k}) · ${aiLine().replace(/&quot;/g,'"')}`:v==='near'?`ใกล้คุณมี ${S.shops.filter(s=>!s.sus).length} ร้าน ใกล้สุด: ${S.shops[0].n} 0.3 กม. · กด “ร้านใกล้ฉัน” เพื่อดูแผนที่`:v==='how'?'3 วิธี: 1) ให้ร้านโชห่วยสแกน QR ในบัตรสมาชิก 2) ส่งรูปใบเสร็จ 7-Eleven / Lawson / Makro 3) กรอกรหัสใต้ห่วงหรือเลขออเดอร์ออนไลน์':`ซื้ออย่างน้อยสัปดาห์ละครั้งต่อเนื่อง ตอนนี้ ${S.user.streak} สัปดาห์ ${TIER[ti+1]?`อีก ${TIER[ti+1].w-S.user.streak} สัปดาห์ขึ้น ${TIER[ti+1].k}`:''}`});log('ลูกค้า','ถามแชต: '+q)},
+  sendReceipt:()=>{const store=$('#rstore').value,no=$('#rno').value.trim(),sku=$('#rsku').value,qty=Math.max(1,Math.min(48,+$('#rqty').value||1)),blur=$('#rblur').checked,fl=S.ui.fl||'y';
+    if(!no)return toast('กรอกเลขใบเสร็จก่อน');const dup=S.receipts.some(r=>r.no===no);
+    const r={id:'r'+Date.now(),me:true,store,no,sku,fl,qty,st:'checking',score:0,why:'',blur,ch:store};S.receipts.push(r);log('ลูกค้า',`ส่งใบเสร็จ ${store} ${no}`);done('receipt');
+    setTimeout(()=>{if(dup){r.st='dup';r.score=.05;r.why='ใบเสร็จซ้ำ';S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ใบเสร็จ ${no} เคยส่งแล้ว ระบบจึงไม่ให้แต้มซ้ำ`});log('AI','ปฏิเสธใบเสร็จซ้ำ '+no)}
+      else if(blur||qty>6){r.st='review';r.score=blur?.62:.45;r.why=blur?'ภาพเบลอ':'จำนวนผิดปกติ';S.ui.sel=r.id;S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ใบเสร็จ ${store} อยู่ระหว่างทีมตรวจ (ไม่เกิน 24 ชม.)`});log('AI',`ส่งคนตรวจ ${store} · ${r.why} (score ${r.score})`)}
+      else{r.st='ok';r.score=.95;const p=qty*rate(sku,store);r.pts=addPts(p,`${store} · ${SKU[sku].s} × ${qty}`,store,qty);S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ใบเสร็จผ่าน ✓ ได้ ${r.pts} แต้ม · รวม ${fmt(S.user.pts)} แต้ม`});log('AI',`อนุมัติอัตโนมัติ ${store} +${r.pts} แต้ม`)}
+      render()},1200)},
+  sendCode:()=>{const c=$('#ccode').value.trim().toUpperCase();const used=S.receipts.some(r=>r.no===c);
+    if(CODES[c]&&!used){const sku=CODES[c];const p=rate(sku,'รหัส');const got=addPts(p,`รหัสใต้ห่วง ${SKU[sku].s}`,'รหัส',1);S.receipts.push({id:'r'+Date.now(),me:true,store:'รหัสใต้ห่วง',no:c,sku,fl:'y',qty:1,st:'ok',pts:got,ch:'รหัส'});S.user.codeFails=0;toast(`รหัสถูกต้อง +${got} แต้ม`);log('ลูกค้า',`ใช้รหัส ${c} +${got}`)}
+    else{S.user.codeFails++;toast(used?'รหัสนี้ถูกใช้ไปแล้ว':'รหัสไม่ถูกต้อง');log('AI',`กรอกรหัสผิด (${S.user.codeFails}/5)`)}},
+  sendOnline:()=>{const pl=$('#oplat').value,no=$('#ono').value.trim(),n=+$('#osku').value;if(S.receipts.some(r=>r.no===no))return toast('เลขออเดอร์นี้ถูกใช้แล้ว');
+    const r={id:'r'+Date.now(),me:true,store:pl==='other'?'Shopee ร้านทั่วไป':'Volt Official '+(pl==='off'?'Shopee':'Lazada'),no,sku:'s310',fl:'y',qty:n,ch:'ออนไลน์'};S.receipts.push(r);
+    if(pl==='other'){r.st='review';r.score=.7;r.why='ไม่ใช่ร้าน Official';S.ui.sel=r.id;toast('ส่งทีมตรวจแล้ว');log('ลูกค้า','ผูกออเดอร์ร้านทั่วไป → ส่งคนตรวจ')}
+    else{r.st='ok';r.pts=addPts(n*rate('s310','ออนไลน์'),`ออนไลน์ · 310 ml แพ็ก ${n}`,'ออนไลน์',n);toast(`ออเดอร์ยืนยันแล้ว +${r.pts} แต้ม`);log('ลูกค้า',`ผูกออเดอร์ Official +${r.pts}`)}},
+  openRw:(v)=>{const r=S.rewards.find(x=>x.id===v);S.ui.c='redeem';S.ui.rd={id:v,step:'choose',mode:r.mix&&r.mix.p<=S.user.pts&&r.pts>S.user.pts?'mix':'pts',n:1}},
+  mode:(v)=>{S.ui.rd.mode=v},
+  ent:(v)=>{const d=S.ui.rd;d.n=Math.max(1,Math.min(5,d.n+ +v))},
+  confirmRw:()=>{const r=S.rewards.find(x=>x.id===S.ui.rd.id),d=S.ui.rd,u=S.user;
+    if(r.t==='auction'){const b=+$('#bid').value;if(b<r.bid+10)return toast('ต้องบิดอย่างน้อย '+(r.bid+10));if(b>u.pts)return toast('แต้มไม่พอ');u.pts-=b;r.bid=b;r.lead=true;r.held=b;S.hist.unshift({l:'กันแต้มประมูล '+r.n,p:-b,ch:'ประมูล'});log('ลูกค้า',`บิด ${b} แต้ม ${r.n}`);done('lucky');toast('บิดสำเร็จ คุณนำอยู่');
+      setTimeout(()=>{if(!r.lead)return;r.lead=false;r.bid+=20;u.pts+=r.held;S.hist.unshift({l:'คืนแต้มประมูล',p:r.held,ch:'ประมูล'});S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`มีคนบิด ${fmt(r.bid)} แต้ม สูงกว่าคุณ คืน ${fmt(r.held)} แต้มแล้ว · บิดใหม่ได้`});log('ระบบ','มีผู้บิดสูงกว่า คืนแต้มลูกค้า');render()},6000);return}
+    if(r.t==='lucky'){const c=r.pts*d.n;u.pts-=c;r.mine+=d.n;r.entries+=d.n;S.hist.unshift({l:`ลุ้น ${r.n} × ${d.n}`,p:-c,ch:'ลุ้น'});S.kpi.ptsUse+=c;log('ลูกค้า',`ซื้อสิทธิ์ลุ้น ${d.n} สิทธิ์`);done('lucky');finish(`ได้ ${d.n} สิทธิ์ลุ้น ${r.n} · ประกาศผล 30 มี.ค.`);return}
+    if(!u.otp){d.step='otp';return}
+    if(r.t==='merch'&&!d.addrOk){d.step='addr';return}
+    if(d.mode==='mix'){d.step='pay';return}
+    pay(r,r.pts,0)},
+  otp:()=>{if(!/^\d{6}$/.test($('#otp').value))return toast('ใส่ตัวเลข 6 หลัก');S.user.otp=true;log('ลูกค้า','ยืนยัน OTP');A.confirmRw()},
+  addr:()=>{S.ui.rd.addrOk=true;A.confirmRw()},
+  paid:()=>{const r=S.rewards.find(x=>x.id===S.ui.rd.id);log('ระบบ',`รับชำระ PromptPay ${r.mix.c}฿`);pay(r,r.mix.p,r.mix.c)},
+  pend:(v)=>{const p=S.pending,s=myShop();S.pending=null;const sc=S.scans.find(x=>x.st==='wait');
+    if(v==='yes'){const got=addPts(p.pts,`${p.shop} (สแกน) · ${p.q} กระป๋อง`,'โชห่วย',p.q);s.used+=got;s.pts+=got;S.user.scansToday++;if(sc)sc.st='ok';S.ui.sRes='ok';log('ลูกค้า',`ยืนยันสแกน +${got} แต้ม`);done('qr');toast(`+${got} แต้ม`)}
+    else{if(sc)sc.st='no';S.ui.sRes='no';log('ลูกค้า','ปฏิเสธรายการที่ร้านบันทึก')}
+    S.ui.s='done'},
+  mission:(v)=>{const m=S.missions.find(x=>x.id===v);if(v==='m2'){S.ui.quiz=true;return}
+    if(v==='m3'){m.cnt=(m.cnt||0)+1;addPts(m.p,'ชวนเพื่อนสมัคร','ภารกิจ',0);log('ลูกค้า','เพื่อนสมัครผ่านลิงก์ชวน');toast('เพื่อนสมัครแล้ว +5 แต้ม');if(m.cnt>=3)m.done=true;return}},
+  quiz:(v)=>{S.ui.quiz=null;const m=S.missions.find(x=>x.id==='m2');if(v==='1'){m.done=true;addPts(5,'ภารกิจ ควิซ 3MD','ภารกิจ',0);toast('ถูกต้อง! +5 แต้ม');log('ลูกค้า','ตอบควิซถูก +5')}else toast('ยังไม่ถูก ลองใหม่อีกครั้ง')},
+  share:()=>{toast('แชร์ Tier ไปที่ LINE Timeline แล้ว');log('ลูกค้า','แชร์ Tier ลงโซเชียล')},
+  s:(v)=>{S.ui.s=v;if(v==='home'&&S.pending){S.pending=null;const sc=S.scans.find(x=>x.st==='wait');if(sc)sc.st='no'}},
+  scan:()=>{S.ui.s='scan'},
+  doScan:()=>{if(S.pending)return toast('ลูกค้ายังมีรายการรอยืนยันอยู่');S.ui.cart={s190:{y:0,c:0,p:0},s310:{y:0,c:0}};S.ui.s='sku';log('ร้าน',`สแกน QR คุณ${S.user.name} (token ${String(qrSeed).slice(0,4)}…)`)},
+  qty:(v)=>{const [k,f,d]=v.split('|');const c=S.ui.cart[k];c[f]=Math.max(0,Math.min(24,c[f]+ +d))},
+  sendCart:()=>{const {p,q}=cartPts();const c=S.ui.cart;const lines=[];for(const k in c)for(const f in c[k])if(c[k][f])lines.push({t:`${SKU[k].s} ${FL[f]}`,q:c[k][f]});
+    S.pending={shop:myShop().n,pts:p,q,lines};S.scans.unshift({t:now(),who:'คุณม**',d:lines.map(l=>l.t+' × '+l.q).join(', '),st:'wait'});S.ui.s='wait';S.ui.c=S.ui.c==='redeem'?'card':S.ui.c;log('ร้าน',`ส่งรายการ ${q} กระป๋อง +${p} แต้ม ให้ลูกค้ายืนยัน`)},
+  shopRedeem:(v)=>{const s=myShop();s.pts-=+v;toast(+v?'แลกส่วนลด 50฿ แล้ว ใช้ได้กับการสั่งของรอบถัดไป':'เซลส์จะนำป้ายไปติดที่ร้านภายใน 7 วัน');log('ร้าน',+v?'แลกแต้มร้าน 300 → ส่วนลด 50฿':'ขอรับป้ายร้านสะสมแต้ม')},
+  b:(v)=>{S.ui.b=v},
+  dtview:(v)=>{S.ui.dt=v},
+  sel:(v)=>{S.ui.sel=v},
+  rv:(v)=>{const r=S.receipts.find(x=>x.id===S.ui.sel&&x.st==='review')||S.receipts.find(x=>x.st==='review');if(!r)return;const qn=Math.max(0,+$('#aq').value||0);
+    if(v==='ok'){r.st='ok';r.qty=qn;if(r.me){r.pts=addPts(qn*rate(r.sku,r.ch),`${r.store} · ${SKU[r.sku].s} × ${qn}`,r.ch,qn);S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ทีมตรวจอนุมัติใบเสร็จ ${r.store} แล้ว +${r.pts} แต้ม`})}log('หลังบ้าน',`อนุมัติใบเสร็จ ${r.no} (${qn} ชิ้น)`)}
+    else if(v==='resubmit'){r.st='resubmit';if(r.me)S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ใบเสร็จ ${r.store} ภาพไม่ชัด รบกวนถ่ายใหม่อีกครั้ง`});log('หลังบ้าน',`ขอรูปใหม่ ${r.no}`)}
+    else{r.st='no';if(r.me)S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ใบเสร็จ ${r.store} ไม่ผ่านการตรวจ`});log('หลังบ้าน',`ปฏิเสธใบเสร็จ ${r.no}`)}
+    done('review');S.ui.sel=(S.receipts.find(x=>x.st==='review')||{}).id;toast('บันทึกแล้ว · แจ้งลูกค้าทาง LINE')},
+  ai:(v)=>{const [id,ok]=v.split('|');const a=S.ai.find(x=>x.id===id);S.ai=S.ai.filter(x=>x.id!==id);if(ok==='1'){const r=S.rewards.find(x=>x.id===a.k);if(id==='a1'){r.stock-=900;r.plan=Math.round(r.plan*1.1)}else{r.mix={p:80,c:49}}log('หลังบ้าน','ใช้คำแนะนำ AI: '+r.n);toast('ปรับแล้ว ลูกค้าเห็นผลทันที')}else log('หลังบ้าน','ข้ามคำแนะนำ AI')},
+  addRw:()=>{S.ui.addRw=!S.ui.addRw},
+  saveRw:()=>{const n=$('#nwn').value.trim();if(!n)return toast('ใส่ชื่อรางวัล');S.rewards.push({id:'w'+Date.now(),n,t:$('#nwt').value,pts:Math.max(1,+$('#nwp').value||1),tier:+$('#nwr').value,stock:1000,used:0,plan:0,logo:'NEW',bg:'#17A866'});S.ui.addRw=false;log('หลังบ้าน','เพิ่มรางวัล '+n);toast('เพิ่มรางวัลแล้ว เปิดหน้ารางวัลในมือถือลูกค้าได้เลย')},
+  shopSel:(v)=>{S.ui.shopSel=v},
+  goShop:(v)=>{S.ui.b='shops';S.ui.shopSel=v},
+  saveQuota:()=>{const s=S.shops.find(x=>x.id===S.ui.shopSel);s.quota=Math.max(0,+$('#squota').value||0);log('หลังบ้าน',`ปรับโควตา ${s.id} เป็น ${s.quota}`);toast('บันทึกโควตาแล้ว')},
+  suspend:()=>{const s=S.shops.find(x=>x.id===S.ui.shopSel);s.sus=!s.sus;if(s.sus&&s.risk==='สูง')s.risk='สูง';log('หลังบ้าน',`${s.sus?'ระงับ':'ยกเลิกระงับ'}ร้าน ${s.id} ${s.n}`);if(s.id==='T-0088')done('suspend');toast(s.sus?'ระงับร้านแล้ว':'เปิดร้านแล้ว')},
+  sendSales:()=>{const s=S.shops.find(x=>x.id===S.ui.shopSel);log('หลังบ้าน',`มอบงานเซลส์ตรวจร้าน ${s.id}`);toast('ส่งงานให้เซลส์พื้นที่แล้ว')},
+  saveRules:()=>{const r=S.rules;r.s190=Math.max(0,+$('#r190').value);r.s310=Math.max(0,+$('#r310').value);r.pet=Math.max(0,+$('#rpet').value);r.cap=Math.max(1,+$('#rcap').value);r.maxScan=Math.max(1,+$('#rscan').value);log('หลังบ้าน',`แก้กติกา: 190=${r.s190} 310=${r.s310} cap=${r.cap}`);done('rule');toast('บันทึกกติกาแล้ว มีผลทันที')},
+  promo:(v)=>{const p=S.promos.find(x=>x.id===v);p.on=!p.on;if(v==='p1')S.rules.x2=p.on;log('หลังบ้าน',`${p.on?'เปิด':'ปิด'}โปรฯ ${p.n}`);done('rule')},
+  rfm:(v)=>{log('หลังบ้าน',`ส่ง AI Noti ถึง Segment ${v}`);S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`(${v}) คิดถึงกัน! ซื้อ Volt สัปดาห์นี้รับแต้มพิเศษ +3`});toast('ส่งข้อความถึง '+v+' แล้ว (ลูกค้าเดโมได้รับด้วย)')},
+  deskCode:()=>{const c=$('#dcode').value.trim().toUpperCase();if(CODES[c]&&!S.receipts.some(r=>r.no===c)){const got=addPts(rate(CODES[c],'รหัส'),'รหัสใต้ห่วง (เว็บ)','รหัส',1);S.receipts.push({id:'r'+Date.now(),me:true,store:'รหัสใต้ห่วง',no:c,sku:CODES[c],fl:'y',qty:1,st:'ok',pts:got,ch:'รหัส'});toast(`+${got} แต้ม · มือถือเห็นยอดเดียวกัน`);log('ลูกค้า','ใช้รหัสผ่านเว็บ Desktop')}else toast('รหัสไม่ถูกต้องหรือถูกใช้แล้ว')},
+  week:()=>{S.user.week=false;S.user.earnedToday=0;S.user.scansToday=0;S.shops.forEach(s=>s.used=Math.round(s.used*.2));S.missions.forEach(m=>{if(m.id!=='m3')m.done=false});log('ระบบ','เริ่มสัปดาห์ใหม่ (เดโม)');toast('ข้ามไปสัปดาห์ถัดไป · ซื้อสัปดาห์นี้เพื่อนับต่อเนื่อง');done('tier')},
+  reset:()=>{S=seed();toast('รีเซ็ตเดโมแล้ว')}
+};
+function pay(r,pts,cash){const u=S.user,d=S.ui.rd;u.pts-=pts;if(r.used!=null)r.used++;if(r.t==='flash'){r.left--;r.claimed=true}
+  S.hist.unshift({l:`แลก ${r.n}${cash?` (+${cash}฿)`:''}`,p:-pts,ch:'แลก'});S.kpi.ptsUse+=pts;S.kpi.budget+=0.00002;
+  const code=r.t==='ev'?'VC-'+Math.random().toString(36).slice(2,8).toUpperCase():'';
+  log('ลูกค้า',`แลก ${r.n} −${pts} แต้ม${cash?` + ${cash}฿`:''}`);if(cash)done('redeem');if(r.t==='flash')done('lucky');
+  S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:r.t==='merch'||r.t==='flash'?`แลก ${r.n} สำเร็จ · เลขพัสดุ TH${Math.floor(1e9*Math.random())} จะอัปเดตทาง LINE`:`แลก ${r.n} สำเร็จ · โค้ด ${code}`});
+  finish(r.t==='merch'||r.t==='flash'?'จัดส่งถึงบ้านภายใน 7 วัน · ติดตามพัสดุใน LINE':'ใช้โค้ดนี้ได้ทันที',code)}
+function finish(msg,code){Object.assign(S.ui.rd,{step:'done',msg,code})}
+
+function render(){renderCust();renderShop();renderFeed();renderDesk();save()}
+const CLEAR={sendReceipt:1,sendCode:1,sendOnline:1,saveRw:1,deskCode:1,otp:1,addr:1,reset:1,collectTab:1,c:1,openRw:1};
+function snap(){const m={};document.querySelectorAll('#cust [id],#shop [id],#desk [id]').forEach(el=>{if(el.matches('input,select,textarea'))m[el.id]=el.type==='checkbox'?el.checked:el.value});return m}
+function restore(m){for(const id in m){const el=document.getElementById(id);if(el&&el.matches('input,select,textarea')&&el.type!=='file'){if(el.type==='checkbox')el.checked=m[id];else el.value=m[id]}}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const k=b.dataset.a,f=A[k];if(!f)return;const m=snap();f(b.dataset.v,b);render();if(!CLEAR[k])restore(m)});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('#ccode'))A.sendCode(),render()});
+function fit(){const w=$('.dtw');$('#desk').style.transform='scale('+(w.clientWidth/1280)+')'}
+addEventListener('resize',fit);
+render();fit();
+})();
+</script>
+</body></html>
