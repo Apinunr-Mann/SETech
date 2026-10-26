@@ -15,32 +15,34 @@ for f in sorted(d.glob('[0-9][0-9]-*.html')):
     n = f.name[:2]
     slides.append(f'''<section class="slide"><h2><span>{n}</span>{titles.get(n, f.stem)}</h2>
 <div class="frame"><iframe title="{titles.get(n, f.stem)}" srcdoc="{html.escape(s, quote=True)}" scrolling="no"></iframe></div></section>''')
-page = f'''<!doctype html>
-<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Volt CRM Architecture</title>
+page = f'''<title>Volt CRM Architecture</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,400;0,600;1,600&display=swap">
 <style>
-  :root {{ --navy: #37386c; --cream: #f1ecea; --accent: #e9a23b; --muted: #6b6b80; }}
+  /* Layout: stacked 16:7 slide frames under a quiet header; slides keep their own light deck palette */
+  :root {{ --bg: #f1ecea; --fg: #1d1d2b; --heading: #37386c; --accent: #c98419; --muted: #6b6b80; --shadow: rgba(55,56,108,.12); }}
+  @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --muted: #a3a2bb; --shadow: rgba(0,0,0,.45); color-scheme: dark; }} }}
+  :root[data-theme="dark"] {{ --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --muted: #a3a2bb; --shadow: rgba(0,0,0,.45); color-scheme: dark; }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-  body {{ background: var(--cream); font-family: 'Prompt', sans-serif; color: #1d1d2b; padding: 32px 16px 64px; }}
+  body {{ background: var(--bg); color: var(--fg); font-family: 'Prompt', sans-serif; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }}
   header, .slide {{ max-width: 1760px; margin: 0 auto; }}
   header {{ margin-bottom: 28px; }}
   header small {{ color: var(--muted); font-size: 15px; }}
-  header h1 {{ font: italic 600 clamp(26px, 4vw, 40px)/1.15 'Prompt'; color: var(--navy); }}
+  header h1 {{ font: italic 600 clamp(26px, 4vw, 40px)/1.15 'Prompt', sans-serif; color: var(--heading); text-wrap: balance; }}
   .slide {{ margin-bottom: 40px; }}
-  .slide h2 {{ font: 600 clamp(18px, 2.4vw, 26px)/1.2 'Prompt'; color: var(--navy); margin-bottom: 12px; display: flex; gap: 12px; align-items: baseline; }}
+  .slide h2 {{ font: 600 clamp(18px, 2.4vw, 26px)/1.2 'Prompt', sans-serif; color: var(--heading); margin-bottom: 12px; display: flex; gap: 12px; align-items: baseline; text-wrap: balance; }}
   .slide h2 span {{ font-style: italic; color: var(--accent); }}
-  .frame {{ position: relative; width: 100%; aspect-ratio: 1760 / 790; overflow: hidden; border-radius: 16px; background: var(--cream); box-shadow: 0 10px 30px rgba(55,56,108,.12); }}
+  .frame {{ position: relative; width: 100%; max-width: 100%; aspect-ratio: 1760 / 790; overflow: hidden; border-radius: 16px; background: #f1ecea; box-shadow: 0 10px 30px var(--shadow); }}
   .frame iframe {{ position: absolute; top: 0; left: 0; width: 1760px; height: 790px; border: 0; transform-origin: 0 0; }}
   @media print {{ body {{ padding: 0; }} .slide {{ break-inside: avoid; }} .frame {{ box-shadow: none; }} }}
-</style></head>
-<body>
+</style>
 <header><small>Volt Consumer Campaign 2027 · CRM / Loyalty บน LINE OA</small><h1>System Architecture</h1></header>
 {''.join(slides)}
 <script>
   function fit() {{ document.querySelectorAll('.frame').forEach(f => {{ f.querySelector('iframe').style.transform = 'scale(' + f.clientWidth / 1760 + ')'; }}); }}
   addEventListener('resize', fit); fit();
-</script>
-</body></html>'''
-(d / 'volt-crm-architecture.html').write_text(page, encoding='utf-8')
+</script>'''
+# Published as a claude.ai Artifact (the host adds the doctype/head wrapper); local copy gets a minimal wrapper.
+(d / 'volt-crm-architecture.html').write_text('<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></head><body>' + page + '</body></html>', encoding='utf-8')
+(d / 'volt-crm-architecture.artifact.html').write_text(page, encoding='utf-8')
 print('wrote volt-crm-architecture.html', len(page))
