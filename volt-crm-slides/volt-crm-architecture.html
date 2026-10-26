@@ -1,11 +1,14 @@
 <!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></head><body><title>Volt CRM Architecture</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,400;0,600;1,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,400;0,500;0,600;1,600&display=swap">
 <style>
   /* Layout: stacked 16:7 slide frames under a quiet header; slides keep their own light deck palette */
-  :root { --bg: #f1ecea; --fg: #1d1d2b; --heading: #37386c; --accent: #c98419; --muted: #6b6b80; --shadow: rgba(55,56,108,.12); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --muted: #a3a2bb; --shadow: rgba(0,0,0,.45); color-scheme: dark; } }
-  :root[data-theme="dark"] { --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --muted: #a3a2bb; --shadow: rgba(0,0,0,.45); color-scheme: dark; }
+  :root { --bg: #f1ecea; --fg: #1d1d2b; --heading: #37386c; --accent: #c98419; --accent-soft: rgba(233,162,59,.25); --muted: #6b6b80; --shadow: rgba(55,56,108,.12);
+    --surface: #ffffff; --line: #d9d6e4; --chip: #ecebf3; --danger: #b2382c; --pin-bg: #37386c; --pin-fg: #ffffff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --accent-soft: rgba(233,162,59,.3); --muted: #a3a2bb; --shadow: rgba(0,0,0,.45);
+    --surface: #212138; --line: #37375a; --chip: #2c2c48; --danger: #f08a7e; --pin-bg: #37386c; --pin-fg: #ffffff; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --accent-soft: rgba(233,162,59,.3); --muted: #a3a2bb; --shadow: rgba(0,0,0,.45);
+    --surface: #212138; --line: #37375a; --chip: #2c2c48; --danger: #f08a7e; --pin-bg: #37386c; --pin-fg: #ffffff; color-scheme: dark; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--fg); font-family: 'Prompt', sans-serif; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   header, .slide { max-width: 1760px; margin: 0 auto; }
@@ -17,7 +20,47 @@
   .slide h2 span { font-style: italic; color: var(--accent); }
   .frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 1760 / 790; overflow: hidden; border-radius: 16px; background: #f1ecea; box-shadow: 0 10px 30px var(--shadow); }
   .frame iframe { position: absolute; top: 0; left: 0; width: 1760px; height: 790px; border: 0; transform-origin: 0 0; }
-  @media print { body { padding: 0; } .slide { break-inside: avoid; } .frame { box-shadow: none; } }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* Team comments on the 10 flow nodes (slide 02) */
+  .pin { position: absolute; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 9px; border-radius: 13px; background: var(--pin-bg); color: var(--pin-fg); font: 600 13px/1 'Prompt', sans-serif; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,.25); font-variant-numeric: tabular-nums; }
+  .pin svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+  .pin.has { background: var(--accent); color: #1d1d2b; }
+  .pin:focus-visible, .cm-btn:focus-visible, .cm-del:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .comments { max-width: 1760px; margin: -12px auto 48px; }
+  .cm-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; margin-bottom: 14px; }
+  .cm-head h3 { font: 600 clamp(17px, 2vw, 22px)/1.2 'Prompt', sans-serif; color: var(--heading); }
+  .cm-status { font-size: 14px; color: var(--muted); }
+  .cm-status.warn { color: var(--danger); }
+  .cm-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (min-width: 1300px) { .cm-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  @media (max-width: 700px) { .cm-grid { grid-template-columns: 1fr; } }
+  [hidden] { display: none !important; }
+  .cm-node { background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; scroll-margin-top: 16px; }
+  .cm-node:target { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .cm-nh { display: flex; align-items: baseline; gap: 10px; }
+  .cm-nh i { font: italic 600 24px/1 'Prompt', sans-serif; color: var(--accent); min-width: 28px; }
+  .cm-nh b { font-size: 17px; font-weight: 600; color: var(--heading); flex: 1; min-width: 0; }
+  .cm-count { font-size: 12.5px; font-weight: 600; color: var(--muted); background: var(--chip); border-radius: 999px; padding: 2px 10px; font-variant-numeric: tabular-nums; }
+  .cm-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .cm-empty { font-size: 14px; color: var(--muted); }
+  .cm-item { display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
+  .cm-item img { width: 28px; height: 28px; border-radius: 50%; }
+  .cm-body { min-width: 0; }
+  .cm-meta { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; font-size: 13px; color: var(--muted); }
+  .cm-meta b { color: var(--fg); font-weight: 600; font-size: 14px; }
+  .cm-text { font-size: 15px; line-height: 1.5; color: var(--fg); white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 2px; }
+  .cm-del { margin-left: auto; background: none; border: 0; color: var(--muted); font: 500 12.5px 'Prompt', sans-serif; cursor: pointer; padding: 0 2px; }
+  .cm-del:hover, .cm-del.arm { color: var(--danger); }
+  .cm-form { display: flex; flex-direction: column; gap: 8px; border-top: 1px dashed var(--line); padding-top: 10px; margin-top: auto; }
+  .cm-form textarea { width: 100%; min-height: 64px; resize: vertical; border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 10px; font: 400 15px/1.45 'Prompt', sans-serif; color: var(--fg); background: var(--bg); }
+  .cm-form textarea:focus { outline: none; border-color: var(--heading); }
+  .cm-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .cm-row small { font-size: 12.5px; color: var(--muted); }
+  .cm-btn { background: var(--heading); color: var(--bg); border: 0; border-radius: 10px; padding: 8px 16px; font: 600 14px 'Prompt', sans-serif; cursor: pointer; }
+  .cm-btn:disabled { opacity: .5; cursor: default; }
+  .cm-err { font-size: 13px; color: var(--danger); }
+
 </style>
 <header><small>Volt Consumer Campaign 2027 · CRM / Loyalty บน LINE OA</small><h1>System Architecture</h1></header>
 <section class="slide"><h2><span>01</span>Pain Point → Solution</h2>
@@ -315,7 +358,80 @@ body {
   &lt;/div&gt;
 
 &lt;/div&gt;&lt;/body&gt;&lt;/html&gt;
-" scrolling="no"></iframe></div></section><section class="slide"><h2><span>03</span>ยืนยันการซื้อ 4 ทาง</h2>
+" scrolling="no"></iframe><a class="pin" href="#c-n01" style="left:24.89%;top:3.80%" aria-label="คอมเมนต์ Node 1 ช่องทางซื้อ"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n02" style="left:43.18%;top:3.80%" aria-label="คอมเมนต์ Node 2 In · LINE OA"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n03" style="left:61.48%;top:3.80%" aria-label="คอมเมนต์ Node 3 Check (AI + คน)"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n04" style="left:79.77%;top:3.80%" aria-label="คอมเมนต์ Node 4 DB"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n05" style="left:98.07%;top:3.80%" aria-label="คอมเมนต์ Node 5 Display"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n06" style="left:24.89%;top:50.89%" aria-label="คอมเมนต์ Node 6 Management"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n07" style="left:43.18%;top:50.89%" aria-label="คอมเมนต์ Node 7 Gamification"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n08" style="left:61.48%;top:50.89%" aria-label="คอมเมนต์ Node 8 รางวัล"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n09" style="left:79.77%;top:50.89%" aria-label="คอมเมนต์ Node 9 Burn Point"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a><a class="pin" href="#c-n10" style="left:98.07%;top:50.89%" aria-label="คอมเมนต์ Node 10 Community"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>0</span></a></div></section><section class="comments" id="comments">
+  <div class="cm-head"><h3>คอมเมนต์ทีม · แต่ละ Node ของ Flow</h3><span class="cm-status" id="cm-status"></span></div>
+  <div class="cm-grid"><article class="cm-node" id="c-n01">
+  <div class="cm-nh"><i>1</i><b>ช่องทางซื้อ</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n01">คอมเมนต์ Node 1</label>
+    <textarea id="cm-in-n01" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ ช่องทางซื้อ"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n02">
+  <div class="cm-nh"><i>2</i><b>In · LINE OA</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n02">คอมเมนต์ Node 2</label>
+    <textarea id="cm-in-n02" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ In · LINE OA"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n03">
+  <div class="cm-nh"><i>3</i><b>Check (AI + คน)</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n03">คอมเมนต์ Node 3</label>
+    <textarea id="cm-in-n03" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ Check (AI + คน)"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n04">
+  <div class="cm-nh"><i>4</i><b>DB</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n04">คอมเมนต์ Node 4</label>
+    <textarea id="cm-in-n04" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ DB"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n05">
+  <div class="cm-nh"><i>5</i><b>Display</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n05">คอมเมนต์ Node 5</label>
+    <textarea id="cm-in-n05" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ Display"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n06">
+  <div class="cm-nh"><i>6</i><b>Management</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n06">คอมเมนต์ Node 6</label>
+    <textarea id="cm-in-n06" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ Management"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n07">
+  <div class="cm-nh"><i>7</i><b>Gamification</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n07">คอมเมนต์ Node 7</label>
+    <textarea id="cm-in-n07" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ Gamification"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n08">
+  <div class="cm-nh"><i>8</i><b>รางวัล</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n08">คอมเมนต์ Node 8</label>
+    <textarea id="cm-in-n08" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ รางวัล"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n09">
+  <div class="cm-nh"><i>9</i><b>Burn Point</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n09">คอมเมนต์ Node 9</label>
+    <textarea id="cm-in-n09" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ Burn Point"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article><article class="cm-node" id="c-n10">
+  <div class="cm-nh"><i>10</i><b>Community</b><span class="cm-count">0 คอมเมนต์</span></div>
+  <ul class="cm-list"></ul>
+  <form class="cm-form"><label class="sr" for="cm-in-n10">คอมเมนต์ Node 10</label>
+    <textarea id="cm-in-n10" maxlength="2000" placeholder="พิมพ์คอมเมนต์สำหรับ Community"></textarea>
+    <div class="cm-row"><small class="cm-err" hidden></small><button class="cm-btn" type="submit">ส่งคอมเมนต์</button></div>
+  </form>
+</article></div>
+</section><section class="slide"><h2><span>03</span>ยืนยันการซื้อ 4 ทาง</h2>
 <div class="frame"><iframe title="ยืนยันการซื้อ 4 ทาง" srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;th&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;@import url(&#x27;https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,500;1,600&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=block&#x27;);
 
@@ -875,4 +991,94 @@ body {
 <script>
   function fit() { document.querySelectorAll('.frame').forEach(f => { f.querySelector('iframe').style.transform = 'scale(' + f.clientWidth / 1760 + ')'; }); }
   addEventListener('resize', fit); fit();
+  const NODES = [{"id": "n01", "num": 1, "title": "ช่องทางซื้อ"}, {"id": "n02", "num": 2, "title": "In · LINE OA"}, {"id": "n03", "num": 3, "title": "Check (AI + คน)"}, {"id": "n04", "num": 4, "title": "DB"}, {"id": "n05", "num": 5, "title": "Display"}, {"id": "n06", "num": 6, "title": "Management"}, {"id": "n07", "num": 7, "title": "Gamification"}, {"id": "n08", "num": 8, "title": "รางวัล"}, {"id": "n09", "num": 9, "title": "Burn Point"}, {"id": "n10", "num": 10, "title": "Community"}];
+// Team comments per flow node, stored in the artifact's shared db (collection "comments").
+// Doc shape: { node: "n01".."n10", text, author: <user id>, at: ISO time }.
+(function () {
+  const statusEl = document.getElementById('cm-status');
+  const panels = new Map(NODES.map(n => [n.id, document.getElementById('c-' + n.id)]));
+  let docs = [], me = null, user = null, db = null, writable = false, renderSeq = 0;
+
+  const fmt = iso => { try { return new Date(iso).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { return ''; } };
+  const setStatus = (text, warn) => { statusEl.textContent = text; statusEl.classList.toggle('warn', !!warn); };
+  const setForms = on => panels.forEach(p => { p.querySelector('.cm-form').hidden = !on; });
+
+  async function render() {
+    const seq = ++renderSeq;
+    const ids = [...new Set(docs.map(d => d.author).filter(Boolean))];
+    const ps = user && ids.length ? await user.profiles(ids) : {};
+    if (seq !== renderSeq) return;
+    for (const n of NODES) {
+      const list = docs.filter(d => d.node === n.id);
+      const p = panels.get(n.id), ul = p.querySelector('.cm-list');
+      p.querySelector('.cm-count').textContent = list.length + ' คอมเมนต์';
+      const pin = document.querySelector('.pin[href="#c-' + n.id + '"]');
+      if (pin) { pin.querySelector('span').textContent = list.length; pin.classList.toggle('has', list.length > 0); }
+      ul.replaceChildren();
+      if (!list.length) { const li = document.createElement('li'); li.className = 'cm-empty'; li.textContent = 'ยังไม่มีคอมเมนต์'; ul.append(li); continue; }
+      for (const c of list) {
+        const prof = ps[c.author] || {};
+        const li = document.createElement('li'); li.className = 'cm-item';
+        const img = document.createElement('img'); img.alt = ''; if (prof.avatarUrl) img.src = prof.avatarUrl;
+        const body = document.createElement('div'); body.className = 'cm-body';
+        const meta = document.createElement('div'); meta.className = 'cm-meta';
+        const who = document.createElement('b'); who.textContent = prof.name || (c.author && c.author === me ? 'คุณ' : 'สมาชิกทีม');
+        const when = document.createElement('span'); when.textContent = fmt(c.at);
+        meta.append(who, when);
+        if (writable && me && c.author === me) {
+          const del = document.createElement('button'); del.type = 'button'; del.className = 'cm-del'; del.textContent = 'ลบ';
+          del.addEventListener('click', () => {
+            if (!del.classList.contains('arm')) { del.classList.add('arm'); del.textContent = 'กดอีกครั้งเพื่อลบ'; setTimeout(() => { del.classList.remove('arm'); del.textContent = 'ลบ'; }, 3000); return; }
+            del.disabled = true;
+            db.doc('comments/' + c.id).delete().catch(() => { del.disabled = false; setStatus('ลบไม่สำเร็จ ลองใหม่อีกครั้ง', true); });
+          });
+          meta.append(del);
+        }
+        const text = document.createElement('div'); text.className = 'cm-text'; text.textContent = c.text;
+        body.append(meta, text); li.append(img, body); ul.append(li);
+      }
+    }
+  }
+
+  async function submit(nodeId, form) {
+    const ta = form.querySelector('textarea'), btn = form.querySelector('.cm-btn'), err = form.querySelector('.cm-err');
+    const text = ta.value.trim().slice(0, 2000);
+    if (!text) return;
+    btn.disabled = true; err.hidden = true;
+    try {
+      await db.collection('comments').add({ node: nodeId, text, author: me, at: new Date().toISOString() });
+      ta.value = '';
+    } catch (e) {
+      err.hidden = false;
+      if (e && e.code === 'invalid_argument') { err.textContent = 'บัญชีนี้มีสิทธิ์ดูอย่างเดียว ให้เจ้าของเพิ่มสิทธิ์เป็น Contributor ขึ้นไปก่อน'; writable = false; }
+      else if (e && e.code === 'quota_exceeded') err.textContent = 'พื้นที่เก็บคอมเมนต์เต็มแล้ว แจ้งเจ้าของหน้าให้ลบคอมเมนต์เก่า';
+      else err.textContent = 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง';
+    } finally { btn.disabled = false; }
+  }
+
+  panels.forEach((p, nodeId) => {
+    const form = p.querySelector('.cm-form');
+    form.addEventListener('submit', e => { e.preventDefault(); submit(nodeId, form); });
+    form.querySelector('textarea').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submit(nodeId, form); } });
+  });
+  setForms(false);
+  render();
+
+  if (!window.claude || !window.claude.use) { setStatus('เปิดผ่านลิงก์ claude.ai เพื่ออ่านและเขียนคอมเมนต์', true); return; }
+  setStatus('กำลังโหลดคอมเมนต์…');
+  Promise.all([window.claude.use('db'), window.claude.use('user')]).then(async ([d, u]) => {
+    db = d; user = u;
+    if (!db) { setStatus('ลงชื่อเข้าใช้ claude.ai เพื่ออ่านและเขียนคอมเมนต์', true); return; }
+    me = user ? await user.id() : null;
+    const can = user ? await user.can('data.write') : null;
+    writable = !!me && can !== false;
+    setForms(writable);
+    setStatus(writable ? 'คอมเมนต์ทุกคนเห็นทันที · Ctrl/⌘ + Enter เพื่อส่ง' : 'สิทธิ์ของคุณอ่านได้อย่างเดียว');
+    db.collection('comments').orderBy('at').onSnapshot(snap => {
+      docs = snap.docs.map(s => Object.assign({ id: s.id }, s.data()));
+      render();
+    }, () => setStatus('การเชื่อมต่อคอมเมนต์หลุด รีเฟรชหน้าเพื่อโหลดใหม่', true));
+  });
+})();
+
 </script></body></html>
