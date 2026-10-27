@@ -9,8 +9,9 @@ titles = {
   '04': 'Mockup หน้าจอ',
   '05': 'System Architecture',
   '06': 'กติกาแต้ม + งบรางวัล + Cost-per-Can Governor',
-  '07': 'AI 3 ระดับ + สิ่งที่ห้ามทำ',
+  '07': 'AI layer 3 ระดับ + Receipt AI',
   '08': 'Data model · API · Events',
+  '09': 'Timeline · NFR · Security',
 }
 
 def scope(css, cls):

@@ -32,18 +32,19 @@ window.VoltFX=(function(){
   const WAVE='M-24 4Q-18 0 -12 4T0 4T12 4T24 4T36 4T48 4T60 4T72 4T84 4V90H-24Z';
   const BUB=[[11,34,2.2,0],[22,48,1.6,-.7],[32,28,2.4,-1.4],[18,60,1.8,-2.1],[36,52,1.5,-.4],[26,40,2,-1.9]];
   const clamp=p=>Math.max(0,Math.min(1,p||0));
+  const vis=p=>p<=0?0:.1+.9*p;
   const stOf=(p,o)=>o.state==='wait'?'wait':p>=.999?'full':p<=.001?'0':'mid';
   function bolt(p,o){o=o||{};p=clamp(p);const id='cb'+(++uid),st=stOf(p,o),fl=o.flavor?' f-'+o.flavor:'';
     const lbl=o.label!=null?`<span class="cb-l">${o.label}</span>`:'';
-    return `<span class="cbolt cb-${o.size||'md'} cb-${st}${fl}${o.cls?' '+o.cls:''}" style="--p:${p.toFixed(3)}" data-p="${p.toFixed(3)}" role="img" aria-label="${o.aria||('Charge Bolt '+Math.round(p*100)+'%')}"><svg viewBox="0 0 48 64" aria-hidden="true"><defs><clipPath id="${id}c"><path d="${BPATH}"/></clipPath><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cf2)"/><stop offset="1" stop-color="var(--cf)"/></linearGradient></defs><path class="cb-glass" d="${BPATH}"/><g clip-path="url(#${id}c)"><g class="cb-liq"><g class="cb-w2"><path d="${WAVE}" fill="url(#${id}g)" transform="translate(-6 -2)"/></g><g class="cb-w1"><path d="${WAVE}" fill="url(#${id}g)"/></g>${BUB.map(b=>`<circle class="cb-b" cx="${b[0]}" cy="${b[1]}" r="${b[2]}" style="animation-delay:${b[3]}s"/>`).join('')}</g><g class="cb-idle"><circle cx="21" cy="53" r="1.6" style="animation-delay:0s"/><circle cx="25" cy="46" r="1.1" style="animation-delay:-1.4s"/></g></g><path class="cb-edge" d="${BPATH}"/></svg>${lbl}</span>`}
+    return `<span class="cbolt cb-${o.size||'md'} cb-${st}${fl}${o.cls?' '+o.cls:''}" style="--p:${vis(p).toFixed(3)}" data-p="${p.toFixed(3)}" role="img" aria-label="${o.aria||('Charge Bolt '+Math.round(p*100)+'%')}"><svg viewBox="0 0 48 64" aria-hidden="true"><defs><clipPath id="${id}c"><path d="${BPATH}"/></clipPath><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--cf2)"/><stop offset="1" stop-color="var(--cf)"/></linearGradient></defs><path class="cb-glass" d="${BPATH}"/><g clip-path="url(#${id}c)"><g class="cb-liq"><g class="cb-w2"><path d="${WAVE}" fill="url(#${id}g)" transform="translate(-6 -2)"/></g><g class="cb-w1"><path d="${WAVE}" fill="url(#${id}g)"/></g>${BUB.map(b=>`<circle class="cb-b" cx="${b[0]}" cy="${b[1]}" r="${b[2]}" style="animation-delay:${b[3]}s"/>`).join('')}</g><g class="cb-idle"><circle cx="21" cy="53" r="1.6" style="animation-delay:0s"/><circle cx="25" cy="46" r="1.1" style="animation-delay:-1.4s"/></g></g><path class="cb-edge" d="${BPATH}"/></svg>${lbl}</span>`}
   function burst(el,n){if(!el||reduce())return;n=n||10;for(let i=0;i<n;i++){const b=document.createElement('i');b.className='cb-burst';const a=Math.random()*Math.PI*2,d=18+Math.random()*26;b.style.setProperty('--dx',Math.cos(a)*d+'px');b.style.setProperty('--dy',(Math.sin(a)*d-16)+'px');b.style.width=b.style.height=(4+Math.random()*5)+'px';el.appendChild(b);setTimeout(()=>b.remove(),1000)}}
   /* update an existing bolt in place (level change animates; success / full bursts) */
   function setBolt(el,p,o){if(!el)return;o=o||{};p=clamp(p);const prev=parseFloat(el.dataset.p||'0'),st=stOf(p,o);
-    el.style.setProperty('--p',p.toFixed(3));el.dataset.p=p.toFixed(3);el.classList.remove('cb-0','cb-mid','cb-full','cb-wait');el.classList.add('cb-'+st);
+    el.style.setProperty('--p',vis(p).toFixed(3));el.dataset.p=p.toFixed(3);el.classList.remove('cb-0','cb-mid','cb-full','cb-wait');el.classList.add('cb-'+st);
     el.setAttribute('aria-label',o.aria||('Charge Bolt '+Math.round(p*100)+'%'));
     const l=el.querySelector('.cb-l');if(l&&o.label!=null)l.textContent=o.label;
     if(p>prev+.001){el.classList.remove('cb-ok');void el.offsetWidth;el.classList.add('cb-ok');burst(el,8+Math.floor(Math.random()*5));if(navigator.vibrate&&navigator.userActivation&&navigator.userActivation.hasBeenActive)try{navigator.vibrate(30)}catch(e){}}
     if(st==='full'&&prev<.999){el.classList.remove('cb-glow');void el.offsetWidth;el.classList.add('cb-glow');burst(el,12)}}
   const batt=(p,cls,lbl)=>bolt(p,{size:/xl/.test(cls||'')?'xl':/v/.test(cls||'')?'lg':'md',label:lbl});
-  return {charge,pop,zap,levelUp,bolt,setBolt,burst,batt,onHold:f=>{onHold=f},BOLT};
+  return {charge,pop,zap,levelUp,bolt,setBolt,burst,batt,vis,onHold:f=>{onHold=f},BOLT};
 })();

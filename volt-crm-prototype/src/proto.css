@@ -15,3 +15,6 @@ input[type=range]{accent-color:#F2C200}
 .tr .note{font-size:12px}
 .filt{display:flex;gap:6px;flex-wrap:wrap}
 .filt span{padding:4px 12px;border-radius:999px;border:1px solid var(--gb,rgba(255,255,255,.12));font-size:13px;min-height:28px;display:inline-flex;align-items:center}
+.rg-hero{position:relative}
+.lhead .av[class*=im-bm]{background-size:cover;background-position:center top;border:0}
+.seg{grid-template-columns:repeat(4,minmax(0,1fr))}

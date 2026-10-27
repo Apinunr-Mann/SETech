@@ -1,70 +1,14 @@
 <!doctype html>
 <html lang="th"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
 <style>
-  .wrap { padding: 4px 4px 6px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 1fr); gap: 14px 22px; height: 100%; }
-  .row { display: grid; grid-template-columns: 1fr 34px 1.25fr; align-items: stretch; }
-  .pain { background: var(--paper); border: 2px solid var(--line); border-radius: 18px; padding: 10px 16px; display: flex; flex-direction: column; justify-content: center; }
-  .pain small { font-size: 13px; color: #a5352a; font-weight: 600; letter-spacing: .02em; }
-  .pain b { display: block; font-size: 18px; color: var(--ink); font-weight: 600; line-height: 1.25; }
-  .pain span { display: block; font-size: 13.5px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
-  .arr { display: grid; place-items: center; }
-  .arr svg { width: 22px; height: 30px; fill: var(--accent); }
-  .sol { background: var(--navy); color: #fff; border-radius: 18px; padding: 10px 16px; display: flex; flex-direction: column; justify-content: center; }
-  .sol small { font-size: 13px; color: var(--accent); font-weight: 600; }
-  .sol b { display: block; font-size: 18px; font-weight: 600; line-height: 1.25; }
-  .sol span { display: block; font-size: 13.5px; opacity: .82; line-height: 1.35; margin-top: 2px; }
-  .sol.hi { background: var(--accent); color: var(--navy); }
-  .sol.hi small { color: var(--navy); }
-  .sol.hi span { opacity: .9; }
+  .wrap { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 12px 16px; height: 100%; padding: 4px 4px 6px; }
+  .cell { background: var(--paper); border: 2px solid var(--line); border-radius: 16px; padding: 8px 14px; display: flex; flex-direction: column; justify-content: center; gap: 1px; }
+  .cell.hi { border-color: var(--accent); background: #fffaf2; }
+  .cell small { font-size: 12px; color: #a5352a; font-weight: 600; letter-spacing: .03em; }
+  .cell b { font-size: 17px; color: var(--ink); font-weight: 600; line-height: 1.2; }
+  .cell span { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+  .sol { margin-top: 4px; background: var(--navy); color: #fff; border-radius: 10px; padding: 5px 10px; font-size: 13.5px; line-height: 1.3; display: flex; gap: 8px; }
+  .sol i { color: var(--accent); font-style: normal; font-weight: 700; }
+  .cell.hi .sol { background: var(--accent); color: var(--navy); } .cell.hi .sol i { color: var(--navy); }
 </style></head>
-<body><div class="wrap">
-
-  <div class="row">
-    <div class="pain"><small>PAIN 01 · โชห่วย</small><b>ร้านโชห่วยไม่มีใบเสร็จ</b><span>กระป๋อง 190 ml ~720K กระป๋อง/เดือน ร่วมแคมเปญไม่ได้</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol hi"><small>Shop QR Scan (แบบที่เสนอ ททท.)</small><b>ร้านสแกน QR สมาชิกของลูกค้าใน LINE</b><span>ร้านเลือก SKU/รส + จำนวน → ลูกค้ากดยืนยัน → ได้แต้มตามการซื้อจริง ไม่ต้องรอผลิตรหัสใต้ห่วง</span></div>
-  </div>
-
-  <div class="row">
-    <div class="pain"><small>PAIN 02 · ใบเสร็จ</small><b>ใบเสร็จปลอม / แก้วันที่ / แก้รายการ</b><span>ระบบใบเสร็จต้องมีวิธีตรวจที่ไว้ใจได้</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol"><small>Check · AI + คน</small><b>OCR + AI Fraud Score + ทีมตรวจ</b><span>อ่านร้าน/วันที่/SKU อัตโนมัติ · จับใบซ้ำและภาพตัดต่อ · คะแนนต่ำส่งคนตรวจ</span></div>
-  </div>
-
-  <div class="row">
-    <div class="pain"><small>PAIN 03 · บทเรียน Big Cola</small><b>Reward hunter กวาดรางวัลใหญ่</b><span>คนดื่มทั่วไปแลกไม่ได้ เสียภาพโปรแกรม</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol"><small>Gamification · Tier LF1–LF5</small><b>รางวัลดีปลดล็อกตาม Tier จากการซื้อซ้ำ</b><span>จำกัดสิทธิ์ต่อคน · Lucky Draw ใช้แต้มแลกสิทธิ์ · ซื้อสม่ำเสมอได้มากกว่าซื้อก้อนเดียว</span></div>
-  </div>
-
-  <div class="row">
-    <div class="pain"><small>PAIN 04 · รางวัล</small><b>รางวัลหมดเร็ว หรือแต้มเฟ้อ</b><span>ต้องมีรางวัลพอตลอด 4 เดือน ภายในงบ 6 ล้านบาท</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol"><small>Management · AI Reward Pacing</small><b>AI ดูยอดแลกเทียบแผน คุมสต็อกรายสัปดาห์</b><span>ปล่อยสต็อกเป็นรอบ · ปรับแต้มที่ใช้แลก · เปิด “แลก + เติมเงิน” ลดต้นทุนรางวัล</span></div>
-  </div>
-
-  <div class="row">
-    <div class="pain"><small>PAIN 05 · ช่องทาง</small><b>ให้สิทธิ์เฉพาะคนซื้อ 7-Eleven</b><span>แม้คนเดียวสะสมแต้มจากหลายร้าน</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol"><small>Point Ledger · Channel Tag</small><b>ทุกแต้มติดป้ายช่องทาง + ร้าน + SKU</b><span>ตั้งเงื่อนไขรางวัลได้ เช่น “ต้องมีแต้มจาก 7-Eleven ≥ 30” → สิทธิ์ Backstage กับศิลปิน</span></div>
-  </div>
-
-  <div class="row">
-    <div class="pain"><small>PAIN 06 · Data</small><b>ไม่รู้ว่าใครซื้อซ้ำ รสอะไร เมื่อไร</b><span>ลูกค้าอยากได้รายงาน real-time ไว้ปรับแคมเปญระหว่างทาง</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol"><small>Display · Dashboard</small><b>Real-time · RFM · First-time vs Repeat</b><span>รส · ช่วงเวลา · ร้าน · การแลก · จำนวนกระป๋องรวม · แยกรสได้แม้ไม่มีรหัสตามรส</span></div>
-  </div>
-
-  <div class="row">
-    <div class="pain"><small>PAIN 07 · Engagement</small><b>แบรนด์ใหม่ ยังไม่มีคอมมูนิตี้</b><span>อยากได้ฐานคนดื่มตัวจริง ไม่ใช่มาแล้วหาย</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol"><small>Earn + Community</small><b>ได้แต้มจากการซื้อและจากกิจกรรม</b><span>ภารกิจ Three Man Down · x2 แต้มตามช่วงเวลา · Community + Social share</span></div>
-  </div>
-
-  <div class="row">
-    <div class="pain"><small>PAIN 08 · ไทม์ไลน์</small><b>รหัสใต้ห่วง lead time 60+ วัน</b><span>เสี่ยงเปิดไม่ทันปลาย ม.ค. 2027</span></div>
-    <div class="arr"><svg viewBox="0 0 22 30"><path d="M0 0l22 15L0 30z"/></svg></div>
-    <div class="sol hi"><small>ข้อเสนอ · Scenario B+</small><b>เปิดวันแรกด้วยใบเสร็จ + Shop QR Scan</b><span>ครอบคลุมทั้ง 190 และ 310 ml ตั้งแต่วันเปิด · รหัสใต้ห่วงเสียบเพิ่มได้ภายหลังโดยไม่ต้องแก้ระบบ</span></div>
-  </div>
-
-</div></body></html>
+<body><div class="wrap"><div class="cell hi"><small>PAIN 01</small><b>โชห่วยไม่มีใบเสร็จ</b><span>190 ml ~720K กระป๋อง ไม่มีหลักฐานซื้อ</span><div class="sol"><i>›</i>Shop QR: ลูกค้าสแกน QR ร้าน ร้านกดอนุมัติ + โควตา + GPS</div></div><div class="cell"><small>PAIN 02</small><b>ใบเสร็จปลอม / AI สร้าง</b><span>แก้วันที่ รายการ หรือสร้างภาพ</span><div class="sol"><i>›</i>OCR + คะแนนความเสี่ยง · < 0.80 ส่งคนตรวจ ≤ 24 ชม.</div></div><div class="cell"><small>PAIN 03</small><b>สายล่ารางวัล</b><span>บทเรียนจาก Big Cola</span><div class="sol"><i>›</i>Cap 6 กป./วัน · ตรวจซ้ำ · พักแต้มร้าน/ลูกค้าเสี่ยง 7 วัน</div></div><div class="cell"><small>PAIN 04</small><b>รางวัลไม่พอ / เฟ้อ</b><span>ใช้แต้มแล้วของหมด</span><div class="sol"><i>›</i>BudgetPool 5 ถัง จองงบก่อนสร้างรางวัล + Pacing</div></div><div class="cell"><small>PAIN 05</small><b>310 ml ช่องทางผันผวน</b><span>ยอดขึ้นลงตามโปรโมชัน</span><div class="sol"><i>›</i>Retail Boost +5 เมื่อรหัส 310 ตรงใบเสร็จ 7-Eleven</div></div><div class="cell"><small>PAIN 06</small><b>ไม่มีข้อมูลเรียลไทม์</b><span>รู้ผลช้าเป็นเดือน</span><div class="sol"><i>›</i>Live Dashboard + Copilot + Daily Pulse 09:00</div></div><div class="cell"><small>PAIN 07</small><b>ชุมชนอ่อน</b><span>ซื้อแล้วจบ ไม่กลับมา</span><div class="sol"><i>›</i>Streak · Leaderboard 5 แบบ · Quiz · Squad</div></div><div class="cell hi"><small>PAIN 08</small><b>รหัสใต้ห่วงช้า</b><span>โรงงานต้องใช้ 60+ วัน</span><div class="sol"><i>›</i>เปิดด้วยช่องทางอื่นก่อน รหัสเสียบเพิ่ม (ช่องทางหลักตามบรีฟ)</div></div><div class="cell"><small>PAIN 09</small><b>งบ 4.75M ต้องคุ้ม</b><span>ต้นทุนการตลาด 2–3 บาท/กระป๋อง</span><div class="sol"><i>›</i>Cost-per-Can Governor โซน 1.0–1.3 / 1.5 / 1.8</div></div><div class="cell"><small>PAIN 10</small><b>ใช้ซ้ำระยะยาวไม่ได้</b><span>จบแคมเปญข้อมูลหาย</span><div class="sol"><i>›</i>Always-on Club + Season + Flash · แต้มหมดอายุ 12 เดือน</div></div><div class="cell"><small>PAIN 11</small><b>ไม่แยกลูกค้าใหม่/เก่า</b><span>ส่งข้อความหว่านทุกคน</span><div class="sol"><i>›</i>Charge Profile 10 ข้อ · RFM 11 Segment · 12 กลุ่ม Audience</div></div><div class="cell"><small>PAIN 12</small><b>พิสูจน์ Lift ไม่ได้</b><span>เป้า +10–15% ต้องมีหลักฐาน</span><div class="sol"><i>›</i>Holdout 10% + Lift Lab</div></div></div></body></html>

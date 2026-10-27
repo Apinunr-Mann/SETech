@@ -50,12 +50,12 @@ function seed(){
   return {
     v:5,
     hist:[{l:'7-Eleven · 310 ml × 2',p:50,ch:'7-Eleven'},{l:'ร้านเจ๊หน่อย (สแกน) · 190 ml × 3',p:30,ch:'โชห่วย'},{l:'Charge Profile ครบ 10 ข้อ',p:30,ch:'ภารกิจ'}],
-    user:{reg:true,name:'มายด์',birth:'2549-05',prov:'กรุงเทพฯ',groups:['music','game','food'],flav:'y',pts:148,pend:0,pendList:[],firstCan:true,
+    user:{reg:true,name:'มายด์',birth:'2549-05',prov:'กรุงเทพฯ',groups:['music','game','food'],flav:'y',pts:148,pend:0,pendList:[],firstCan:true,boostPool:0,
       wk:[0,0,0,0,1,1,0,1],week:true,streak:7,lastDays:2,cansToday:0,scansToday:0,cansM:3,cans30:{y:9,c:2,p:0},trioDone:false,
       spendW:80,spendM:260,profileQ:10,profileAns:{},profilePaid:true,weeklyDone:false,weeklyAns:{},wqLastWk:0,
       pers:true,mk:true,an:false,otp:true,idv:false,address:'',goal:null,hearts:[],beh:{music:2,game:1},
       entries:{d1:2,d2:0,d3:1,d4:5},claims:[],iwWins:[],coupons:[],voted:null,matchDay:false,squad:false,seg:'Loyal',phone:'0812345678',claims:[]},
-    rules:{p190:10,p310:20,bonus7:5,welcome:20,profile:30,weekly:5,trio:10,capCans:6,maxScan:3,ageMin:15,entryCost:20,iwDemo:.25},
+    rules:{p190:10,p310:20,bonus7:5,holdDays:7,welcome:20,profile:30,weekly:5,trio:10,capCans:6,maxScan:3,ageMin:15,entryCost:20,iwDemo:.25},
     mult:[{id:'m1',n:'x2 ช่วงเย็น 310 ml (18:00–21:00)',sku:'s310',m:2,on:false},{id:'m2',n:'Purple Week ภาคเหนือ',flav:'p',region:'เหนือ',m:1.5,on:false},{id:'m3',n:'At Risk comeback x1.5',seg:'At Risk',m:1.5,on:false}],
     rewards:seedRewards(),draws:seedDraws(),
     iw:{pool:VOLT.instantWinDaily.map(p=>({name:p.name,qty:p.qty,left:Math.round(p.qty*.62),cost:p.cost})),played:0},
@@ -67,13 +67,13 @@ function seed(){
       {id:'r4',me:false,who:'คุณก**',store:'Makro สาขารังสิต',no:'M-0441-77812',sku:'s190',flav:'p',qty:24,st:'review',score:.55,why:'ฟอนต์วันที่ต่าง',ch:'Makro',imgs:3},
       {id:'r5',me:false,who:'คุณจ**',store:'Lawson ลาดพร้าว',no:'L-0120-90210',sku:'s310',flav:'y',qty:2,st:'review',score:.58,why:'ตรวจพบ: ใบเสร็จที่ AI สร้าง',aigen:true,ch:'Lawson',imgs:1}],
     shops:[
-      {id:'T-0088',n:'ร้านเจ๊หน่อย',a:'บางแค',stockIn:40,usedM:212,risk:'ต่ำ',why:[],sus:false,hold:0,pts:412,auto:true,credit:0,owner:'คุณต้น'},
-      {id:'T-0412',n:'ร้านป้าแดง',a:'ลำลูกกา',stockIn:40,usedM:520,risk:'สูง',why:['สแกนเกินโควตา 3 วันติด','ลูกค้า 4 คนเดิม = 61% ของการสแกน','สแกนนอกรัศมีร้าน 2 ครั้ง'],sus:false,hold:0,pts:960,auto:false,credit:0,owner:'คุณต้น'},
-      {id:'T-1203',n:'ร้านลุงชัย',a:'หาดใหญ่',stockIn:25,usedM:210,risk:'กลาง',why:['สแกนช่วงตี 2 บ่อยผิดปกติ'],sus:false,hold:0,pts:220,auto:true,credit:0,owner:'คุณมด'},
-      {id:'T-2290',n:'ร้านเฮียกิม',a:'เชียงใหม่',stockIn:30,usedM:96,risk:'ต่ำ',why:[],sus:false,hold:0,pts:130,auto:true,credit:0,owner:'คุณมด'}],
+      {id:'T-0088',n:'ร้านเจ๊หน่อย',a:'บางแค',stockIn:200,usedM:212,risk:'ต่ำ',why:[],sus:false,hold:0,pts:412,auto:true,credit:0,owner:'คุณต้น'},
+      {id:'T-0412',n:'ร้านป้าแดง',a:'ลำลูกกา',stockIn:220,usedM:520,risk:'สูง',why:['ขอชาร์จเกินโควตา 3 วันติด','ลูกค้า 4 คนเดิม = 61% ของการขอชาร์จ','สแกน QR ร้านขณะอยู่นอกรัศมี GPS 2 ครั้ง'],sus:false,hold:0,pts:960,auto:false,credit:0,owner:'คุณต้น'},
+      {id:'T-1203',n:'ร้านลุงชัย',a:'หาดใหญ่',stockIn:150,usedM:210,risk:'กลาง',why:['ขอชาร์จช่วงตี 2 บ่อยผิดปกติ'],sus:false,hold:0,pts:220,auto:true,credit:0,owner:'คุณมด'},
+      {id:'T-2290',n:'ร้านเฮียกิม',a:'เชียงใหม่',stockIn:90,usedM:96,risk:'ต่ำ',why:[],sus:false,hold:0,pts:130,auto:true,credit:0,owner:'คุณมด'}],
     newShops:[],leads:[],
     scans:[{t:'14:32',who:'คุณม**',d:'190 ml × 3',st:'ok'},{t:'13:05',who:'คุณก**',d:'190 ml × 2',st:'ok'},{t:'12:40',who:'คุณจ**',d:'190 ml × 6',st:'no'}],
-    shopReq:null,pending:null,
+    shopReq:null,pending:null,aiK:{},campaigns:[{id:'club',n:'Volt Club (Always-on)',t:'club',st:'on',d:'สมาชิก · แต้ม · รางวัลประจำ · แต้มหมดอายุ rolling 12 เดือน'},{id:'s1',n:'Season 1 · Charge Your Experience',t:'season',st:'on',d:'ปลาย ม.ค. – พ.ค. 2570 · งบ 4.75M · เป้า Lift +10–15%'},{id:'fl1',n:'Flash: x2 310 ml ช่วงเย็น',t:'flash',st:'off',d:'18:00–21:00 · ตั้งผ่านตัวคูณ'},{id:'fl2',n:'Flash: Purple Week ภาคเหนือ',t:'flash',st:'off',d:'Forest Fruit · ภาคเหนือ · x1.5'}],lift:{n:1000,holdout:10,base:100,exp:111.8},modelBudget:{cap:30000,used:7400},
     chat:[{f:'oa',k:'promo'},{f:'oa',k:'ai',kk:'PUSH',x:'ชาร์จครบ 3 รสใน 30 วัน รับเพิ่ม 10 แต้ม · ตอนนี้คุณชาร์จแล้ว 2 รส'}],
     log:[],cases:[{id:'CS-1001',who:'คุณบ**',t:'ใบเสร็จไม่เข้า',st:'เปิด'}],appeals:[],
     drafts:[],approvals:[],sent:{},seg:{freq:{},holdout:10,quiet:true,hour:14},
@@ -81,11 +81,11 @@ function seed(){
     kpi:{mem:48210,cans:312000,newMem:1208},
     profileQs:VOLT.quizOnboarding,weekly:JSON.parse(JSON.stringify(VOLT.quizWeekly)),
     stage:{votes:{a:41,b:33,c:26}},wallet:[],sim:{hour:14},
-    ui:{c:'chat',tab:'receipt',rmTab:'a',rmOpen:true,rf:'all',rg:'all',rd:null,quiz:null,sheet:null,s:'home',cart:null,b:'dash',sel:'r2',shopSel:'T-0412',dt:'bo',lbT:'wk',strip:0,done:{},fl:'y',rcImgs:1,rcBlur:false,qi:0,wq:0,reg:{g:['music','game','food']},match:null}
+    ui:{c:'chat',tab:'code',rmTab:'a',rmOpen:true,rf:'all',rg:'all',rd:null,quiz:null,sheet:null,s:'home',cart:null,b:'dash',sel:'r2',shopSel:'T-0412',dt:'bo',lbT:'wk',strip:0,done:{},fl:'y',rcImgs:1,sc:null,rcBlur:false,qi:0,wq:0,reg:{g:['music','game','food']},match:null}
   };
 }
 function guest(st){Object.assign(st.user,{reg:false,name:'',birth:'',prov:'',groups:[],flav:null,pts:0,pend:0,pendList:[],firstCan:false,wk:[0,0,0,0,0,0,0,0],week:false,streak:0,lastDays:99,cansToday:0,scansToday:0,cansM:0,cans30:{y:0,c:0,p:0},trioDone:false,spendW:0,spendM:0,profileQ:0,profileAns:{},profilePaid:false,weeklyDone:false,otp:false,address:'',goal:null,hearts:[],beh:{},entries:{d1:0,d2:0,d3:0,d4:0},iwWins:[],coupons:[],voted:null,seg:'New'});
-  st.receipts=st.receipts.filter(r=>!r.me);st.wallet=[];st.hist=[];st.user.claims=[];
+  st.user.boostPool=0;st.receipts=st.receipts.filter(r=>!r.me);st.wallet=[];st.hist=[];st.user.claims=[];
   st.chat=[{f:'oa',k:'text',x:'ขอบคุณที่เพิ่ม Volt Club เป็นเพื่อน\nสมัครวันนี้ รับ Welcome 20 แต้ม หลังชาร์จกระป๋องแรกผ่าน\nกด “สมัครสมาชิก” ที่เมนูด้านล่างได้เลย'},{f:'oa',k:'promo'}];
   st.ui.c='chat';st.ui.qi=0;return st}
 function load(){try{S=JSON.parse(localStorage.getItem(VKEY)||'null')}catch(e){S=null}if(!S||!S.ui||S.v!==5)S=guest(seed())}
@@ -108,7 +108,7 @@ const hasBought7=()=>S.receipts.some(r=>r.me&&r.st==='ok'&&r.ch==='7-Eleven'&&r.
 
 /* ---------- points ---------- */
 function multFor(sku,flav,ch){let m=1;const tags=[];S.mult.forEach(x=>{if(!x.on)return;if((!x.sku||x.sku===sku)&&(!x.flav||x.flav===flav)&&(!x.region||x.region===regionOf(S.user.prov))&&(!x.shop||x.shop===ch)&&(!x.seg||x.seg===S.user.seg)){if(x.m>m)m=x.m;tags.push(x.n)}});return{m,tags}}
-function calcPts(it){const base=S.rules[it.sku==='s310'?'p310':'p190'],mu=multFor(it.sku,it.flav,it.ch),bonus=(it.ch==='7-Eleven'&&it.sku==='s310'&&it.rcpt!==false)?S.rules.bonus7*it.qty:0;return{pts:Math.round(base*it.qty*mu.m)+bonus,base:base*it.qty,mult:mu.m,tags:mu.tags,bonus}}
+function calcPts(it){const base=S.rules[it.sku==='s310'?'p310':'p190'],mu=multFor(it.sku,it.flav,it.ch),bonus=S.rules.bonus7*(it.boost||0);return{pts:Math.round(base*it.qty*mu.m)+bonus,base:base*it.qty,mult:mu.m,tags:mu.tags,bonus}}
 const entriesFor=(qty,ch,sku)=>qty+0*ch;
 function fxQueue(){return window.__fx||(window.__fx=[])}
 
@@ -116,22 +116,24 @@ function fxQueue(){return window.__fx||(window.__fx=[])}
 function awardCans(items,label,from){
   const u=S.user,res={pts:0,cans:0,capped:false,iw:null,lvl:false,released:0,items:[]};
   const tier0=tierIdx();let room=Math.max(0,S.rules.capCans-u.cansToday);
-  items.forEach(it=>{const q=Math.min(it.qty,room);room-=q;if(q<it.qty)res.capped=true;if(q<=0)return;const c=calcPts({...it,qty:q});res.pts+=c.pts;res.cans+=q;res.items.push({...it,qty:q,c});
+  items.forEach(it=>{const q=Math.min(it.qty,room);room-=q;if(q<it.qty)res.capped=true;if(q<=0)return;let bo=it.boost||0;if(it.bp){bo=Math.min(q,u.boostPool||0);u.boostPool=(u.boostPool||0)-bo}const c=calcPts({...it,qty:q,boost:Math.min(bo,q)});res.pts+=c.pts;res.cans+=q;res.items.push({...it,qty:q,c});
     u.cans30[it.flav]=(u.cans30[it.flav]||0)+q;u.spendW+=SKU[it.sku].baht*q;u.spendM+=SKU[it.sku].baht*q;u.beh.core=(u.beh.core||0)+1});
   if(!res.cans){fxQueue().push({toast:'วันนี้ชาร์จครบเพดาน '+S.rules.capCans+' กระป๋องแล้ว พักก่อนนะ'});S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`วันนี้ชาร์จครบเพดาน ${S.rules.capCans} กระป๋องแล้ว พักก่อนนะ แล้วพรุ่งนี้มาชาร์จใหม่`});return res}
-  u.cansToday+=res.cans;u.cansM+=res.cans;u.pts+=res.pts;u.lastDays=0;
-  S.hist=S.hist||[];S.hist.unshift({l:label,p:res.pts,ch:items[0].ch});
-  if(!u.firstCan){u.firstCan=true;let rel=0;u.pendList.filter(p=>p.firstCan).forEach(p=>rel+=p.p);if(!rel)rel=S.rules.welcome;u.pendList=u.pendList.filter(p=>!p.firstCan);u.pend=u.pendList.reduce((a,b)=>a+b.p,0);u.pts+=rel;res.released=rel;
+  u.cansToday+=res.cans;u.cansM+=res.cans;u.lastDays=0;
+  const held=!!(from&&from.hold);S.hist=S.hist||[];
+  if(held){u.pendList.push({l:label,p:res.pts,hold:S.rules.holdDays,why:from.why||''});u.pend=u.pendList.reduce((a,b)=>a+b.p,0);S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`แต้ม ${res.pts} ถูกพักตรวจสอบ ${S.rules.holdDays} วัน (${from.why||'ตรวจสอบตามกติกา'}) · ผ่านแล้วระบบปล่อยให้อัตโนมัติ`})}
+  else{u.pts+=res.pts;S.hist.unshift({l:label,p:res.pts,ch:items[0].ch})}
+  if(!u.firstCan&&!held){u.firstCan=true;let rel=0;u.pendList.filter(p=>p.firstCan).forEach(p=>rel+=p.p);if(!rel)rel=S.rules.welcome;u.pendList=u.pendList.filter(p=>!p.firstCan);u.pend=u.pendList.reduce((a,b)=>a+b.p,0);u.pts+=rel;res.released=rel;
     S.hist.unshift({l:'ปลดล็อก Welcome'+(rel>S.rules.welcome?' + Charge Profile':''),p:rel,ch:'โบนัส'});
     S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`ชาร์จกระป๋องแรกผ่านแล้ว ปลดล็อก ${fmt(rel)} แต้ม (Welcome${rel>S.rules.welcome?' + Charge Profile':''})`});fxQueue().push({n:rel,label:'Welcome +'+rel})}
   if(!u.week){u.week=true;u.wk[7]=1;u.streak++}
   if(u.cans30.y&&u.cans30.c&&u.cans30.p&&!u.trioDone){u.trioDone=true;u.pts+=S.rules.trio;S.hist.unshift({l:'Flavor Trio ครบ 3 รส',p:S.rules.trio,ch:'ภารกิจ'});S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`Flavor Trio สำเร็จ ได้ +${S.rules.trio} แต้ม`});fxQueue().push({n:S.rules.trio,label:'Flavor Trio +'+S.rules.trio})}
   if(tierIdx()>tier0){res.lvl=true;fxQueue().push({lvl:'LEVEL UP!',sub:'ชาร์จเต็ม · ขึ้น '+TIER[tierIdx()].k,small:'ปลดล็อกรางวัล Pin ใหม่ · แตะเพื่อปิด'});log('ระบบ','ลูกค้าขึ้น Tier '+TIER[tierIdx()].k)}
-  res.iw=rollIW(items);
+  res.iw=held?null:rollIW(items);
   S.kpi.cans+=res.cans;
   const ch=items[0].ch;
-  VoltDash.ingest({ch:/^7/.test(ch)?'7-Eleven':['Lawson','Makro','โชห่วย'].includes(ch)?ch:'ออนไลน์+',cans:res.cans,pts:res.pts,who:'คุณ'+(u.name||'')+' (เดโม)',me:u.pts,tier:TIER[tierIdx()].k,shop:ch==='โชห่วย'?(from&&from.shop)||S.shops[0].n:null,desc:label});
-  fxQueue().push({n:res.pts});
+  VoltDash.ingest({ch:/^7/.test(ch)?'7-Eleven':['Lawson','Makro','โชห่วย'].includes(ch)?ch:'ออนไลน์+',cans:res.cans,pts:held?0:res.pts,who:'คุณ'+(u.name||'')+' (เดโม)',me:u.pts,tier:TIER[tierIdx()].k,shop:ch==='โชห่วย'?(from&&from.shop)||S.shops[0].n:null,desc:label});
+  if(!held)fxQueue().push({n:res.pts});
   if(res.capped)S.chat.push({f:'oa',k:'ai',kk:'PUSH',x:`วันนี้ชาร์จครบเพดาน ${S.rules.capCans} กระป๋องแล้ว พักก่อนนะ`});
   nudge();return res}
 function rollIW(items){const iw=S.iw,u=S.user,tot=iw.pool.reduce((a,p)=>a+p.left,0);iw.played++;

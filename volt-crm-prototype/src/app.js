@@ -20,20 +20,27 @@ function pay(r){const u=S.user;u.pts-=r.pts;fxPush({n:-r.pts});r.used++;S.pools[
 function reply(v){const u=S.user,ti=tierIdx(),g=goalReward(),q={pts:'แต้มฉันเหลือเท่าไร',near:'ร้านสะสมแต้มใกล้ฉัน',how:'สะสมแต้มยังไง',tier:'ขึ้น Tier ยังไง',next:'ควรทำอะไรต่อ',why:'ทำไมแนะนำชิ้นนี้',human:'ติดต่อทีมงาน'}[v];
   S.chat.push({f:'me',x:q});
   if(!u.reg&&!['how','near','human'].includes(v)){chatPush('คุณยังไม่ได้เป็นสมาชิก กด “สมัครสมาชิก” ที่เมนูด้านล่าง รับ Welcome 20 แต้มหลังชาร์จกระป๋องแรก','PULL');return}
-  if(S.aiOff&&!['human','how'].includes(v)){chatPush('ตอนนี้ระบบผู้ช่วยปิดอยู่ชั่วคราว ดูแต้มและกติกาได้ที่เมนูด้านล่าง หรือกด “ติดต่อทีมงาน”','PULL');return}
+  if((S.aiOff||S.aiK.l1)&&!['human','how'].includes(v)){chatPush('ตอนนี้ระบบผู้ช่วยปิดอยู่ชั่วคราว ดูแต้มและกติกาได้ที่เมนูด้านล่าง หรือกด “ติดต่อทีมงาน”','PULL');return}
   const a={pts:()=>`คุณมี ${fmt(u.pts)} แต้ม (${TIER[ti].k})${u.pend?` · รอปลดล็อก ${u.pend} แต้ม`:''}${g&&g.pts>u.pts?` · อีก ${fmt(g.pts-u.pts)} แต้มถึงเป้า “${g.n}”`:''}`,
     near:()=>`ใกล้คุณมี ${S.shops.filter(s=>!s.sus).length} ร้าน ใกล้สุด: ${S.shops[0].n} 0.3 กม. · กด “ร้านใกล้ฉัน” เพื่อดูแผนที่`,
-    how:()=>`3 วิธี: 1) ให้ร้านโชห่วยสแกน QR ในบัตรสมาชิก 2) ส่งรูปใบเสร็จ 7-Eleven / Lawson / Makro 3) กรอกรหัสใต้ห่วงหรือเลขออเดอร์ออนไลน์ · 190 ml = ${S.rules.p190} แต้ม · 310 ml = ${S.rules.p310} แต้ม`,
+    how:()=>`4 วิธี: 1) กรอกรหัสใต้ห่วง 2) สแกน QR ที่ร้านโชห่วย (ร้านกดอนุมัติ) 3) ส่งรูปใบเสร็จ 7-Eleven / Lawson / Villa / Makro 4) ผูกออเดอร์ออนไลน์ · 190 ml = ${S.rules.p190} · 310 ml = ${S.rules.p310} แต้ม`,
     tier:()=>nextTier()?`ชาร์จให้ครบ ${nextTier().w} สัปดาห์ ใน 8 สัปดาห์ล่าสุด ตอนนี้ ${weeksIn()} สัปดาห์ เพื่อขึ้น ${nextTier().k}`:'คุณอยู่ระดับสูงสุดแล้ว',
     next:()=>nextAction().t,
     why:()=>{const r=recommend()[0];return r?`แนะนำ “${r.r.n}” เพราะ${r.why}`:'ยังไม่มีรายการแนะนำ'},
     human:()=>{S.cases.unshift({id:'CS-'+(1002+S.cases.length),who:meName(),t:'ลูกค้าขอคุยกับทีมงาน',st:'เปิด'});return 'ส่งเรื่องให้ทีมงานแล้ว จะติดต่อกลับทาง LINE ภายใน 24 ชม. (เปิดเคสในหลังบ้านให้แล้ว)'}}[v];
   chatPush(a(),'PULL');log('AI','Volt Buddy ตอบ: '+q)}
 
+function approveReq(p,auto){const sh=S.shops.find(x=>x.id===p.shopId),over=sh.usedM+p.q>quotaOf(sh);
+  const why=p.gpsOut?'ตำแหน่งนอกรัศมีร้าน':sh.risk==='สูง'?'ร้านถูกเฝ้าระวัง':sh.hold?'ร้านถูกพักแต้ม':over?'เกินโควตาร้าน':'';
+  const res=awardCans(p.items,`${p.shop} (QR ร้าน) · ${p.q} กระป๋อง`,{shop:p.shop,hold:!!why,why});
+  const sc=S.scans.find(x=>x.st==='wait'||x.d===p.lines.map(l=>l.t+' × '+l.q).join(', '));
+  if(res.cans){sh.usedM+=res.cans;sh.pts+=res.cans;S.user.scansToday++;if(sc)sc.st=why?'hold':'ok';if(sh.id===myShop().id)fxPush({to:'#shopb .cbolt',n:res.cans,label:`ร้าน +${res.cans}`});log(auto?'ระบบ':'ร้าน',`อนุมัติ ${p.q} กระป๋อง ${why?'(พักแต้ม: '+why+')':''}`);done('qr');if(res.iw&&res.iw.win)toast('Instant Win! ดูกระเป๋าคูปอง')}
+  else{if(sc)sc.st='cap';log('ระบบ','ลูกค้าชาร์จครบเพดานวันนี้')}}
 const A={
   c:(v)=>{S.ui.c=v;if(v==='rewards'||v==='collect')S.ui.rd=null;if(v==='quizP')S.ui.qi=0;if(v==='quizW')S.ui.qi=0},
   collectTab:(v)=>{S.ui.c='collect';S.ui.tab=v},
-  fl:(v)=>{S.ui.fl=v},imgs:(v)=>{S.ui.rcImgs=Math.max(1,Math.min(3,S.ui.rcImgs+ +v))},
+  fl:(v)=>{S.ui.fl=v},imgs:(v)=>{S.ui.rcImgs=Math.max(1,Math.min(6,S.ui.rcImgs+ +v))},
+  assist:()=>{if(S.aiOff||S.aiK.l3)return toast('ผู้ช่วยปิดอยู่ชั่วคราว');const sku=$('#rsku').value,q=Math.max(1,+$('#rqty').value||1),st=$('#rstore').value,u=S.user,bo=st==='7-Eleven'&&sku==='s310'?Math.min(q,u.boostPool||0):0,pts=S.rules[sku==='s310'?'p310':'p190']*q+bo*S.rules.bonus7;toast(`ประมาณ +${pts} แต้ม${bo?` (รวม Retail Boost ${bo} กป.)`:''} · ถ่ายให้เห็นร้าน วันที่ รายการชัด · ผู้ช่วยไม่ตัดสินผลการตรวจ`);log('AI','ผู้ช่วยในหน้า: ดูตัวอย่างแต้ม')},
   rg2:(v)=>{S.ui.rg=v},
   rmToggle:()=>{S.ui.rmOpen=!S.ui.rmOpen},rmTab:(v)=>{S.ui.rmTab=v},
   ask:(v)=>reply(v),
@@ -48,15 +55,15 @@ const A={
     setTimeout(()=>{
       if(dup){r.st='dup';r.score=.05;r.why='ใบเสร็จซ้ำ';chatPush(`ใบเสร็จ ${no} เคยส่งแล้ว ระบบจึงไม่ชาร์จแต้มซ้ำ`);log('ระบบ','ปฏิเสธใบเสร็จซ้ำ '+no)}
       else if(aig||blur||qty>S.rules.capCans){r.st='review';r.score=aig?.31:blur?.62:.45;r.aigen=aig;r.why=aig?'ตรวจพบ: ใบเสร็จที่ AI สร้าง':blur?'ภาพเบลอ':'จำนวนผิดปกติ';S.ui.sel=r.id;chatPush(`ใบเสร็จ ${store} อยู่ระหว่างทีมตรวจ (ไม่เกิน 24 ชม.)`);log('ระบบ',`ส่งคนตรวจ ${store} · ${r.why} (score ${r.score})`)}
-      else{r.st='ok';r.score=.95;const res=awardCans([{sku,qty,flav,ch:store,rcpt:true}],`${store} · ${SKU[sku].s} × ${qty}`);r.pts=res.pts;chatPush(`ใบเสร็จผ่าน ได้ ${res.pts} แต้ม · รวม ${fmt(S.user.pts)} แต้ม${res.iw&&res.iw.win?' · Instant Win!':''}`);log('ระบบ',`อนุมัติอัตโนมัติ ${store} +${res.pts} แต้ม`)}
+      else{r.st='ok';r.score=.95;const res=awardCans([{sku,qty,flav,ch:store,bp:store==='7-Eleven'&&sku==='s310'}],`${store} · ${SKU[sku].s} × ${qty}`);r.pts=res.pts;chatPush(`ใบเสร็จผ่าน ได้ ${res.pts} แต้ม · รวม ${fmt(S.user.pts)} แต้ม${res.iw&&res.iw.win?' · Instant Win!':''}`);log('ระบบ',`อนุมัติอัตโนมัติ ${store} +${res.pts} แต้ม`)}
       render()},1200)},
   sendCode:()=>{const c=$('#ccode').value.trim().toUpperCase(),u=S.user,used=S.receipts.some(r=>r.no===c);
-    if(CODES[c]&&!used){const sku=CODES[c],res=awardCans([{sku,qty:1,flav:u.flav||'y',ch:'รหัส',rcpt:false}],`รหัสใต้ห่วง ${SKU[sku].s}`);S.receipts.push({id:'r'+Date.now(),me:true,store:'รหัสใต้ห่วง',no:c,sku,flav:'y',qty:1,st:'ok',pts:res.pts,ch:'รหัส'});u.codeFails=0;toast(`รหัสถูกต้อง +${res.pts} แต้ม`);log('ลูกค้า',`ใช้รหัส ${c} +${res.pts}`)}
+    if(CODES[c]&&!used){const sku=CODES[c];if(sku==='s310')u.boostPool=(u.boostPool||0)+1;const res=awardCans([{sku,qty:1,flav:u.flav||'y',ch:'รหัส',rcpt:false}],`รหัสใต้ห่วง ${SKU[sku].s}`);S.receipts.push({id:'r'+Date.now(),me:true,store:'รหัสใต้ห่วง',no:c,sku,flav:'y',qty:1,st:'ok',pts:res.pts,ch:'รหัส'});u.codeFails=0;toast(`รหัสถูกต้อง +${res.pts} แต้ม`);log('ลูกค้า',`ใช้รหัส ${c} +${res.pts}`)}
     else{u.codeFails=(u.codeFails||0)+1;toast(used?'รหัสนี้ถูกใช้ไปแล้ว':'รหัสไม่ถูกต้อง');log('ระบบ',`กรอกรหัสผิด (${u.codeFails}/5)`)}},
   sendOnline:()=>{const pl=$('#oplat').value,no=$('#ono').value.trim(),n=+$('#osku').value;if(S.receipts.some(r=>r.no===no))return toast('เลขออเดอร์นี้ถูกใช้แล้ว');
     const r={id:'r'+Date.now(),me:true,store:pl==='other'?'Shopee ร้านทั่วไป':'Volt Official '+(pl==='off'?'Shopee':'Lazada'),no,sku:'s310',flav:S.user.flav||'y',qty:n,ch:'ออนไลน์'};S.receipts.push(r);
     if(pl==='other'){r.st='review';r.score=.7;r.why='ไม่ใช่ร้าน Official';S.ui.sel=r.id;toast('ส่งทีมตรวจแล้ว');log('ลูกค้า','ผูกออเดอร์ร้านทั่วไป → ส่งคนตรวจ')}
-    else{r.st='ok';const res=awardCans([{sku:'s310',qty:n,flav:r.flav,ch:'ออนไลน์',rcpt:false}],`ออนไลน์ · 310 ml แพ็ก ${n}`);r.pts=res.pts;toast(`ออเดอร์ยืนยันแล้ว +${res.pts} แต้ม`);log('ลูกค้า',`ผูกออเดอร์ Official +${res.pts}`)}},
+    else{r.st='ok';const res=awardCans([{sku:'s310',qty:n,flav:r.flav,ch:'ออนไลน์'}],`ออนไลน์ · 310 ml แพ็ก ${n}`,{hold:true,why:'รอปิดช่วงคืนสินค้า'});r.pts=res.pts;r.st='held';toast(`ออเดอร์ยืนยันแล้ว · แต้ม ${res.pts} พักจนปิดช่วงคืนสินค้า`);log('ลูกค้า',`ผูกออเดอร์ Official +${res.pts}`)}},
   deskCode:()=>{const c=$('#dcode').value.trim().toUpperCase();if(CODES[c]&&!S.receipts.some(r=>r.no===c)){const res=awardCans([{sku:CODES[c],qty:1,flav:S.user.flav||'y',ch:'รหัส',rcpt:false}],'รหัสใต้ห่วง (เว็บ)');S.receipts.push({id:'r'+Date.now(),me:true,store:'รหัสใต้ห่วง',no:c,sku:CODES[c],flav:'y',qty:1,st:'ok',pts:res.pts,ch:'รหัส'});toast(`+${res.pts} แต้ม · มือถือเห็นยอดเดียวกัน`);log('ลูกค้า','ใช้รหัสผ่านเว็บ Desktop')}else toast('รหัสไม่ถูกต้องหรือถูกใช้แล้ว')},
   /* rewards */
   openRw:(v)=>{if(!S.user.reg){S.ui.c='reg1';toast('สมัครสมาชิกก่อนแลกรางวัล');return}const r=S.rewards.find(x=>x.id===v);S.ui.c='redeem';S.ui.rd={id:v,step:'choose',addrOk:!!S.user.address}},
@@ -75,20 +82,18 @@ const A={
   qP:()=>{const u=S.user;if(u.profileQ>=10)return;u.profileQ++;S.ui.qi=u.profileQ;if(u.profileQ>=10){if(u.firstCan){u.profilePaid=true;doneQ({p:S.rules.profile,l:'Charge Profile ครบ 10 ข้อ'});chatPush(`Charge Profile ครบแล้ว ได้ +${S.rules.profile} แต้ม`)}else{u.pendList.push({l:'Charge Profile',p:S.rules.profile,firstCan:true});u.pend+=S.rules.profile;chatPush(`Charge Profile ครบแล้ว ${S.rules.profile} แต้มจะปลดล็อกหลังชาร์จกระป๋องแรก`)}log('ลูกค้า','ตอบ Charge Profile ครบ 10 ข้อ');done('quiz')}},
   qW:()=>{const u=S.user;S.ui.qi++;if(S.ui.qi>=3){u.weeklyDone=true;S.ui.qi=0;if(u.lastDays>=14){u.entries.d1=(u.entries.d1||0)+1;S.draws[0].entries++;fxPush({toast:'ได้ 1 สิทธิ์จับรางวัล Weekly Draw'});chatPush('ตอบ Weekly Quiz ครบ ได้ 1 สิทธิ์จับรางวัลแทนแต้ม เพราะไม่ได้ชาร์จเกิน 14 วัน')}else{doneQ({p:S.rules.weekly,l:'Weekly Quiz'})}log('ลูกค้า','ตอบ Weekly Quiz ครบ');done('quiz')}},
   /* pending confirm (customer) + shop */
-  pend:(v)=>{const p=S.pending,s=myShop();S.pending=null;const sc=S.scans.find(x=>x.st==='wait');
-    if(v==='yes'){const res=awardCans(p.items,`${p.shop} (สแกน) · ${p.q} กระป๋อง`,{shop:p.shop});
-      if(res.cans){s.usedM+=res.cans;s.pts+=res.cans;S.user.scansToday++;if(sc)sc.st='ok';S.ui.sRes='ok';fxPush({to:'#shopb .cbolt',n:res.cans,label:`ร้าน +${res.cans}`});log('ลูกค้า',`ยืนยันสแกน +${res.pts} แต้ม`);done('qr')}
-      else{if(sc)sc.st='cap';S.ui.sRes='cap'}
-      if(res.iw&&res.iw.win)toast('Instant Win! ดูกระเป๋าคูปอง')}
-    else{if(sc)sc.st='no';S.ui.sRes='no';log('ลูกค้า','ปฏิเสธรายการที่ร้านบันทึก')}
-    S.ui.s='done'},
-  s:(v)=>{S.ui.s=v;if(v==='home'&&S.pending){S.pending=null;const sc=S.scans.find(x=>x.st==='wait');if(sc)sc.st='no'}},
-  scan:()=>{S.ui.s='scan'},
-  doScan:()=>{const sh=myShop();if(sh.sus)return toast('ร้านถูกระงับ');if(!S.user.reg){log('ร้าน','สแกน QR ที่ยังไม่ใช่สมาชิก → แนะนำลูกค้าสมัครผ่าน LINE');return toast('ลูกค้ายังไม่ได้สมัครสมาชิก ให้สมัครผ่าน LINE OA ก่อน')}if(S.pending)return toast('ลูกค้ายังมีรายการรอยืนยันอยู่');
-    S.ui.cart={s190:{y:0,c:0,p:0},s310:{y:0,c:0,p:0}};S.ui.s='sku';log('ร้าน',`สแกน QR คุณ${S.user.name} (token ${String(qrSeed).slice(0,4)}…)`)},
-  qty:(v)=>{const [k,f,d]=v.split('|');const c=S.ui.cart[k];c[f]=Math.max(0,Math.min(24,c[f]+ +d))},
-  sendCart:()=>{const c=S.ui.cart,lines=[],items=[];for(const k in c)for(const f in c[k])if(c[k][f]){lines.push({t:`${SKU[k].s} ${FL[f]}`,q:c[k][f]});items.push({sku:k,flav:f,qty:c[k][f],ch:'โชห่วย',rcpt:false})}
-    const {p,q}=cartPts();S.pending={shop:myShop().n,pts:p,q,lines,items};S.scans.unshift({t:now(),who:'คุณม**',d:lines.map(l=>l.t+' × '+l.q).join(', '),st:'wait'});S.ui.s='wait';log('ร้าน',`ส่งรายการ ${q} กระป๋อง +${p} แต้ม ให้ลูกค้ายืนยัน`)},
+  scanShop:(v)=>{S.ui.sc={id:v,cart:{s190:{y:0,c:0,p:0},s310:{y:0,c:0,p:0}},gpsOut:false};log('ลูกค้า','สแกน QR ร้าน '+S.shops.find(x=>x.id===v).n)},
+  scanReset:()=>{S.ui.sc=null},
+  cq:(v)=>{const [k,f,d]=v.split('|'),c=S.ui.sc.cart[k];c[f]=Math.max(0,Math.min(24,c[f]+ +d))},
+  gpsToggle:()=>{S.ui.sc.gpsOut=!S.ui.sc.gpsOut},
+  sendShopReq:()=>{const sc=S.ui.sc,sh=S.shops.find(x=>x.id===sc.id),u=S.user;if(u.scansToday>=S.rules.maxScan)return toast(`วันนี้ขอชาร์จผ่านร้านครบ ${S.rules.maxScan} ครั้งแล้ว`);if(S.pending)return toast('มีคำขอที่รอร้านอนุมัติอยู่');
+    const lines=[],items=[];for(const k in sc.cart)for(const f in sc.cart[k])if(sc.cart[k][f]){lines.push({t:`${SKU[k].s} ${FL[f]}`,q:sc.cart[k][f]});items.push({sku:k,flav:f,qty:sc.cart[k][f],ch:'โชห่วย'})}
+    const {p,q}=cartPts(sc.cart),pd={shop:sh.n,shopId:sh.id,pts:p,q,lines,items,gpsOut:sc.gpsOut};S.ui.sc=null;
+    S.scans.unshift({t:now(),who:'คุณม**',d:lines.map(l=>l.t+' × '+l.q).join(', '),st:'wait'});log('ลูกค้า',`ขอชาร์จ ${q} กระป๋อง ผ่าน QR ${sh.n}`);
+    if(sh.id===myShop().id){S.pending=pd;toast('ส่งคำขอให้ร้านแล้ว · ไปกด “อนุมัติ” ที่มือถือร้าน')}else{S.scans[0].st='ok';approveReq(pd,true)}},
+  shopCancel:()=>{S.pending=null;const sc=S.scans.find(x=>x.st==='wait');if(sc)sc.st='no';log('ลูกค้า','ยกเลิกคำขอ')},
+  shopApprove:()=>{const p=S.pending;if(!p)return;S.pending=null;approveReq(p,false)},
+  shopDeny:()=>{S.pending=null;const sc=S.scans.find(x=>x.st==='wait');if(sc)sc.st='no';chatPush('ร้านปฏิเสธรายการที่คุณขอชาร์จ ถ้าไม่ถูกต้องให้ขอใหม่หรือส่งใบเสร็จแทน');log('ร้าน','ปฏิเสธคำขอชาร์จ')},
   shopRedeem:(v)=>{const s=myShop();s.pts-=+v;toast(+v?'แลกส่วนลด 50฿ แล้ว ใช้ได้กับการสั่งของรอบถัดไป':'เซลส์จะนำป้ายไปติดที่ร้านภายใน 7 วัน');log('ร้าน',+v?'แลกแต้มร้าน 300 → ส่วนลด 50฿':'ขอรับป้ายร้านสะสมแต้ม')},
   /* register */
   rg:(v)=>{const i=v.indexOf(':'),k=v.slice(0,i),x=v.slice(i+1),r=S.ui.reg;if(k==='f'){r.f=x;return}const a=r.g,j=a.indexOf(x);if(j>=0)a.splice(j,1);else if(a.length<3)a.push(x);else toast('เลือกได้ไม่เกิน 3 กลุ่ม')},
@@ -109,7 +114,7 @@ const A={
   /* back office */
   b:(v)=>{S.ui.b=v},dtview:(v)=>{S.ui.dt=v},sel:(v)=>{S.ui.sel=v},
   rv:(v)=>{const r=S.receipts.find(x=>x.id===S.ui.sel&&x.st==='review')||S.receipts.find(x=>x.st==='review');if(!r)return;const qn=Math.max(0,Math.min(+$('#aq').value||0,S.rules.capCans));
-    if(v==='ok'){r.st='ok';r.qty=qn;if(r.me){const res=awardCans([{sku:r.sku,qty:qn,flav:r.flav||'y',ch:r.ch,rcpt:true}],`${r.store} · ${SKU[r.sku].s} × ${qn}`);r.pts=res.pts;chatPush(`ทีมตรวจอนุมัติใบเสร็จ ${r.store} แล้ว +${res.pts} แต้ม`)}log('หลังบ้าน',`อนุมัติใบเสร็จ ${r.no} (${qn} ชิ้น)`)}
+    if(v==='ok'){r.st='ok';r.qty=qn;if(r.me){const res=awardCans([{sku:r.sku,qty:qn,flav:r.flav||'y',ch:r.ch,bp:r.ch==='7-Eleven'&&r.sku==='s310'}],`${r.store} · ${SKU[r.sku].s} × ${qn}`);r.pts=res.pts;chatPush(`ทีมตรวจอนุมัติใบเสร็จ ${r.store} แล้ว +${res.pts} แต้ม`)}log('หลังบ้าน',`อนุมัติใบเสร็จ ${r.no} (${qn} ชิ้น)`)}
     else if(v==='resubmit'){r.st='resubmit';if(r.me)chatPush(`ใบเสร็จ ${r.store} ภาพไม่ชัด รบกวนถ่ายใหม่อีกครั้ง`);log('หลังบ้าน',`ขอรูปใหม่ ${r.no}`)}
     else{r.st='no';if(r.me)chatPush(`ใบเสร็จ ${r.store} ไม่ผ่านการตรวจ · อุทธรณ์ได้ 1 ครั้ง`);if(v==='fraud'){S.cases.unshift({id:'CS-'+(1002+S.cases.length),who:r.me?meName():r.who,t:'สงสัยทุจริตใบเสร็จ '+r.no,st:'เปิด'});log('หลังบ้าน',`ปฏิเสธ + แจ้งทุจริต ${r.no}`)}else log('หลังบ้าน',`ปฏิเสธใบเสร็จ ${r.no}`)}
     done('review');S.ui.sel=(S.receipts.find(x=>x.st==='review')||{}).id;toast('บันทึกแล้ว · แจ้งลูกค้าทาง LINE')},
@@ -138,7 +143,7 @@ const A={
     if(JSON.stringify(Object.keys(p).map(k=>p[k]))===JSON.stringify(Object.keys(p).map(k=>S.rules[k])))return toast('ไม่มีการเปลี่ยนแปลง');needApprove('rules','แก้กติกาแต้ม',p)},
   mult:(v)=>{const m=S.mult.find(x=>x.id===v);if(!m.on&&cpcNow()>=1.5)return toast('Governor อยู่โซนเตือน/หยุด เปิดตัวคูณใหม่ไม่ได้');m.on=!m.on;log('หลังบ้าน',`${m.on?'เปิด':'ปิด'}ตัวคูณ ${m.n}`);done('rule')},
   seg:(v)=>{S.ui.seg=v},
-  aiDraft:(v)=>{if(S.aiOff)return toast('AI ถูกปิดอยู่ (Kill switch)');const r=VOLT.rfm.find(x=>x.seg===v);S.seg.draft=`(${v}) ${r.push}`.slice(0,120);log('AI','ร่างข้อความถึง '+v+' (รอคนอนุมัติ)')},
+  aiDraft:(v)=>{if(S.aiOff||S.aiK.l2)return toast('AI ถูกปิดอยู่ (Kill switch)');const r=VOLT.rfm.find(x=>x.seg===v);S.seg.draft=`(${v}) ${r.push}`.slice(0,120);log('AI','ร่างข้อความถึง '+v+' (รอคนอนุมัติ)')},
   segSend:(v)=>{const m=($('#dmsg').value||'').trim();if(!m)return toast('ใส่ข้อความก่อน');if((S.seg.freq[v]||0)>=2)return toast('ส่งครบ 2 ครั้ง/สัปดาห์แล้ว');if(S.sim.hour<8||S.sim.hour>=22)return toast('ช่วงห้ามส่ง 22:00–08:00');
     S.seg.freq[v]=(S.seg.freq[v]||0)+1;log('หลังบ้าน',`อนุมัติและส่งถึง Segment ${v} (holdout ${S.seg.holdout}%)`);if(S.user.reg&&S.user.mk){chatPush(m,'PUSH');toast('ส่งแล้ว (สมาชิกตัวอย่างได้รับในแชต)')}else toast('ส่งแล้ว · สมาชิกตัวอย่างไม่ได้ยินยอมข่าวสาร จึงไม่ได้รับ')},
   advG:(v)=>{const g=S.user.groups,i=g.indexOf(v);if(i>=0)g.splice(i,1);else if(g.length<3)g.push(v);else toast('เลือกได้ไม่เกิน 3 กลุ่ม')},
@@ -154,10 +159,13 @@ const A={
     const w=[];const youWin=u.reg&&mine>0&&S.ui.rigDemo;if(youWin)w.push('คุณ'+u.name+' (เดโม)');while(w.length<Math.min(d.winners,6))w.push(pick(names,rn)+Math.floor(rn()*90+10));d.winnersList=w;d.status='done';S.pools[d.budgetPool].iss+=d.cost;
     if(youWin){if(ageOf()<S.rules.ageMin)log('ระบบ','ผู้ชนะอายุไม่ถึงเกณฑ์ ตัดสิทธิ์');else{S.wallet.unshift({id:'w'+Date.now(),n:'ผู้ชนะ '+d.n,kind:'draw',code:'WIN-'+d.seed.slice(0,6).toUpperCase(),st:'ready',exp:'ติดต่อภายใน 30 วัน',cost:d.cost/d.winners});chatPush(`ยินดีด้วย! คุณเป็นผู้โชคดี ${d.n} · ทีมงานจะติดต่อเพื่อตรวจอายุและจัดส่งรางวัล`);fxPush({lvl:'YOU WIN!',sub:d.n,small:'แตะเพื่อปิด'})}}
     log('ระบบ',`จับรางวัล ${d.n}: snapshot ${d.snap} seed ${d.seed}`);toast('จับรางวัลแล้ว · เก็บผลแบบแก้ไขไม่ได้')},
+  aiK:(v)=>{S.aiK[v]=!S.aiK[v];log('หลังบ้าน',`${S.aiK[v]?'ปิด':'เปิด'} AI ${v.toUpperCase()}`)},
+  campToggle:(v)=>{const c=S.campaigns.find(x=>x.id===v),m=S.mult.find(x=>x.id==={fl1:'m1',fl2:'m2'}[v]);if(c.st==='off'&&cpcNow()>=1.5)return toast('Governor อยู่โซนเตือน/หยุด เปิด Flash ไม่ได้');c.st=c.st==='on'?'off':'on';if(m)m.on=c.st==='on';log('หลังบ้าน',`${c.st==='on'?'เปิด':'ปิด'}แคมเปญ ${c.n}`);done('rule')},
+  liftRecalc:()=>{const L=S.lift;L.base=98+Math.random()*4;L.exp=L.base*(1.07+Math.random()*.1);log('ระบบ','คำนวณ Lift ใหม่')},
   aiOff:()=>{S.aiOff=!S.aiOff;log('หลังบ้าน',`${S.aiOff?'เปิด':'ปิด'} Kill switch AI`)},
   dsr:()=>{guest(S);log('ระบบ','DSR: ลบข้อมูลสมาชิกตามคำขอ');toast('ลบข้อมูลสมาชิกตัวอย่างแล้ว')},
   /* demo controls */
-  week:()=>{const u=S.user;u.wk.shift();u.wk.push(0);u.week=false;u.cansToday=0;u.scansToday=0;u.lastDays+=7;u.weeklyDone=false;S.ui.wq++;S.ui.qi=0;log('ระบบ','เริ่มสัปดาห์ใหม่ (เดโม)');toast('ข้ามไปสัปดาห์ถัดไป · ชาร์จสัปดาห์นี้เพื่อนับต่อเนื่อง');done('tier')},
+  week:()=>{const u=S.user;u.wk.shift();u.wk.push(0);u.week=false;u.cansToday=0;u.scansToday=0;u.lastDays+=7;u.weeklyDone=false;S.ui.wq++;S.ui.qi=0;let rel=0;u.pendList=u.pendList.filter(x=>{if(x.hold){rel+=x.p;return false}return true});if(rel){u.pts+=rel;u.pend=u.pendList.reduce((a,b)=>a+b.p,0);S.hist=S.hist||[];S.hist.unshift({l:'ปล่อยแต้มที่พักตรวจ',p:rel,ch:'ระบบ'});chatPush(`ปล่อยแต้มที่พักตรวจ ${rel} แต้มแล้ว`);fxPush({n:rel,label:'ปล่อยแต้ม +'+rel})}log('ระบบ','เริ่มสัปดาห์ใหม่ (เดโม)');toast('ข้ามไปสัปดาห์ถัดไป · ชาร์จสัปดาห์นี้เพื่อนับต่อเนื่อง');done('tier')},
   reset:()=>{S=guest(seed());toast('รีเซ็ตเดโมแล้ว')},
   guest:()=>{S=guest(seed());toast('เริ่มเป็นผู้ใช้ใหม่ · กด “สมัครสมาชิก” ที่ Rich Menu')},
   member:()=>{S=seed();toast('โหลดสมาชิกตัวอย่าง: คุณมายด์ LF2 · 148 แต้ม')},
@@ -167,7 +175,7 @@ const A={
 /* ---------- render loop (animate Charge Bolt level changes across re-renders) ---------- */
 const BIDS=['hud','cardbolt','goalbolt','tierbolt','shopb','welbolt'];
 function boltSnap(){const m={};BIDS.forEach(id=>{const b=document.querySelector('#'+id+' .cbolt');if(b)m[id]=parseFloat(b.dataset.p||0)});return m}
-function boltAnim(prev){for(const id in prev){const b=document.querySelector('#'+id+' .cbolt');if(!b)continue;const np=parseFloat(b.dataset.p||0);if(np>prev[id]+.001){b.style.setProperty('--p',prev[id]);b.dataset.p=prev[id];void b.offsetWidth;VoltFX.setBolt(b,np)}}}
+function boltAnim(prev){for(const id in prev){const b=document.querySelector('#'+id+' .cbolt');if(!b)continue;const np=parseFloat(b.dataset.p||0);if(np>prev[id]+.001){b.style.setProperty('--p',VoltFX.vis(prev[id]));b.dataset.p=prev[id];void b.offsetWidth;VoltFX.setBolt(b,np)}}}
 function render(){const pb=boltSnap();renderCust();renderShop();renderFeed();renderDesk();boltAnim(pb);save();flushFx()}
 const CLEAR={guest:1,member:1,sendReceipt:1,sendCode:1,sendOnline:1,saveRw:1,deskCode:1,otp:1,addr:1,reset:1,collectTab:1,c:1,openRw:1,saveRules:1,drawSave:1,b:1,segSend:1};
 function snap(){const m={};document.querySelectorAll('#cust [id],#shop [id],#desk [id]').forEach(el=>{if(el.matches('input,select,textarea'))m[el.id]=el.type==='checkbox'?el.checked:el.value});return m}
