@@ -126,6 +126,7 @@ window.VoltDash=(function(){
   const SHOPS=['ร้านเจ๊หน่อย','ร้านลุงชัย','ร้านเฮียกิม','ร้านยายศรี','ร้านพี่ต่าย'],FLV=['Tropical','Blueberry','Forest Fruit'];
   function ingest(ev){
     ev=ev||{};
+    if(ev.newMember){D.fun.mem++;D.tk.unshift(`สมาชิกใหม่ <b>${esc(ev.who||'')}</b> · สมัครผ่าน LINE OA · โบนัส +${ev.pts||20} แต้ม`);D.last=Date.now();update(false);return}
     if(ev.redeem){D.ptsUse+=ev.redeem;D.budget+=ev.redeem*4e-6;if(ev.first)D.fun.red++;D.tk.unshift(`${esc(ev.who||'สมาชิก')} แลก <b>${esc(ev.name||'รางวัล')}</b> −${fmt(ev.redeem)} แต้ม`);D.last=Date.now();update(false);return}
     const ch=CK.includes(ev.ch)?ev.ch:pick(),cans=ev.cans||1+Math.floor(rnd()*5),pts=ev.pts!=null?ev.pts:cans*(ch==='โชห่วย'?1:2);
     [D.wk,D.dy,D.mo].forEach(s=>s.act[s.cur][ch]+=cans);D.ptsOut+=pts;D.budget+=pts*1.5e-6;D.lift+=cans*.0006;D.wa[today]+=cans;
