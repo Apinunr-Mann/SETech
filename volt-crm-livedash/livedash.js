@@ -1,6 +1,6 @@
 /* Volt Live Dashboard: self-contained, simulated live feed; hosts can push real events with VoltDash.ingest() */
 window.VoltDash=(function(){
-  const CH=[['7-Eleven','#19C3F0',.46],['โชห่วย','#FFE11A',.32],['Lawson','#8A4DFF',.09],['Makro','#2F6BFF',.07],['ออนไลน์+','#C9D2FF',.06]];
+  const CH=[['7-Eleven','#2EA8E6',.46],['โชห่วย','#F2C200',.32],['Lawson','#7B4BD8',.09],['Makro','#2F6BFF',.07],['ออนไลน์+','#C9D2FF',.06]];
   const CK=CH.map(c=>c[0]);
   let sd=11;const rnd=()=>{sd=(sd*9301+49297)%233280;return sd/233280};
   const fmt=n=>Math.round(n).toLocaleString('en-US');
@@ -19,9 +19,9 @@ window.VoltDash=(function(){
     wa:[8120,8840,9020,8700,9610,10220,9400],waPrev:[7900,8420,8610,8550,9300,9880,9120],
     mem:[{n:'คุณบอส',t:'LF4',v:612},{n:'คุณแพร',t:'LF3',v:505},{n:'คุณนนท์',t:'LF3',v:388},{n:'คุณจูน',t:'LF2',v:171},{n:'คุณมายด์',t:'LF2',v:148,me:1},{n:'คุณเก่ง',t:'LF2',v:120}],
     shop:[{n:'ร้านเจ๊หน่อย',t:'บางแค',v:412},{n:'ร้านลุงชัย',t:'หาดใหญ่',v:388},{n:'ร้านเฮียกิม',t:'เชียงใหม่',v:301},{n:'ร้านป้าแดง',t:'ลำลูกกา',v:296},{n:'ร้านยายศรี',t:'ขอนแก่น',v:254},{n:'ร้านพี่ต่าย',t:'โคราช',v:233}],
-    tk:[]};
+    tk:[],cpc:1.18,mix190:56};
   const today=(new Date().getDay()+6)%7;for(let i=today+1;i<7;i++)D.wa[i]=0;D.wa[today]=Math.round(D.wa[today]*.42);
-  const AV=['#19C3F0','#FFE11A','#8A4DFF','#2F6BFF','#4BE39A','#FF9BD2'];
+  const AV=['#2EA8E6','#F2C200','#7B4BD8','#2F6BFF','#4BE39A','#FF9BD2'];
   let root,opts={},toastT;
 
   const sumF=o=>D.filter==='all'?CK.reduce((a,k)=>a+o[k],0):o[D.filter];
@@ -31,46 +31,52 @@ window.VoltDash=(function(){
 
   function build(){
     root.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-      <linearGradient id="ldgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#19C3F0"/><stop offset="1" stop-color="#2F6BFF" stop-opacity=".55"/></linearGradient>
-      <linearGradient id="ldgY" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE11A"/><stop offset="1" stop-color="#FFB800" stop-opacity=".6"/></linearGradient>
-      <linearGradient id="ldgD" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#19C3F0"/><stop offset="1" stop-color="#8A4DFF"/></linearGradient>
-      <linearGradient id="ldgR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8A4DFF"/><stop offset="1" stop-color="#FF7A7F"/></linearGradient>
-      <linearGradient id="ldgA1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A4DFF" stop-opacity=".55"/><stop offset="1" stop-color="#8A4DFF" stop-opacity="0"/></linearGradient>
-      <linearGradient id="ldgA2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#19C3F0" stop-opacity=".5"/><stop offset="1" stop-color="#19C3F0" stop-opacity="0"/></linearGradient></defs></svg>
-    <div class="ld-top"><h3>Volt Grid <small style="font:600 11px 'Prompt',sans-serif;color:#9AA5DD;letter-spacing:.06em;font-style:normal">CHARGE YOUR EXPERIENCE</small></h3><span class="ld-live ${D.paused?'off':''}" data-r="live"><i></i>${D.paused?'หยุดชั่วคราว':'LIVE'}</span><span class="ld-clock" data-r="clock"></span><span class="ld-camp" data-tip="Campaign Charge: ยอดขายเพิ่มเทียบ baseline ก่อนแคมเปญ · เป้า +15%">Campaign Charge <span class="batt" data-r="camp" style="--p:0;width:150px"><i></i><b></b></span></span><span class="ld-sp"></span>
+      <linearGradient id="ldgB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2EA8E6"/><stop offset="1" stop-color="#2F6BFF" stop-opacity=".55"/></linearGradient>
+      <linearGradient id="ldgY" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2C200"/><stop offset="1" stop-color="#FFB800" stop-opacity=".6"/></linearGradient>
+      <linearGradient id="ldgD" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2EA8E6"/><stop offset="1" stop-color="#7B4BD8"/></linearGradient>
+      <linearGradient id="ldgR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B4BD8"/><stop offset="1" stop-color="#FF7A7F"/></linearGradient>
+      <linearGradient id="ldgA1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7B4BD8" stop-opacity=".55"/><stop offset="1" stop-color="#7B4BD8" stop-opacity="0"/></linearGradient>
+      <linearGradient id="ldgA2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2EA8E6" stop-opacity=".5"/><stop offset="1" stop-color="#2EA8E6" stop-opacity="0"/></linearGradient></defs></svg>
+    <div class="ld-top"><h3>Volt Grid <small style="font:600 11px 'IBM Plex Sans Thai',sans-serif;color:#9AA5DD;letter-spacing:.06em;font-style:normal">CHARGE YOUR EXPERIENCE</small></h3><span class="ld-live ${D.paused?'off':''}" data-r="live"><i></i>${D.paused?'หยุดชั่วคราว':'LIVE'}</span><span class="ld-clock" data-r="clock"></span><span class="ld-camp" data-tip="Season Charge: ยอดขายเพิ่มเทียบ baseline ก่อนแคมเปญ · เป้า +15% · นิยาม: (กระป๋องจริง − baseline) ÷ baseline"><span data-r="campw">${window.VoltFX?VoltFX.bolt(0,{size:'sm'}):''}</span><span data-r="campl">Season Charge</span></span><span class="ld-sp"></span>
       <div class="ld-chips" role="group" aria-label="กรองช่องทาง"><button class="ld-chip" data-ld="f:all" aria-pressed="${D.filter==='all'}">ทุกช่องทาง</button>${CH.map(([k,c])=>`<button class="ld-chip" data-ld="f:${k}" aria-pressed="${D.filter===k}"><i style="background:${c}"></i>${k}</button>`).join('')}</div>
       <button class="ld-btn ${D.paused?'y':''}" data-ld="pause">${D.paused?'▶ เล่นต่อ':'❚❚ หยุด'}</button></div>
     <div class="ld-alerts" data-r="alerts"></div>
+    <div class="ld-gov" data-r="gov"></div>
     <div class="ld-grid">
       <section class="ld-c ld-funnel"><div class="ld-h"><b>Conversion</b><span>Member Funnel · คลิกเพื่อดูรายละเอียด</span></div>
         <div class="ld-fwrap"><div class="ld-stack" data-r="stack"></div><div class="ld-pills" data-r="pills"></div></div>
         <div class="ld-fdet" data-r="fdet"></div>
-        <div class="ld-stats"><div><span>กระป๋องสะสม</span><b data-n="cans" data-f="k">0</b><small data-r="today"></small></div><div><span>Volt ออก</span><b data-n="pts" data-f="k">0</b><small data-r="burn"></small></div><div><span>งบรางวัลใช้</span><b data-n="bud" data-f="p1">0</b><small>แผน 29%</small></div></div></section>
+        <div class="ld-stats"><div><span>กระป๋องสะสม</span><b data-n="cans" data-f="k">0</b><small data-r="today"></small></div><div><span>แต้มออก</span><b data-n="pts" data-f="k">0</b><small data-r="burn"></small></div><div><span>งบรางวัลใช้</span><b data-n="bud" data-f="p1">0</b><small>แผน 29%</small></div></div></section>
       <section class="ld-c ld-trend"><div class="ld-th"><div><div class="ld-h"><b>กระป๋อง: เป้า vs จริง</b></div><div class="ld-tabs" role="group" aria-label="ช่วงเวลา">${['dy','wk','mo'].map(t=>`<button data-ld="tab:${t}" aria-pressed="${D.tab===t}">${D[t].name}</button>`).join('')}</div></div>
-        <div class="ld-kv"><div><span>Target</span><b data-n="tg" data-f="i" style="color:#9AA5DD">0</b></div><div><span>Actual</span><b data-n="ac" data-f="i">0</b></div><div><span>KPI</span><b data-n="kpi" data-f="p0" style="color:#FFE11A">0</b></div></div></div>
+        <div class="ld-kv"><div><span>Target</span><b data-n="tg" data-f="i" style="color:#9AA5DD">0</b></div><div><span>Actual</span><b data-n="ac" data-f="i">0</b></div><div><span>KPI</span><b data-n="kpi" data-f="p0" style="color:#F2C200">0</b></div></div></div>
         <div data-r="trend" class="grow"></div></section>
-      <section class="ld-c ld-ret"><div class="ld-h"><b>Retention</b><span>ซื้อซ้ำ / ซื้อใน 30 วัน</span></div><div class="ld-dn" data-r="retd"></div><div class="ld-leg"><span><i style="background:#8A4DFF"></i>ซื้อซ้ำ</span><span><i style="background:#19C3F0"></i>ลูกค้าใหม่</span></div><div data-r="wave"></div><span class="ld-h"><span>14 วันล่าสุด · คนที่ส่ง Volt ต่อวัน</span></span></section>
+      <section class="ld-c ld-ret"><div class="ld-h"><b>Retention</b><span>ซื้อซ้ำ / ซื้อใน 30 วัน</span></div><div class="ld-dn" data-r="retd"></div><div class="ld-leg"><span><i style="background:#7B4BD8"></i>ซื้อซ้ำ</span><span><i style="background:#2EA8E6"></i>ลูกค้าใหม่</span></div><div data-r="wave"></div><span class="ld-h"><span>14 วันล่าสุด · คนที่ส่งแต้มต่อวัน</span></span></section>
       <section class="ld-c ld-cyc"><div class="ld-h"><b>Purchase Cycle</b><span>รอบการซื้อซ้ำ</span></div><div class="ld-cycw" data-r="cyc"></div></section>
       <section class="ld-c ld-pipe"><div class="ld-pw"><div><div class="ld-h"><b>ช่องทาง</b><span>คลิกแท่งเพื่อกรอง</span></div><div data-r="pipe" class="grow"></div></div><div><div class="ld-h"><b>Weekly Activity</b><span data-r="wapct"></span></div><div data-r="wa"></div></div></div></section>
       <section class="ld-c ld-board"><div class="ld-h"><b>Leaderboard</b><div class="ld-tabs"><button data-ld="bd:mem" aria-pressed="${D.board==='mem'}">สมาชิก</button><button data-ld="bd:shop" aria-pressed="${D.board==='shop'}">ร้านโชห่วย</button></div></div><div data-r="board" style="display:flex;flex-direction:column;gap:6px"></div></section>
     </div>
+    <section class="ld-c ld-cop"><div class="ld-h"><b>Copilot</b><span>ถามด้วยภาษาไทย · อ่านจาก semantic layer · กลุ่มต่ำกว่า 20 คนไม่แสดง</span></div>
+      <form class="ld-cq" data-r="cform"><input data-r="cin" aria-label="ถาม Copilot" placeholder="เช่น Repeat rate เท่าไร / ต้นทุนต่อกระป๋อง / จังหวัดน่านซื้อเท่าไร" autocomplete="off"><button class="ld-btn y" type="submit">ถาม</button></form>
+      <div class="ld-chips">${['Repeat rate เท่าไร','190 ml เทียบ 310 ml','ต้นทุนต่อกระป๋อง','ช่องทางไหนมาแรง','จังหวัดน่านซื้อเท่าไร'].map(q=>`<button class="ld-chip" type="button" data-ld="ask:${q}">${q}</button>`).join('')}</div>
+      <div class="ld-ans" data-r="cans" aria-live="polite">ตัวอย่างคำถามอยู่ด้านบน · คำตอบมีนิยามและ coverage กำกับเสมอ</div></section>
     <div class="ld-ticker"><b>⚡ LIVE FEED</b><div class="ld-tk" data-r="tk"></div></div>
     <div class="ld-tip" hidden></div>`;
-    stack();setTimeout(()=>root.querySelectorAll('.grow').forEach(e=>e.classList.remove('grow')),1400);
+    stack();setTimeout(()=>root.querySelectorAll('.grow').forEach(e=>e.classList.remove('grow')),1400);defs();
   }
   const R=k=>root.querySelector(`[data-r="${k}"]`);
-  const STG=[['สมาชิก','สมัครผ่าน LINE OA','mem','linear-gradient(90deg,#19C3F0,#2F6BFF)'],['ซื้อใน 30 วัน','ส่ง Volt อย่างน้อย 1 ครั้ง','act','linear-gradient(90deg,#2F6BFF,#6A5BFF)'],['ซื้อซ้ำ','2 ครั้งขึ้นไป','rep','linear-gradient(90deg,#6A4DFF,#B04DFF)'],['แลกรางวัล','ใช้ Volt แล้ว','red','linear-gradient(90deg,#FFB800,#FFE11A)']];
+  const campEl=()=>{const w=R('campw');return w&&w.firstElementChild};
+  const STG=[['สมาชิก','สมัครผ่าน LINE OA','mem','linear-gradient(90deg,#2EA8E6,#2F6BFF)'],['ซื้อใน 30 วัน','ส่งแต้มอย่างน้อย 1 ครั้ง','act','linear-gradient(90deg,#2F6BFF,#6A5BFF)'],['ซื้อซ้ำ','2 ครั้งขึ้นไป','rep','linear-gradient(90deg,#6A4DFF,#B04DFF)'],['แลกรางวัล','ใช้แต้มแล้ว','red','linear-gradient(90deg,#FFB800,#F2C200)']];
   function stack(){
-    R('stack').innerHTML=STG.map((s,i)=>`<button class="ld-stg ${D.fsel===i?'on':''}" data-ld="stg:${i}" style="width:${100-i*15}%;background:${s[3]};${i===3?'color:#0B1247;text-shadow:none':''}" data-r="stg${i}" aria-label="${s[0]}">0%</button>`).join('')+`<div class="ld-bowl" data-tip="ยอดขายกระป๋องเทียบ baseline ก่อนแคมเปญ · เป้า +10–15%">⚡ ชาร์จยอดขาย +<span data-n="lift" data-f="p1n">0</span>%</div>`;
+    R('stack').innerHTML=STG.map((s,i)=>`<button class="ld-stg ${D.fsel===i?'on':''}" data-ld="stg:${i}" style="width:${100-i*15}%;background:${s[3]};${i===3?'color:#0E1640;text-shadow:none':''}" data-r="stg${i}" aria-label="${s[0]}">0%</button>`).join('')+`<div class="ld-bowl" data-tip="ยอดขายกระป๋องเทียบ baseline ก่อนแคมเปญ · เป้า +10–15%">⚡ ชาร์จยอดขาย +<span data-n="lift" data-f="p1n">0</span>%</div>`;
     R('pills').innerHTML=STG.map((s,i)=>`<button class="ld-pill ${D.fsel===i?'on':''}" data-ld="stg:${i}"><span><b>${s[0]}</b><small>${s[1]}</small></span><em><span data-n="f${i}" data-f="i">0</span><small data-r="k${i}"></small></em></button>`).join('');
   }
   function update(flash){
     const F=D.fun,T=D.tg;const vals=[F.mem,F.act,F.rep,F.red];const conv=[F.mem/T.mem,F.act/F.mem,F.rep/F.act,F.red/F.rep];
-    STG.forEach((s,i)=>{R('stg'+i).textContent=(conv[i]*100).toFixed(0)+'%';set('f'+i,vals[i]);const k=vals[i]/T[s[2]]*100;const el=R('k'+i);el.textContent=`KPI ${k.toFixed(0)}%`;el.style.color=k>=100?'#4BE39A':k>=85?'#FFE11A':'#FF7A7F'});
+    STG.forEach((s,i)=>{R('stg'+i).textContent=(conv[i]*100).toFixed(0)+'%';set('f'+i,vals[i]);const k=vals[i]/T[s[2]]*100;const el=R('k'+i);el.textContent=`KPI ${k.toFixed(0)}%`;el.style.color=k>=100?'#4BE39A':k>=85?'#F2C200':'#FF7A7F'});
     const fs=D.fsel;R('fdet').textContent=`${STG[fs][0]}: ${fmt(vals[fs])} คน · ${fs?`${(conv[fs]*100).toFixed(1)}% ของขั้นก่อนหน้า`:`${(conv[0]*100).toFixed(1)}% ของเป้าสมาชิก`} · เป้า ${fmt(T[STG[fs][2]])}`;
     set('lift',D.lift);set('cans',cansAll()*share()+D.base.cans);set('pts',D.ptsOut*share());set('bud',D.budget);
     R('today').textContent=`+${fmt(sumF(D.dy.act[D.dy.cur]))} วันนี้`;R('burn').textContent=`burn ${(D.ptsUse/D.ptsOut*100).toFixed(0)}%`;
-    const cp=R('camp');cp.style.setProperty('--p',Math.min(1,D.lift/15).toFixed(3));cp.lastChild.textContent='+'+D.lift.toFixed(1)+'% / 15%';
+    VoltFX.setBolt(campEl(),Math.min(1,D.lift/15),{aria:'Season Charge '+D.lift.toFixed(1)+' เปอร์เซ็นต์ จากเป้า 15'});R('campl').textContent='Season Charge +'+D.lift.toFixed(1)+'% / เป้า 15%';gov();
     trend(flash);retention();cycle();pipe(flash);weekly();board();ticker();alerts();
     R('live').className='ld-live'+(D.paused?' off':'');R('live').lastChild.textContent=D.paused?'หยุดชั่วคราว':'LIVE';
   }
@@ -79,22 +85,22 @@ window.VoltDash=(function(){
     const W=600,H=180,l=44,b=22,t=16,mx=Math.max(...tgt,...act.filter(x=>x!=null))*1.15,cw=(W-l)/n,bw=cw*.56,y=v=>H-b-(v/mx)*(H-b-t);
     let g='';for(let k=0;k<=3;k++){const v=mx/3*k;g+=`<line x1="${l}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.07)"/><text x="${l-8}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="#9AA5DD">${fk(v)}</text>`}
     let bars='',labs='',top=act.indexOf(Math.max(...act.filter(x=>x!=null)));
-    act.forEach((v,i)=>{const x=l+cw*i+(cw-bw)/2;labs+=`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle" font-size="10" fill="${i===s.cur?'#FFE11A':'#9AA5DD'}">${s.lab[i]}</text>`;
+    act.forEach((v,i)=>{const x=l+cw*i+(cw-bw)/2;labs+=`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle" font-size="10" fill="${i===s.cur?'#F2C200':'#9AA5DD'}">${s.lab[i]}</text>`;
       if(v==null){bars+=`<rect x="${x}" y="${y(tgt[i])}" width="${bw}" height="${H-b-y(tgt[i])}" rx="4" fill="none" stroke="rgba(255,255,255,.12)" stroke-dasharray="3 3"/>`;return}
       bars+=`<rect class="b ${flash&&i===s.cur?'pulse':''}" x="${x}" y="${y(v)}" width="${bw}" height="${Math.max(1,H-b-y(v))}" rx="4" fill="url(#${i===s.cur?'ldgY':'ldgB'})" style="animation-delay:${i*40}ms" data-tip="${s.lab[i]}${i===s.cur?' (กำลังเก็บ)':''}\nจริง ${fmt(v)} กระป๋อง\nเป้า ${fmt(tgt[i])} · ${(v/tgt[i]*100).toFixed(0)}%"/>`;
       if(i===top)bars+=`<text x="${x+bw/2}" y="${y(v)-6}" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">${fk(v)}</text>`});
     const pts=tgt.map((v,i)=>[l+cw*i+cw/2,y(v)]);
-    const line=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="2"/>`+pts.map((p,i)=>`<circle class="pt" cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#0B1247" stroke="#fff" stroke-width="2" data-tip="เป้า ${s.lab[i]}: ${fmt(tgt[i])}"/>`).join('');
+    const line=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="2"/>`+pts.map((p,i)=>`<circle class="pt" cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#0E1640" stroke="#fff" stroke-width="2" data-tip="เป้า ${s.lab[i]}: ${fmt(tgt[i])}"/>`).join('');
     R('trend').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กราฟกระป๋องจริงเทียบเป้า${s.name}">${g}${bars}${line}${labs}</svg>`;
     const done=act.slice(0,s.cur).reduce((a,v)=>a+v,0)+act[s.cur],tg=tgt.slice(0,s.cur).reduce((a,v)=>a+v,0)+tgt[s.cur]*s.prog;
     set('tg',tg);set('ac',done);set('kpi',done/tg*100);
   }
-  function donut(p,r,sw,grad,label,sub,size){const c=2*Math.PI*r;return `<div class="ld-dn" style="width:${size}px;height:${size}px;margin:0 auto"><svg viewBox="0 0 ${r*2+sw*2} ${r*2+sw*2}" style="transform:rotate(-90deg)"><circle cx="${r+sw}" cy="${r+sw}" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="${sw}"/><circle cx="${r+sw}" cy="${r+sw}" r="${r}" fill="none" stroke="url(#${grad})" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*p} ${c}" style="transition:stroke-dasharray .8s;filter:drop-shadow(0 0 6px rgba(25,195,240,.5))"/></svg><div class="c"><b style="font-size:${size/4.4}px">${label}</b><small>${sub}</small></div></div>`}
+  function donut(p,r,sw,grad,label,sub,size){const c=2*Math.PI*r;return `<div class="ld-dn" style="width:${size}px;height:${size}px;margin:0 auto"><svg viewBox="0 0 ${r*2+sw*2} ${r*2+sw*2}" style="transform:rotate(-90deg)"><circle cx="${r+sw}" cy="${r+sw}" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="${sw}"/><circle cx="${r+sw}" cy="${r+sw}" r="${r}" fill="none" stroke="url(#${grad})" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c*p} ${c}" style="transition:stroke-dasharray .8s;filter:drop-shadow(0 0 6px rgba(46,168,230,.5))"/></svg><div class="c"><b style="font-size:${size/4.4}px">${label}</b><small>${sub}</small></div></div>`}
   function retention(){
     const p=D.fun.rep/D.fun.act;R('retd').innerHTML=donut(p,54,14,'ldgD',(p*100).toFixed(0)+'%','ซื้อซ้ำ',136);R('retd').setAttribute('data-tip',`ซื้อซ้ำ ${fmt(D.fun.rep)} จาก ${fmt(D.fun.act)} คนที่ซื้อใน 30 วัน`);
     const W=260,H=80,a=D.ret.d.map((v,i)=>i===13?Math.round(v/D.dy.prog):v),b=D.ret.n.map((v,i)=>i===13?Math.round(v/D.dy.prog):v),mx=Math.max(...a)*1.1,x=i=>i/(a.length-1)*W,y=v=>H-v/mx*H;
     const path=arr=>arr.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
-    R('wave').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="คนซื้อซ้ำและลูกค้าใหม่รายวัน"><path d="${path(a)} L${W} ${H} L0 ${H}Z" fill="url(#ldgA1)"/><path d="${path(a)}" fill="none" stroke="#8A4DFF" stroke-width="2"/><path d="${path(b)} L${W} ${H} L0 ${H}Z" fill="url(#ldgA2)"/><path d="${path(b)}" fill="none" stroke="#19C3F0" stroke-width="2"/>${a.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="6" fill="transparent" data-tip="${dlab[i]}\nซื้อซ้ำ ${fmt(v)} · ใหม่ ${fmt(b[i])}"/>`).join('')}</svg>`;
+    R('wave').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="คนซื้อซ้ำและลูกค้าใหม่รายวัน"><path d="${path(a)} L${W} ${H} L0 ${H}Z" fill="url(#ldgA1)"/><path d="${path(a)}" fill="none" stroke="#7B4BD8" stroke-width="2"/><path d="${path(b)} L${W} ${H} L0 ${H}Z" fill="url(#ldgA2)"/><path d="${path(b)}" fill="none" stroke="#2EA8E6" stroke-width="2"/>${a.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="6" fill="transparent" data-tip="${dlab[i]}\nซื้อซ้ำ ${fmt(v)} · ใหม่ ${fmt(b[i])}"/>`).join('')}</svg>`;
   }
   function cycle(){
     R('cyc').innerHTML=`<div data-tip="ลูกค้าที่กลับมาซื้อภายใน 7 วันหลังซื้อครั้งก่อน">${donut(D.cyc/100,46,13,'ldgD',D.cyc.toFixed(0)+'%',`เฉลี่ย ${D.cycDays.toFixed(1)} วัน`,128)}<div class="ld-leg" style="margin-top:4px"><span>ซื้อซ้ำภายใน 7 วัน</span></div></div>
@@ -109,12 +115,39 @@ window.VoltDash=(function(){
     const W=200,H=150,b=20,t=26,days=['จ','อ','พ','พฤ','ศ','ส','อา'],tot=D.wa.reduce((a,v)=>a+v,0),mx=Math.max(...D.wa,...D.waPrev)*1.15,x=i=>14+i*(W-28)/6,y=v=>H-b-v/mx*(H-b-t);
     const pts=D.wa.map((v,i)=>[x(i),y(v)]).slice(0,today+1),prev=D.waPrev.map((v,i)=>x(i)+','+y(v)).join(' ');
     R('wapct').textContent=`${fk(tot)} กระป๋อง · เส้นประ = สัปดาห์ก่อน`;
-    R('wa').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กิจกรรมรายวันในสัปดาห์นี้เทียบสัปดาห์ก่อน"><polyline points="${prev}" fill="none" stroke="#8A4DFF" stroke-opacity=".6" stroke-width="1.5" stroke-dasharray="4 4"/>${D.waPrev.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="5" fill="transparent" data-tip="${days[i]} สัปดาห์ก่อน: ${fmt(v)} กระป๋อง"/>`).join('')}<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#19C3F0" stroke-width="2.5"/>${D.wa.map((v,i)=>i>today?`<circle cx="${x(i)}" cy="${H-b}" r="3" fill="rgba(255,255,255,.15)"/>`:`<circle class="pt" cx="${x(i)}" cy="${y(v)}" r="${i===today?6:4}" fill="${i===today?'#FFE11A':'#19C3F0'}" stroke="#0B1247" stroke-width="2" data-tip="${days[i]}: ${fmt(v)} กระป๋อง${i===today?' (วันนี้ สด)':''}"/><text x="${x(i)}" y="${y(v)-10}" text-anchor="middle" font-size="9.5" fill="${i===today?'#FFE11A':'#fff'}">${(v/tot*100).toFixed(0)}%</text>`).join('')}${days.map((d,i)=>`<text x="${x(i)}" y="${H-4}" text-anchor="middle" font-size="10" fill="${i===today?'#FFE11A':'#9AA5DD'}">${d}</text>`).join('')}</svg>`;
+    R('wa').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กิจกรรมรายวันในสัปดาห์นี้เทียบสัปดาห์ก่อน"><polyline points="${prev}" fill="none" stroke="#7B4BD8" stroke-opacity=".6" stroke-width="1.5" stroke-dasharray="4 4"/>${D.waPrev.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="5" fill="transparent" data-tip="${days[i]} สัปดาห์ก่อน: ${fmt(v)} กระป๋อง"/>`).join('')}<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#2EA8E6" stroke-width="2.5"/>${D.wa.map((v,i)=>i>today?`<circle cx="${x(i)}" cy="${H-b}" r="3" fill="rgba(255,255,255,.15)"/>`:`<circle class="pt" cx="${x(i)}" cy="${y(v)}" r="${i===today?6:4}" fill="${i===today?'#F2C200':'#2EA8E6'}" stroke="#0E1640" stroke-width="2" data-tip="${days[i]}: ${fmt(v)} กระป๋อง${i===today?' (วันนี้ สด)':''}"/><text x="${x(i)}" y="${y(v)-10}" text-anchor="middle" font-size="9.5" fill="${i===today?'#F2C200':'#fff'}">${(v/tot*100).toFixed(0)}%</text>`).join('')}${days.map((d,i)=>`<text x="${x(i)}" y="${H-4}" text-anchor="middle" font-size="10" fill="${i===today?'#F2C200':'#9AA5DD'}">${d}</text>`).join('')}</svg>`;
   }
   function board(){
     const list=(D.board==='mem'?D.mem:D.shop).slice().sort((a,b)=>b.v-a.v);const top=list[0].v;let rows=list.slice(0,5);const me=list.findIndex(r=>r.me);if(me>4)rows=rows.slice(0,4).concat(list[me]);
-    R('board').innerHTML=rows.map(r=>{const i=list.indexOf(r);return `<div class="ld-row ${r.me?'me':''}" data-tip="${esc(r.n)} · ${esc(r.t)}\n${fmt(r.v)} ${D.board==='mem'?'Volt':'กระป๋องสัปดาห์นี้'}"><small>Top-${i+1}</small><span class="ld-av" style="background:${AV[i%6]}">${esc(r.n.replace(/^(คุณ|ร้าน)/,'').slice(0,1))}</span><div><span>${esc(r.n)} <small>${esc(r.t)}</small></span><div class="ld-bar"><i style="width:${r.v/top*100}%"></i></div></div><em>${fmt(r.v)}</em></div>`}).join('')+`<div class="ld-leg" style="justify-content:flex-start"><span><i style="background:#2F6BFF"></i>${D.board==='mem'?'Volt สะสม':'กระป๋องที่สแกน'}</span><span><i style="background:#FFE11A"></i>คุณ (เดโม)</span></div>`;
+    R('board').innerHTML=rows.map(r=>{const i=list.indexOf(r);return `<div class="ld-row ${r.me?'me':''}" data-tip="${esc(r.n)} · ${esc(r.t)}\n${fmt(r.v)} ${D.board==='mem'?'แต้ม':'กระป๋องสัปดาห์นี้'}"><small>Top-${i+1}</small><span class="ld-av" style="background:${AV[i%6]}">${esc(r.n.replace(/^(คุณ|ร้าน)/,'').slice(0,1))}</span><div><span>${esc(r.n)} <small>${esc(r.t)}</small></span><div class="ld-bar"><i style="width:${r.v/top*100}%"></i></div></div><em>${fmt(r.v)}</em></div>`}).join('')+`<div class="ld-leg" style="justify-content:flex-start"><span><i style="background:#2F6BFF"></i>${D.board==='mem'?'แต้มสะสม':'กระป๋องที่สแกน'}</span><span><i style="background:#F2C200"></i>คุณ (เดโม)</span></div>`;
   }
+  const SMALL=['น่าน','แม่ฮ่องสอน','ระนอง','สตูล','ตราด','อุทัยธานี'];
+  function gov(){const c=D.cpc,pos=Math.max(0,Math.min(1,(c-.6)/1.6))*100,zone=c>=1.8?['r','พักโบนัส (≥1.8)']:c>=1.5?['a','เตือน (≥1.5)']:c>1.3?['a','สูงกว่าเป้า']:['g','อยู่ในเป้า 1.0–1.3'];
+    const liab=(D.ptsOut-D.ptsUse)*.10,slow=D.budget<29*.8;
+    R('gov').innerHTML=`<div class="ld-g" data-tip="Cost-per-Can Governor\nต้นทุนรางวัลต่อกระป๋อง = ต้นทุนรางวัลที่ออกจริง ÷ กระป๋องที่ผ่านตรวจ\nเป้า 1.0–1.3 ฿ · เตือน 1.5 · พักโบนัส 1.8"><span>Cost-per-Can</span><b class="${zone[0]}">${c.toFixed(2)} ฿</b><div class="ld-gt"><i style="left:${(1.0-.6)/1.6*100}%;width:${.3/1.6*100}%;background:#17A866"></i><i style="left:${(1.3-.6)/1.6*100}%;width:${.5/1.6*100}%;background:#F2C200"></i><i style="left:${(1.8-.6)/1.6*100}%;right:0;background:#D93A40"></i><u style="left:${pos}%"></u></div><small>${zone[1]}</small></div>
+      <div class="ld-g" data-tip="ภาระแต้มคงค้าง = (แต้มที่ออก − แต้มที่ใช้) × 0.10 บาท · 1 แต้ม = 0.10 บาท"><span>ภาระแต้มคงค้าง</span><b>฿${fmt(liab)}</b><small>${fmt(D.ptsOut-D.ptsUse)} แต้มที่ยังไม่ใช้</small></div>
+      <div class="ld-g" data-tip="สัดส่วนกระป๋อง 190 ml (ร้านโชห่วยเป็นหลัก) เทียบ 310 ml (7-Eleven / MT)"><span>190 ml vs 310 ml</span><b>${Math.round(S190())}% / ${100-Math.round(S190())}%</b><small>เป้าดัน 190 → 310</small></div>
+      <div class="ld-g" data-tip="ถ้างบใช้ช้ากว่าแผนเกิน 20% Advisor เสนอ Flash"><span>Advisor</span><b class="${slow?'a':'g'}">${slow?'เสนอ Flash':'ตามแผน'}</b><small>${slow?'งบใช้ '+D.budget.toFixed(1)+'% < แผน 29%':'ใช้งบ '+D.budget.toFixed(1)+'% (แผน 29%)'}</small></div>`}
+  const S190=()=>D.mix190;
+  const DEFS={'Conversion':'นิยาม: สมาชิก → ซื้อใน 30 วัน → ซื้อซ้ำ (≥2 วันที่ชาร์จ) → แลกรางวัล\nCoverage: สมาชิกที่ยินยอมเก็บข้อมูล 100% · ใบเสร็จผ่านตรวจ',
+    'กระป๋อง: เป้า vs จริง':'นิยาม: กระป๋องที่ผ่านตรวจ (ใบเสร็จ/รหัส/ร้านสแกน) เทียบเป้ารายสัปดาห์\nCoverage: ร้านโชห่วย 76% (ร้านที่ผูก QR) · MT 94%',
+    'Retention':'นิยาม: สัดส่วนผู้ซื้อใน 30 วันที่ซื้อซ้ำ\nCoverage: สมาชิกทุกคนที่ชาร์จอย่างน้อย 1 ครั้ง',
+    'Purchase Cycle':'นิยาม: ซื้อซ้ำภายใน 7 วัน / ไม่ซื้อเกิน 21 วัน = เสี่ยงหลุด\nCoverage: ผู้ซื้อ ≥ 2 ครั้ง',
+    'ช่องทาง':'นิยาม: กระป๋องที่ผ่านตรวจแยกตามช่องทางที่ส่ง\nCoverage: ใบเสร็จร้านที่ OCR อ่านชื่อร้านได้ 91%',
+    'Weekly Activity':'นิยาม: กระป๋องที่ผ่านตรวจรายวันในสัปดาห์นี้ เทียบสัปดาห์ก่อน',
+    'Leaderboard':'นิยาม: แต้มสะสมสมาชิก / กระป๋องที่ร้านสแกนต่อสัปดาห์ · นับเฉพาะยอดที่ยืนยันแล้ว'};
+  function defs(){root.querySelectorAll('.ld-h b').forEach(b=>{const k=Object.keys(DEFS).find(x=>b.textContent.trim()===x);if(k&&!b.nextElementSibling?.classList.contains('ld-i')){const i=document.createElement('span');i.className='ld-i';i.tabIndex=0;i.setAttribute('role','img');i.setAttribute('aria-label','นิยาม '+k);i.setAttribute('data-tip',DEFS[k]);i.textContent='ⓘ';b.after(i)}})}
+  function copilot(q){q=(q||'').trim();if(!q)return 'พิมพ์คำถาม หรือแตะตัวอย่างด้านบน';
+    if(opts.copilot){const r=opts.copilot(q);if(r)return r}
+    const prov=(q.match(/จังหวัด\s*([ก-๙]+)/)||[])[1];
+    if(prov&&SMALL.some(x=>prov.includes(x)))return 'กลุ่มนี้เล็กเกินไป (น้อยกว่า 20 คน) จึงไม่แสดงตัวเลขเพื่อป้องกันการระบุตัวบุคคล · ลองถามระดับภาค หรือรวมหลายจังหวัด\nนิยาม: จำนวนสมาชิกที่ชาร์จในจังหวัด · เกณฑ์ขั้นต่ำ 20 คน';
+    if(prov)return `จังหวัด${prov}: ประมาณ ${fmt(900+prov.length*120)} กระป๋องใน 7 วัน (ตัวอย่างข้อมูล)\nนิยาม: กระป๋องที่ผ่านตรวจ ผู้ใช้อยู่ในจังหวัดตามโปรไฟล์ · Coverage: 78% ของสมาชิกที่ตอบจังหวัด`;
+    if(/ซื้อซ้ำ|repeat/i.test(q))return `Repeat rate ${(D.fun.rep/D.fun.act*100).toFixed(1)}% (${fmt(D.fun.rep)} จาก ${fmt(D.fun.act)} คนที่ซื้อใน 30 วัน)\nนิยาม: ผู้ซื้อ ≥ 2 วันที่ชาร์จ ÷ ผู้ซื้อใน 30 วัน · Coverage: สมาชิกทั้งหมดที่ยินยอม`;
+    if(/190|310/.test(q))return `190 ml ${Math.round(S190())}% · 310 ml ${100-Math.round(S190())}% ของกระป๋องที่ผ่านตรวจ\nนิยาม: กระป๋องที่ผ่านตรวจแยก SKU · เป้าคือดันคนดื่ม 190 ไป 310 ที่ 7-Eleven`;
+    if(/ต้นทุน|governor|cost/i.test(q))return `Cost-per-Can ${D.cpc.toFixed(2)} ฿ (เป้า 1.0–1.3 · เตือน 1.5 · พักโบนัส 1.8)\nนิยาม: ต้นทุนรางวัลที่ออกจริง ÷ กระป๋องที่ผ่านตรวจ`;
+    if(/ช่องทาง/.test(q)){const o=CK.map(k=>[k,chTot(k)]).sort((a,b)=>b[1]-a[1]);const t=o.reduce((a,b)=>a+b[1],0);return 'ช่องทางมาแรง: '+o.slice(0,3).map(([k,v])=>`${k} ${(v/t*100).toFixed(0)}%`).join(' · ')+'\nนิยาม: สัดส่วนกระป๋องที่ผ่านตรวจแยกช่องทาง'}
+    if(/rfm|กลุ่ม/i.test(q))return 'ดูรายละเอียดกลุ่ม RFM ที่หน้า B8 (11 กลุ่ม · snapshot รายสัปดาห์) · ที่นี่สรุป: Champions + Loyal ≈ 36% ของผู้ซื้อ, At Risk ≈ 14%';
+    return 'ยังไม่มีนิยามของคำถามนี้ใน semantic layer จึงไม่ตอบเป็นตัวเลข · ลองถามเรื่อง Repeat rate, ช่องทาง, 190 vs 310, ต้นทุนต่อกระป๋อง หรือจังหวัด'}
   function ticker(){R('tk').innerHTML=D.tk.slice(0,6).map(t=>`<span>${t}</span>`).join('')||'<span>รอข้อมูลสด…</span>'}
   function alerts(){const a=opts.alerts?opts.alerts():[];R('alerts').innerHTML=a.map(x=>`<button class="${x.cls||''}" data-a="${x.a}" data-v="${esc(x.v||'')}">${esc(x.t)}</button>`).join('');R('alerts').hidden=!a.length}
   /* count-up */
@@ -127,25 +160,28 @@ window.VoltDash=(function(){
   const SHOPS=['ร้านเจ๊หน่อย','ร้านลุงชัย','ร้านเฮียกิม','ร้านยายศรี','ร้านพี่ต่าย'],FLV=['Tropical','Blueberry','Forest Fruit'];
   function ingest(ev){
     ev=ev||{};
-    if(ev.newMember){D.fun.mem++;D.tk.unshift(`สมาชิกใหม่ <b>${esc(ev.who||'')}</b> · สมัครผ่าน LINE OA · โบนัส +${ev.pts||20} Volt`);D.last=Date.now();update(false);return}
-    if(ev.redeem){D.ptsUse+=ev.redeem;D.budget+=ev.redeem*4e-6;if(ev.first)D.fun.red++;D.tk.unshift(`${esc(ev.who||'สมาชิก')} แลก <b>${esc(ev.name||'รางวัล')}</b> −${fmt(ev.redeem)} Volt`);D.last=Date.now();update(false);return}
+    if(ev.newMember){D.fun.mem++;D.tk.unshift(`สมาชิกใหม่ <b>${esc(ev.who||'')}</b> · สมัครผ่าน LINE OA · โบนัส +${ev.pts||20} แต้ม`);D.last=Date.now();update(false);return}
+    if(ev.cpc!=null){D.cpc=ev.cpc;update(false);return}
+    if(ev.redeem){D.ptsUse+=ev.redeem;D.budget+=ev.redeem*4e-6;if(ev.first)D.fun.red++;D.tk.unshift(`${esc(ev.who||'สมาชิก')} แลก <b>${esc(ev.name||'รางวัล')}</b> −${fmt(ev.redeem)} แต้ม`);D.last=Date.now();update(false);return}
     const ch=CK.includes(ev.ch)?ev.ch:pick(),cans=ev.cans||1+Math.floor(rnd()*5),pts=ev.pts!=null?ev.pts:cans*(ch==='โชห่วย'?1:2);
-    [D.wk,D.dy,D.mo].forEach(s=>s.act[s.cur][ch]+=cans);D.ptsOut+=pts;D.budget+=pts*1.5e-6;D.lift+=cans*.0006;D.wa[today]+=cans;
+    [D.wk,D.dy,D.mo].forEach(s=>s.act[s.cur][ch]+=cans);D.ptsOut+=pts;D.budget+=pts*1.5e-6;D.cpc=Math.max(.95,Math.min(1.9,D.cpc+(rnd()-.5)*.012));D.mix190+=(ch==='โชห่วย'?.08:-.05)*cans*.2;D.mix190=Math.max(30,Math.min(75,D.mix190));D.lift+=cans*.0006;D.wa[today]+=cans;
     if(rnd()<.7)D.ret.d[13]++;else D.ret.n[13]++;if(rnd()<.35)D.fun.mem++;if(rnd()<.45)D.fun.act++;if(rnd()<.32)D.fun.rep++;
     if(D.riskFix){D.risk=Math.max(9,D.risk-.35);D.riskFix--}else D.risk=Math.min(16,D.risk+(rnd()-.45)*.08);
     const me=D.mem.find(m=>m.me);if(ev.me!=null){me.v=ev.me;if(ev.tier)me.t=ev.tier}else{const m=D.mem[Math.floor(rnd()*D.mem.length)];if(!m.me)m.v+=pts}
     const sh=ch==='โชห่วย'?(ev.shop||SHOPS[Math.floor(rnd()*SHOPS.length)]):null;if(sh){const s=D.shop.find(x=>x.n===sh);if(s)s.v+=cans}
     const who=ev.who||['คุณป**','คุณน**','คุณฟ**','คุณต**','คุณอ**'][Math.floor(rnd()*5)];
-    D.tk.unshift(`${esc(who)} · ${esc(sh||ch)} · ${ev.desc?esc(ev.desc):`${rnd()<.5?'190':'310'} ml ${FLV[Math.floor(rnd()*3)]} × ${cans}`} <b>+${pts} Volt</b>`);D.tk=D.tk.slice(0,12);D.lastCh=ch;D.last=Date.now();update(true);
-    if(window.VoltFX&&root.isConnected&&!document.hidden)VoltFX.charge(R('tk').firstElementChild||R('tk'),R('camp'),Math.min(pts,6),`+${pts} Volt`);
+    D.tk.unshift(`${esc(who)} · ${esc(sh||ch)} · ${ev.desc?esc(ev.desc):`${rnd()<.5?'190':'310'} ml ${FLV[Math.floor(rnd()*3)]} × ${cans}`} <b>+${pts} แต้ม</b>`);D.tk=D.tk.slice(0,12);D.lastCh=ch;D.last=Date.now();update(true);
+    if(window.VoltFX&&root.isConnected&&!document.hidden)VoltFX.charge(R('tk').firstElementChild||R('tk'),campEl(),Math.min(pts,6),`+${pts} แต้ม`);
   }
   function toast(t){let el=root.querySelector('.ld-toast');if(!el){el=document.createElement('div');el.className='ld-toast';el.setAttribute('role','status');root.appendChild(el)}el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2500)}
-  function act(v){const [k,x]=v.split(':');
+  function act(v){const k=v.split(':')[0],x=v.split(':').slice(1).join(':');
     if(k==='f'){D.filter=x;build();update()}else if(k==='tab'){D.tab=x;build();update()}else if(k==='bd'){D.board=x;root.querySelectorAll('[data-ld^="bd:"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ld==='bd:'+x));board()}
+    else if(k==='ask'){const q=v.slice(4);const i=R('cin');if(i)i.value=q;R('cans').textContent=copilot(q)}
     else if(k==='stg'){D.fsel=+x;stack();update()}else if(k==='pause'){D.paused=!D.paused;build();update()}
     else if(k==='noti'){if(!D.riskFix){D.riskFix=12;toast(`ส่ง AI Noti ถึง ${fmt(D.fun.act*D.risk/100)} คนแล้ว · Risk จะลดลงในไม่กี่นาที`);cycle();if(opts.onNoti)opts.onNoti()}}}
   function init(o){if(root)return api;opts=o||{};root=document.createElement('div');root.className='ld';build();update();
     root.addEventListener('click',e=>{const b=e.target.closest('[data-ld]');if(b){e.stopPropagation();act(b.dataset.ld)}});
+    root.addEventListener('submit',e=>{e.preventDefault();if(e.target.matches('[data-r="cform"]')){const inp=R('cin');R('cans').textContent=copilot(inp.value)}});
     const tip=()=>root.querySelector('.ld-tip');
     root.addEventListener('mousemove',e=>{const t=e.target.closest('[data-tip]'),tp=tip();if(!t){tp.hidden=true;return}const rr=root.getBoundingClientRect(),sc=rr.width/root.offsetWidth||1;tp.textContent=t.getAttribute('data-tip');tp.hidden=false;let x=(e.clientX-rr.left)/sc+14,y=(e.clientY-rr.top)/sc+14;if(x>root.offsetWidth-250)x-=270;tp.style.left=x+'px';tp.style.top=y+'px'});
     root.addEventListener('mouseleave',()=>tip().hidden=true);

@@ -1,6 +1,6 @@
 /* Dark glass theme for back office and shop screens (matches the Live Dashboard) */
 :is(.bo-ui,.bo,.dk){--g1:rgba(255,255,255,.07);--g2:rgba(255,255,255,.025);--gb:rgba(255,255,255,.09);--gt:#EEF1FF;--gm:#9AA5DD}
-.bo-ui,.dt>.bo{background:radial-gradient(50% 40% at 85% 0%,rgba(47,107,255,.2),transparent 70%),radial-gradient(40% 40% at 0% 100%,rgba(138,77,255,.14),transparent 70%),#070B2A!important;color:var(--gt)!important}
+.bo-ui,.dt>.bo{background:radial-gradient(50% 40% at 85% 0%,rgba(47,107,255,.2),transparent 70%),radial-gradient(40% 40% at 0% 100%,rgba(123,75,216,.14),transparent 70%),#070B2A!important;color:var(--gt)!important}
 :is(.bo-ui,.dt>.bo) .side{background:rgba(255,255,255,.03);border-right:1px solid var(--gb)}
 :is(.bo-ui,.bo,.dk) :is(.kpi,.pn,.tbl,.aibox){background:linear-gradient(180deg,var(--g1),var(--g2));border:1px solid var(--gb);color:var(--gt);box-shadow:0 14px 30px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.06)}
 :is(.bo-ui,.bo,.dk) :is(.kpi small,.note,.leg,.xl,.empty,.kv span:nth-child(odd),.lmut){color:var(--gm)!important}
@@ -9,10 +9,10 @@
 :is(.bo-ui,.bo,.dk) .tr{border-top-color:rgba(255,255,255,.06)}
 :is(.bo-ui,.bo,.dk) .tr.th{background:rgba(0,0,0,.22);color:var(--gm)}
 :is(.bo-ui,.bo,.dk) button.tr:hover{background:rgba(255,255,255,.05)}
-:is(.bo-ui,.bo,.dk) .tr.sel{background:rgba(255,225,26,.08);box-shadow:inset 3px 0 0 #FFE11A}
+:is(.bo-ui,.bo,.dk) .tr.sel{background:rgba(242,194,0,.08);box-shadow:inset 3px 0 0 #F2C200}
 :is(.bo-ui,.bo,.dk) .pill.n{background:rgba(255,255,255,.1);color:#EEF1FF}
 :is(.bo-ui,.bo,.dk) .pill.g,:is(.bo-ui,.bo,.dk) .al.g{background:rgba(75,227,154,.14);color:#4BE39A}
-:is(.bo-ui,.bo,.dk) .pill.a,:is(.bo-ui,.bo,.dk) .al.a{background:rgba(255,225,26,.12);color:#FFE76A}
+:is(.bo-ui,.bo,.dk) .pill.a,:is(.bo-ui,.bo,.dk) .al.a{background:rgba(242,194,0,.12);color:#FFE76A}
 :is(.bo-ui,.bo,.dk) .pill.r,:is(.bo-ui,.bo,.dk) .al.r{background:rgba(255,122,127,.14);color:#FF9DA0}
 :is(.bo-ui,.bo,.dk) .lbtn.n,.dk .btn.bn{background:#2F6BFF;color:#fff}
 :is(.bo-ui,.bo,.dk) .lbtn.o{background:transparent;border-color:#EEF1FF;color:#EEF1FF}
@@ -21,16 +21,16 @@
 :is(.bo-ui,.bo,.dk) .in option{color:#111}
 :is(.bo-ui,.bo,.dk) .meter span{background:rgba(255,255,255,.1)}
 :is(.bo-ui,.bo,.dk) .meter span u{background:#fff}
-:is(.bo-ui,.bo,.dk) .aibox{border-color:rgba(25,195,240,.6)}
-:is(.bo-ui,.bo,.dk) .aibox h4{color:#19C3F0}
-:is(.bo-ui,.bo,.dk) .hb i{background:linear-gradient(90deg,#2F6BFF,#19C3F0)!important;border-radius:0 6px 6px 0}
+:is(.bo-ui,.bo,.dk) .aibox{border-color:rgba(46,168,230,.6)}
+:is(.bo-ui,.bo,.dk) .aibox h4{color:#2EA8E6}
+:is(.bo-ui,.bo,.dk) .hb i{background:linear-gradient(90deg,#2F6BFF,#2EA8E6)!important;border-radius:0 6px 6px 0}
 :is(.bo-ui,.bo,.dk) .ok{color:#4BE39A}:is(.bo-ui,.bo,.dk) .warn{color:#FFC14D}:is(.bo-ui,.bo,.dk) .bad{color:#FF7A7F}
 :is(.bo-ui,.bo,.dk) .tog{background:#3A4170}
 :is(.bo-ui,.bo,.dk) .tog[aria-pressed=true]{background:#17A866}
 :is(.bo-ui,.bo,.dk) .map{background:#16205E}
 :is(.bo-ui,.bo,.dk) .map::before{opacity:.12}
 :is(.bo-ui,.bo,.dk) .filt span{background:rgba(255,255,255,.06);border-color:var(--gb);color:var(--gt)}
-:is(.bo-ui,.bo,.dk) .filt span.on{background:#FFE11A;color:#0B1247;border-color:#FFE11A}
+:is(.bo-ui,.bo,.dk) .filt span.on{background:#F2C200;color:#0E1640;border-color:#F2C200}
 .dk .step button{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff}
 .dk .shead{background:rgba(255,255,255,.04);border-bottom:1px solid var(--gb)}
 .dk .cam{background:#0E1440}
