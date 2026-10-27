@@ -8,6 +8,9 @@ titles = {
   '03': 'ยืนยันการซื้อ 4 ทาง',
   '04': 'Mockup หน้าจอ',
   '05': 'System Architecture',
+  '06': 'กติกาแต้ม + งบรางวัล + Cost-per-Can Governor',
+  '07': 'AI 3 ระดับ + สิ่งที่ห้ามทำ',
+  '08': 'Data model · API · Events',
 }
 
 def scope(css, cls):

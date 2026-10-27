@@ -8,7 +8,10 @@
 | `02-system-flow` | Flow 10 ขั้นตามไวท์บอร์ด (ซ้าย → ขวา) |
 | `03-proof-of-purchase` | ยืนยันการซื้อ 4 ทาง: Shop QR Scan (โชห่วย), ใบเสร็จ, รหัสใต้ห่วง, ออนไลน์ |
 | `04-mockup` | หน้าจอ: บัตรสมาชิก QR · ร้านสแกน · หน้าแลกรางวัล |
-| `05-architecture` | System architecture แบบ tier + integrations + hosting |
+| `05-architecture` | System architecture แบบ tier + integrations + hosting (อัปเดตตาม Handoff v1.1) |
+| `06-points-budget` | กติกาแต้ม · งบ 5 ถัง · Cost-per-Can Governor |
+| `07-ai-governance` | AI 3 ระดับ · สิ่งที่ห้ามทำ · Kill switch |
+| `08-data-api-events` | Data model · API หลัก · Events |
 
 Render ใหม่: `node render.mjs` หรือ `node render.mjs 03` (เลือกบางไฟล์)
 

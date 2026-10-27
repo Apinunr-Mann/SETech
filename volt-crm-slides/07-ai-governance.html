@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
+<style>
+  .wrap { display: grid; grid-template-columns: 1.55fr 1fr; gap: 22px; height: 100%; padding: 4px 4px 6px; }
+  .lv { display: grid; grid-template-rows: repeat(3, 1fr) auto; gap: 12px; }
+  .l { display: grid; grid-template-columns: 150px 1fr 1fr; gap: 0; border-radius: 18px; overflow: hidden; border: 2px solid var(--line); background: var(--paper); }
+  .l .h { background: var(--navy); color: #fff; padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; }
+  .l .h b { font: italic 600 19px/1.15 'Prompt'; } .l .h span { font-size: 13px; opacity: .8; margin-top: 3px; }
+  .l.acc .h { background: var(--accent); color: var(--navy); }
+  .l .c { padding: 10px 16px; font-size: 15px; line-height: 1.4; display: flex; flex-direction: column; justify-content: center; }
+  .l .c small { color: var(--muted); font-size: 12.5px; font-weight: 600; letter-spacing: .03em; }
+  .l .c + .c { border-left: 2px dashed var(--line); }
+  .bar { display: flex; gap: 14px; align-items: center; background: var(--lav); border-radius: 16px; padding: 10px 16px; font-size: 14.5px; color: var(--navy); }
+  .bar b { font: italic 600 17px 'Prompt'; }
+  .side { display: flex; flex-direction: column; gap: 12px; }
+  .no { background: var(--navy); color: #fff; border-radius: 22px; padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 9px; }
+  .no h4 { font: italic 600 20px 'Prompt'; color: var(--accent); }
+  .no div { display: flex; gap: 9px; font-size: 15px; line-height: 1.35; }
+  .no div:before { content: '✕'; color: var(--accent); font-weight: 700; flex: none; }
+  .pn { background: var(--paper); border: 3px solid var(--navy); border-radius: 22px; padding: 14px 18px; display: flex; flex-direction: column; gap: 7px; }
+  .pn h4 { font: italic 600 19px 'Prompt'; color: var(--navy); }
+  .pn div { font-size: 14.5px; line-height: 1.4; border-left: 4px solid var(--accent); padding-left: 10px; }
+</style></head>
+<body><div class="wrap">
+  <div class="lv">
+    <div class="l"><div class="h"><b>ระดับ 1 · Volt Buddy</b><span>ตอบคำถามผ่านแชต</span></div><div class="c"><small>ทำได้</small>ตอบกติกา แต้ม รางวัล ร้านใกล้ตัว ขั้นต่อไป พร้อมเหตุผลที่แนะนำ</div><div class="c"><small>ขอบเขต</small>ใช้ข้อมูลที่ลูกค้ายินยอม ไม่แน่ใจส่งต่อทีมงาน เปิดเคสให้ทันที</div></div>
+    <div class="l acc"><div class="h"><b>ระดับ 2 · AI ร่าง คนอนุมัติ</b><span>ฝั่งทีมงาน</span></div><div class="c"><small>ทำได้</small>ร่างข้อความแคมเปญตาม RFM เสนอปรับราคาแต้ม/ตัวคูณจาก Pacing</div><div class="c"><small>ควบคุม</small>คนกดอนุมัติทุกครั้ง · ส่งได้ ≤ 2 ครั้ง/สัปดาห์/คน · เว้น 22:00–08:00 · holdout 10%</div></div>
+    <div class="l"><div class="h"><b>ระดับ 3 · Next Best Action</b><span>แนะนำรายคน</span></div><div class="c"><small>ทำได้</small>แนะนำรางวัล (คะแนน 0.5 สนใจ · 0.3 พฤติกรรม · 0.2 นิยม) และขั้นต่อไปของลูกค้า</div><div class="c"><small>ขอบเขต</small>อ่านข้อมูลเท่านั้น ไม่แก้ระบบ · ปิดการแนะนำเฉพาะตัวได้ → แสดงยอดนิยมรวม</div></div>
+    <div class="bar"><b>Kill switch</b> ปิด AI ทั้งหมดได้จาก Back Office · ระบบกลับไปใช้ข้อความสำเร็จรูปและยอดนิยมรวม · ทุกการทำงานของ AI ลง Audit Log</div>
+  </div>
+  <div class="side">
+    <div class="no"><h4>AI ห้ามทำ (ล็อกที่ระบบ)</h4>
+      <div>ให้หรือหักแต้มเอง</div><div>เปลี่ยนราคา/ตัวคูณโดยไม่มีคนอนุมัติ</div><div>เลือกผู้ชนะ Lucky Draw</div><div>อนุมัติ/ปฏิเสธใบเสร็จโดยลำพัง</div><div>ส่งข้อความหาคนที่ไม่ยินยอม</div><div>เปิดเผยข้อมูลส่วนบุคคล</div></div>
+    <div class="pn"><h4>ความโปร่งใส</h4><div>ใบเสร็จที่ตรวจพบว่า AI สร้าง ส่งฝ่ายตรวจสอบ ไม่อนุมัติเอง</div><div>Draw: ใบอนุญาต → อนุมัติ 2 คน → snapshot → seed ตรวจสอบได้</div></div>
+  </div>
+</div></body></html>
