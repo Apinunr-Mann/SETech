@@ -460,6 +460,35 @@ input[type=range]{accent-color:#F2C200}
 .consent a{color:#F2C200}
 .wel{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
 .wel .big{font:italic 900 56px/1 'Bai Jamjuree',sans-serif;color:#F2C200;text-shadow:0 0 30px rgba(242,194,0,.6)}
+
+/* Rich Menu v3 — Charge Your Experience: electric glass tiles, flavor accents, bolt watermark */
+.rm{--a:#2EA8E6;gap:.3em;padding:.3em;background:radial-gradient(120% 90% at 0 0,rgba(46,168,230,.28),transparent 55%),radial-gradient(100% 90% at 100% 100%,rgba(155,92,255,.26),transparent 55%),#03061F}
+.rm>*{--a:#2EA8E6;border-radius:.9em}
+.rm>*:not([class*="im-"]){background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32'%3E%3Cpath d='M14 0 2 18h8l-2 14L22 12h-8z' fill='white' fill-opacity='.09'/%3E%3C/svg%3E") no-repeat right -.3em bottom -.5em/3.6em,radial-gradient(90% 80% at 15% 0,color-mix(in srgb,var(--a) 34%,transparent),transparent 70%),linear-gradient(165deg,#18268F 0%,#0A1038 80%);}
+.rm>*{transition:transform .15s,box-shadow .2s}
+.rm>*::after{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--a) 55%,transparent),inset 0 1px 0 rgba(255,255,255,.18)}
+.rm>*:hover{transform:translateY(-1px);box-shadow:0 0 1.6em color-mix(in srgb,var(--a) 55%,transparent)}
+.rm>*:active{transform:scale(.97)}
+.rm>*:nth-child(3){--a:#F2C200}.rm>*:nth-child(4){--a:#9B5CFF}.rm>*:nth-child(5){--a:#2EA8E6}
+.rm>* svg{stroke:var(--a);padding:.38em;box-sizing:content-box;width:1.6em;height:1.6em;top:.65em;left:.65em;border-radius:.7em;background:rgba(3,6,31,.55);box-shadow:0 0 1em color-mix(in srgb,var(--a) 60%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--a) 50%,transparent)}
+.rm>* b{text-shadow:0 1px 8px rgba(0,0,0,.5);letter-spacing:.01em}
+.rm>* span{color:#D5DBFF}
+.rm .big{--a:#F2C200;background-color:#0E1640}
+.rm .big::before,.rm .photo::before,.rm .hero::before{background:linear-gradient(to top,rgba(4,7,36,.96) 6%,rgba(4,7,36,.45) 46%,rgba(4,7,36,0) 78%),linear-gradient(115deg,rgba(46,168,230,.28),transparent 45%,rgba(155,92,255,.32))}
+.rm .big::after{box-shadow:inset 0 0 0 1.5px #F2C200,inset 0 0 1.6em rgba(242,194,0,.35)}
+.rm .big b{font-size:2.15em;color:#F2C200;text-shadow:0 0 .6em rgba(242,194,0,.65),0 2px 0 #0E1640}
+.rm .big.im-band{--a:#9B5CFF}.rm .big.im-band::after{box-shadow:inset 0 0 0 1.5px #C9A6FF,inset 0 0 1.6em rgba(155,92,255,.45)}
+.rm .big.im-band b{color:#fff;text-shadow:0 0 .7em rgba(155,92,255,.9),0 2px 0 #0E1640}
+.rm .tag{background:linear-gradient(90deg,#F2C200,#FFD94D);box-shadow:0 0 1em rgba(242,194,0,.7);padding:.15em .75em .15em .55em;clip-path:polygon(0 0,100% 0,92% 100%,0 100%)}
+.rm.guest .hero{background-color:#0E1640;box-shadow:none}
+.rm.guest .hero::before{background:linear-gradient(90deg,rgba(4,7,36,.9) 0,rgba(4,7,36,.55) 45%,rgba(4,7,36,0) 75%),linear-gradient(to top,rgba(4,7,36,.7),transparent 50%)}
+.rm.guest .hero::after{box-shadow:inset 0 0 0 1.5px #F2C200,inset 0 0 2em rgba(242,194,0,.3)}
+.rm.guest .hero .cta{background:linear-gradient(90deg,#F2C200,#FFD94D);box-shadow:0 0 1.6em rgba(242,194,0,.7);animation:rmPulse 2.2s ease-in-out infinite}
+.rm.guest>*:nth-child(2){--a:#2EA8E6}.rm.guest>*:nth-child(3){--a:#F2C200}.rm.guest>*:nth-child(4){--a:#9B5CFF}
+.rm.guest>*:not(.hero) svg{top:.7em}
+@keyframes rmPulse{50%{box-shadow:0 0 2.4em rgba(242,194,0,.95)}}
+@media (prefers-reduced-motion:reduce){.rm.guest .hero .cta{animation:none}.rm>*{transition:none}}
+.rmbar{background:linear-gradient(90deg,#0E1640,#1E33B8 50%,#0E1640);color:#F2C200;font-weight:600;letter-spacing:.06em;border-top:1px solid rgba(242,194,0,.4)}
 .rm [class*="im-"]{background-size:cover;background-position:center}
 .kvart{height:112px;position:relative;background-size:cover;background-position:62% 38%}
 .kvart em{position:absolute;left:12px;top:10px;font:italic 900 22px/1 'Bai Jamjuree',sans-serif;color:#F2C200;text-shadow:0 2px 10px rgba(0,0,0,.7)}
