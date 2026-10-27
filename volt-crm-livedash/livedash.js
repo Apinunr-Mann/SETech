@@ -37,7 +37,7 @@ window.VoltDash=(function(){
       <linearGradient id="ldgR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8A4DFF"/><stop offset="1" stop-color="#FF7A7F"/></linearGradient>
       <linearGradient id="ldgA1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A4DFF" stop-opacity=".55"/><stop offset="1" stop-color="#8A4DFF" stop-opacity="0"/></linearGradient>
       <linearGradient id="ldgA2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#19C3F0" stop-opacity=".5"/><stop offset="1" stop-color="#19C3F0" stop-opacity="0"/></linearGradient></defs></svg>
-    <div class="ld-top"><h3>Live Dashboard</h3><span class="ld-live ${D.paused?'off':''}" data-r="live"><i></i>${D.paused?'หยุดชั่วคราว':'LIVE'}</span><span class="ld-clock" data-r="clock"></span><span class="ld-sp"></span>
+    <div class="ld-top"><h3>Volt Grid <small style="font:600 11px 'Prompt',sans-serif;color:#9AA5DD;letter-spacing:.06em;font-style:normal">CHARGE YOUR EXPERIENCE</small></h3><span class="ld-live ${D.paused?'off':''}" data-r="live"><i></i>${D.paused?'หยุดชั่วคราว':'LIVE'}</span><span class="ld-clock" data-r="clock"></span><span class="ld-camp" data-tip="Campaign Charge: ยอดขายเพิ่มเทียบ baseline ก่อนแคมเปญ · เป้า +15%">Campaign Charge <span class="batt" data-r="camp" style="--p:0;width:150px"><i></i><b></b></span></span><span class="ld-sp"></span>
       <div class="ld-chips" role="group" aria-label="กรองช่องทาง"><button class="ld-chip" data-ld="f:all" aria-pressed="${D.filter==='all'}">ทุกช่องทาง</button>${CH.map(([k,c])=>`<button class="ld-chip" data-ld="f:${k}" aria-pressed="${D.filter===k}"><i style="background:${c}"></i>${k}</button>`).join('')}</div>
       <button class="ld-btn ${D.paused?'y':''}" data-ld="pause">${D.paused?'▶ เล่นต่อ':'❚❚ หยุด'}</button></div>
     <div class="ld-alerts" data-r="alerts"></div>
@@ -45,11 +45,11 @@ window.VoltDash=(function(){
       <section class="ld-c ld-funnel"><div class="ld-h"><b>Conversion</b><span>Member Funnel · คลิกเพื่อดูรายละเอียด</span></div>
         <div class="ld-fwrap"><div class="ld-stack" data-r="stack"></div><div class="ld-pills" data-r="pills"></div></div>
         <div class="ld-fdet" data-r="fdet"></div>
-        <div class="ld-stats"><div><span>กระป๋องสะสม</span><b data-n="cans" data-f="k">0</b><small data-r="today"></small></div><div><span>แต้มออก</span><b data-n="pts" data-f="k">0</b><small data-r="burn"></small></div><div><span>งบรางวัลใช้</span><b data-n="bud" data-f="p1">0</b><small>แผน 29%</small></div></div></section>
+        <div class="ld-stats"><div><span>กระป๋องสะสม</span><b data-n="cans" data-f="k">0</b><small data-r="today"></small></div><div><span>Volt ออก</span><b data-n="pts" data-f="k">0</b><small data-r="burn"></small></div><div><span>งบรางวัลใช้</span><b data-n="bud" data-f="p1">0</b><small>แผน 29%</small></div></div></section>
       <section class="ld-c ld-trend"><div class="ld-th"><div><div class="ld-h"><b>กระป๋อง: เป้า vs จริง</b></div><div class="ld-tabs" role="group" aria-label="ช่วงเวลา">${['dy','wk','mo'].map(t=>`<button data-ld="tab:${t}" aria-pressed="${D.tab===t}">${D[t].name}</button>`).join('')}</div></div>
         <div class="ld-kv"><div><span>Target</span><b data-n="tg" data-f="i" style="color:#9AA5DD">0</b></div><div><span>Actual</span><b data-n="ac" data-f="i">0</b></div><div><span>KPI</span><b data-n="kpi" data-f="p0" style="color:#FFE11A">0</b></div></div></div>
         <div data-r="trend" class="grow"></div></section>
-      <section class="ld-c ld-ret"><div class="ld-h"><b>Retention</b><span>ซื้อซ้ำ / ซื้อใน 30 วัน</span></div><div class="ld-dn" data-r="retd"></div><div class="ld-leg"><span><i style="background:#8A4DFF"></i>ซื้อซ้ำ</span><span><i style="background:#19C3F0"></i>ลูกค้าใหม่</span></div><div data-r="wave"></div><span class="ld-h"><span>14 วันล่าสุด · คนที่ส่งแต้มต่อวัน</span></span></section>
+      <section class="ld-c ld-ret"><div class="ld-h"><b>Retention</b><span>ซื้อซ้ำ / ซื้อใน 30 วัน</span></div><div class="ld-dn" data-r="retd"></div><div class="ld-leg"><span><i style="background:#8A4DFF"></i>ซื้อซ้ำ</span><span><i style="background:#19C3F0"></i>ลูกค้าใหม่</span></div><div data-r="wave"></div><span class="ld-h"><span>14 วันล่าสุด · คนที่ส่ง Volt ต่อวัน</span></span></section>
       <section class="ld-c ld-cyc"><div class="ld-h"><b>Purchase Cycle</b><span>รอบการซื้อซ้ำ</span></div><div class="ld-cycw" data-r="cyc"></div></section>
       <section class="ld-c ld-pipe"><div class="ld-pw"><div><div class="ld-h"><b>ช่องทาง</b><span>คลิกแท่งเพื่อกรอง</span></div><div data-r="pipe" class="grow"></div></div><div><div class="ld-h"><b>Weekly Activity</b><span data-r="wapct"></span></div><div data-r="wa"></div></div></div></section>
       <section class="ld-c ld-board"><div class="ld-h"><b>Leaderboard</b><div class="ld-tabs"><button data-ld="bd:mem" aria-pressed="${D.board==='mem'}">สมาชิก</button><button data-ld="bd:shop" aria-pressed="${D.board==='shop'}">ร้านโชห่วย</button></div></div><div data-r="board" style="display:flex;flex-direction:column;gap:6px"></div></section>
@@ -59,9 +59,9 @@ window.VoltDash=(function(){
     stack();setTimeout(()=>root.querySelectorAll('.grow').forEach(e=>e.classList.remove('grow')),1400);
   }
   const R=k=>root.querySelector(`[data-r="${k}"]`);
-  const STG=[['สมาชิก','สมัครผ่าน LINE OA','mem','linear-gradient(90deg,#19C3F0,#2F6BFF)'],['ซื้อใน 30 วัน','ส่งแต้มอย่างน้อย 1 ครั้ง','act','linear-gradient(90deg,#2F6BFF,#6A5BFF)'],['ซื้อซ้ำ','2 ครั้งขึ้นไป','rep','linear-gradient(90deg,#6A4DFF,#B04DFF)'],['แลกรางวัล','ใช้แต้มแล้ว','red','linear-gradient(90deg,#FFB800,#FFE11A)']];
+  const STG=[['สมาชิก','สมัครผ่าน LINE OA','mem','linear-gradient(90deg,#19C3F0,#2F6BFF)'],['ซื้อใน 30 วัน','ส่ง Volt อย่างน้อย 1 ครั้ง','act','linear-gradient(90deg,#2F6BFF,#6A5BFF)'],['ซื้อซ้ำ','2 ครั้งขึ้นไป','rep','linear-gradient(90deg,#6A4DFF,#B04DFF)'],['แลกรางวัล','ใช้ Volt แล้ว','red','linear-gradient(90deg,#FFB800,#FFE11A)']];
   function stack(){
-    R('stack').innerHTML=STG.map((s,i)=>`<button class="ld-stg ${D.fsel===i?'on':''}" data-ld="stg:${i}" style="width:${100-i*15}%;background:${s[3]};${i===3?'color:#0B1247;text-shadow:none':''}" data-r="stg${i}" aria-label="${s[0]}">0%</button>`).join('')+`<div class="ld-bowl" data-tip="ยอดขายกระป๋องเทียบ baseline ก่อนแคมเปญ · เป้า +10–15%">ยอดขาย +<span data-n="lift" data-f="p1n">0</span>%</div>`;
+    R('stack').innerHTML=STG.map((s,i)=>`<button class="ld-stg ${D.fsel===i?'on':''}" data-ld="stg:${i}" style="width:${100-i*15}%;background:${s[3]};${i===3?'color:#0B1247;text-shadow:none':''}" data-r="stg${i}" aria-label="${s[0]}">0%</button>`).join('')+`<div class="ld-bowl" data-tip="ยอดขายกระป๋องเทียบ baseline ก่อนแคมเปญ · เป้า +10–15%">⚡ ชาร์จยอดขาย +<span data-n="lift" data-f="p1n">0</span>%</div>`;
     R('pills').innerHTML=STG.map((s,i)=>`<button class="ld-pill ${D.fsel===i?'on':''}" data-ld="stg:${i}"><span><b>${s[0]}</b><small>${s[1]}</small></span><em><span data-n="f${i}" data-f="i">0</span><small data-r="k${i}"></small></em></button>`).join('');
   }
   function update(flash){
@@ -70,6 +70,7 @@ window.VoltDash=(function(){
     const fs=D.fsel;R('fdet').textContent=`${STG[fs][0]}: ${fmt(vals[fs])} คน · ${fs?`${(conv[fs]*100).toFixed(1)}% ของขั้นก่อนหน้า`:`${(conv[0]*100).toFixed(1)}% ของเป้าสมาชิก`} · เป้า ${fmt(T[STG[fs][2]])}`;
     set('lift',D.lift);set('cans',cansAll()*share()+D.base.cans);set('pts',D.ptsOut*share());set('bud',D.budget);
     R('today').textContent=`+${fmt(sumF(D.dy.act[D.dy.cur]))} วันนี้`;R('burn').textContent=`burn ${(D.ptsUse/D.ptsOut*100).toFixed(0)}%`;
+    const cp=R('camp');cp.style.setProperty('--p',Math.min(1,D.lift/15).toFixed(3));cp.lastChild.textContent='+'+D.lift.toFixed(1)+'% / 15%';
     trend(flash);retention();cycle();pipe(flash);weekly();board();ticker();alerts();
     R('live').className='ld-live'+(D.paused?' off':'');R('live').lastChild.textContent=D.paused?'หยุดชั่วคราว':'LIVE';
   }
@@ -112,7 +113,7 @@ window.VoltDash=(function(){
   }
   function board(){
     const list=(D.board==='mem'?D.mem:D.shop).slice().sort((a,b)=>b.v-a.v);const top=list[0].v;let rows=list.slice(0,5);const me=list.findIndex(r=>r.me);if(me>4)rows=rows.slice(0,4).concat(list[me]);
-    R('board').innerHTML=rows.map(r=>{const i=list.indexOf(r);return `<div class="ld-row ${r.me?'me':''}" data-tip="${esc(r.n)} · ${esc(r.t)}\n${fmt(r.v)} ${D.board==='mem'?'แต้ม':'กระป๋องสัปดาห์นี้'}"><small>Top-${i+1}</small><span class="ld-av" style="background:${AV[i%6]}">${esc(r.n.replace(/^(คุณ|ร้าน)/,'').slice(0,1))}</span><div><span>${esc(r.n)} <small>${esc(r.t)}</small></span><div class="ld-bar"><i style="width:${r.v/top*100}%"></i></div></div><em>${fmt(r.v)}</em></div>`}).join('')+`<div class="ld-leg" style="justify-content:flex-start"><span><i style="background:#2F6BFF"></i>${D.board==='mem'?'แต้มสะสม':'กระป๋องที่สแกน'}</span><span><i style="background:#FFE11A"></i>คุณ (เดโม)</span></div>`;
+    R('board').innerHTML=rows.map(r=>{const i=list.indexOf(r);return `<div class="ld-row ${r.me?'me':''}" data-tip="${esc(r.n)} · ${esc(r.t)}\n${fmt(r.v)} ${D.board==='mem'?'Volt':'กระป๋องสัปดาห์นี้'}"><small>Top-${i+1}</small><span class="ld-av" style="background:${AV[i%6]}">${esc(r.n.replace(/^(คุณ|ร้าน)/,'').slice(0,1))}</span><div><span>${esc(r.n)} <small>${esc(r.t)}</small></span><div class="ld-bar"><i style="width:${r.v/top*100}%"></i></div></div><em>${fmt(r.v)}</em></div>`}).join('')+`<div class="ld-leg" style="justify-content:flex-start"><span><i style="background:#2F6BFF"></i>${D.board==='mem'?'Volt สะสม':'กระป๋องที่สแกน'}</span><span><i style="background:#FFE11A"></i>คุณ (เดโม)</span></div>`;
   }
   function ticker(){R('tk').innerHTML=D.tk.slice(0,6).map(t=>`<span>${t}</span>`).join('')||'<span>รอข้อมูลสด…</span>'}
   function alerts(){const a=opts.alerts?opts.alerts():[];R('alerts').innerHTML=a.map(x=>`<button class="${x.cls||''}" data-a="${x.a}" data-v="${esc(x.v||'')}">${esc(x.t)}</button>`).join('');R('alerts').hidden=!a.length}
@@ -126,8 +127,8 @@ window.VoltDash=(function(){
   const SHOPS=['ร้านเจ๊หน่อย','ร้านลุงชัย','ร้านเฮียกิม','ร้านยายศรี','ร้านพี่ต่าย'],FLV=['Tropical','Blueberry','Forest Fruit'];
   function ingest(ev){
     ev=ev||{};
-    if(ev.newMember){D.fun.mem++;D.tk.unshift(`สมาชิกใหม่ <b>${esc(ev.who||'')}</b> · สมัครผ่าน LINE OA · โบนัส +${ev.pts||20} แต้ม`);D.last=Date.now();update(false);return}
-    if(ev.redeem){D.ptsUse+=ev.redeem;D.budget+=ev.redeem*4e-6;if(ev.first)D.fun.red++;D.tk.unshift(`${esc(ev.who||'สมาชิก')} แลก <b>${esc(ev.name||'รางวัล')}</b> −${fmt(ev.redeem)} แต้ม`);D.last=Date.now();update(false);return}
+    if(ev.newMember){D.fun.mem++;D.tk.unshift(`สมาชิกใหม่ <b>${esc(ev.who||'')}</b> · สมัครผ่าน LINE OA · โบนัส +${ev.pts||20} Volt`);D.last=Date.now();update(false);return}
+    if(ev.redeem){D.ptsUse+=ev.redeem;D.budget+=ev.redeem*4e-6;if(ev.first)D.fun.red++;D.tk.unshift(`${esc(ev.who||'สมาชิก')} แลก <b>${esc(ev.name||'รางวัล')}</b> −${fmt(ev.redeem)} Volt`);D.last=Date.now();update(false);return}
     const ch=CK.includes(ev.ch)?ev.ch:pick(),cans=ev.cans||1+Math.floor(rnd()*5),pts=ev.pts!=null?ev.pts:cans*(ch==='โชห่วย'?1:2);
     [D.wk,D.dy,D.mo].forEach(s=>s.act[s.cur][ch]+=cans);D.ptsOut+=pts;D.budget+=pts*1.5e-6;D.lift+=cans*.0006;D.wa[today]+=cans;
     if(rnd()<.7)D.ret.d[13]++;else D.ret.n[13]++;if(rnd()<.35)D.fun.mem++;if(rnd()<.45)D.fun.act++;if(rnd()<.32)D.fun.rep++;
@@ -135,7 +136,8 @@ window.VoltDash=(function(){
     const me=D.mem.find(m=>m.me);if(ev.me!=null){me.v=ev.me;if(ev.tier)me.t=ev.tier}else{const m=D.mem[Math.floor(rnd()*D.mem.length)];if(!m.me)m.v+=pts}
     const sh=ch==='โชห่วย'?(ev.shop||SHOPS[Math.floor(rnd()*SHOPS.length)]):null;if(sh){const s=D.shop.find(x=>x.n===sh);if(s)s.v+=cans}
     const who=ev.who||['คุณป**','คุณน**','คุณฟ**','คุณต**','คุณอ**'][Math.floor(rnd()*5)];
-    D.tk.unshift(`${esc(who)} · ${esc(sh||ch)} · ${ev.desc?esc(ev.desc):`${rnd()<.5?'190':'310'} ml ${FLV[Math.floor(rnd()*3)]} × ${cans}`} <b>+${pts} แต้ม</b>`);D.tk=D.tk.slice(0,12);D.lastCh=ch;D.last=Date.now();update(true);
+    D.tk.unshift(`${esc(who)} · ${esc(sh||ch)} · ${ev.desc?esc(ev.desc):`${rnd()<.5?'190':'310'} ml ${FLV[Math.floor(rnd()*3)]} × ${cans}`} <b>+${pts} Volt</b>`);D.tk=D.tk.slice(0,12);D.lastCh=ch;D.last=Date.now();update(true);
+    if(window.VoltFX&&root.isConnected&&!document.hidden)VoltFX.charge(R('tk').firstElementChild||R('tk'),R('camp'),Math.min(pts,6),`+${pts} Volt`);
   }
   function toast(t){let el=root.querySelector('.ld-toast');if(!el){el=document.createElement('div');el.className='ld-toast';el.setAttribute('role','status');root.appendChild(el)}el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2500)}
   function act(v){const [k,x]=v.split(':');
@@ -151,6 +153,6 @@ window.VoltDash=(function(){
     setInterval(()=>{const c=R('clock');if(c)c.textContent=new Date().toLocaleTimeString('th-TH')+` · อัปเดต ${Math.round((Date.now()-D.last)/1000)} วิที่แล้ว`},1000);
     for(let i=0;i<4;i++)ingest();
     return api}
-  const api={init,ingest,refresh:()=>root&&update(),get el(){return root}};
+  const api={init,ingest,refresh:()=>root&&update(),get el(){return root},get lift(){return D.lift}};
   return api;
 })();

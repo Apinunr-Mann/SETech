@@ -97,3 +97,6 @@
 @keyframes ldFlash{0%{filter:brightness(2.2) drop-shadow(0 0 8px #FFE11A)}100%{filter:none}}
 @keyframes ldIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ld *{animation:none!important;transition:none!important}}
+
+.ld-camp{display:inline-flex;align-items:center;gap:10px;font:600 12px 'Prompt',sans-serif;color:#9AA5DD}
+.ld-camp .batt>b{font-size:11px}
