@@ -31,3 +31,30 @@ input[type=range]{accent-color:#FFEB00}
 .gate .gbar{width:140px;height:5px;border-radius:3px;background:rgba(255,255,255,.35);overflow:hidden;margin-top:6px}
 .gate .gbar i{display:block;height:100%;width:0;background:#fff;animation:gbar .7s linear forwards}
 @keyframes gbar{to{width:100%}}
+/* Microsite Home */
+.hm-hero{border-radius:22px;padding:16px;min-height:170px;display:flex;flex-direction:column;justify-content:center;gap:8px;background-color:#000;background-size:cover;background-position:right center;position:relative;overflow:hidden}
+.hm-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0,rgba(0,0,0,.55) 48%,rgba(0,0,0,0) 78%)}
+.hm-hero>*{position:relative}
+.hm-hero b{font-size:31px;color:#fff;display:block}.hm-hero b i{font-style:inherit;color:var(--yel);display:block}
+.hm-hero span{font-size:11.5px;color:#D5D5E0;max-width:52%}
+.hm-hero .btn{color:#05050A;align-self:flex-start;min-height:40px;font-size:14px;padding:0 18px}
+.hm-st{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;list-style:none;margin:0;padding:0;counter-reset:s}
+.hm-st li{counter-increment:s;font-size:10.5px;line-height:1.25;color:#C8CCE8;background:rgba(255,255,255,.06);border-radius:10px;padding:6px;text-align:center}
+.hm-st li::before{content:counter(s);display:block;font:900 14px 'Barlow Condensed',sans-serif;color:var(--yel)}
+.hm-me{border-radius:22px;padding:14px;background:#2147FF;color:#fff;display:flex;flex-direction:column;gap:10px}
+.hm-me small{display:block;font-size:12px;opacity:.85}
+.hm-me .num{font:900 40px/1 'Barlow Condensed',sans-serif;font-style:italic}.hm-me .num i{font-size:16px;font-style:normal;font-weight:500}
+.hm-me .mut{font-size:11.5px;color:rgba(255,255,255,.8)}
+.hm-h{font:800 15px var(--disp);margin-top:2px}
+.hm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.hmt{position:relative;text-align:left;border:0;border-radius:18px;padding:12px;min-height:92px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;color:#fff}
+.hmt svg{position:absolute;top:10px;left:10px;width:30px;height:30px;padding:6px;border-radius:50%;background:rgba(0,0,0,.28);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hmt svg:has(use){fill:currentColor;stroke:none}
+.hmt b{font:900 20px/.95 'Barlow Condensed','Bai Jamjuree',sans-serif;font-style:italic;text-transform:uppercase}
+.hmt span{font-size:11px;opacity:.85}
+.hc-y{background:#FFEB00;color:#05050A}.hc-b{background:#2147FF}.hc-p{background:#8A2BFF}.hc-c{background:#17D6FF;color:#05050A}
+.hmt.lk{filter:saturate(.35) brightness(.8)}
+.hmt.hit{outline:3px solid #fff;outline-offset:2px}
+.hmt em{position:absolute;top:8px;right:8px;font:700 9.5px var(--body);font-style:normal;background:#fff;color:#05050A;border-radius:999px;padding:2px 7px}
+
+.hm-me .mut{display:block;margin-top:3px}.hm-me .num i{margin-left:5px}

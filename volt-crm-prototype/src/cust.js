@@ -23,7 +23,7 @@ const nextTier=()=>TIER[tierIdx()+1];
 const tierProg=()=>{const n=nextTier();return n?Math.min(1,weeksIn()/n.w):1};
 const goalProg=()=>{const g=goalReward();return g&&g.pts?Math.min(1,S.user.pts/g.pts):null};
 const hudHtml=dark=>S.user.reg?`<span class="vhud ${dark?'dark':''}" id="hud">${VoltFX.bolt(goalProg()!=null?goalProg():tierProg(),{size:'sm',aria:'Charge Bolt ความคืบหน้า'})}<span>${fmt(S.user.pts)} แต้ม</span></span>`:'';
-const closeBtn=`<button class="x" data-a="c" data-v="chat" aria-label="กลับไปแชต">✕</button>`;
+const closeBtn=`<button class="x" data-a="c" data-v="home" aria-label="กลับหน้า Home">✕</button>`;
 const cTop=(t,back)=>`<div class="bar">${back?`<button class="x" data-a="c" data-v="${back}" aria-label="กลับ">‹</button>`:''}<b>${t}</b>${hudHtml()}${back?'':closeBtn}</div>`;
 const rwThumb=r=>`<span class="thumb" style="background:${r.k==='merch'?'#2A3590':r.k==='perk'?'#17A866':'#2147FF'}">${r.k==='merch'?'👕':r.k==='perk'?'🤝':'🎁'}</span>`;
 const lvChip=k=>`<span class="lvl">${k}</span>`;
@@ -43,10 +43,10 @@ function bubOf(m){if(m.k==='promo')return `<div class="promo"><div class="kvart 
 /* ---------- customer renderer ---------- */
 function renderCust(){
   const el=$('#cust'),u=S.user,ui=S.ui,ti=tierIdx();let h='';
-  const open=['chat','near','rewards','reg1','reg2','reg3','reg4','regAge'];
+  const open=['chat','home','near','rewards','reg1','reg2','reg3','reg4','regAge'];
   if(!u.reg&&!open.includes(ui.c))ui.c='reg1';
   el.className='scr '+(ui.c==='chat'?'':'dk');
-  const C=({chat:cChat,card:cCard,collect:cCollect,rewards:cRewards,redeem:cRedeem,tier:cTier,hist:cTier,near:cNear,quizP:cQuiz,quizW:cQuiz,draws:cDraws,wallet:cWallet,board:cBoard,buddy:cBuddy,goal:cGoal,reg1:cReg,reg2:cReg,reg3:cReg,reg4:cReg,regAge:cReg})[ui.c];
+  const C=({chat:cChat,home:cHome,card:cCard,collect:cCollect,rewards:cRewards,redeem:cRedeem,tier:cTier,hist:cTier,near:cNear,quizP:cQuiz,quizW:cQuiz,draws:cDraws,wallet:cWallet,board:cBoard,buddy:cBuddy,goal:cGoal,reg1:cReg,reg2:cReg,reg3:cReg,reg4:cReg,regAge:cReg})[ui.c];
   h=C?C():cChat();
   if(gate)h=gateSheet();else if(ui.c!=='chat')h=msChrome(ui.c)+h;
   if(S.pending)h+=pendSheet();
@@ -54,10 +54,19 @@ function renderCust(){
 }
 /* LINE OA is only the gateway; every CRM page lives on a separate Microsite opened in LINE's in-app browser */
 let gate=0;
-const MSP={card:'card',collect:'charge',rewards:'rewards',redeem:'rewards/redeem',tier:'tier',hist:'history',near:'stores',quizP:'profile',quizW:'quiz',draws:'draw',wallet:'wallet',board:'leaderboard',buddy:'buddy',goal:'goal',reg1:'join',reg2:'join/profile',reg3:'join/otp',reg4:'join/done',regAge:'join/age'};
+const MSP={home:'',card:'card',collect:'charge',rewards:'rewards',redeem:'rewards/redeem',tier:'tier',hist:'history',near:'stores',quizP:'profile',quizW:'quiz',draws:'draw',wallet:'wallet',board:'leaderboard',buddy:'buddy',goal:'goal',reg1:'join',reg2:'join/profile',reg3:'join/otp',reg4:'join/done',regAge:'join/age'};
 function msChrome(c){return `<div class="msb"><button data-a="c" data-v="chat" aria-label="ปิด Microsite กลับแชท LINE">✕</button><div class="url"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0110 0v3M5 11h14v9H5z"/></svg>club.volt.co.th/${MSP[c]||c}</div><span class="ln">LINE</span></div>`}
 function gateSheet(){const g=!S.user.reg;return `<div class="gate"><div class="glogo">LINE</div><b>${g?'LINE Login':'เข้าสู่ระบบด้วย LINE'}</b><span>${g?'ขอสิทธิ์โปรไฟล์ + เพิ่มเพื่อน Volt Club':'ยืนยันตัวตนอัตโนมัติ (SSO)'}</span><div class="gbar"><i></i></div><small>เปิด CRM Microsite · club.volt.co.th</small></div>`}
 function gateOpen(){gate=1;setTimeout(()=>{gate=0;renderCust()},700)}
+const HMT=[['collect','ชาร์จแต้ม','รหัส · QR ร้าน · ใบเสร็จ','y'],['card','บัตรสมาชิก','QR ยืนยันตัวตน','b'],['rewards','แลกรางวัล','ของรางวัลทั้งหมด','p'],['tier','Tier & ภารกิจ','ขึ้น Tier ทุกสัปดาห์','c'],['quizP','Charge Profile','10 ข้อ · 30 แต้ม','b'],['quizW','Weekly Quiz','ตอบทุกสัปดาห์ +5','y'],['draws','Lucky Draw','Three Man Down','p'],['wallet','กระเป๋าคูปอง','คูปองที่แลกแล้ว','c'],['board','Leaderboard','ชาร์จแข่งกัน','b'],['near','ร้านใกล้ฉัน','ร้านสะสมแต้ม','y'],['buddy','Volt Buddy','ถามได้ทุกเรื่อง','p']];
+const HMI={collect:'<svg viewBox="0 0 24 32" aria-hidden="true"><use href="#bolt"/></svg>',card:I.qr,rewards:I.gift,tier:I.star,quizP:I.help,quizW:I.help,draws:I.star,wallet:I.gift,board:I.star,near:I.pin,buddy:I.chat};
+const GUEST_OK=['rewards','near','buddy'];
+/* Microsite Home: the landing page after LINE Rich Menu; routes to every feature, starting with registration */
+function cHome(){const u=S.user,ui=S.ui,from=ui.from;
+  const hero=u.reg?`<div class="hm-me"><div class="sp"><div><small>สวัสดี คุณ${esc(u.name)}</small><b class="num">${fmt(u.pts)}<i> แต้ม</i></b><span class="mut">${TIER[tierIdx()].k} · ${TIER[tierIdx()].d}</span></div>${VoltFX.bolt(goalProg()!=null?goalProg():tierProg(),{size:'lg',aria:'Charge Bolt ความคืบหน้า'})}</div><button class="btn by" data-a="c" data-v="collect">ชาร์จแต้มตอนนี้</button></div>`
+   :`<div class="hm-hero im-hero"><b class="slog">Scan. Collect.<i>Unlock Energy.</i></b><span>รากพลังอยู่ในตัวคุณแล้ว สมัครสมาชิกวันนี้รับ Welcome 20 แต้ม</span><button class="btn by" data-a="c" data-v="reg1">สมัครสมาชิก ›</button></div><ol class="hm-st"><li>LINE Login</li><li>ข้อมูล + อายุ 15+</li><li>OTP</li><li>รับ 20 แต้ม</li></ol>`;
+  const tiles=HMT.map(([v,t,s,c])=>{const lock=!u.reg&&!GUEST_OK.includes(v);return `<button class="hmt hc-${c}${from===v?' hit':''}${lock?' lk':''}" data-a="c" data-v="${lock?'reg1':v}">${from===v?'<em>จาก Rich Menu</em>':''}${HMI[v]}<b>${t}</b><span>${lock?'สมัครก่อนใช้งาน':s}</span></button>`}).join('');
+  return `<div class="bar"><b class="slog" style="font-size:24px">Volt Club</b>${hudHtml()}</div><div class="bd" style="gap:12px">${hero}<div class="hm-h">ฟีเจอร์ทั้งหมด</div><div class="hm-grid">${tiles}</div><div class="ai"><b>เปิดจาก LINE</b> · ทุกครั้งที่กดเมนูใน LINE จะมาที่หน้านี้ก่อน แล้วเลือกฟีเจอร์ต่อ · แจ้งผลอนุมัติและแต้มกลับไปที่แชต LINE</div></div>`}
 function cChat(){const u=S.user;
   return `<div class="lhead"><span class="av im-bm-y"></span><div style="flex:1"><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE Official Account</span></div>${hudHtml(true)}</div><div class="chat" id="chatbox">${S.chat.map(bubOf).join('')}</div>
   <div class="qrep"><button data-a="ask" data-v="pts">แต้มฉันเหลือเท่าไร</button><button data-a="ask" data-v="near">ร้านสะสมแต้มใกล้ฉัน</button><button data-a="ask" data-v="how">สะสมแต้มยังไง</button><button data-a="ask" data-v="tier">ขึ้น Tier ยังไง</button><button data-a="ask" data-v="next">ควรทำอะไรต่อ</button></div>${richMenu()}`}

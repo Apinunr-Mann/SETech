@@ -37,7 +37,7 @@ function approveReq(p,auto){const sh=S.shops.find(x=>x.id===p.shopId),over=sh.us
   if(res.cans){sh.usedM+=res.cans;sh.pts+=res.cans;S.user.scansToday++;if(sc)sc.st=why?'hold':'ok';if(sh.id===myShop().id)fxPush({to:'#shopb .cbolt',n:res.cans,label:`ร้าน +${res.cans}`});log(auto?'ระบบ':'ร้าน',`อนุมัติ ${p.q} กระป๋อง ${why?'(พักแต้ม: '+why+')':''}`);done('qr');if(res.iw&&res.iw.win)toast('Instant Win! ดูกระเป๋าคูปอง')}
   else{if(sc)sc.st='cap';log('ระบบ','ลูกค้าชาร์จครบเพดานวันนี้')}}
 const A={
-  c:(v)=>{if(S.ui.c==='chat'&&v!=='chat'&&!S.ui.noGate)gateOpen();S.ui.c=v;if(v==='rewards'||v==='collect')S.ui.rd=null;if(v==='quizP')S.ui.qi=0;if(v==='quizW')S.ui.qi=0},
+  c:(v)=>{if(S.ui.c==='chat'&&v!=='chat'){gateOpen();S.ui.from=v==='home'?null:v;v='home'}else if(v==='home')S.ui.from=null;S.ui.c=v;if(v==='rewards'||v==='collect')S.ui.rd=null;if(v==='quizP')S.ui.qi=0;if(v==='quizW')S.ui.qi=0},
   collectTab:(v)=>{S.ui.c='collect';S.ui.tab=v},
   fl:(v)=>{S.ui.fl=v},imgs:(v)=>{S.ui.rcImgs=Math.max(1,Math.min(6,S.ui.rcImgs+ +v))},
   assist:()=>{if(S.aiOff||S.aiK.l3)return toast('ผู้ช่วยปิดอยู่ชั่วคราว');const sku=$('#rsku').value,q=Math.max(1,+$('#rqty').value||1),st=$('#rstore').value,u=S.user,bo=st==='7-Eleven'&&sku==='s310'?Math.min(q,u.boostPool||0):0,pts=S.rules[sku==='s310'?'p310':'p190']*q+bo*S.rules.bonus7;toast(`ประมาณ +${pts} แต้ม${bo?` (รวม Retail Boost ${bo} กป.)`:''} · ถ่ายให้เห็นร้าน วันที่ รายการชัด · ผู้ช่วยไม่ตัดสินผลการตรวจ`);log('AI','ผู้ช่วยในหน้า: ดูตัวอย่างแต้ม')},
