@@ -1,0 +1,134 @@
+/* ===== UX layer (phone screens): readable Thai type, one accent per screen, calm dark surfaces =====
+   Thai is never set italic or condensed; Barlow Condensed italic is kept for Latin slogans and numbers.
+   Yellow = primary action + points only; blue / cyan / purple appear as small icon tints. */
+.scr{--t1:#F4F5FA;--t2:#AEB3C8;--t3:#7D8299;--s0:#08080E;--s1:#13131D;--s2:#1B1B27;--b1:rgba(255,255,255,.08);--b2:rgba(255,255,255,.14);-webkit-font-smoothing:antialiased;font-family:'IBM Plex Sans Thai','Bai Jamjuree',sans-serif}
+.scr.dk{background:radial-gradient(90% 38% at 50% 0%,rgba(33,71,255,.16),transparent 70%),var(--s0);color:var(--t1)}
+.scr :is(.bar b,.h3,.btn,.mini,.lvl,.tiers span,.ai b,.thumb,.kick,.rmtabs button,.seg button,.chip,.rg-hero b,.rm b,.rm .tag,.rm .cta,.vhud,.wel .big,.big,.lock){font-style:normal}
+.scr :is(.bar b,.h3,.btn,.mini,.rmtabs button,.rg-hero b,.rm b,.rm .cta,.big){font-family:'Bai Jamjuree','IBM Plex Sans Thai',sans-serif;letter-spacing:0;text-transform:none}
+.scr .num{font-family:'Barlow Condensed','Bai Jamjuree',sans-serif;font-style:italic;font-weight:800;letter-spacing:.005em}
+.scr .slog{font-family:'Barlow Condensed','Bai Jamjuree',sans-serif;font-style:italic;font-weight:900;text-transform:uppercase}
+.scr .mut{color:var(--t2)}
+.scr.dk :is(.bd,.li,.card){font-size:14px;line-height:1.5}
+
+/* header: back on the left, title, points; the Microsite chrome above holds the only ✕ */
+.scr.dk .bar{height:auto;min-height:56px;padding:8px 16px 6px;gap:10px;justify-content:flex-start}
+.scr.dk .bar b{font-size:18px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scr.dk .bar .x{width:36px;height:36px;background:var(--s2);border:1px solid var(--b1);font-size:20px;line-height:1;color:var(--t1);padding-bottom:2px}
+.scr .vhud{font:700 13.5px 'Bai Jamjuree',sans-serif;padding:3px 10px 3px 6px;background:var(--s2);border-color:rgba(255,235,0,.35)}
+.scr .vhud.dark{background:#FFEB00;border-color:#FFEB00}
+.scr.dk .bd{padding:6px 16px 20px;gap:12px}
+
+/* surfaces */
+.scr.dk :is(.card,.li){background:var(--s1);border:1px solid var(--b1);border-radius:16px}
+.scr.dk .li{padding:12px 14px;gap:12px}
+.scr.dk .li .t b{font-size:14.5px;font-weight:600;line-height:1.35}
+.scr.dk .li .t .mut{display:block;font-size:12.5px;margin-top:1px}
+.scr.dk .thumb{border-radius:12px;width:42px;height:42px;font-size:18px}
+.scr.dk .h3{font-size:16px;font-weight:700}
+.scr.dk .mcard{border-color:var(--b2)}
+
+/* actions: one yellow button per screen, everything else neutral */
+.scr .btn{font-weight:700;font-size:15.5px;border-radius:14px;min-height:50px}
+.scr .by{box-shadow:none}
+.scr .by:active,.scr .mini:active{transform:scale(.98)}
+.scr.dk .bo{border:1px solid var(--b2);background:var(--s1)}
+.scr .mini{font-weight:700;font-size:13px;border-radius:10px;min-height:36px;padding:0 14px}
+.scr.dk .mini.o{border:1px solid var(--b2);color:var(--t1);background:transparent}
+.scr.dk .mini.o[aria-pressed=true]{border-color:#FFEB00;color:#FFEB00}
+
+/* chips & segmented control: neutral when off, white when on (yellow stays for actions) */
+.scr.dk .chip{background:var(--s1);border-color:var(--b1);color:var(--t1);font-size:13px;padding:5px 12px}
+.scr.dk :is(.chip[aria-pressed=true]){background:var(--t1);border-color:var(--t1);color:#05050A}
+.scr.dk .chip.y{background:rgba(255,235,0,.14);border-color:transparent;color:#FFEB00}
+.scr .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px;flex:none}
+.scr .chips::-webkit-scrollbar{display:none}
+.scr .chips>*{flex:none}
+.scr .chips.wrap{flex-wrap:wrap;overflow:visible;margin:0;padding:0}
+.scr .chips button{min-height:34px;border-radius:999px;padding:0 14px;font-size:13px;background:var(--s1);border:1px solid var(--b1);color:var(--t1)}
+.scr.dk .seg{background:var(--s1);border-color:var(--b1)}
+.scr.dk .seg button{font-size:13px;color:var(--t2)}
+.scr.dk .seg button[aria-pressed=true]{background:var(--t1);color:#05050A}
+
+/* helper notes: quiet, not glowing */
+.scr.dk .ai{background:var(--s1);border:1px solid var(--b1);border-left:3px solid #17D6FF;border-radius:12px;font-size:12.5px;line-height:1.55;color:var(--t2);padding:10px 12px}
+.scr.dk .ai b{font:700 12.5px 'Bai Jamjuree',sans-serif;color:#17D6FF;letter-spacing:0}
+.scr .note{background:var(--s1);border:1px solid var(--b1);border-radius:12px;font-size:12.5px;line-height:1.55;color:var(--t2);padding:0 12px;flex:none}
+.scr .note summary{list-style:none;cursor:pointer;min-height:42px;display:flex;align-items:center;justify-content:space-between;font:600 13.5px 'Bai Jamjuree',sans-serif;color:var(--t1)}
+.scr .note summary::-webkit-details-marker{display:none}
+.scr .note summary::after{content:"+";font-size:18px;color:var(--t2)}
+.scr .note[open]{padding-bottom:10px}.scr .note[open] summary::after{content:"–"}
+
+/* forms */
+.scr.dk .f{font-size:13px;gap:6px}
+.scr.dk .f>span{color:var(--t2);font-weight:500}
+.scr.dk .in{background:var(--s1);border:1px solid var(--b2);border-radius:12px;min-height:48px;font-size:15px}
+.scr.dk .in:focus{border-color:#FFEB00;outline:0;box-shadow:0 0 0 3px rgba(255,235,0,.18)}
+.scr .consent{font-size:13px;color:var(--t2)}
+.scr .rg-hero b{font-weight:800;font-size:22px}
+
+/* tier / streak */
+.scr.dk .tiers span{font:700 13px 'Bai Jamjuree',sans-serif;border-color:var(--b1);background:var(--s1)}
+.scr.dk .tiers span.on{box-shadow:none;background:#FFEB00;border-color:#FFEB00;color:#05050A}
+.scr.dk .tiers span.done{background:var(--s2);color:var(--t1)}
+.scr .vstreak span.on{background:#FFEB00;box-shadow:none}
+.scr.dk .hist div{border-bottom-color:var(--b1);padding:9px 0}
+.scr.dk .tick{border-radius:8px}
+
+/* misc pages */
+.scr .qr{box-shadow:0 0 0 1px var(--b2),0 12px 30px rgba(0,0,0,.4)}
+.scr .nmap{height:190px;border-radius:16px;position:relative;overflow:hidden;flex:none;background:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/24px 24px,var(--s1);border:1px solid var(--b1)}
+.scr .nmap span{box-shadow:0 0 0 4px rgba(255,235,0,.15)!important}
+.scr .bchat{background:transparent;padding:0;flex:1;overflow:visible}
+.scr .bchat .bub{background:var(--s2);color:var(--t1);font-size:13.5px}
+.scr .bchat .bub.me{background:#FFEB00;color:#05050A}
+.scr .bchat .bub.ai::before{color:#17D6FF}
+.scr .empty{font-size:14px;line-height:1.6;text-align:center;padding:24px 8px}
+
+/* Microsite chrome + Home */
+.scr .msb{background:#0E0E16;border-bottom:1px solid var(--b1)}
+.scr .hm-bar .slog{font-size:24px;color:#fff}
+.scr .bd.hm{gap:14px}
+.hm-me{position:relative;border-radius:20px;padding:16px;background:linear-gradient(135deg,#2147FF,#1631C4);color:#fff;display:flex;flex-direction:column;gap:14px}
+.hm-me small{display:block;font-size:13px;opacity:.85}
+.hm-me .num{font-size:46px;line-height:1;display:block;margin:2px 0 6px}
+.hm-me .num i{font:500 15px 'IBM Plex Sans Thai',sans-serif;margin-left:6px;opacity:.85}
+.hm-tier{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(255,255,255,.85)}
+.hm-me .btn svg{width:14px;height:19px;fill:currentColor}
+.hm-hero{border-radius:20px;padding:18px 16px;min-height:184px;gap:10px}
+.hm-hero b{font-size:32px}
+.hm-hero span{font-size:13px;color:#E4E4EE;max-width:55%}
+.hm-hero .btn{min-height:44px;font-size:14.5px;padding:0 18px}
+.hm-st{gap:0;background:var(--s1,#13131D);border:1px solid var(--b1,rgba(255,255,255,.08));border-radius:14px;padding:10px 4px}
+.hm-st li{background:none;border-radius:0;font-size:11.5px;color:var(--t2,#AEB3C8);padding:0 4px;position:relative}
+.hm-st li+li{border-left:1px solid var(--b1,rgba(255,255,255,.08))}
+.hm-st li::before{font-size:16px;margin-bottom:2px}
+.hm-q{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hq{position:relative;display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:0;color:var(--t1,#F4F5FA);font-size:12.5px;font-weight:500;padding:4px 0;border-radius:14px}
+.hq i,.hr i{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--s1,#13131D);border:1px solid var(--b1,rgba(255,255,255,.08))}
+.hr i{width:42px;height:42px;border-radius:12px;flex:none}
+.hq svg,.hr svg{width:22px;height:22px;fill:none;stroke:var(--k);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hq svg:has(use),.hr svg:has(use){fill:var(--k);stroke:none}
+.hi-y{--k:#FFEB00}.hi-b{--k:#6E8BFF}.hi-c{--k:#17D6FF}.hi-p{--k:#B57BFF}
+.hm-h{font:700 14px 'Bai Jamjuree',sans-serif;color:var(--t2,#AEB3C8);margin:4px 0 -4px}
+.hm-list{display:flex;flex-direction:column;background:var(--s1,#13131D);border:1px solid var(--b1,rgba(255,255,255,.08));border-radius:16px;overflow:hidden}
+.hr{position:relative;display:flex;align-items:center;gap:12px;padding:12px 14px;background:none;border:0;color:var(--t1,#F4F5FA);text-align:left;width:100%}
+.hr+.hr{border-top:1px solid var(--b1,rgba(255,255,255,.08))}
+.hr i{background:var(--s2,#1B1B27);border:0}
+.hr .t{flex:1;min-width:0}
+.hr .t b{display:block;font:600 15px/1.3 'Bai Jamjuree','IBM Plex Sans Thai',sans-serif}
+.hr .t small{display:block;font-size:12.5px;color:var(--t2,#AEB3C8);margin-top:2px}
+.hr .pt{font:800 italic 15px 'Barlow Condensed',sans-serif;color:#FFEB00;background:rgba(255,235,0,.12);border-radius:999px;padding:2px 10px;flex:none}
+.hr .pt.done{font:600 12px 'IBM Plex Sans Thai',sans-serif;color:#4BE39A;background:rgba(75,227,154,.12)}
+.hr .go{color:var(--t3,#7D8299);font-size:22px;line-height:1;flex:none}
+.hr:hover,.hq:hover i{background:rgba(255,255,255,.04)}
+:is(.hq,.hr).lk{opacity:.5}
+:is(.hq,.hr,.hm-me).hit{box-shadow:inset 0 0 0 1.5px #FFEB00}
+.hq.hit{box-shadow:none}.hq.hit i{box-shadow:0 0 0 2px #FFEB00}
+:is(.hq,.hr,.hm-me) em{position:absolute;z-index:1;top:-6px;right:-2px;font:600 9.5px 'IBM Plex Sans Thai',sans-serif;font-style:normal;background:#FFEB00;color:#05050A;border-radius:999px;padding:1px 7px;white-space:nowrap}
+.hr em{top:6px;right:34px}.hm-me em{top:10px;right:12px}
+.scr .bd.hm>*{flex:none}
+/* list rows with several actions: actions drop under the text instead of squeezing it */
+.scr.dk .li:has(.mini.o){flex-wrap:wrap}
+.scr.dk .li:has(.mini.o) .t{flex:1 1 calc(100% - 60px)}
+.scr.dk .li>span:last-child:has(.mini.o){width:100%;justify-content:flex-end;padding-left:54px}
+.scr.dk .bo{color:var(--t1)}
