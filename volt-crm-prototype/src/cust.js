@@ -1,5 +1,5 @@
 /* =====================================================================
-   Customer phone (LINE OA + LIFF): chat, card, collect, rewards, tier,
+   Customer phone (LINE OA gateway + CRM Microsite): chat, card, collect, rewards, tier,
    quizzes, draws, wallet, leaderboard, register
    ===================================================================== */
 let qrLeft=60,qrSeed=Math.floor(Math.random()*1e6);
@@ -48,9 +48,16 @@ function renderCust(){
   el.className='scr '+(ui.c==='chat'?'':'dk');
   const C=({chat:cChat,card:cCard,collect:cCollect,rewards:cRewards,redeem:cRedeem,tier:cTier,hist:cTier,near:cNear,quizP:cQuiz,quizW:cQuiz,draws:cDraws,wallet:cWallet,board:cBoard,buddy:cBuddy,goal:cGoal,reg1:cReg,reg2:cReg,reg3:cReg,reg4:cReg,regAge:cReg})[ui.c];
   h=C?C():cChat();
+  if(gate)h=gateSheet();else if(ui.c!=='chat')h=msChrome(ui.c)+h;
   if(S.pending)h+=pendSheet();
   el.innerHTML=h;const cb=$('#chatbox');if(cb)cb.scrollTop=cb.scrollHeight;
 }
+/* LINE OA is only the gateway; every CRM page lives on a separate Microsite opened in LINE's in-app browser */
+let gate=0;
+const MSP={card:'card',collect:'charge',rewards:'rewards',redeem:'rewards/redeem',tier:'tier',hist:'history',near:'stores',quizP:'profile',quizW:'quiz',draws:'draw',wallet:'wallet',board:'leaderboard',buddy:'buddy',goal:'goal',reg1:'join',reg2:'join/profile',reg3:'join/otp',reg4:'join/done',regAge:'join/age'};
+function msChrome(c){return `<div class="msb"><button data-a="c" data-v="chat" aria-label="ปิด Microsite กลับแชท LINE">✕</button><div class="url"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0110 0v3M5 11h14v9H5z"/></svg>club.volt.co.th/${MSP[c]||c}</div><span class="ln">LINE</span></div>`}
+function gateSheet(){const g=!S.user.reg;return `<div class="gate"><div class="glogo">LINE</div><b>${g?'LINE Login':'เข้าสู่ระบบด้วย LINE'}</b><span>${g?'ขอสิทธิ์โปรไฟล์ + เพิ่มเพื่อน Volt Club':'ยืนยันตัวตนอัตโนมัติ (SSO)'}</span><div class="gbar"><i></i></div><small>เปิด CRM Microsite · club.volt.co.th</small></div>`}
+function gateOpen(){gate=1;setTimeout(()=>{gate=0;renderCust()},700)}
 function cChat(){const u=S.user;
   return `<div class="lhead"><span class="av im-bm-y"></span><div style="flex:1"><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE Official Account</span></div>${hudHtml(true)}</div><div class="chat" id="chatbox">${S.chat.map(bubOf).join('')}</div>
   <div class="qrep"><button data-a="ask" data-v="pts">แต้มฉันเหลือเท่าไร</button><button data-a="ask" data-v="near">ร้านสะสมแต้มใกล้ฉัน</button><button data-a="ask" data-v="how">สะสมแต้มยังไง</button><button data-a="ask" data-v="tier">ขึ้น Tier ยังไง</button><button data-a="ask" data-v="next">ควรทำอะไรต่อ</button></div>${richMenu()}`}

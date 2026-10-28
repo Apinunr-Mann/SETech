@@ -26,8 +26,8 @@
     <div class="box"><b>rfm_snapshot · quiz · merchant · audit_log</b><span>RFM 03:00 + snapshot รายสัปดาห์ · Quiz 10+13 สัปดาห์ · ทะเบียนร้านและโควตา</span></div>
   </div>
   <div class="col">
-    <div class="hd acc">API หลัก<small>หลัง LINE Login (JWT)</small></div>
-    <div class="box ac"><b>สะสมแต้ม</b><span><code>POST /purchases/receipt</code> <code>/purchases/code</code> <code>/purchases/online</code> <code>/scans/confirm</code></span></div>
+    <div class="hd acc">API หลัก<small>Microsite เรียกหลัง LINE Login (JWT)</small></div>
+    <div class="box ac"><b>Gateway + Login (LINE → Microsite)</b><span><code>POST /line/webhook</code> <code>/line/push</code> · <code>GET /auth/line/callback</code> <code>POST /auth/session</code></span></div> <div class="box ac"><b>สะสมแต้ม</b><span><code>POST /purchases/receipt</code> <code>/purchases/code</code> <code>/purchases/online</code> <code>/scans/confirm</code></span></div>
     <div class="box ac"><b>แลกและลุ้น</b><span><code>GET /rewards/recommend</code> <code>POST /redemptions</code> <code>POST /draws/{id}/entries</code></span></div>
     <div class="box ac"><b>สมาชิกและภารกิจ</b><span><code>POST /members</code> <code>/quiz/profile</code> <code>/quiz/weekly</code> <code>GET /leaderboard</code></span></div>
     <div class="box ac"><b>หลังบ้าน (RBAC + อนุมัติ 2 คน)</b><span><code>PUT /rules</code> <code>/pools/transfer</code> <code>POST /draws/{id}/run</code> <code>/segments/{id}/send</code></span></div>
@@ -35,7 +35,7 @@
   </div>
   <div class="col">
     <div class="hd">Events<small>ส่งเข้า Warehouse + Dashboard</small></div>
-    <div class="ev"><code>member.registered</code>สมัครสมาชิก</div>
+    <div class="ev"><code>line.followed</code> <code>session.created</code>เข้า Microsite</div> <div class="ev"><code>member.registered</code>สมัครสมาชิก</div>
     <div class="ev"><code>purchase.verified</code>ใบเสร็จ/รหัส/สแกนผ่าน</div>
     <div class="ev"><code>points.earned</code> <code>points.unlocked</code></div>
     <div class="ev"><code>reward.redeemed</code> <code>draw.entered</code></div>

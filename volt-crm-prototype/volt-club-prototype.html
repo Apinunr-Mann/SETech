@@ -248,6 +248,18 @@ input[type=range]{accent-color:#FFEB00}
 .lhead .av[class*=im-bm]{background-size:cover;background-position:center top;border:0}
 .seg{grid-template-columns:repeat(4,minmax(0,1fr))}
 .scr.dk{background:linear-gradient(180deg,#0B0B14,#000)}
+/* LINE gateway → CRM Microsite chrome */
+.msb{flex:none;height:42px;display:flex;align-items:center;gap:8px;padding:0 10px;margin-top:30px;background:#14141c;border-bottom:1px solid rgba(255,255,255,.12)}
+.msb button{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;border:0;font-size:14px}
+.msb .url{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:999px;background:#000;color:#D8D8E4;font:500 11.5px var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msb .url svg{width:12px;height:12px;flex:none;fill:none;stroke:#4BE39A;stroke-width:2.4}
+.msb .ln{font:900 10px 'Barlow Condensed',sans-serif;background:#06C755;color:#fff;border-radius:6px;padding:3px 6px;letter-spacing:.04em}
+.gate{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#06C755;color:#fff;text-align:center;padding:30px}
+.gate .glogo{width:84px;height:84px;border-radius:24px;background:#fff;color:#06C755;display:grid;place-items:center;font:900 24px 'Barlow Condensed',sans-serif;letter-spacing:.04em}
+.gate b{font:800 22px var(--disp)}.gate span{font-size:13px;opacity:.9}.gate small{font-size:11.5px;opacity:.85;margin-top:8px}
+.gate .gbar{width:140px;height:5px;border-radius:3px;background:rgba(255,255,255,.35);overflow:hidden;margin-top:6px}
+.gate .gbar i{display:block;height:100%;width:0;background:#fff;animation:gbar .7s linear forwards}
+@keyframes gbar{to{width:100%}}
 
 /*LD-CSS*/
 /* Volt Live Dashboard — glass panels on deep navy, brand cyan / blue / purple / yellow */
@@ -673,7 +685,7 @@ input[type=range]{accent-color:#FFEB00}
 </section>
 
   <div class="stage">
-    <div class="col"><div class="lab"><i>C</i>ลูกค้า · LINE OA</div><div class="ph"><div class="scr" id="cust"></div></div></div>
+    <div class="col"><div class="lab"><i>C</i>ลูกค้า · LINE OA → Microsite</div><div class="ph"><div class="scr" id="cust"></div></div></div>
     <div class="col"><div class="lab"><i>S</i>ร้านโชห่วย · Merchant</div><div class="ph"><div class="scr dk" id="shop"></div></div></div>
     <div class="col"><div class="feed" id="feed"></div></div>
   </div>
@@ -1378,7 +1390,7 @@ function lbRows(type){const r=rngOf(type.length*31+5),names=['คุณบอส
   rows.sort((a,b)=>b.v-a.v);rows.forEach((x,i)=>x.rank=i+1);return rows}
 
 /* =====================================================================
-   Customer phone (LINE OA + LIFF): chat, card, collect, rewards, tier,
+   Customer phone (LINE OA gateway + CRM Microsite): chat, card, collect, rewards, tier,
    quizzes, draws, wallet, leaderboard, register
    ===================================================================== */
 let qrLeft=60,qrSeed=Math.floor(Math.random()*1e6);
@@ -1427,9 +1439,16 @@ function renderCust(){
   el.className='scr '+(ui.c==='chat'?'':'dk');
   const C=({chat:cChat,card:cCard,collect:cCollect,rewards:cRewards,redeem:cRedeem,tier:cTier,hist:cTier,near:cNear,quizP:cQuiz,quizW:cQuiz,draws:cDraws,wallet:cWallet,board:cBoard,buddy:cBuddy,goal:cGoal,reg1:cReg,reg2:cReg,reg3:cReg,reg4:cReg,regAge:cReg})[ui.c];
   h=C?C():cChat();
+  if(gate)h=gateSheet();else if(ui.c!=='chat')h=msChrome(ui.c)+h;
   if(S.pending)h+=pendSheet();
   el.innerHTML=h;const cb=$('#chatbox');if(cb)cb.scrollTop=cb.scrollHeight;
 }
+/* LINE OA is only the gateway; every CRM page lives on a separate Microsite opened in LINE's in-app browser */
+let gate=0;
+const MSP={card:'card',collect:'charge',rewards:'rewards',redeem:'rewards/redeem',tier:'tier',hist:'history',near:'stores',quizP:'profile',quizW:'quiz',draws:'draw',wallet:'wallet',board:'leaderboard',buddy:'buddy',goal:'goal',reg1:'join',reg2:'join/profile',reg3:'join/otp',reg4:'join/done',regAge:'join/age'};
+function msChrome(c){return `<div class="msb"><button data-a="c" data-v="chat" aria-label="ปิด Microsite กลับแชท LINE">✕</button><div class="url"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0110 0v3M5 11h14v9H5z"/></svg>club.volt.co.th/${MSP[c]||c}</div><span class="ln">LINE</span></div>`}
+function gateSheet(){const g=!S.user.reg;return `<div class="gate"><div class="glogo">LINE</div><b>${g?'LINE Login':'เข้าสู่ระบบด้วย LINE'}</b><span>${g?'ขอสิทธิ์โปรไฟล์ + เพิ่มเพื่อน Volt Club':'ยืนยันตัวตนอัตโนมัติ (SSO)'}</span><div class="gbar"><i></i></div><small>เปิด CRM Microsite · club.volt.co.th</small></div>`}
+function gateOpen(){gate=1;setTimeout(()=>{gate=0;renderCust()},700)}
 function cChat(){const u=S.user;
   return `<div class="lhead"><span class="av im-bm-y"></span><div style="flex:1"><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE Official Account</span></div>${hudHtml(true)}</div><div class="chat" id="chatbox">${S.chat.map(bubOf).join('')}</div>
   <div class="qrep"><button data-a="ask" data-v="pts">แต้มฉันเหลือเท่าไร</button><button data-a="ask" data-v="near">ร้านสะสมแต้มใกล้ฉัน</button><button data-a="ask" data-v="how">สะสมแต้มยังไง</button><button data-a="ask" data-v="tier">ขึ้น Tier ยังไง</button><button data-a="ask" data-v="next">ควรทำอะไรต่อ</button></div>${richMenu()}`}
@@ -1563,7 +1582,7 @@ function renderShop(){
   el.innerHTML=h+'</div>';
 }
 function renderFeed(){
-  const TRY=[['reg','สมัครสมาชิก: LINE Login → ฟอร์ม (อายุ 15+) → OTP รับ Welcome 20 แต้ม (รอกระป๋องแรก)'],['qr','ลูกค้าสแกน QR ร้าน (เมนูชาร์จแต้ม › QR ร้าน) → ร้านกดอนุมัติ เห็นสายฟ้าบินเข้า Charge Bolt'],['receipt','กรอกรหัส 310 ml แล้วส่งใบเสร็จ 7-Eleven เพื่อรับ Retail Boost (ลองรูปเบลอ เลขซ้ำ ใบเสร็จ AI สร้าง)'],['review','หลังบ้านอนุมัติใบเสร็จในคิวตรวจ'],['goal','ตั้งเป้ารางวัล แล้วดู Charge Bolt เติมตามแต้ม'],['quiz','ตอบ Charge Profile / Weekly Quiz'],['iw','ชาร์จกระป๋องเพื่อลุ้น Instant Win (เดโมตั้งโอกาสสูง)'],['draw','ใช้แต้มซื้อสิทธิ์ Lucky Draw แล้วให้หลังบ้านจับรางวัล'],['rule','หลังบ้านเปิดตัวคูณ แล้วสแกนใหม่'],['suspend','หลังบ้านระงับร้านเจ๊หน่อย แล้วดูมือถือร้าน'],['tier','กด “ข้ามสัปดาห์” แล้วชาร์จอีกครั้ง เพื่อ Level Up']];
+  const TRY=[['reg','สมัครสมาชิก: แตะ Rich Menu ใน LINE → เปิด CRM Microsite (LINE Login) → ฟอร์ม (อายุ 15+) → OTP รับ Welcome 20 แต้ม (รอกระป๋องแรก)'],['qr','ลูกค้าสแกน QR ร้าน (เมนูชาร์จแต้ม › QR ร้าน) → ร้านกดอนุมัติ เห็นสายฟ้าบินเข้า Charge Bolt'],['receipt','กรอกรหัส 310 ml แล้วส่งใบเสร็จ 7-Eleven เพื่อรับ Retail Boost (ลองรูปเบลอ เลขซ้ำ ใบเสร็จ AI สร้าง)'],['review','หลังบ้านอนุมัติใบเสร็จในคิวตรวจ'],['goal','ตั้งเป้ารางวัล แล้วดู Charge Bolt เติมตามแต้ม'],['quiz','ตอบ Charge Profile / Weekly Quiz'],['iw','ชาร์จกระป๋องเพื่อลุ้น Instant Win (เดโมตั้งโอกาสสูง)'],['draw','ใช้แต้มซื้อสิทธิ์ Lucky Draw แล้วให้หลังบ้านจับรางวัล'],['rule','หลังบ้านเปิดตัวคูณ แล้วสแกนใหม่'],['suspend','หลังบ้านระงับร้านเจ๊หน่อย แล้วดูมือถือร้าน'],['tier','กด “ข้ามสัปดาห์” แล้วชาร์จอีกครั้ง เพื่อ Level Up']];
   $('#feed').innerHTML=`<div class="panel"><h3>ลองเล่นตามนี้</h3><ol class="try">${TRY.map(([k,t])=>`<li class="${S.ui.done[k]?'done':''}">${t}</li>`).join('')}</ol></div>
   <div class="panel"><div class="sp"><h3>สิ่งที่เกิดขึ้นในระบบ</h3><span class="mut" style="font-size:12px">Audit Log</span></div><div>${S.log.length?S.log.slice(0,9).map(l=>`<div class="ev"><i class="${l.w==='ลูกค้า'?'c':l.w==='ร้าน'?'s':l.w==='หลังบ้าน'?'b':'a'}">${l.w}</i><span>${esc(l.t)}</span><time>${l.at}</time></div>`).join(''):'<span class="mut" style="font-size:13px">ยังไม่มีเหตุการณ์ ลองกดที่มือถือลูกค้าหรือร้านดู</span>'}</div></div>`;
 }
@@ -1754,7 +1773,7 @@ function approveReq(p,auto){const sh=S.shops.find(x=>x.id===p.shopId),over=sh.us
   if(res.cans){sh.usedM+=res.cans;sh.pts+=res.cans;S.user.scansToday++;if(sc)sc.st=why?'hold':'ok';if(sh.id===myShop().id)fxPush({to:'#shopb .cbolt',n:res.cans,label:`ร้าน +${res.cans}`});log(auto?'ระบบ':'ร้าน',`อนุมัติ ${p.q} กระป๋อง ${why?'(พักแต้ม: '+why+')':''}`);done('qr');if(res.iw&&res.iw.win)toast('Instant Win! ดูกระเป๋าคูปอง')}
   else{if(sc)sc.st='cap';log('ระบบ','ลูกค้าชาร์จครบเพดานวันนี้')}}
 const A={
-  c:(v)=>{S.ui.c=v;if(v==='rewards'||v==='collect')S.ui.rd=null;if(v==='quizP')S.ui.qi=0;if(v==='quizW')S.ui.qi=0},
+  c:(v)=>{if(S.ui.c==='chat'&&v!=='chat'&&!S.ui.noGate)gateOpen();S.ui.c=v;if(v==='rewards'||v==='collect')S.ui.rd=null;if(v==='quizP')S.ui.qi=0;if(v==='quizW')S.ui.qi=0},
   collectTab:(v)=>{S.ui.c='collect';S.ui.tab=v},
   fl:(v)=>{S.ui.fl=v},imgs:(v)=>{S.ui.rcImgs=Math.max(1,Math.min(6,S.ui.rcImgs+ +v))},
   assist:()=>{if(S.aiOff||S.aiK.l3)return toast('ผู้ช่วยปิดอยู่ชั่วคราว');const sku=$('#rsku').value,q=Math.max(1,+$('#rqty').value||1),st=$('#rstore').value,u=S.user,bo=st==='7-Eleven'&&sku==='s310'?Math.min(q,u.boostPool||0):0,pts=S.rules[sku==='s310'?'p310':'p190']*q+bo*S.rules.bonus7;toast(`ประมาณ +${pts} แต้ม${bo?` (รวม Retail Boost ${bo} กป.)`:''} · ถ่ายให้เห็นร้าน วันที่ รายการชัด · ผู้ช่วยไม่ตัดสินผลการตรวจ`);log('AI','ผู้ช่วยในหน้า: ดูตัวอย่างแต้ม')},
