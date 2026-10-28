@@ -1,10 +1,10 @@
 <title>Volt Grid 3D</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@1,700;1,800&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@1,700;1,800&family=Barlow+Condensed:ital,wght@1,800;1,900&family=Montserrat:wght@600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
 <style>
 /* Layout: full-bleed WebGL stage; HUD floats on top (brand + views left, KPIs right, live ticker bottom) */
-:root{--bg:#04061c;--navy:#0E1640;--navy2:#18268F;--cy:#27D3FF;--yl:#F2C200;--pu:#9B3DFF;--ink:#fff;--mut:#A9B4EA;--glass:rgba(10,16,64,.62);--line:rgba(255,255,255,.16);--ok:#4BE39A;--warn:#FFB800;--bad:#FF6B7A;
+:root{--bg:#000000;--navy:#0B0B14;--navy2:#1A36E0;--cy:#17D6FF;--yl:#FFEB00;--pu:#9B3DFF;--ink:#fff;--mut:#A9B4EA;--glass:rgba(10,16,64,.62);--line:rgba(255,255,255,.16);--ok:#4BE39A;--warn:#FFB800;--bad:#FF6B7A;
 --disp:'Bai Jamjuree','IBM Plex Sans Thai',system-ui,sans-serif;--body:'IBM Plex Sans Thai',system-ui,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -16,7 +16,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
 #ui>*{pointer-events:none}
 #ui button,#ui a{pointer-events:auto}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
-.brand h1{margin:0;font:italic 800 clamp(22px,4.2vw,34px)/1 var(--disp);letter-spacing:.01em;text-transform:uppercase;text-shadow:0 0 26px rgba(39,211,255,.45)}
+.brand h1{margin:0;font:italic 900 clamp(30px,5.4vw,52px)/.9 "Barlow Condensed",var(--disp);letter-spacing:-.01em;text-transform:uppercase}
 .brand h1 em{font-style:inherit;color:var(--yl)}
 .brand p{margin:4px 0 0;font:600 11px var(--body);letter-spacing:.16em;color:var(--mut);text-transform:uppercase}
 .live{display:inline-flex;align-items:center;gap:7px;margin-top:8px;font:italic 800 12px var(--disp);letter-spacing:.1em;padding:4px 10px;border-radius:999px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(8px)}
@@ -24,11 +24,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
 .live.off i{background:var(--warn);box-shadow:none;animation:none}
 .live small{font:400 11px var(--body);letter-spacing:0;color:var(--mut)}
 @keyframes pulse{50%{opacity:.35}}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(112px,1fr));gap:8px;flex:1 1 440px;max-width:640px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(124px,1fr));gap:8px;flex:1 1 440px;max-width:640px}
 .kpi{background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:9px 12px;backdrop-filter:blur(10px);min-width:0;position:relative;overflow:hidden}
 .kpi::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,var(--c,var(--cy)),transparent)}
 .kpi small{display:block;font:600 10.5px var(--body);letter-spacing:.08em;color:var(--mut);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kpi b{display:block;font:italic 800 clamp(20px,2.6vw,28px)/1.1 var(--disp);font-variant-numeric:tabular-nums;white-space:nowrap}
+.kpi b{display:block;font:italic 900 clamp(22px,2.4vw,30px)/1 "Barlow Condensed",var(--disp);font-variant-numeric:tabular-nums;white-space:nowrap}
 .kpi span{font:500 11px var(--body);color:var(--mut)}
 .kpi.zone b{color:var(--zc,var(--ok))}
 .mid{flex:1}
@@ -48,16 +48,16 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
 .note{font:400 11px var(--body);color:var(--mut);text-align:right;max-width:260px}
 /* in-scene labels */
 #labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-.lb{position:absolute;left:0;top:0;transform:translate(-50%,-100%);text-align:center;white-space:nowrap;will-change:transform;font:600 12px var(--body);text-shadow:0 1px 8px #000,0 0 14px rgba(4,6,28,.9)}
-.lb b{display:block;font:italic 800 20px/1.05 var(--disp);font-variant-numeric:tabular-nums}
+.lb{position:absolute;left:0;top:0;transform:translate(-50%,-100%);text-align:center;white-space:nowrap;will-change:transform;font:600 12px var(--body);text-shadow:0 1px 8px #000,0 0 14px rgba(0,0,0,.9)}
+.lb b{display:block;font:italic 900 26px/1 "Barlow Condensed",var(--disp);font-variant-numeric:tabular-nums}
 .lb small{display:block;font:500 11px var(--body);color:var(--mut)}
 .lb.ch small{color:#fff;font-weight:600;font-size:12px}
 .lb.sm b{font-size:16px}
 .lb .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--c);box-shadow:0 0 8px var(--c)}
-.pop{position:fixed;left:0;top:0;pointer-events:none;font:italic 900 24px var(--disp);color:var(--yl);text-shadow:0 0 18px rgba(242,194,0,.85),0 2px 0 var(--navy);animation:pop 1.3s ease-out forwards;white-space:nowrap}
+.pop{position:fixed;left:0;top:0;pointer-events:none;font:italic 900 34px "Barlow Condensed",var(--disp);color:var(--yl);text-shadow:0 0 18px rgba(255,235,0,.85),0 2px 0 var(--navy);animation:pop 1.3s ease-out forwards;white-space:nowrap}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,0) scale(.6)}15%{opacity:1;transform:translate(-50%,-14px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
-#tip{position:fixed;pointer-events:none;background:var(--navy);border:1px solid var(--yl);border-radius:10px;padding:6px 10px;font-size:12.5px;transform:translate(14px,14px);z-index:5;box-shadow:0 0 20px rgba(242,194,0,.3)}
-#fallback{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 40%,#18268F,#04061c 70%)}
+#tip{position:fixed;pointer-events:none;background:var(--navy);border:1px solid var(--yl);border-radius:10px;padding:6px 10px;font-size:12.5px;transform:translate(14px,14px);z-index:5;box-shadow:0 0 20px rgba(255,235,0,.3)}
+#fallback{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 40%,#1A36E0,#000000 70%)}
 #fallback.on{display:grid}
 #fallback div{max-width:520px;display:flex;flex-direction:column;align-items:center;gap:14px}
 #fallback .row{display:flex;gap:6px;align-items:flex-end}
@@ -76,6 +76,17 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
 #ui{gap:6px}
 }
 @media (prefers-reduced-motion:reduce){.live i,.tick div{animation:none}.pop{animation-duration:2s}}
+
+/* mood: flat bento KPI blocks */
+.kpi{backdrop-filter:none;border:0;border-radius:18px}
+.kpi::after{display:none}
+.kpi:nth-child(1){background:#FFEB00;color:#05050A}.kpi:nth-child(1) small,.kpi:nth-child(1) span{color:rgba(5,5,10,.72)}
+.kpi:nth-child(2){background:#2147FF}.kpi:nth-child(2) small,.kpi:nth-child(2) span{color:rgba(255,255,255,.8)}
+.kpi:nth-child(3){background:#8A2BFF}.kpi:nth-child(3) small,.kpi:nth-child(3) span{color:rgba(255,255,255,.82)}
+.kpi:nth-child(4){background:#17D6FF;color:#05050A}.kpi:nth-child(4) small,.kpi:nth-child(4) span{color:rgba(5,5,10,.72)}
+.kpi.zone b{color:#05050A}
+.live,.views button,.ctl button,.tick div{backdrop-filter:none;background:#0B0B14}
+.live{border-color:rgba(255,255,255,.2)}
 </style>
 
 <canvas id="stage" aria-label="Volt Grid 3D dashboard: Volt Bolt mascots, charge bolts, channel bars, funnel and budget governor" role="img"></canvas>
@@ -84,8 +95,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
 <div id="ui">
   <div class="top">
     <div class="brand">
-      <h1>Volt Grid <em>3D</em></h1>
-      <p>Charge Your Experience</p>
+      <h1>Scan. Collect.<br><em>Unlock Energy.</em></h1>
+      <p>CRM Solution · The root of your energy</p>
       <span class="live" id="live"><i></i>LIVE <small id="clock"></small></span>
     </div>
     <div class="kpis" id="kpis">
@@ -129,13 +140,13 @@ try{ if(!window.THREE) throw 0; renderer=new THREE.WebGLRenderer({canvas,antiali
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 renderer.outputEncoding=THREE.sRGBEncoding;
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x04061c);
-scene.fog=new THREE.FogExp2(0x04061c,.016);
+scene.background=new THREE.Color(0x000000);
+scene.fog=new THREE.FogExp2(0x000000,.016);
 const cam=new THREE.PerspectiveCamera(42,1,.1,200);
 
 /* ---------- data (simulated; call VoltGrid3D.ingest(ev) to push real events) ---------- */
-const CH=[{k:'7-Eleven',c:0x27D3FF,s:.46},{k:'โชห่วย',c:0xF2C200,s:.32},{k:'Lawson',c:0x9B3DFF,s:.09},{k:'Makro',c:0x2F6BFF,s:.07},{k:'ออนไลน์+',c:0xC9D2FF,s:.06}];
-const FL=[{k:'c',n:'Blueberry',c:0x27D3FF,css:'#27D3FF',x:-5.4,s:.34},{k:'y',n:'Tropical Fruit',c:0xF2C200,css:'#F2C200',x:0,s:.38},{k:'p',n:'Forest Fruit',c:0x9B3DFF,css:'#B07CFF',x:5.4,s:.28}];
+const CH=[{k:'7-Eleven',c:0x17D6FF,s:.46},{k:'โชห่วย',c:0xFFEB00,s:.32},{k:'Lawson',c:0x9B3DFF,s:.09},{k:'Makro',c:0x2B5CFF,s:.07},{k:'ออนไลน์+',c:0xC9D2FF,s:.06}];
+const FL=[{k:'c',n:'Blueberry',c:0x17D6FF,css:'#17D6FF',x:-5.4,s:.34},{k:'y',n:'Tropical Fruit',c:0xFFEB00,css:'#FFEB00',x:0,s:.38},{k:'p',n:'Forest Fruit',c:0x9B3DFF,css:'#B07CFF',x:5.4,s:.28}];
 const D={cans:24600,pts:1204000,mem:48210,cpc:1.18,budget:31.0,
   ch:CH.map(c=>Math.round(24600*c.s)),fl:FL.map(f=>Math.round(24600*f.s)),
   fun:[48210,30120,21080,9640],funL:['สมาชิก','ใช้งาน 30 วัน','ซื้อซ้ำ','แลกรางวัล'],tick:[],paused:false};
@@ -150,20 +161,20 @@ const loader=new THREE.TextureLoader();
 
 /* ---------- floor ---------- */
 const floor=new THREE.Group();scene.add(floor);
-const fl=new THREE.Mesh(new THREE.CircleGeometry(60,64).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x070b33,transparent:true,opacity:.78}));fl.renderOrder=-2;floor.add(fl);
-const grid=new THREE.GridHelper(120,80,0x2F6BFF,0x18268F);grid.material.transparent=true;grid.material.opacity=.38;grid.position.y=.01;floor.add(grid);
+const fl=new THREE.Mesh(new THREE.CircleGeometry(60,64).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x06060d,transparent:true,opacity:.78}));fl.renderOrder=-2;floor.add(fl);
+const grid=new THREE.GridHelper(120,80,0x2B5CFF,0x1A36E0);grid.material.transparent=true;grid.material.opacity=.38;grid.position.y=.01;floor.add(grid);
 const ringTex=glowTex(46,168,230);
 const spot=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.35}));spot.scale.set(46,46,1);spot.position.set(0,.05,-2);floor.add(spot);
 spot.material.rotation=0;
 
 /* ---------- lights ---------- */
-scene.add(new THREE.AmbientLight(0x8fa0ff,.85));
+scene.add(new THREE.AmbientLight(0xb4b8ff,.85));
 const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(6,14,10);scene.add(dl);
 FL.forEach(f=>{const pl=new THREE.PointLight(f.c,1.1,16);pl.position.set(f.x,3,-3);scene.add(pl)});
 
 /* ---------- particles ---------- */
 const PN=420,pg=new THREE.BufferGeometry(),pp=new Float32Array(PN*3),pc=new Float32Array(PN*3),pv=new Float32Array(PN);
-const pcol=[new THREE.Color(0x27D3FF),new THREE.Color(0xF2C200),new THREE.Color(0x9B3DFF)];
+const pcol=[new THREE.Color(0x17D6FF),new THREE.Color(0xFFEB00),new THREE.Color(0x9B3DFF)];
 for(let i=0;i<PN;i++){pp[i*3]=(Math.random()-.5)*52;pp[i*3+1]=Math.random()*16;pp[i*3+2]=(Math.random()-.5)*34-4;pv[i]=.15+Math.random()*.5;const c=pcol[i%3];pc.set([c.r,c.g,c.b],i*3)}
 pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('color',new THREE.BufferAttribute(pc,3));
 const parts=new THREE.Points(pg,new THREE.PointsMaterial({size:.12,vertexColors:true,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false}));scene.add(parts);
@@ -172,7 +183,7 @@ const parts=new THREE.Points(pg,new THREE.PointsMaterial({size:.12,vertexColors:
 const pods=[];
 function mkPod(f,i){
   const g=new THREE.Group();g.position.set(f.x,0,i===1?-4.2:-5.2);scene.add(g);
-  const base=new THREE.Mesh(new THREE.CylinderGeometry(1.9,2.2,.34,6),new THREE.MeshStandardMaterial({color:0x0E1640,metalness:.6,roughness:.35,emissive:f.c,emissiveIntensity:.12}));base.position.y=.17;g.add(base);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(1.9,2.2,.34,6),new THREE.MeshStandardMaterial({color:0x0B0B14,metalness:.6,roughness:.35,emissive:f.c,emissiveIntensity:.12}));base.position.y=.17;g.add(base);
   const edge=new THREE.LineSegments(new THREE.EdgesGeometry(base.geometry),new THREE.LineBasicMaterial({color:f.c}));edge.position.y=.17;g.add(edge);
   const ring=new THREE.Mesh(new THREE.TorusGeometry(2.55,.04,8,6*6).rotateX(Math.PI/2),new THREE.MeshBasicMaterial({color:f.c,transparent:true,opacity:.85}));ring.position.y=.06;g.add(ring);
   const halo=glow(f.c,9,.5);halo.position.set(0,3.2,-.6);g.add(halo);
@@ -199,7 +210,7 @@ const bars=[];const barG=new THREE.Group();barG.position.set(0,0,5.4);scene.add(
 const BS=3.6/12000;
 CH.forEach((c,i)=>{
   const x=(i-2)*2.7;
-  const plate=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.25,.12,24),new THREE.MeshStandardMaterial({color:0x0E1640,metalness:.5,roughness:.4,emissive:c.c,emissiveIntensity:.18}));plate.position.set(x,.06,0);barG.add(plate);
+  const plate=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.25,.12,24),new THREE.MeshStandardMaterial({color:0x0B0B14,metalness:.5,roughness:.4,emissive:c.c,emissiveIntensity:.18}));plate.position.set(x,.06,0);barG.add(plate);
   const bx=new THREE.Mesh(new THREE.BoxGeometry(1.15,1,1.15),new THREE.MeshStandardMaterial({color:c.c,emissive:c.c,emissiveIntensity:.38,metalness:.25,roughness:.28,transparent:true,opacity:.92}));bx.position.set(x,.5,0);barG.add(bx);
   const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.15,1,1.15)),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.7}));edges.position.copy(bx.position);barG.add(edges);
   const cap=glow(c.c,2.6,.7);barG.add(cap);
@@ -208,7 +219,7 @@ CH.forEach((c,i)=>{
 
 /* ---------- funnel (left) ---------- */
 const funG=new THREE.Group();funG.position.set(-12.4,0,.5);scene.add(funG);
-const funnel=[];const FC=[0x27D3FF,0x2F6BFF,0x9B3DFF,0xF2C200];
+const funnel=[];const FC=[0x17D6FF,0x2B5CFF,0x9B3DFF,0xFFEB00];
 for(let i=0;i<4;i++){
   const r=t=>.9+2.2*Math.sqrt(t/D.fun[0]);
   const rb=r(D.fun[i]),rt=r(D.fun[Math.min(3,i+1)]);
@@ -219,17 +230,17 @@ for(let i=0;i<4;i++){
   const rg=new THREE.Mesh(new THREE.TorusGeometry(rb,.035,6,48).rotateX(Math.PI/2),new THREE.MeshBasicMaterial({color:FC[i]}));rg.position.set(0,m.position.y+.47,0);funG.add(rg);
   funnel.push({m,ln,rg});
 }
-{const g=glow(0x27D3FF,8,.3);g.position.set(0,2.6,0);funG.add(g)}
+{const g=glow(0x17D6FF,8,.3);g.position.set(0,2.6,0);funG.add(g)}
 
 /* ---------- budget governor (right) ---------- */
 const govG=new THREE.Group();govG.position.set(12.4,0,.5);scene.add(govG);
-const track=new THREE.Mesh(new THREE.TorusGeometry(2.6,.2,16,80,Math.PI*1.5),new THREE.MeshStandardMaterial({color:0x18268F,emissive:0x18268F,emissiveIntensity:.4,metalness:.4,roughness:.4}));track.position.y=3.3;track.rotation.z=-Math.PI*.25;govG.add(track);
+const track=new THREE.Mesh(new THREE.TorusGeometry(2.6,.2,16,80,Math.PI*1.5),new THREE.MeshStandardMaterial({color:0x1A36E0,emissive:0x1A36E0,emissiveIntensity:.4,metalness:.4,roughness:.4}));track.position.y=3.3;track.rotation.z=-Math.PI*.25;govG.add(track);
 let fill=null;
 function setFill(p){if(fill){govG.remove(fill);fill.geometry.dispose()}
-  const a=Math.max(.02,p)*Math.PI*1.5;fill=new THREE.Mesh(new THREE.TorusGeometry(2.6,.27,16,80,a),new THREE.MeshStandardMaterial({color:0xF2C200,emissive:0xF2C200,emissiveIntensity:.8,metalness:.2,roughness:.3}));fill.position.y=3.3;fill.rotation.z=Math.PI*1.25-a;govG.add(fill)}
+  const a=Math.max(.02,p)*Math.PI*1.5;fill=new THREE.Mesh(new THREE.TorusGeometry(2.6,.27,16,80,a),new THREE.MeshStandardMaterial({color:0xFFEB00,emissive:0xFFEB00,emissiveIntensity:.8,metalness:.2,roughness:.3}));fill.position.y=3.3;fill.rotation.z=Math.PI*1.25-a;govG.add(fill)}
 setFill(D.budget/100);
-const govBase=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.9,.3,32),new THREE.MeshStandardMaterial({color:0x0A1038,metalness:.6,roughness:.35,emissive:0xF2C200,emissiveIntensity:.14}));govBase.position.y=.15;govG.add(govBase);
-{const g=glow(0xF2C200,8,.28);g.position.set(0,3.3,0);govG.add(g)}
+const govBase=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.9,.3,32),new THREE.MeshStandardMaterial({color:0x0A1038,metalness:.6,roughness:.35,emissive:0xFFEB00,emissiveIntensity:.14}));govBase.position.y=.15;govBase.visible=false;govG.add(govBase);
+{const g=glow(0xFFEB00,8,.28);g.position.set(0,3.3,0);govG.add(g)}
 
 /* ---------- labels ---------- */
 const LB=$('#labels'),lbs=[];

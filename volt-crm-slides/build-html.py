@@ -3,6 +3,7 @@
 import pathlib, re
 d = pathlib.Path(__file__).parent
 titles = {
+  '00': 'Concept: Scan. Collect. Unlock Energy.',
   '01': 'Pain Point → Solution',
   '02': 'System Flow (ตามไวท์บอร์ด ซ้าย → ขวา)',
   '03': 'ยืนยันการซื้อ 4 ทาง',

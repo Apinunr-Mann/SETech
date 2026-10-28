@@ -1,39 +1,39 @@
 /* "Volt — Charge Your Experience": battery, charge FX, level-up, hold-to-charge */
-.vhud{display:inline-flex;align-items:center;gap:8px;font:italic 800 15px 'Bai Jamjuree',sans-serif;color:#fff;border-radius:999px;padding:4px 12px 4px 8px;background:rgba(242,194,0,.12);border:1px solid rgba(242,194,0,.5);flex:none}
-.vhud>svg{width:13px;height:17px;fill:#F2C200;filter:drop-shadow(0 0 6px rgba(242,194,0,.8))}
-.vhud.dark{color:#0E1640;background:#F2C200;border-color:#F2C200}.vhud.dark svg{fill:#0E1640;filter:none}
-.vbolt{position:fixed;left:0;top:0;width:22px;height:30px;z-index:9999;pointer-events:none;fill:#F2C200;filter:drop-shadow(0 0 8px #F2C200) drop-shadow(0 0 16px rgba(46,168,230,.9))}
-.vpop{position:fixed;z-index:9999;pointer-events:none;font:italic 900 26px 'Bai Jamjuree',sans-serif;color:#F2C200;text-shadow:0 0 16px rgba(242,194,0,.8),0 2px 0 #0E1640;white-space:nowrap;animation:vfPop 1.3s ease-out forwards}
-.vpop.neg{color:#2EA8E6;text-shadow:0 0 16px rgba(46,168,230,.8),0 2px 0 #0E1640}
-.vlvl{position:absolute;inset:0;z-index:30;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 42%,rgba(242,194,0,.2) 0,rgba(6,10,43,.94) 58%);backdrop-filter:blur(3px);animation:vfFade .3s ease-out;cursor:pointer;border-radius:inherit}
-.vlvl::before{content:"";position:absolute;left:50%;top:45%;width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 0 rgba(242,194,0,.8);animation:vfRing 1.2s ease-out 2;transform:translate(-50%,-50%)}
+.vhud{display:inline-flex;align-items:center;gap:8px;font:italic 800 15px 'Bai Jamjuree',sans-serif;color:#fff;border-radius:999px;padding:4px 12px 4px 8px;background:rgba(255,235,0,.12);border:1px solid rgba(255,235,0,.5);flex:none}
+.vhud>svg{width:13px;height:17px;fill:#FFEB00;filter:drop-shadow(0 0 6px rgba(255,235,0,.8))}
+.vhud.dark{color:#0B0B14;background:#FFEB00;border-color:#FFEB00}.vhud.dark svg{fill:#0B0B14;filter:none}
+.vbolt{position:fixed;left:0;top:0;width:22px;height:30px;z-index:9999;pointer-events:none;fill:#FFEB00;filter:drop-shadow(0 0 8px #FFEB00) drop-shadow(0 0 16px rgba(23,214,255,.9))}
+.vpop{position:fixed;z-index:9999;pointer-events:none;font:italic 900 26px 'Bai Jamjuree',sans-serif;color:#FFEB00;text-shadow:0 0 16px rgba(255,235,0,.8),0 2px 0 #0B0B14;white-space:nowrap;animation:vfPop 1.3s ease-out forwards}
+.vpop.neg{color:#17D6FF;text-shadow:0 0 16px rgba(23,214,255,.8),0 2px 0 #0B0B14}
+.vlvl{position:absolute;inset:0;z-index:30;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 42%,rgba(255,235,0,.2) 0,rgba(0,0,0,.94) 58%);backdrop-filter:blur(3px);animation:vfFade .3s ease-out;cursor:pointer;border-radius:inherit}
+.vlvl::before{content:"";position:absolute;left:50%;top:45%;width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 0 rgba(255,235,0,.8);animation:vfRing 1.2s ease-out 2;transform:translate(-50%,-50%)}
 .vlvl div{display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;animation:vfRise .6s cubic-bezier(.2,1.4,.4,1)}
-.vlvl svg{width:64px;height:86px;fill:#F2C200;filter:drop-shadow(0 0 22px #F2C200);animation:vfFlicker 1s steps(2) 2}
-.vlvl b{font:italic 900 40px/1 'Bai Jamjuree',sans-serif;color:#F2C200;letter-spacing:.02em;text-shadow:0 0 22px rgba(242,194,0,.7)}
+.vlvl svg{width:64px;height:86px;fill:#FFEB00;filter:drop-shadow(0 0 22px #FFEB00);animation:vfFlicker 1s steps(2) 2}
+.vlvl b{font:italic 900 40px/1 'Bai Jamjuree',sans-serif;color:#FFEB00;letter-spacing:.02em;text-shadow:0 0 22px rgba(255,235,0,.7)}
 .vlvl span{font:600 15px 'IBM Plex Sans Thai',sans-serif}
 .vlvl small{color:#AEB8EC;font-size:12px}
 .vhold{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
-.vhold::before{content:"";position:absolute;inset:0;width:calc(var(--h,0)*100%);background:linear-gradient(90deg,rgba(46,168,230,.55),rgba(242,194,0,.9));transition:width .08s linear}
+.vhold::before{content:"";position:absolute;inset:0;width:calc(var(--h,0)*100%);background:linear-gradient(90deg,rgba(23,214,255,.55),rgba(255,235,0,.9));transition:width .08s linear}
 .vhold>*{position:relative}
-.vgauge{--p:.5;width:120px;height:120px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#F2C200 calc(var(--p)*360deg),rgba(255,255,255,.1) 0);box-shadow:0 0 30px rgba(242,194,0,.35);position:relative;transition:--p 1s}
-.vgauge::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#0E1640}
+.vgauge{--p:.5;width:120px;height:120px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#FFEB00 calc(var(--p)*360deg),rgba(255,255,255,.1) 0);box-shadow:0 0 30px rgba(255,235,0,.35);position:relative;transition:--p 1s}
+.vgauge::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#0B0B14}
 .vgauge>*{position:relative;text-align:center;line-height:1.05}
 .vgauge b{display:block;font:italic 900 30px 'Bai Jamjuree',sans-serif;color:#fff}
 .vgauge small{font-size:11px;color:#AEB8EC}
 .vstreak{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .vstreak span{height:30px;border-radius:8px;display:grid;place-items:center;font:600 11px 'IBM Plex Sans Thai',sans-serif;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#AEB8EC}
-.vstreak span.on{background:linear-gradient(180deg,#F2C200,#FFB800);color:#0E1640;border-color:#F2C200;box-shadow:0 0 10px rgba(242,194,0,.45)}
-.vstreak span.now{outline:2px dashed #F2C200;outline-offset:2px}
+.vstreak span.on{background:linear-gradient(180deg,#FFEB00,#FFB800);color:#0B0B14;border-color:#FFEB00;box-shadow:0 0 10px rgba(255,235,0,.45)}
+.vstreak span.now{outline:2px dashed #FFEB00;outline-offset:2px}
 .vpbar{height:8px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
-.vpbar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#2EA8E6,#F2C200);transition:width .8s}
+.vpbar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#17D6FF,#FFEB00);transition:width .8s}
 .vglow{animation:vfGlow 2.4s ease-in-out infinite}
 .vfloat svg{animation:vfFloat 2.2s ease-in-out infinite}
 @keyframes vfPop{0%{opacity:0;transform:translate(-50%,0) scale(.6)}20%{opacity:1;transform:translate(-50%,-14px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
 @keyframes vfFade{from{opacity:0}to{opacity:1}}
-@keyframes vfRing{to{box-shadow:0 0 0 220px rgba(242,194,0,0)}}
+@keyframes vfRing{to{box-shadow:0 0 0 220px rgba(255,235,0,0)}}
 @keyframes vfRise{from{opacity:0;transform:translateY(30px) scale(.8)}to{opacity:1;transform:none}}
 @keyframes vfFlicker{50%{opacity:.4}}
-@keyframes vfGlow{50%{box-shadow:0 0 28px rgba(242,194,0,.55),0 0 0 1px rgba(242,194,0,.6)}}
+@keyframes vfGlow{50%{box-shadow:0 0 28px rgba(255,235,0,.55),0 0 0 1px rgba(255,235,0,.6)}}
 @keyframes vfFloat{50%{transform:translateY(-4px)}}
 .chgrid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:24px;align-items:stretch}
 @media (max-width:860px){.chgrid{grid-template-columns:1fr}}
@@ -43,18 +43,18 @@
 .chcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
 .chcard{border-radius:20px;padding:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);display:flex;flex-direction:column;gap:8px}
 .chcard b{font:italic 800 18px 'Bai Jamjuree',sans-serif}
-.chcard b i{font-style:normal;color:#F2C200;margin-right:6px}
+.chcard b i{font-style:normal;color:#FFEB00;margin-right:6px}
 .chcard span{color:#C8D0FF;font-size:13.5px;line-height:1.5}
 .sheet{position:absolute;inset:0;background:rgba(3,6,30,.72);display:flex;align-items:flex-end;z-index:5}
-.sheet>div{width:100%;background:#0E1640;border-top:2px solid #F2C200;border-radius:26px 26px 0 0;padding:18px 16px 22px;display:flex;flex-direction:column;gap:12px}
+.sheet>div{width:100%;background:#0B0B14;border-top:2px solid #FFEB00;border-radius:26px 26px 0 0;padding:18px 16px 22px;display:flex;flex-direction:column;gap:12px}
 .chcards{align-content:start}
 .chat .kvart{height:88px}
 
 /* ===== Charge Bolt (handoff §3): glass lightning bolt filled with Volt liquid ===== */
-.cbolt{--p:.5;--cf:#F2C200;--cf2:#FFE680;display:inline-flex;flex-direction:column;align-items:center;gap:3px;flex:none;position:relative;vertical-align:middle;transform-origin:50% 60%}
+.cbolt{--p:.5;--cf:#FFEB00;--cf2:#FFE680;display:inline-flex;flex-direction:column;align-items:center;gap:3px;flex:none;position:relative;vertical-align:middle;transform-origin:50% 60%}
 .cbolt svg{width:100%;height:auto;overflow:visible;display:block}
 .cb-sm{width:20px}.cb-md{width:40px}.cb-lg{width:72px}.cb-xl{width:116px}
-.cbolt.f-y{--cf:#F5C400;--cf2:#FFE680}.cbolt.f-c{--cf:#2EA8E6;--cf2:#9ADCFF}.cbolt.f-p{--cf:#7B4BD8;--cf2:#B79CFF}
+.cbolt.f-y{--cf:#FFEB00;--cf2:#FFE680}.cbolt.f-c{--cf:#17D6FF;--cf2:#9ADCFF}.cbolt.f-p{--cf:#8A2BFF;--cf2:#B79CFF}
 .cb-glass{fill:rgba(255,255,255,.07);stroke:none}
 .cb-edge{fill:none;stroke:rgba(255,255,255,.85);stroke-width:2.4;stroke-linejoin:round}
 .cb-liq{transform:translateY(calc((1 - var(--p)) * 68px));transition:transform .9s cubic-bezier(.16,1,.3,1)}
