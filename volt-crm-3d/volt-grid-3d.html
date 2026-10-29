@@ -77,16 +77,26 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
 }
 @media (prefers-reduced-motion:reduce){.live i,.tick div{animation:none}.pop{animation-duration:2s}}
 
-/* mood: flat bento KPI blocks */
-.kpi{backdrop-filter:none;border:0;border-radius:18px}
-.kpi::after{display:none}
-.kpi:nth-child(1){background:#FFEB00;color:#05050A}.kpi:nth-child(1) small,.kpi:nth-child(1) span{color:rgba(5,5,10,.72)}
-.kpi:nth-child(2){background:#2147FF}.kpi:nth-child(2) small,.kpi:nth-child(2) span{color:rgba(255,255,255,.8)}
-.kpi:nth-child(3){background:#8A2BFF}.kpi:nth-child(3) small,.kpi:nth-child(3) span{color:rgba(255,255,255,.82)}
-.kpi:nth-child(4){background:#17D6FF;color:#05050A}.kpi:nth-child(4) small,.kpi:nth-child(4) span{color:rgba(5,5,10,.72)}
-.kpi.zone b{color:#05050A}
-.live,.views button,.ctl button,.tick div{backdrop-filter:none;background:#0B0B14}
-.live{border-color:rgba(255,255,255,.2)}
+/* Option 2 · Bento: flat colour KPI blocks */
+body.o2 .kpi{backdrop-filter:none;border:0;border-radius:18px}
+body.o2 .kpi::after{display:none}
+body.o2 .kpi:nth-child(1){background:#FFEB00;color:#05050A}body.o2 .kpi:nth-child(1) small,body.o2 .kpi:nth-child(1) span{color:rgba(5,5,10,.72)}
+body.o2 .kpi:nth-child(2){background:#2147FF}body.o2 .kpi:nth-child(2) small,body.o2 .kpi:nth-child(2) span{color:rgba(255,255,255,.8)}
+body.o2 .kpi:nth-child(3){background:#8A2BFF}body.o2 .kpi:nth-child(3) small,body.o2 .kpi:nth-child(3) span{color:rgba(255,255,255,.82)}
+body.o2 .kpi:nth-child(4){background:#17D6FF;color:#05050A}body.o2 .kpi:nth-child(4) small,body.o2 .kpi:nth-child(4) span{color:rgba(5,5,10,.72)}
+body.o2 .kpi.zone b{color:#05050A}
+body.o2 :is(.live,.views button,.ctl button,.tick div){backdrop-filter:none;background:#0B0B14}
+body.o2 .live{border-color:rgba(255,255,255,.2)}
+/* Option 1 · App style: deep navy glass with blue glow, yellow numbers */
+body.o1{--bg:#040A2C;--glass:rgba(11,21,80,.72);--line:rgba(110,150,255,.5)}
+body.o1 .kpi{border-radius:16px;background:linear-gradient(160deg,rgba(18,34,120,.85),rgba(8,16,64,.85));border:1px solid rgba(110,150,255,.6);box-shadow:inset 0 0 18px rgba(60,110,255,.3),0 0 16px rgba(33,71,255,.3)}
+body.o1 .kpi::after{display:none}
+body.o1 .kpi b{color:#FFEB00;text-shadow:0 0 14px rgba(255,235,0,.4)}
+body.o1 .kpi.zone b{color:var(--zc,var(--ok));text-shadow:none}
+body.o1 :is(.views button,.ctl button,.live,.tick div){background:rgba(11,21,80,.78);border-color:rgba(110,150,255,.5)}
+body:is(.o1,.o2) :is(.views,.dsg) button[aria-pressed=true]{background:var(--yl);color:#05050A;border-color:var(--yl)}
+.kpi b{font-size:clamp(19px,1.75vw,26px);overflow:hidden;text-overflow:ellipsis;padding-right:2px}
+@media (max-width:640px){.dsg{display:none}}
 </style>
 
 <canvas id="stage" aria-label="Volt Grid 3D dashboard: Volt Bolt mascots, charge bolts, channel bars, funnel and budget governor" role="img"></canvas>
@@ -95,8 +105,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
 <div id="ui">
   <div class="top">
     <div class="brand">
-      <h1>Scan. Collect.<br><em>Unlock Energy.</em></h1>
-      <p>CRM Solution · The root of your energy</p>
+      <h1>Scan. Collect.<br><em>Unlock Experience.</em></h1>
+      <p>Volt CRM · B2C · Your Everyday Energy Buddy</p>
       <span class="live" id="live"><i></i>LIVE <small id="clock"></small></span>
     </div>
     <div class="kpis" id="kpis">
@@ -117,8 +127,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.4 var(--body
     </div>
     <div class="tick" id="tick" aria-live="polite"></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+      <div class="ctl dsg" role="group" aria-label="ดีไซน์"><button data-t="o1" aria-pressed="true">Option 1 · App</button><button data-t="o2" aria-pressed="false">Option 2 · Bento</button></div>
       <div class="ctl"><button id="pause" aria-pressed="false">หยุดชั่วคราว</button><button id="zap">ชาร์จเลย ⚡</button></div>
-      <div class="note">ข้อมูลตัวอย่าง จำลองสด · ลากเพื่อหมุนมุมมอง · แตะมาสคอตเพื่อชาร์จ</div>
+      <div class="note">ข้อมูลตัวอย่าง จำลองสด (B2C · ไม่รวม B2B Add-on) · ลากเพื่อหมุนมุมมอง · แตะมาสคอตเพื่อชาร์จ</div>
     </div>
   </div>
 </div>
@@ -138,6 +149,14 @@ const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 let canvas=$('#stage'),renderer;
 try{ if(!window.THREE) throw 0; renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'}); }catch(e){ $('#fallback').classList.add('on'); return; }
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+/* design option (matches the Prototype / Mockup links): #o1 app style · #o2 bento; remembered per viewer */
+let THEME=(location.hash.slice(1)==='o2'||location.hash.slice(1)==='o1')?location.hash.slice(1):(()=>{try{return localStorage.voltGridTheme}catch(e){return null}})()||'o1';
+const THEMES={o1:{bg:0x040A2C,floor:0x050B33},o2:{bg:0x02040F,floor:0x03061A}};
+function applyTheme(t){THEME=t;document.body.classList.remove('o1','o2');document.body.classList.add(t);try{localStorage.voltGridTheme=t}catch(e){}
+  document.querySelectorAll('.dsg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===t));
+  try{scene.background.set(THEMES[t].bg);scene.fog.color.set(THEMES[t].bg);fl.material.color.set(THEMES[t].floor)}catch(e){}}
+applyTheme(THEME);
+document.querySelectorAll('.dsg button').forEach(b=>b.addEventListener('click',()=>{applyTheme(b.dataset.t);history.replaceState(null,'','#'+b.dataset.t)}));
 renderer.outputEncoding=THREE.sRGBEncoding;
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x000000);
@@ -145,7 +164,7 @@ scene.fog=new THREE.FogExp2(0x000000,.016);
 const cam=new THREE.PerspectiveCamera(42,1,.1,200);
 
 /* ---------- data (simulated; call VoltGrid3D.ingest(ev) to push real events) ---------- */
-const CH=[{k:'7-Eleven',c:0x17D6FF,s:.46},{k:'โชห่วย',c:0xFFEB00,s:.32},{k:'Lawson',c:0x9B3DFF,s:.09},{k:'Makro',c:0x2B5CFF,s:.07},{k:'ออนไลน์+',c:0xC9D2FF,s:.06}];
+const CH=[{k:'7-Eleven',c:0x17D6FF,s:.46},{k:'โชห่วย · รหัส',c:0xFFEB00,s:.32},{k:'Lawson',c:0x9B3DFF,s:.09},{k:'Makro',c:0x2B5CFF,s:.07},{k:'ออนไลน์+',c:0xC9D2FF,s:.06}];
 const FL=[{k:'c',n:'Blueberry',c:0x17D6FF,css:'#17D6FF',x:-5.4,s:.34},{k:'y',n:'Tropical Fruit',c:0xFFEB00,css:'#FFEB00',x:0,s:.38},{k:'p',n:'Forest Fruit',c:0x9B3DFF,css:'#B07CFF',x:5.4,s:.28}];
 const D={cans:24600,pts:1204000,mem:48210,cpc:1.18,budget:31.0,
   ch:CH.map(c=>Math.round(24600*c.s)),fl:FL.map(f=>Math.round(24600*f.s)),
@@ -161,7 +180,7 @@ const loader=new THREE.TextureLoader();
 
 /* ---------- floor ---------- */
 const floor=new THREE.Group();scene.add(floor);
-const fl=new THREE.Mesh(new THREE.CircleGeometry(60,64).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x06060d,transparent:true,opacity:.78}));fl.renderOrder=-2;floor.add(fl);
+const fl=new THREE.Mesh(new THREE.CircleGeometry(60,64).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x06060d,transparent:true,opacity:.78}));fl.renderOrder=-2;floor.add(fl);applyTheme(THEME);
 const grid=new THREE.GridHelper(120,80,0x2B5CFF,0x1A36E0);grid.material.transparent=true;grid.material.opacity=.38;grid.position.y=.01;floor.add(grid);
 const ringTex=glowTex(46,168,230);
 const spot=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false,opacity:.35}));spot.scale.set(46,46,1);spot.position.set(0,.05,-2);floor.add(spot);

@@ -6,13 +6,17 @@
 |---|---|
 | `01-pain-solution` | Pain point 12 ข้อ (V2) → ระบบแก้อย่างไร |
 | `02-system-flow` | Flow Buy → Charge → Verify → Record → Burn → Learn (V2) |
-| `03-proof-of-purchase` | ยืนยันการซื้อ 4 ทาง: Shop QR Scan (โชห่วย), ใบเสร็จ, รหัสใต้ห่วง, ออนไลน์ |
-| `04-mockup` | หน้าจอ: บัตรสมาชิก QR · ร้านสแกน · หน้าแลกรางวัล |
+| `00-concept` | ปก: Scan. Collect. Unlock Experience. |
+| `03-proof-of-purchase` | ยืนยันการซื้อ B2C 3 ทาง (รหัสใต้ห่วง, ใบเสร็จ, ออนไลน์) + Shop QR เป็น B2B เสริม |
+| `04-mockup` | 2 Design Options (App Style / Bento Hero) จาก Prototype จริง |
 | `05-architecture` | System architecture แบบ tier + integrations + hosting (อัปเดตตาม Handoff v1.1) |
 | `06-points-budget` | กติกาแต้ม · งบ 5 ถัง · Cost-per-Can Governor |
 | `07-ai-governance` | AI 3 ระดับ · สิ่งที่ห้ามทำ · Kill switch |
 | `08-data-api-events` | Data model · API หลัก · Events |
 | `09-timeline-nfr` | Timeline · เป้าหมายประสิทธิภาพ · Security |
+| `10-scope-options` | Scope: B2C หลัก + B2B Retailer Add-on (Optional) + 2 Design Options |
+
+ธีมสไลด์ใช้ Volt CI (Option 1 palette: deep navy · electric blue · Volt yellow) ฟอนต์ Bai Jamjuree / Barlow Condensed · กล่องเส้นประม่วง = B2B เสริม
 
 Render ใหม่: `node render.mjs` หรือ `node render.mjs 03` (เลือกบางไฟล์)
 

@@ -3,16 +3,17 @@
 import pathlib, re
 d = pathlib.Path(__file__).parent
 titles = {
-  '00': 'Concept: Scan. Collect. Unlock Energy.',
+  '00': 'Concept: Scan. Collect. Unlock Experience.',
   '01': 'Pain Point → Solution',
   '02': 'System Flow (ตามไวท์บอร์ด ซ้าย → ขวา)',
-  '03': 'ยืนยันการซื้อ 4 ทาง',
-  '04': 'Mockup หน้าจอ',
+  '03': 'ยืนยันการซื้อ: B2C 3 ทาง + Shop QR (B2B เสริม)',
+  '04': 'Mockup: 2 Design Options',
   '05': 'System Architecture',
   '06': 'กติกาแต้ม + งบรางวัล + Cost-per-Can Governor',
   '07': 'AI layer 3 ระดับ + Receipt AI',
   '08': 'Data model · API · Events',
   '09': 'Timeline · NFR · Security',
+  '10': 'Scope: B2C หลัก + B2B Add-on (Optional)',
 }
 
 def scope(css, cls):
@@ -50,26 +51,26 @@ for f in sorted(d.glob('[0-9][0-9]-*.html')):
 
 page = f'''<title>Volt CRM Architecture</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,500;1,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600;1,700&family=Barlow+Condensed:ital,wght@1,800;1,900&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
 <style>
-  /* Layout: stacked 16:7 slide frames under a quiet header; slides keep their own light deck palette */
-  :root {{ --bg: #f1ecea; --fg: #1d1d2b; --heading: #37386c; --accent: #c98419; --muted: #6b6b80; --shadow: rgba(55,56,108,.12); }}
-  @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --muted: #a3a2bb; --shadow: rgba(0,0,0,.45); color-scheme: dark; }} }}
-  :root[data-theme="dark"] {{ --bg: #17172a; --fg: #ecebf5; --heading: #d9d8f2; --accent: #e9a23b; --muted: #a3a2bb; --shadow: rgba(0,0,0,.45); color-scheme: dark; }}
+  /* Layout: stacked 16:7 slide frames under a quiet header; Volt CI deep-navy stage in both themes (the slides are dark artwork) */
+  :root {{ --bg: #030826; --fg: #EEF1FF; --heading: #FFFFFF; --accent: #FFEB00; --muted: #AFB8E6; --shadow: rgba(0,0,0,.5); color-scheme: dark; }}
+  @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --bg: #030826; }} }}
+  :root[data-theme="dark"] {{ --bg: #030826; }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-  body {{ background: var(--bg); color: var(--fg); font-family: 'Prompt', sans-serif; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }}
+  body {{ background: var(--bg); color: var(--fg); font-family: 'IBM Plex Sans Thai', 'Bai Jamjuree', sans-serif; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }}
   header, .slide {{ max-width: 1760px; margin: 0 auto; }}
   header {{ margin-bottom: 28px; }}
   header small {{ color: var(--muted); font-size: 15px; }}
-  header h1 {{ font: italic 600 clamp(26px, 4vw, 40px)/1.15 'Prompt', sans-serif; color: var(--heading); text-wrap: balance; }}
+  header h1 {{ font: italic 900 clamp(34px, 6vw, 64px)/.95 'Barlow Condensed', 'Bai Jamjuree', sans-serif; text-transform: uppercase; color: var(--heading); text-wrap: balance; }}
   .slide {{ margin-bottom: 40px; }}
-  .slide h2 {{ font: 600 clamp(18px, 2.4vw, 26px)/1.2 'Prompt', sans-serif; color: var(--heading); margin-bottom: 12px; display: flex; gap: 12px; align-items: baseline; text-wrap: balance; }}
+  .slide h2 {{ font: 700 clamp(18px, 2.4vw, 26px)/1.2 'Bai Jamjuree', sans-serif; color: var(--heading); margin-bottom: 12px; display: flex; gap: 12px; align-items: baseline; text-wrap: balance; }}
   .slide h2 span {{ font-style: italic; color: var(--accent); }}
-  .frame {{ position: relative; width: 100%; max-width: 100%; aspect-ratio: 1760 / 790; overflow: hidden; border-radius: 16px; background: #f1ecea; box-shadow: 0 10px 30px var(--shadow); }}
+  .frame {{ position: relative; width: 100%; max-width: 100%; aspect-ratio: 1760 / 790; overflow: hidden; border-radius: 16px; background: #040A2C; box-shadow: 0 10px 30px var(--shadow); }}
   .frame > .sl {{ position: absolute; top: 0; left: 0; transform-origin: 0 0; }}
 </style>
 <style>{''.join(styles)}</style>
-<header><small>Volt Consumer Campaign 2027 · CRM / Loyalty บน LINE OA</small><h1>System Architecture</h1></header>
+<header><small>Volt Consumer Campaign 2027 · CRM B2C (LINE → Microsite) + B2B Retailer Add-on (Optional)</small><h1>System Architecture</h1></header>
 {''.join(slides)}
 <script>
   function fit() {{ document.querySelectorAll('.frame').forEach(f => {{ f.firstElementChild.style.transform = 'scale(' + f.clientWidth / 1760 + ')'; }}); }}
