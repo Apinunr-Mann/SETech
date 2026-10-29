@@ -34,20 +34,20 @@ const TITLE = {o1: 'Option 1 · App Style', o2: 'Option 2 · Bento Hero', b2b: '
 
   if (!B2B) {
     // LINE gateway
-    await ph('line', 'L1', 'Rich Menu · ผู้ใช้ใหม่', 'เพิ่มเพื่อน LINE OA แล้วเห็นเมนูนี้ · ทุกปุ่มเปิด Microsite', () => ui('guest', 'chat', 'S.ui.rmOpen=true'));
-    await ph('line', 'L2', 'LINE Login (SSO)', 'กด Rich Menu → ยืนยันตัวตนด้วย LINE อัตโนมัติ → เปิด club.volt.co.th', async () => { await ui('guest', 'chat', 'S.ui.rmOpen=true'); await p.click('#cust .rm [data-v=rewards]'); await p.waitForTimeout(120); });
+    await ph('line', 'L1', 'Rich Menu · ผู้ใช้ใหม่', 'เพิ่มเพื่อน LINE OA แล้วเห็นเมนูนี้ · ทุกปุ่มเปิด Microsite ใน LINE (LIFF)', () => ui('guest', 'chat', 'S.ui.rmOpen=true'));
+    await ph('line', 'L2', 'เปิด LIFF ใน LINE', 'กด Rich Menu → liff.init เข้าระบบด้วยบัญชี LINE อัตโนมัติ → เปิด club.volt.co.th ในแอป LINE', async () => { await ui('guest', 'chat', 'S.ui.rmOpen=true'); await p.click('#cust .rm [data-v=rewards]'); await p.waitForTimeout(120); });
     await ph('line', 'L3', 'Rich Menu · สมาชิก (A)', 'สะสม & แลก · เมนูเปลี่ยนเองหลังสมัคร', () => ui('member', 'chat', "S.ui.rmOpen=true;S.ui.rmTab='a'"));
     await ph('line', 'L4', 'Rich Menu · สมาชิก (B)', 'Community & ลุ้น · Push แจ้งผลกลับในแชต', () => ui('member', 'chat', "S.ui.rmOpen=true;S.ui.rmTab='b'"));
     // Microsite
     await ph('home', 'H1', 'Home · ผู้ใช้ใหม่', 'หน้าแรกหลังกด Rich Menu · สมัครสมาชิกเป็นปุ่มหลัก · ฟีเจอร์ที่ต้องสมัครแสดงสถานะ', () => ui('guest', 'home'), {tall: 1});
     await ph('home', 'H2', 'Home · สมาชิก', 'แต้ม + Tier ด้านบน · เมนูลัดทุกฟีเจอร์ · แถบเมนูล่าง 5 ปุ่ม (ปุ่มกลาง = ชาร์จแต้ม)', () => ui('member', 'home'), {tall: 1});
     await ph('home', 'H3', 'มาจาก Rich Menu', 'ปุ่มที่กดใน LINE ถูกไฮไลต์บนหน้า Home ให้กดต่อได้ทันที', () => ui('member', 'home', "S.ui.from='rewards'"));
-    await ph('join', 'J1', 'ขอสิทธิ์ LINE Login', 'ใช้โปรไฟล์ LINE + เพิ่มเพื่อน · ไม่ต้องตั้งรหัสผ่าน', () => ui('guest', 'reg1'));
+    await ph('join', 'J1', 'ขอสิทธิ์ LIFF ครั้งแรก', 'โปรไฟล์ LINE + เพิ่มเพื่อน + ส่งข้อความ · ไม่ต้องตั้งรหัสผ่าน · เปิดนอก LINE ใช้ LINE Login แทน', () => ui('guest', 'reg1'));
     await ph('join', 'J2', 'ฟอร์มสมัคร + PDPA', 'อายุ 15+ · consent แยกข้อ ไม่ติ๊กไว้ก่อน', () => ui('guest', 'reg2'));
     await ph('join', 'J3', 'ยืนยัน OTP', '1 เบอร์ = 1 สมาชิก', () => ui('guest', 'reg3', "S.ui.rgData={ph:'0812344521'}"));
     await ph('join', 'J4', 'ต้อนรับสมาชิกใหม่', 'Welcome 20 แต้ม ปลดล็อกหลังชาร์จกระป๋องแรก', () => ui('member', 'reg4'));
-    await ph('earn', 'E1', 'ชาร์จแต้ม · รหัสใต้ห่วง', 'ช่องทางหลัก ใช้ได้ทุกร้านรวมร้านโชห่วย · 190 ml = 10 · 310 ml = 20 แต้ม', () => ui('member', 'collect', "S.ui.tab='code'"));
-    await ph('earn', 'E2', 'ชาร์จแต้ม · ใบเสร็จ', 'AI อ่านใบเสร็จ · ผู้ช่วยบอกแต้มก่อนส่ง · เคสไม่ชัดส่งทีมตรวจ', () => ui('member', 'collect', "S.ui.tab='receipt'"));
+    await ph('earn', 'E1', 'ชาร์จแต้ม · รหัสใต้ห่วง', 'ช่องทางหลัก ใช้ได้ทุกร้านรวมร้านโชห่วย · พิมพ์รหัส หรือสแกนด้วยกล้อง LINE (LIFF) · 190 ml = 10 · 310 ml = 20 แต้ม', () => ui('member', 'collect', "S.ui.tab='code'"));
+    await ph('earn', 'E2', 'ชาร์จแต้ม · ใบเสร็จ', 'สแกน QR ใบเสร็จด้วยกล้อง LINE (LIFF) · AI อ่านใบเสร็จ · เคสไม่ชัดส่งทีมตรวจ', () => ui('member', 'collect', "S.ui.tab='receipt'"));
     await ph('earn', 'E3', 'ชาร์จแต้ม · ออนไลน์', 'ผูกเลขออเดอร์ Shopee / Lazada / TikTok · พักแต้ม 7 วัน', () => ui('member', 'collect', "S.ui.tab='online'"));
     await ph('earn', 'E4', 'บัตรสมาชิก + Dynamic QR', 'QR เปลี่ยนทุก 60 วินาที · Charge Bolt บอกความคืบหน้า Tier', () => ui('member', 'card'));
     await ph('burn', 'R1', 'แลกรางวัล', 'แนะนำเฉพาะตัวพร้อมเหตุผล · กรองตามไลฟ์สไตล์ · ตั้งเป้า', () => ui('member', 'rewards'));
@@ -82,13 +82,13 @@ const TITLE = {o1: 'Option 1 · App Style', o2: 'Option 2 · Bento Hero', b2b: '
   const fonts = (src.match(/<link rel="stylesheet" href="https:\/\/fonts[^>]+>/) || [''])[0];
   const sprite = (src.match(/<svg width="0" height="0"[\s\S]*?<\/svg>/) || [''])[0];
   const SEC = B2B ? {b2b: ['B2B · ร้านโชห่วย', 'ส่วนเสริม: ลูกค้าสแกน QR ร้าน · ร้านอนุมัติบนมือถือ · ร้านสะสมแต้มของร้าน']}
-    : {line: ['LINE OA = Gateway', 'แชต · Rich Menu · Push · LINE Login เท่านั้น ฟีเจอร์ CRM ทั้งหมดอยู่บน Microsite'], home: ['Microsite · Home', 'กดเมนูใน LINE แล้วมาหน้านี้ก่อน แจกไปทุกฟีเจอร์'], join: ['สมัครสมาชิก', 'LINE Login → ข้อมูล + อายุ 15+ → OTP → Welcome 20 แต้ม'], earn: ['Scan · สะสมแต้ม', 'รหัสใต้ห่วง · ใบเสร็จ · ออนไลน์ · บัตรสมาชิก'], burn: ['Unlock · แลกรางวัล', 'รางวัล · กดค้างเพื่อแลก · เป้าหมาย · คูปอง'], play: ['Missions & Community', 'Tier · Quiz · Lucky Draw · Leaderboard'], me: ['Profile', 'ข้อมูลสมาชิก · AI Buddy · ร้านใกล้ฉัน']};
+    : {line: ['LINE OA + LIFF', 'แชต · Rich Menu · Push อยู่ใน LINE OA · ฟีเจอร์ CRM ทั้งหมดอยู่บน Microsite ที่เปิดใน LINE ผ่าน LIFF'], home: ['Microsite (LIFF) · Home', 'กดเมนูใน LINE แล้วมาหน้านี้ก่อน แจกไปทุกฟีเจอร์ · หัวจอเป็นแถบ LIFF ของ LINE'], join: ['สมัครสมาชิก', 'สิทธิ์ LIFF → ข้อมูล + อายุ 15+ → OTP → Welcome 20 แต้ม'], earn: ['Scan · สะสมแต้ม', 'รหัสใต้ห่วง · ใบเสร็จ · ออนไลน์ · บัตรสมาชิก'], burn: ['Unlock · แลกรางวัล', 'รางวัล · กดค้างเพื่อแลก · เป้าหมาย · คูปอง'], play: ['Missions & Community', 'Tier · Quiz · Lucky Draw · Leaderboard'], me: ['Profile', 'ข้อมูลสมาชิก · AI Buddy · ร้านใกล้ฉัน']};
   const fig = f => `<figure class="mf${f.tall ? ' tall' : ''}"><div class="ph"><div class="${f.cls}">${f.html}</div></div><figcaption><b><i>${f.id}</i>${f.t}</b><span>${f.d}</span></figcaption></figure>`;
   const secs = Object.entries(SEC).map(([k, [h, d]]) => `<section class="ms"><header><h2>${h}</h2><p>${d}</p></header><div class="mg">${F.filter(f => f.sec === k).map(fig).join('')}</div></section>`).join('');
   const desk = `<section class="ms"><header><h2>${B2B ? 'หลังบ้าน · ร้านค้า' : 'Dashboard & หลังบ้าน'}</h2><p>ใช้ดีไซน์เดียวกับ ${TITLE} · ข้อมูลตัวอย่าง</p></header><div class="md">${imgs.map(x => `<figure><img src="data:image/jpeg;base64,${x.img}" alt="${x.t}"><figcaption><b>${x.t}</b><span>${x.d}</span></figcaption></figure>`).join('')}</div></section>`;
   const kv = V === 'o2' ? 'im-o2-hero' : 'im-o1-news';
   const sw = V === 'o2' ? [['#FFEB00', 'Volt Yellow'], ['#2147FF', 'Electric Blue'], ['#8A2BFF', 'Purple'], ['#17D6FF', 'Cyan'], ['#030718', 'Night']] : [['#FFEB00', 'Volt Yellow'], ['#1D33D6', 'Royal Blue'], ['#0A1449', 'Navy Glass'], ['#B66BFF', 'Purple'], ['#040A2C', 'Deep Navy']];
-  const intro = `<header class="mh0"><div><span class="kick">Volt CRM · Mockup · ${B2B ? 'B2B (Optional)' : 'B2C'}</span><h1 class="slog">${TITLE}</h1><p>${B2B ? 'ส่วนเสริมสำหรับร้านโชห่วย เสนอแยกจาก CRM หลัก (B2C) · ใช้ระบบสมาชิก แต้ม และหลังบ้านชุดเดียวกัน' : 'LINE OA เป็นทางเข้า (Gateway) → CRM Microsite club.volt.co.th · ภาพทุกหน้าจอสร้างจาก Prototype ของ Option นี้โดยตรง'}</p>
+  const intro = `<header class="mh0"><div><span class="kick">Volt CRM · Mockup · ${B2B ? 'B2B (Optional)' : 'B2C'}</span><h1 class="slog">${TITLE}</h1><p>${B2B ? 'ส่วนเสริมสำหรับร้านโชห่วย เสนอแยกจาก CRM หลัก (B2C) · ใช้ระบบสมาชิก แต้ม และหลังบ้านชุดเดียวกัน' : 'LINE OA เป็นทางเข้า (Gateway) → CRM Microsite club.volt.co.th เปิดใน LINE ผ่าน LIFF · ภาพทุกหน้าจอสร้างจาก Prototype ของ Option นี้โดยตรง'}</p>
     <div class="sw">${sw.map(([c, n]) => `<span><i style="background:${c}"></i>${n}</span>`).join('')}<span class="ty">Barlow Condensed · Bai Jamjuree · IBM Plex Sans Thai</span></div></div><div class="kvx ${kv}" role="img" aria-label="Scan. Collect. Unlock Experience."></div></header>`;
   const extra = `
 body{padding:0 max(16px,env(safe-area-inset-left,0px)) 64px}

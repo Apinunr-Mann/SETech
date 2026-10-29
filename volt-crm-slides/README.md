@@ -16,6 +16,8 @@
 | `09-timeline-nfr` | Timeline · เป้าหมายประสิทธิภาพ · Security |
 | `10-scope-options` | Scope: B2C หลัก + B2B Retailer Add-on (Optional) + 2 Design Options |
 
+ช่องทางลูกค้า: LINE OA (แชท · Rich Menu · Push) เป็นทางเข้า → CRM Microsite `club.volt.co.th` ลงทะเบียนเป็น **LINE LIFF App** เปิดใน LINE ได้ทันที (LIFF ID token เข้าระบบอัตโนมัติ · กล้องสแกนรหัส/QR ใบเสร็จ · แชร์ชวนเพื่อน) และเปิดนอก LINE ด้วย LINE Login
+
 ธีมสไลด์ใช้ Volt CI (Option 1 palette: deep navy · electric blue · Volt yellow) ฟอนต์ Bai Jamjuree / Barlow Condensed · กล่องเส้นประม่วง = B2B เสริม
 
 Render ใหม่: `node render.mjs` หรือ `node render.mjs 03` (เลือกบางไฟล์)

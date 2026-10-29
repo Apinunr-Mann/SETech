@@ -48,7 +48,12 @@ const A={
   heart:(v)=>{const h=S.user.hearts,i=h.indexOf(v);i<0?h.push(v):h.splice(i,1)},
   goal:(v)=>{const u=S.user;if(u.goal===v){u.goal=null;toast('เอาเป้าหมายออกแล้ว');return}u.goal=v;done('goal');const r=goalReward();log('ลูกค้า','ตั้งเป้ารางวัล '+r.n);toast('ตั้งเป้าแล้ว · ดู Charge Bolt เติมขึ้นทุกครั้งที่ชาร์จ')},
   goalClear:()=>{S.user.goal=null;S.ui.c='rewards'},
-  invite:()=>{toast('คัดลอกลิงก์ชวนเพื่อนแล้ว · เพื่อนสมัครและชาร์จกระป๋องแรก คุณได้ +5 แต้ม (ยังไม่เปิดในเดโม)')},
+  invite:()=>{toast('เปิดรายชื่อเพื่อนใน LINE (LIFF Share) · ส่งการ์ดชวนเพื่อน เพื่อนสมัครและชาร์จกระป๋องแรก คุณได้ +5 แต้ม');log('ลูกค้า','ชวนเพื่อนผ่าน LIFF shareTargetPicker')},
+  liffMenu:()=>toast('เมนู LIFF: แชร์หน้านี้ให้เพื่อนใน LINE · รีเฟรช · เปิดในเบราว์เซอร์'),
+  liffInfo:()=>toast('เปิดใน LINE ผ่าน LIFF จึงไม่ต้องล็อกอินซ้ำ · ถ้าเปิดนอก LINE ระบบให้เข้าด้วย LINE Login'),
+  liffScan:(v)=>{setTimeout(()=>A.liffFill(v));log('ลูกค้า','สแกนด้วยกล้อง LINE (liff.scanCodeV2)')},
+  /* runs after the click handler restores the form, so the scanned values stay */
+  liffFill:(v)=>{if(v==='code'){const i=$('#ccode');if(i)i.value='VOLT-7K2P-9QX4';toast('กล้อง LINE อ่านรหัสแล้ว · กดยืนยันรหัส')}else{const i=$('#rno');if(i)i.value='R-7011-'+Math.floor(10000+Math.random()*89999);const st=$('#rstore');if(st)st.value='7-Eleven';toast('กล้อง LINE อ่าน QR ใบเสร็จแล้ว · เติมร้านและเลขใบเสร็จให้ · ถ่ายรูปใบเสร็จแล้วส่ง')}},
   /* collect */
   sendReceipt:()=>{const store=$('#rstore').value,no=$('#rno').value.trim(),sku=$('#rsku').value,qty=Math.max(1,Math.min(24,+$('#rqty').value||1)),blur=$('#rblur').checked,aig=$('#raig').checked,flav=S.ui.fl||S.user.flav||'y';
     if(!no)return toast('กรอกเลขใบเสร็จก่อน');const dup=S.receipts.some(r=>r.no===no);
@@ -98,7 +103,7 @@ const A={
   shopRedeem:(v)=>{const s=myShop();s.pts-=+v;toast(+v?'แลกส่วนลด 50฿ แล้ว ใช้ได้กับการสั่งของรอบถัดไป':'เซลส์จะนำป้ายไปติดที่ร้านภายใน 7 วัน');log('ร้าน',+v?'แลกแต้มร้าน 300 → ส่วนลด 50฿':'ขอรับป้ายร้านสะสมแต้ม')},
   /* register */
   rg:(v)=>{const i=v.indexOf(':'),k=v.slice(0,i),x=v.slice(i+1),r=S.ui.reg;if(k==='f'){r.f=x;return}const a=r.g,j=a.indexOf(x);if(j>=0)a.splice(j,1);else if(a.length<3)a.push(x);else toast('เลือกได้ไม่เกิน 3 กลุ่ม')},
-  regAllow:()=>{S.ui.c='reg2';log('ลูกค้า','อนุญาต LINE Login (โปรไฟล์ + เพิ่มเพื่อน)')},
+  regAllow:()=>{S.ui.c='reg2';log('ลูกค้า','อนุญาตสิทธิ์ LIFF (โปรไฟล์ + เพิ่มเพื่อน + ส่งข้อความ)')},
   regSubmit:()=>{const nick=$('#rgNick').value.trim(),ph=$('#rgPhone').value.replace(/\D/g,''),bd=$('#rgBirth').value;
     const err=!nick?'กรอกชื่อเล่น':!/^0\d{9}$/.test(ph)?'เบอร์โทร 10 หลัก ขึ้นต้นด้วย 0':!bd?'เลือกเดือน-ปีเกิด':!S.ui.reg.g.length?'เลือกไลฟ์สไตล์อย่างน้อย 1 กลุ่ม':!$('#rgT').checked?'ต้องยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัว':'';
     if(err)return toast(err);
@@ -192,7 +197,7 @@ load();
 document.body.classList.add(OPT.d,OPT.b2b?'b2b':'b2c');
 if(!OPT.b2b){const sc=$('#shop');if(sc)sc.closest('.col').remove()}
 const KI=$('.hero .kick');if(KI)KI.textContent=OPT.b2b?'Volt CRM · Option เสริม · B2B Retailer Add-on':`Volt CRM · B2C · ${OPT.d==='o2'?'Design Option 2 · Bento Hero':'Design Option 1 · App Style'}`;
-const HP=$('.hero p');if(HP)HP.textContent=OPT.b2b?'ส่วนเสริมสำหรับร้านโชห่วย: ลูกค้าสแกน QR ร้าน ร้านกดอนุมัติบนมือถือ ร้านสะสมแต้มของร้านเอง และหลังบ้านคุมโควตาร้าน · ใช้ข้อมูลชุดเดียวกับระบบ B2C':'มือถือลูกค้า (LINE → Microsite) และหลังบ้าน ใช้ข้อมูลชุดเดียวกัน ทำอะไรในมือถือ หลังบ้านเห็นผลทันที · ข้อมูลทั้งหมดเป็นตัวอย่าง';
+const HP=$('.hero p');if(HP)HP.textContent=OPT.b2b?'ส่วนเสริมสำหรับร้านโชห่วย: ลูกค้าสแกน QR ร้าน ร้านกดอนุมัติบนมือถือ ร้านสะสมแต้มของร้านเอง และหลังบ้านคุมโควตาร้าน · ใช้ข้อมูลชุดเดียวกับระบบ B2C':'มือถือลูกค้า (LINE → Microsite ผ่าน LIFF) และหลังบ้าน ใช้ข้อมูลชุดเดียวกัน ทำอะไรในมือถือ หลังบ้านเห็นผลทันที · ข้อมูลทั้งหมดเป็นตัวอย่าง';
 VoltDash.init({alerts:()=>{const a=[];if(OPT.b2b)S.shops.filter(s=>s.risk==='สูง'&&!s.sus).forEach(s=>a.push({t:`ร้าน ${s.id} ${s.n}: ${s.why[0]} ›`,cls:'r',a:'goShop',v:s.id}));const q=S.receipts.filter(r=>r.st==='review').length;if(q)a.push({t:`คิวตรวจใบเสร็จ ${q} รายการ ›`,cls:'a',a:'b',v:'receipts'});if(S.approvals.length)a.push({t:`รออนุมัติคนที่ 2 ${S.approvals.length} เรื่อง ›`,cls:'a',a:'b',v:'rules'});return a},
   onNoti:()=>{log('หลังบ้าน','ส่งข้อความดึงกลุ่มเสี่ยง (ไม่ซื้อ >21 วัน) กลับ');chatPush('คิดถึงกัน! กลับมาชาร์จสัปดาห์นี้ รับตัวคูณพิเศษ (เฉพาะผู้ยินยอมข่าวสาร)');renderCust();renderFeed();save()}});
 render();fit();setTimeout(fit,400);

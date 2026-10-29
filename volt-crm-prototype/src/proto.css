@@ -58,3 +58,13 @@ input[type=range]{accent-color:#FFEB00}
 .hmt em{position:absolute;top:8px;right:8px;font:700 9.5px var(--body);font-style:normal;background:#fff;color:#05050A;border-radius:999px;padding:2px 7px}
 
 .hm-me .mut{display:block;margin-top:3px}.hm-me .num i{margin-left:5px}
+/* LIFF header (Full size): title + domain, close and the LIFF action menu */
+.msb.liffb{gap:10px}
+.msb.liffb .lft{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;line-height:1.15;color:#fff}
+.msb.liffb .lft b{font:700 13px var(--body)}
+.msb.liffb .lft small{display:flex;align-items:center;gap:4px;font:500 10.5px var(--body);color:#AEB4CC;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msb.liffb .lft svg{width:10px;height:10px;flex:none;fill:none;stroke:#4BE39A;stroke-width:2.4}
+.msb.liffb button:last-child{font-size:18px;line-height:1}
+.btn.liffcam{display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.liffcam svg{width:18px;height:18px}
+.btn.liffcam svg{fill:none;stroke:currentColor;stroke-width:2;flex:none}

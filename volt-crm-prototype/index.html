@@ -287,6 +287,16 @@ input[type=range]{accent-color:#FFEB00}
 .hmt em{position:absolute;top:8px;right:8px;font:700 9.5px var(--body);font-style:normal;background:#fff;color:#05050A;border-radius:999px;padding:2px 7px}
 
 .hm-me .mut{display:block;margin-top:3px}.hm-me .num i{margin-left:5px}
+/* LIFF header (Full size): title + domain, close and the LIFF action menu */
+.msb.liffb{gap:10px}
+.msb.liffb .lft{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;line-height:1.15;color:#fff}
+.msb.liffb .lft b{font:700 13px var(--body)}
+.msb.liffb .lft small{display:flex;align-items:center;gap:4px;font:500 10.5px var(--body);color:#AEB4CC;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msb.liffb .lft svg{width:10px;height:10px;flex:none;fill:none;stroke:#4BE39A;stroke-width:2.4}
+.msb.liffb button:last-child{font-size:18px;line-height:1}
+.btn.liffcam{display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.liffcam svg{width:18px;height:18px}
+.btn.liffcam svg{fill:none;stroke:currentColor;stroke-width:2;flex:none}
 
 /*LD-CSS*/
 /* Volt Live Dashboard — glass panels on deep navy, brand cyan / blue / purple / yellow */
@@ -1041,7 +1051,7 @@ body.o2 .bo-ui .kpi:is(:nth-of-type(4n+2),:nth-of-type(4n+3)) small{color:rgba(2
 </section>
 
   <div class="stage">
-    <div class="col"><div class="lab"><i>C</i>ลูกค้า · LINE OA → Microsite</div><div class="ph"><div class="scr" id="cust"></div></div></div>
+    <div class="col"><div class="lab"><i>C</i>ลูกค้า · LINE OA → Microsite (LIFF)</div><div class="ph"><div class="scr" id="cust"></div></div></div>
     <div class="col"><div class="lab"><i>S</i>ร้านโชห่วย · Merchant</div><div class="ph"><div class="scr dk" id="shop"></div></div></div>
     <div class="col"><div class="feed" id="feed"></div></div>
   </div>
@@ -1747,7 +1757,7 @@ function lbRows(type){const r=rngOf(type.length*31+5),names=['คุณบอส
   rows.sort((a,b)=>b.v-a.v);rows.forEach((x,i)=>x.rank=i+1);return rows}
 
 /* =====================================================================
-   Customer phone (LINE OA gateway + CRM Microsite): chat, card, collect, rewards, tier,
+   Customer phone (LINE OA gateway + CRM Microsite running as a LINE LIFF app): chat, card, collect, rewards, tier,
    quizzes, draws, wallet, leaderboard, register
    ===================================================================== */
 let qrLeft=60,qrSeed=Math.floor(Math.random()*1e6);
@@ -1811,18 +1821,19 @@ function renderCust(){
   el.innerHTML=h;const cb=$('#chatbox');if(cb)cb.scrollTop=cb.scrollHeight;
   const nw=el.querySelector('.o1-news .tr');if(nw)nw.onscroll=()=>{const i=Math.round(nw.scrollLeft/nw.clientWidth);el.querySelectorAll('.o1-news .dots i').forEach((d,k)=>d.classList.toggle('on',k===i))};
 }
-/* LINE OA is only the gateway; every CRM page lives on a separate Microsite opened in LINE's in-app browser */
+/* LINE OA is only the gateway; every CRM page lives on the Microsite, registered as a LIFF app so it opens inside LINE
+   (liff.init + ID token = no second login, LINE camera and share). Outside LINE the same pages use LINE Login. */
 let gate=0;
 const MSP={home:'',card:'card',collect:'charge',rewards:'rewards',redeem:'rewards/redeem',tier:'tier',hist:'history',near:'stores',quizP:'profile',quizW:'quiz',draws:'draw',wallet:'wallet',board:'leaderboard',buddy:'buddy',goal:'goal',reg1:'join',reg2:'join/profile',reg3:'join/otp',reg4:'join/done',regAge:'join/age'};
-function msChrome(c){return `<div class="msb"><button data-a="c" data-v="chat" aria-label="ปิด Microsite กลับแชท LINE">✕</button><div class="url"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0110 0v3M5 11h14v9H5z"/></svg>club.volt.co.th/${MSP[c]||c}</div><span class="ln">LINE</span></div>`}
-function gateSheet(){const g=!S.user.reg;return `<div class="gate"><div class="glogo">LINE</div><b>${g?'LINE Login':'เข้าสู่ระบบด้วย LINE'}</b><span>${g?'ขอสิทธิ์โปรไฟล์ + เพิ่มเพื่อน Volt Club':'ยืนยันตัวตนอัตโนมัติ (SSO)'}</span><div class="gbar"><i></i></div><small>เปิด CRM Microsite · club.volt.co.th</small></div>`}
+function msChrome(c){return `<div class="msb liffb"><button data-a="c" data-v="chat" aria-label="ปิดหน้าต่าง กลับแชท LINE">✕</button><div class="lft"><b>Volt Club</b><small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0110 0v3M5 11h14v9H5z"/></svg>club.volt.co.th/${MSP[c]||c}</small></div><button data-a="liffMenu" aria-label="เมนู LIFF: แชร์ รีเฟรช">⋯</button></div>`}
+function gateSheet(){const g=!S.user.reg;return `<div class="gate"><div class="glogo">LINE</div><b>${g?'เปิด Volt Club ใน LINE':'กำลังเปิด Volt Club'}</b><span>${g?'LIFF · ขอสิทธิ์โปรไฟล์ครั้งแรก + เพิ่มเพื่อน':'LIFF · เข้าระบบด้วยบัญชี LINE อัตโนมัติ'}</span><div class="gbar"><i></i></div><small>LINE LIFF · club.volt.co.th</small></div>`}
 function gateOpen(){gate=1;setTimeout(()=>{gate=0;renderCust()},700)}
 const GUEST_OK=['rewards','near','buddy'];
 const NOTAB=/^(reg|redeem)/;
 /* bottom tab bar (both designs): Home · Rewards · Scan (charge) · Missions · Profile */
 const TABS=[['home','Home','home'],['rewards','Rewards','gift'],['collect','ชาร์จ','scan'],['tier','Missions','bolt'],['profile','Profile','user']];
 const TABOF={rewards:'rewards',goal:'rewards',wallet:'rewards',collect:'collect',tier:'tier',hist:'tier',quizP:'tier',quizW:'tier',draws:'tier',board:'tier',profile:'profile',card:'profile',near:'profile',buddy:'profile'};
-function tabBar(c){const cur=TABOF[c]||'home',u=S.user;return `<nav class="tabbar" aria-label="เมนูหลัก Microsite">${TABS.map(([v,t,i])=>{const go=!u.reg&&!GUEST_OK.includes(v)&&v!=='home'?'reg1':v;return `<button class="${v==='collect'?'tb-scan':''}" data-a="c" data-v="${go}" ${cur===v?'aria-current="page"':''} aria-label="${t}">${I[i]}${v==='collect'?'':`<span>${t}</span>`}</button>`}).join('')}</nav>`}
+function tabBar(c){const cur=TABOF[c]||'home',u=S.user;return `<nav class="tabbar" aria-label="เมนูหลัก Volt Club">${TABS.map(([v,t,i])=>{const go=!u.reg&&!GUEST_OK.includes(v)&&v!=='home'?'reg1':v;return `<button class="${v==='collect'?'tb-scan':''}" data-a="c" data-v="${go}" ${cur===v?'aria-current="page"':''} aria-label="${t}">${I[i]}${v==='collect'?'':`<span>${t}</span>`}</button>`}).join('')}</nav>`}
 const lockOf=v=>!S.user.reg&&!GUEST_OK.includes(v);
 const goOf=v=>lockOf(v)?'reg1':v;
 const hitOf=v=>S.ui.from===v?' hit':'';
@@ -1853,11 +1864,11 @@ function homeO2(){const u=S.user,ti=tierIdx(),T=(v,cls,inner,extra='')=>`<button
   const cta=u.reg?'':`<button class="o2-cta" data-a="c" data-v="reg1"><span>สมัครสมาชิก <b>รับ Welcome 20 แต้ม</b></span><i>›</i></button>`;
   return `<div class="bd hm o2h"><div class="o2-hero im-o2-hero" role="img" aria-label="Scan. Collect. Unlock Experience. · Your Everyday Energy Buddy">${topBar(1)}</div>${cta}${bento}</div>`}
 /* Profile: member info + everything not on the Home grid */
-function cProfile(){const u=S.user,ti=tierIdx(),R=(v,t,s,i,c)=>`<button class="hr" data-a="${v==='privacy'?'noti':'c'}" data-v="${v}"><i class="hi-${c}">${I[i]}</i><span class="t"><b>${t}</b><small>${s}</small></span><span class="go" aria-hidden="true">›</span></button>`;
+function cProfile(){const u=S.user,ti=tierIdx(),R=(v,t,s,i,c)=>`<button class="hr" data-a="${v==='privacy'?'noti':v==='line'?'liffInfo':'c'}" data-v="${v}"><i class="hi-${c}">${I[i]}</i><span class="t"><b>${t}</b><small>${s}</small></span><span class="go" aria-hidden="true">›</span></button>`;
   return cTop('โปรไฟล์')+`<div class="bd"><div class="pf"><span class="av2 im-mc-${u.flav||'y'}"></span><div><b>คุณ${esc(u.name)}</b><span>${lvChip(TIER[ti].k)} <b class="num">${fmt(u.pts)}</b> แต้ม</span></div></div>
   <div class="hm-list">${R('card','บัตรสมาชิก','QR ยืนยันตัวตน','qr','b')}${R('hist','ประวัติแต้ม','รับ · ใช้ · รอปลดล็อก','hist','c')}${R('wallet','กระเป๋าคูปอง',S.wallet.length+' ใบ','wallet','y')}</div>
   <div class="hm-list">${R('board','Leaderboard','อันดับสัปดาห์นี้','star','p')}${R('near',OPT.b2b?'ร้านสะสมแต้มใกล้ฉัน':'ร้านที่มี Volt ใกล้ฉัน','แผนที่ร้าน','pin','c')}${R('buddy','Volt Buddy','ถามเรื่องแต้ม รางวัล ร้านใกล้คุณ','chat','b')}</div>
-  <div class="hm-list">${R('privacy','ความเป็นส่วนตัวและการยินยอม','จัดการข่าวสาร · การแนะนำเฉพาะตัว','lock','p')}</div></div>`}
+  <div class="hm-list">${R('line','บัญชี LINE','เปิดผ่าน LIFF · เป็นเพื่อน Volt Club แล้ว','chat','c')}${R('privacy','ความเป็นส่วนตัวและการยินยอม','จัดการข่าวสาร · การแนะนำเฉพาะตัว','lock','p')}</div></div>`}
 function cChat(){const u=S.user;
   return `<div class="lhead"><span class="av im-bm-y"></span><div style="flex:1"><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE Official Account</span></div>${hudHtml(true)}</div><div class="chat" id="chatbox">${S.chat.map(bubOf).join('')}</div>
   <div class="qrep"><button data-a="ask" data-v="pts">แต้มฉันเหลือเท่าไร</button><button data-a="ask" data-v="near">ร้านสะสมแต้มใกล้ฉัน</button><button data-a="ask" data-v="how">สะสมแต้มยังไง</button><button data-a="ask" data-v="tier">ขึ้น Tier ยังไง</button><button data-a="ask" data-v="next">ควรทำอะไรต่อ</button></div>${richMenu()}`}
@@ -1872,14 +1883,14 @@ function cCard(){const u=S.user,ti=tierIdx(),nx=nextTier(),p=tierProg(),g=goalRe
 function cCollect(){const u=S.user,ui=S.ui,t=!OPT.b2b&&ui.tab==='shop'?'code':ui.tab,mine=S.receipts.filter(r=>r.me).slice().reverse();
   let h=cTop('ชาร์จแต้ม')+`<div class="bd"><div class="seg${OPT.b2b?'':' s3'}" role="group" aria-label="ประเภท" style="font-size:12px"><button data-a="collectTab" data-v="code" aria-pressed="${t==='code'}">รหัสใต้ห่วง</button>${OPT.b2b?`<button data-a="collectTab" data-v="shop" aria-pressed="${t==='shop'}">QR ร้าน</button>`:''}<button data-a="collectTab" data-v="receipt" aria-pressed="${t==='receipt'}">ใบเสร็จ</button><button data-a="collectTab" data-v="online" aria-pressed="${t==='online'}">ออนไลน์</button></div>
   <details class="note"><summary>กติกาการได้แต้ม</summary>190 ml = ${S.rules.p190} · 310 ml = ${S.rules.p310} แต้ม · ชาร์จได้ ≤ ${S.rules.capCans} กระป๋อง/วัน (วันนี้ ${u.cansToday}/${S.rules.capCans}) · <b>Retail Boost +${S.rules.bonus7}</b> เมื่อรหัส 310 ml ตรงกับใบเสร็จ 7-Eleven${u.boostPool?` · <span class="ok">พร้อมรับ Boost ${u.boostPool} กป.</span>`:''}</details>`;
-  if(t==='code')h+=`<label class="f"><span>รหัสใต้ห่วง (ช่องทางหลัก)</span><input class="in" id="ccode" placeholder="VOLT-XXXX-XXXX" autocomplete="off" ${u.codeFails>=5?'disabled':''}></label><span class="mut" style="font-size:12px">รหัสทดลอง: VOLT-7K2P-9QX4 (310) · VOLT-A1B2-C3D4 (190) · ใช้ได้ครั้งเดียว · ผิด 5 ครั้งล็อก 15 นาที</span>${u.codeFails?`<span class="${u.codeFails>=5?'bad':'warn'}" style="font-size:13px">${u.codeFails>=5?'กรอกผิดครบ 5 ครั้ง ล็อก 15 นาที':'กรอกผิด '+u.codeFails+'/5 ครั้ง'}</span>`:''}<button class="btn by" data-a="sendCode" ${u.codeFails>=5?'disabled':''}>ยืนยันรหัส</button>`;
+  if(t==='code')h+=`<label class="f"><span>รหัสใต้ห่วง (ช่องทางหลัก)</span><input class="in" id="ccode" placeholder="VOLT-XXXX-XXXX" autocomplete="off" ${u.codeFails>=5?'disabled':''}></label><span class="mut" style="font-size:12px">รหัสทดลอง: VOLT-7K2P-9QX4 (310) · VOLT-A1B2-C3D4 (190) · ใช้ได้ครั้งเดียว · ผิด 5 ครั้งล็อก 15 นาที</span>${u.codeFails?`<span class="${u.codeFails>=5?'bad':'warn'}" style="font-size:13px">${u.codeFails>=5?'กรอกผิดครบ 5 ครั้ง ล็อก 15 นาที':'กรอกผิด '+u.codeFails+'/5 ครั้ง'}</span>`:''}<button class="btn by" data-a="sendCode" ${u.codeFails>=5?'disabled':''}>ยืนยันรหัส</button><button class="btn bo liffcam" data-a="liffScan" data-v="code" ${u.codeFails>=5?'disabled':''}>${I.scan} สแกน QR ใต้ห่วงด้วยกล้อง LINE</button>`;
   else if(t==='shop'){const sc=ui.sc;
-    if(!sc)h+=`<span class="h3">สแกน QR ที่ร้านโชห่วย (กระป๋อง 190 ml)</span><span class="mut" style="font-size:12.5px">สแกน QR ที่ตั้งไว้ที่ร้าน แล้วเลือกจำนวนกระป๋อง ร้านกดอนุมัติ แต้มจึงเข้า · ระบบตรวจตำแหน่ง GPS ของคุณกับร้าน</span><div class="cam" style="min-height:120px"><i></i><span>เดโม: แตะร้านที่ต้องการสแกน</span></div>${S.shops.filter(x=>!x.sus).slice(0,3).map((x,i)=>`<button class="li" style="text-align:left;width:100%" data-a="scanShop" data-v="${x.id}"><span class="thumb" style="background:#2147FF">${bolt()}</span><div class="t"><b>${esc(x.n)}</b><span class="mut">${esc(x.a)} · ${(0.3+i*0.6).toFixed(1)} กม.${x.risk==='สูง'?' · ร้านถูกเฝ้าระวัง':''}${i===0?' · ร้านบนมือถือฝั่งขวา':''}</span></div><span class="mini">สแกน</span></button>`).join('')}`;
+    if(!sc)h+=`<span class="h3">สแกน QR ที่ร้านโชห่วย (กระป๋อง 190 ml)</span><span class="mut" style="font-size:12.5px">สแกน QR ที่ตั้งไว้ที่ร้าน แล้วเลือกจำนวนกระป๋อง ร้านกดอนุมัติ แต้มจึงเข้า · ระบบตรวจตำแหน่ง GPS ของคุณกับร้าน</span><div class="cam" style="min-height:120px"><i></i><span>กล้อง LINE (LIFF) · เดโม: แตะร้านที่ต้องการสแกน</span></div>${S.shops.filter(x=>!x.sus).slice(0,3).map((x,i)=>`<button class="li" style="text-align:left;width:100%" data-a="scanShop" data-v="${x.id}"><span class="thumb" style="background:#2147FF">${bolt()}</span><div class="t"><b>${esc(x.n)}</b><span class="mut">${esc(x.a)} · ${(0.3+i*0.6).toFixed(1)} กม.${x.risk==='สูง'?' · ร้านถูกเฝ้าระวัง':''}${i===0?' · ร้านบนมือถือฝั่งขวา':''}</span></div><span class="mini">สแกน</span></button>`).join('')}`;
     else{const sh=S.shops.find(x=>x.id===sc.id),cp=cartPts(sc.cart);h+=`<div class="card sp" style="padding:10px 12px"><span><b>${esc(sh.n)}</b><br><small class="mut">สแกน QR ร้านแล้ว</small></span><button class="mini o" data-a="scanReset">เปลี่ยนร้าน</button></div>
       ${['s190','s310'].map(k=>`<div class="card" style="display:flex;flex-direction:column;gap:6px;padding:10px 12px"><div class="sp"><b>กระป๋อง ${SKU[k].s}</b><span class="chip">${S.rules[k==='s190'?'p190':'p310']} แต้ม</span></div>${['y','c','p'].map(f=>`<div class="sp"><span><i class="cthumb im-can-${f}"></i> ${FL[f]}</span><span class="step"><button data-a="cq" data-v="${k}|${f}|-1" aria-label="ลด ${FL[f]}">−</button><b>${sc.cart[k][f]}</b><button data-a="cq" data-v="${k}|${f}|1" aria-label="เพิ่ม ${FL[f]}">+</button></span></div>`).join('')}</div>`).join('')}
       <label class="chk"><input type="checkbox" id="gpsout" ${sc.gpsOut?'checked':''} data-a="gpsToggle"> จำลองตำแหน่งนอกรัศมีร้าน (GPS)</label>
       <div class="sp" style="font-size:15px"><b>รวม ${cp.q} กระป๋อง</b><b class="num" style="font-size:22px">+${cp.p} แต้ม</b></div><button class="btn by" data-a="sendShopReq" ${cp.q?'':'disabled'}>ส่งให้ร้านอนุมัติ</button>`}}
-  else if(t==='receipt')h+=`<div class="f"><span>รูปใบเสร็จ (1–6 รูป · ส่งภายใน 7 วัน · เก็บต้นฉบับไว้)</span><div style="display:flex;gap:6px;align-items:center"><span class="step"><button class="bo x" data-a="imgs" data-v="-1" aria-label="ลดรูป">−</button><b class="num" style="width:22px;text-align:center">${ui.rcImgs}</b><button class="bo x" data-a="imgs" data-v="1" aria-label="เพิ่มรูป">+</button></span><span class="mut" style="font-size:12px">รูป · ใบเสร็จยาวถ่ายแยกส่วนได้</span></div></div>
+  else if(t==='receipt')h+=`<button class="btn bo liffcam" data-a="liffScan" data-v="rc">${I.scan} สแกน QR บนใบเสร็จด้วยกล้อง LINE</button><div class="f"><span>รูปใบเสร็จ (1–6 รูป · ส่งภายใน 7 วัน · เก็บต้นฉบับไว้)</span><div style="display:flex;gap:6px;align-items:center"><span class="step"><button class="bo x" data-a="imgs" data-v="-1" aria-label="ลดรูป">−</button><b class="num" style="width:22px;text-align:center">${ui.rcImgs}</b><button class="bo x" data-a="imgs" data-v="1" aria-label="เพิ่มรูป">+</button></span><span class="mut" style="font-size:12px">รูป · ใบเสร็จยาวถ่ายแยกส่วนได้</span></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><label class="f"><span>ร้าน</span><select class="in" id="rstore"><option>7-Eleven</option><option>Lawson</option><option>Villa Market</option><option>Makro</option></select></label><label class="f"><span>เลขใบเสร็จ</span><input class="in" id="rno" value="R-${Math.floor(1000+Math.random()*8999)}-${Math.floor(10000+Math.random()*89999)}"></label>
     <label class="f"><span>สินค้า</span><select class="in" id="rsku"><option value="s310">310 ml</option><option value="s190">190 ml</option></select></label><label class="f"><span>จำนวน</span><input class="in" id="rqty" type="number" min="1" max="24" value="2"></label></div>
     <div class="f"><span>รส</span><div style="display:flex;gap:6px;flex-wrap:wrap">${Object.keys(FL).map(k=>`<button class="chip" data-a="fl" data-v="${k}" aria-pressed="${ui.fl===k}"><i class="cthumb im-can-${k}"></i>${FL[k]}</button>`).join('')}</div></div>
@@ -1951,7 +1962,7 @@ function cBuddy(){return cTop('Volt Buddy','profile')+`<div class="bd"><div clas
 
 /* ----- registration ----- */
 function cReg(){const u=S.user,ui=S.ui,rg=ui.reg;
-  if(ui.c==='reg1')return `<div class="lhead"><span class="av im-bm-y"></span><div><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE Login</span></div></div><div class="bd" style="background:#8CABD9;justify-content:flex-end;padding:14px"><div class="lsheet"><div class="lg"><i>${bolt()}</i><div><b>Volt Club</b><br><small style="color:#666">ผู้ให้บริการ: Volt</small></div></div><span style="font-size:14px">Volt Club ขอเข้าถึงข้อมูลต่อไปนี้จากบัญชี LINE ของคุณ</span><div class="perm"><span>ชื่อที่แสดงและรูปโปรไฟล์<br><small>จำเป็น · ใช้สร้างบัตรสมาชิก</small></span><b style="color:#06C755">✓</b></div><div class="perm"><span>เพิ่ม Volt Club เป็นเพื่อน<br><small>แจ้งผลตรวจใบเสร็จ และสิทธิพิเศษ</small></span><b style="color:#06C755">✓</b></div><button class="lbtn-green" data-a="regAllow">อนุญาต</button><button class="btn" style="background:#eee;color:#333;min-height:44px;font:500 14px 'IBM Plex Sans Thai'" data-a="c" data-v="chat">ยกเลิก</button></div></div>`;
+  if(ui.c==='reg1')return `<div class="lhead"><span class="av im-bm-y"></span><div><b style="font-size:15px">Volt Club</b><br><span style="font-size:11px;color:#666">LINE LIFF · ขอสิทธิ์ครั้งแรก</span></div></div><div class="bd" style="background:#8CABD9;justify-content:flex-end;padding:14px"><div class="lsheet"><div class="lg"><i>${bolt()}</i><div><b>Volt Club</b><br><small style="color:#666">ผู้ให้บริการ: Volt</small></div></div><span style="font-size:14px">Volt Club ขอเข้าถึงข้อมูลต่อไปนี้จากบัญชี LINE ของคุณ</span><div class="perm"><span>ชื่อที่แสดงและรูปโปรไฟล์<br><small>จำเป็น · ใช้สร้างบัตรสมาชิก</small></span><b style="color:#06C755">✓</b></div><div class="perm"><span>เพิ่ม Volt Club เป็นเพื่อน<br><small>แจ้งผลตรวจใบเสร็จ และสิทธิพิเศษ</small></span><b style="color:#06C755">✓</b></div><div class="perm"><span>ส่งข้อความในแชท<br><small>ส่งการ์ดชวนเพื่อนและแชร์รางวัลเมื่อคุณกดเอง</small></span><b style="color:#06C755">✓</b></div><button class="lbtn-green" data-a="regAllow">อนุญาต</button><button class="btn" style="background:#eee;color:#333;min-height:44px;font:500 14px 'IBM Plex Sans Thai'" data-a="c" data-v="chat">ยกเลิก</button></div></div>`;
   if(ui.c==='regAge')return cTop('ขออภัย','chat')+`<div class="bd center" style="align-items:center;gap:12px;padding-top:40px"><span style="font-size:46px">🙏</span><b class="h3" style="font-size:20px">สมาชิกต้องมีอายุ ${S.rules.ageMin} ปีขึ้นไป</b><span class="mut">ระบบไม่เก็บข้อมูลของคุณไว้ · กลับมาสมัครได้เมื่ออายุครบ</span><button class="btn by" style="width:100%" data-a="c" data-v="chat">กลับไปแชต</button></div>`;
   if(ui.c==='reg2')return cTop('สมัครสมาชิก')+`<div class="bd"><div class="rg-steps"><span class="on"></span><span></span><span></span></div>
     <div class="rg-hero ovl im-hero"><b>สมัครวันนี้<br>รับ <em>Welcome 20 แต้ม</em></b><span class="mut" style="font-size:12px">ปลดล็อกหลังชาร์จกระป๋องแรกผ่าน</span></div>
@@ -1991,7 +2002,7 @@ function renderShop(){if(!$('#shop'))return;
   el.innerHTML=h+'</div>';
 }
 function renderFeed(){
-  const TRY=[['reg','สมัครสมาชิก: แตะ Rich Menu ใน LINE → เปิด CRM Microsite (LINE Login) → หน้า Home → กดสมัครสมาชิก → ฟอร์ม (อายุ 15+) → OTP รับ Welcome 20 แต้ม (รอกระป๋องแรก)'],['qr','ลูกค้าสแกน QR ร้าน (เมนูชาร์จแต้ม › QR ร้าน) → ร้านกดอนุมัติ เห็นสายฟ้าบินเข้า Charge Bolt'],['receipt','กรอกรหัส 310 ml แล้วส่งใบเสร็จ 7-Eleven เพื่อรับ Retail Boost (ลองรูปเบลอ เลขซ้ำ ใบเสร็จ AI สร้าง)'],['review','หลังบ้านอนุมัติใบเสร็จในคิวตรวจ'],['goal','ตั้งเป้ารางวัล แล้วดู Charge Bolt เติมตามแต้ม'],['quiz','ตอบ Charge Profile / Weekly Quiz'],['iw','ชาร์จกระป๋องเพื่อลุ้น Instant Win (เดโมตั้งโอกาสสูง)'],['draw','ใช้แต้มซื้อสิทธิ์ Lucky Draw แล้วให้หลังบ้านจับรางวัล'],['rule','หลังบ้านเปิดตัวคูณ แล้วสแกนใหม่'],['suspend','หลังบ้านระงับร้านเจ๊หน่อย แล้วดูมือถือร้าน'],['tier','กด “ข้ามสัปดาห์” แล้วชาร์จอีกครั้ง เพื่อ Level Up']];
+  const TRY=[['reg','สมัครสมาชิก: แตะ Rich Menu ใน LINE → เปิด CRM Microsite ใน LINE (LIFF) → หน้า Home → กดสมัครสมาชิก → ฟอร์ม (อายุ 15+) → OTP รับ Welcome 20 แต้ม (รอกระป๋องแรก)'],['qr','ลูกค้าสแกน QR ร้าน (เมนูชาร์จแต้ม › QR ร้าน) → ร้านกดอนุมัติ เห็นสายฟ้าบินเข้า Charge Bolt'],['receipt','กรอกรหัส 310 ml แล้วส่งใบเสร็จ 7-Eleven เพื่อรับ Retail Boost (ลองรูปเบลอ เลขซ้ำ ใบเสร็จ AI สร้าง)'],['review','หลังบ้านอนุมัติใบเสร็จในคิวตรวจ'],['goal','ตั้งเป้ารางวัล แล้วดู Charge Bolt เติมตามแต้ม'],['quiz','ตอบ Charge Profile / Weekly Quiz'],['iw','ชาร์จกระป๋องเพื่อลุ้น Instant Win (เดโมตั้งโอกาสสูง)'],['draw','ใช้แต้มซื้อสิทธิ์ Lucky Draw แล้วให้หลังบ้านจับรางวัล'],['rule','หลังบ้านเปิดตัวคูณ แล้วสแกนใหม่'],['suspend','หลังบ้านระงับร้านเจ๊หน่อย แล้วดูมือถือร้าน'],['tier','กด “ข้ามสัปดาห์” แล้วชาร์จอีกครั้ง เพื่อ Level Up']];
   const T2=OPT.b2b?TRY:TRY.filter(([k])=>k!=='qr'&&k!=='suspend');
   $('#feed').innerHTML=`<div class="panel"><h3>ลองเล่นตามนี้</h3><ol class="try">${T2.map(([k,t])=>`<li class="${S.ui.done[k]?'done':''}">${t}</li>`).join('')}</ol></div>
   <div class="panel"><div class="sp"><h3>สิ่งที่เกิดขึ้นในระบบ</h3><span class="mut" style="font-size:12px">Audit Log</span></div><div>${S.log.length?S.log.slice(0,9).map(l=>`<div class="ev"><i class="${l.w==='ลูกค้า'?'c':l.w==='ร้าน'?'s':l.w==='หลังบ้าน'?'b':'a'}">${l.w}</i><span>${esc(l.t)}</span><time>${l.at}</time></div>`).join(''):'<span class="mut" style="font-size:13px">ยังไม่มีเหตุการณ์ ลองกดที่มือถือลูกค้าหรือร้านดู</span>'}</div></div>`;
@@ -2194,7 +2205,12 @@ const A={
   heart:(v)=>{const h=S.user.hearts,i=h.indexOf(v);i<0?h.push(v):h.splice(i,1)},
   goal:(v)=>{const u=S.user;if(u.goal===v){u.goal=null;toast('เอาเป้าหมายออกแล้ว');return}u.goal=v;done('goal');const r=goalReward();log('ลูกค้า','ตั้งเป้ารางวัล '+r.n);toast('ตั้งเป้าแล้ว · ดู Charge Bolt เติมขึ้นทุกครั้งที่ชาร์จ')},
   goalClear:()=>{S.user.goal=null;S.ui.c='rewards'},
-  invite:()=>{toast('คัดลอกลิงก์ชวนเพื่อนแล้ว · เพื่อนสมัครและชาร์จกระป๋องแรก คุณได้ +5 แต้ม (ยังไม่เปิดในเดโม)')},
+  invite:()=>{toast('เปิดรายชื่อเพื่อนใน LINE (LIFF Share) · ส่งการ์ดชวนเพื่อน เพื่อนสมัครและชาร์จกระป๋องแรก คุณได้ +5 แต้ม');log('ลูกค้า','ชวนเพื่อนผ่าน LIFF shareTargetPicker')},
+  liffMenu:()=>toast('เมนู LIFF: แชร์หน้านี้ให้เพื่อนใน LINE · รีเฟรช · เปิดในเบราว์เซอร์'),
+  liffInfo:()=>toast('เปิดใน LINE ผ่าน LIFF จึงไม่ต้องล็อกอินซ้ำ · ถ้าเปิดนอก LINE ระบบให้เข้าด้วย LINE Login'),
+  liffScan:(v)=>{setTimeout(()=>A.liffFill(v));log('ลูกค้า','สแกนด้วยกล้อง LINE (liff.scanCodeV2)')},
+  /* runs after the click handler restores the form, so the scanned values stay */
+  liffFill:(v)=>{if(v==='code'){const i=$('#ccode');if(i)i.value='VOLT-7K2P-9QX4';toast('กล้อง LINE อ่านรหัสแล้ว · กดยืนยันรหัส')}else{const i=$('#rno');if(i)i.value='R-7011-'+Math.floor(10000+Math.random()*89999);const st=$('#rstore');if(st)st.value='7-Eleven';toast('กล้อง LINE อ่าน QR ใบเสร็จแล้ว · เติมร้านและเลขใบเสร็จให้ · ถ่ายรูปใบเสร็จแล้วส่ง')}},
   /* collect */
   sendReceipt:()=>{const store=$('#rstore').value,no=$('#rno').value.trim(),sku=$('#rsku').value,qty=Math.max(1,Math.min(24,+$('#rqty').value||1)),blur=$('#rblur').checked,aig=$('#raig').checked,flav=S.ui.fl||S.user.flav||'y';
     if(!no)return toast('กรอกเลขใบเสร็จก่อน');const dup=S.receipts.some(r=>r.no===no);
@@ -2244,7 +2260,7 @@ const A={
   shopRedeem:(v)=>{const s=myShop();s.pts-=+v;toast(+v?'แลกส่วนลด 50฿ แล้ว ใช้ได้กับการสั่งของรอบถัดไป':'เซลส์จะนำป้ายไปติดที่ร้านภายใน 7 วัน');log('ร้าน',+v?'แลกแต้มร้าน 300 → ส่วนลด 50฿':'ขอรับป้ายร้านสะสมแต้ม')},
   /* register */
   rg:(v)=>{const i=v.indexOf(':'),k=v.slice(0,i),x=v.slice(i+1),r=S.ui.reg;if(k==='f'){r.f=x;return}const a=r.g,j=a.indexOf(x);if(j>=0)a.splice(j,1);else if(a.length<3)a.push(x);else toast('เลือกได้ไม่เกิน 3 กลุ่ม')},
-  regAllow:()=>{S.ui.c='reg2';log('ลูกค้า','อนุญาต LINE Login (โปรไฟล์ + เพิ่มเพื่อน)')},
+  regAllow:()=>{S.ui.c='reg2';log('ลูกค้า','อนุญาตสิทธิ์ LIFF (โปรไฟล์ + เพิ่มเพื่อน + ส่งข้อความ)')},
   regSubmit:()=>{const nick=$('#rgNick').value.trim(),ph=$('#rgPhone').value.replace(/\D/g,''),bd=$('#rgBirth').value;
     const err=!nick?'กรอกชื่อเล่น':!/^0\d{9}$/.test(ph)?'เบอร์โทร 10 หลัก ขึ้นต้นด้วย 0':!bd?'เลือกเดือน-ปีเกิด':!S.ui.reg.g.length?'เลือกไลฟ์สไตล์อย่างน้อย 1 กลุ่ม':!$('#rgT').checked?'ต้องยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัว':'';
     if(err)return toast(err);
@@ -2338,7 +2354,7 @@ load();
 document.body.classList.add(OPT.d,OPT.b2b?'b2b':'b2c');
 if(!OPT.b2b){const sc=$('#shop');if(sc)sc.closest('.col').remove()}
 const KI=$('.hero .kick');if(KI)KI.textContent=OPT.b2b?'Volt CRM · Option เสริม · B2B Retailer Add-on':`Volt CRM · B2C · ${OPT.d==='o2'?'Design Option 2 · Bento Hero':'Design Option 1 · App Style'}`;
-const HP=$('.hero p');if(HP)HP.textContent=OPT.b2b?'ส่วนเสริมสำหรับร้านโชห่วย: ลูกค้าสแกน QR ร้าน ร้านกดอนุมัติบนมือถือ ร้านสะสมแต้มของร้านเอง และหลังบ้านคุมโควตาร้าน · ใช้ข้อมูลชุดเดียวกับระบบ B2C':'มือถือลูกค้า (LINE → Microsite) และหลังบ้าน ใช้ข้อมูลชุดเดียวกัน ทำอะไรในมือถือ หลังบ้านเห็นผลทันที · ข้อมูลทั้งหมดเป็นตัวอย่าง';
+const HP=$('.hero p');if(HP)HP.textContent=OPT.b2b?'ส่วนเสริมสำหรับร้านโชห่วย: ลูกค้าสแกน QR ร้าน ร้านกดอนุมัติบนมือถือ ร้านสะสมแต้มของร้านเอง และหลังบ้านคุมโควตาร้าน · ใช้ข้อมูลชุดเดียวกับระบบ B2C':'มือถือลูกค้า (LINE → Microsite ผ่าน LIFF) และหลังบ้าน ใช้ข้อมูลชุดเดียวกัน ทำอะไรในมือถือ หลังบ้านเห็นผลทันที · ข้อมูลทั้งหมดเป็นตัวอย่าง';
 VoltDash.init({alerts:()=>{const a=[];if(OPT.b2b)S.shops.filter(s=>s.risk==='สูง'&&!s.sus).forEach(s=>a.push({t:`ร้าน ${s.id} ${s.n}: ${s.why[0]} ›`,cls:'r',a:'goShop',v:s.id}));const q=S.receipts.filter(r=>r.st==='review').length;if(q)a.push({t:`คิวตรวจใบเสร็จ ${q} รายการ ›`,cls:'a',a:'b',v:'receipts'});if(S.approvals.length)a.push({t:`รออนุมัติคนที่ 2 ${S.approvals.length} เรื่อง ›`,cls:'a',a:'b',v:'rules'});return a},
   onNoti:()=>{log('หลังบ้าน','ส่งข้อความดึงกลุ่มเสี่ยง (ไม่ซื้อ >21 วัน) กลับ');chatPush('คิดถึงกัน! กลับมาชาร์จสัปดาห์นี้ รับตัวคูณพิเศษ (เฉพาะผู้ยินยอมข่าวสาร)');renderCust();renderFeed();save()}});
 render();fit();setTimeout(fit,400);
