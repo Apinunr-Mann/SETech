@@ -23,7 +23,7 @@ function reply(v){const u=S.user,ti=tierIdx(),g=goalReward(),q={pts:'แต้�
   if((S.aiOff||S.aiK.l1)&&!['human','how'].includes(v)){chatPush('ตอนนี้ระบบผู้ช่วยปิดอยู่ชั่วคราว ดูแต้มและกติกาได้ที่เมนูด้านล่าง หรือกด “ติดต่อทีมงาน”','PULL');return}
   const a={pts:()=>`คุณมี ${fmt(u.pts)} แต้ม (${TIER[ti].k})${u.pend?` · รอปลดล็อก ${u.pend} แต้ม`:''}${g&&g.pts>u.pts?` · อีก ${fmt(g.pts-u.pts)} แต้มถึงเป้า “${g.n}”`:''}`,
     near:()=>`ใกล้คุณมี ${S.shops.filter(s=>!s.sus).length} ร้าน ใกล้สุด: ${S.shops[0].n} 0.3 กม. · กด “ร้านใกล้ฉัน” เพื่อดูแผนที่`,
-    how:()=>`4 วิธี: 1) กรอกรหัสใต้ห่วง 2) สแกน QR ที่ร้านโชห่วย (ร้านกดอนุมัติ) 3) ส่งรูปใบเสร็จ 7-Eleven / Lawson / Villa / Makro 4) ผูกออเดอร์ออนไลน์ · 190 ml = ${S.rules.p190} · 310 ml = ${S.rules.p310} แต้ม`,
+    how:()=>OPT.b2b?`4 วิธี: 1) กรอกรหัสใต้ห่วง 2) สแกน QR ที่ร้านโชห่วย (ร้านกดอนุมัติ) 3) ส่งรูปใบเสร็จ 7-Eleven / Lawson / Villa / Makro 4) ผูกออเดอร์ออนไลน์ · 190 ml = ${S.rules.p190} · 310 ml = ${S.rules.p310} แต้ม`:`3 วิธี: 1) กรอกรหัสใต้ห่วง (ทุกร้าน รวมร้านโชห่วย) 2) ส่งรูปใบเสร็จ 7-Eleven / Lawson / Villa / Makro 3) ผูกออเดอร์ออนไลน์ · 190 ml = ${S.rules.p190} · 310 ml = ${S.rules.p310} แต้ม`,
     tier:()=>nextTier()?`ชาร์จให้ครบ ${nextTier().w} สัปดาห์ ใน 8 สัปดาห์ล่าสุด ตอนนี้ ${weeksIn()} สัปดาห์ เพื่อขึ้น ${nextTier().k}`:'คุณอยู่ระดับสูงสุดแล้ว',
     next:()=>nextAction().t,
     why:()=>{const r=recommend()[0];return r?`แนะนำ “${r.r.n}” เพราะ${r.why}`:'ยังไม่มีรายการแนะนำ'},
@@ -42,6 +42,7 @@ const A={
   fl:(v)=>{S.ui.fl=v},imgs:(v)=>{S.ui.rcImgs=Math.max(1,Math.min(6,S.ui.rcImgs+ +v))},
   assist:()=>{if(S.aiOff||S.aiK.l3)return toast('ผู้ช่วยปิดอยู่ชั่วคราว');const sku=$('#rsku').value,q=Math.max(1,+$('#rqty').value||1),st=$('#rstore').value,u=S.user,bo=st==='7-Eleven'&&sku==='s310'?Math.min(q,u.boostPool||0):0,pts=S.rules[sku==='s310'?'p310':'p190']*q+bo*S.rules.bonus7;toast(`ประมาณ +${pts} แต้ม${bo?` (รวม Retail Boost ${bo} กป.)`:''} · ถ่ายให้เห็นร้าน วันที่ รายการชัด · ผู้ช่วยไม่ตัดสินผลการตรวจ`);log('AI','ผู้ช่วยในหน้า: ดูตัวอย่างแต้ม')},
   rg2:(v)=>{S.ui.rg=v},
+  noti:()=>toast('การแจ้งเตือนทั้งหมด (ผลตรวจ แต้มเข้า โปรโมชัน) ส่งไปที่แชต LINE OA'),
   rmToggle:()=>{S.ui.rmOpen=!S.ui.rmOpen},rmTab:(v)=>{S.ui.rmTab=v},
   ask:(v)=>reply(v),
   heart:(v)=>{const h=S.user.hearts,i=h.indexOf(v);i<0?h.push(v):h.splice(i,1)},
@@ -187,6 +188,11 @@ VoltFX.onHold((act,el)=>{const i=act.indexOf(':'),fn=act.slice(0,i),v=act.slice(
 function fit(){const w=$('.dtw'),d=$('#desk');const sc=w.clientWidth/1280;d.style.transform='scale('+sc+')';w.style.height=(d.offsetHeight*sc)+'px'}
 addEventListener('resize',fit);
 load();
-VoltDash.init({alerts:()=>{const a=[];S.shops.filter(s=>s.risk==='สูง'&&!s.sus).forEach(s=>a.push({t:`ร้าน ${s.id} ${s.n}: ${s.why[0]} ›`,cls:'r',a:'goShop',v:s.id}));const q=S.receipts.filter(r=>r.st==='review').length;if(q)a.push({t:`คิวตรวจใบเสร็จ ${q} รายการ ›`,cls:'a',a:'b',v:'receipts'});if(S.approvals.length)a.push({t:`รออนุมัติคนที่ 2 ${S.approvals.length} เรื่อง ›`,cls:'a',a:'b',v:'rules'});return a},
+/* B2C build: no merchant phone, no shop-QR channel, no shop admin (those live in the B2B Retailer Add-on) */
+document.body.classList.add(OPT.d,OPT.b2b?'b2b':'b2c');
+if(!OPT.b2b){const sc=$('#shop');if(sc)sc.closest('.col').remove()}
+const KI=$('.hero .kick');if(KI)KI.textContent=OPT.b2b?'Volt CRM · Option เสริม · B2B Retailer Add-on':`Volt CRM · B2C · ${OPT.d==='o2'?'Design Option 2 · Bento Hero':'Design Option 1 · App Style'}`;
+const HP=$('.hero p');if(HP)HP.textContent=OPT.b2b?'ส่วนเสริมสำหรับร้านโชห่วย: ลูกค้าสแกน QR ร้าน ร้านกดอนุมัติบนมือถือ ร้านสะสมแต้มของร้านเอง และหลังบ้านคุมโควตาร้าน · ใช้ข้อมูลชุดเดียวกับระบบ B2C':'มือถือลูกค้า (LINE → Microsite) และหลังบ้าน ใช้ข้อมูลชุดเดียวกัน ทำอะไรในมือถือ หลังบ้านเห็นผลทันที · ข้อมูลทั้งหมดเป็นตัวอย่าง';
+VoltDash.init({alerts:()=>{const a=[];if(OPT.b2b)S.shops.filter(s=>s.risk==='สูง'&&!s.sus).forEach(s=>a.push({t:`ร้าน ${s.id} ${s.n}: ${s.why[0]} ›`,cls:'r',a:'goShop',v:s.id}));const q=S.receipts.filter(r=>r.st==='review').length;if(q)a.push({t:`คิวตรวจใบเสร็จ ${q} รายการ ›`,cls:'a',a:'b',v:'receipts'});if(S.approvals.length)a.push({t:`รออนุมัติคนที่ 2 ${S.approvals.length} เรื่อง ›`,cls:'a',a:'b',v:'rules'});return a},
   onNoti:()=>{log('หลังบ้าน','ส่งข้อความดึงกลุ่มเสี่ยง (ไม่ซื้อ >21 วัน) กลับ');chatPush('คิดถึงกัน! กลับมาชาร์จสัปดาห์นี้ รับตัวคูณพิเศษ (เฉพาะผู้ยินยอมข่าวสาร)');renderCust();renderFeed();save()}});
 render();fit();setTimeout(fit,400);

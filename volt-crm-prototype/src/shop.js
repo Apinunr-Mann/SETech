@@ -5,7 +5,7 @@
 const myShop=()=>S.shops[0];
 const quotaOf=s=>Math.round(s.stockIn*1.1);
 function cartPts(c){let p=0,q=0;if(!c)return{p:0,q:0};for(const k in c){for(const f in c[k]){const n=c[k][f];if(!n)continue;p+=calcPts({sku:k,flav:f,ch:'โชห่วย',qty:n}).pts;q+=n}}return{p,q}}
-function renderShop(){
+function renderShop(){if(!$('#shop'))return;
   const el=$('#shop'),s=myShop(),ui=S.ui,qt=quotaOf(s),pd=S.pending&&S.pending.shopId===s.id?S.pending:null;
   let h=`<div class="shead"><div class="sp"><b style="font:italic 800 21px 'Bai Jamjuree'">VOLT <span style="color:var(--yel)">PARTNER</span></b><span class="chip ${s.sus?'':'y'}" style="${s.sus?'background:var(--bad);color:#fff;border-color:var(--bad)':''}">${s.sus?'ระงับชั่วคราว':s.hold?'ถูกพักแต้ม':'ยืนยันแล้ว'}</span></div><small>${esc(s.n)} · ${esc(s.a)} · เซลส์: ${esc(s.owner)}</small></div><div class="bd">`;
   if(ui.s==='home'||!ui.s){
@@ -20,6 +20,7 @@ function renderShop(){
 }
 function renderFeed(){
   const TRY=[['reg','สมัครสมาชิก: แตะ Rich Menu ใน LINE → เปิด CRM Microsite (LINE Login) → หน้า Home → กดสมัครสมาชิก → ฟอร์ม (อายุ 15+) → OTP รับ Welcome 20 แต้ม (รอกระป๋องแรก)'],['qr','ลูกค้าสแกน QR ร้าน (เมนูชาร์จแต้ม › QR ร้าน) → ร้านกดอนุมัติ เห็นสายฟ้าบินเข้า Charge Bolt'],['receipt','กรอกรหัส 310 ml แล้วส่งใบเสร็จ 7-Eleven เพื่อรับ Retail Boost (ลองรูปเบลอ เลขซ้ำ ใบเสร็จ AI สร้าง)'],['review','หลังบ้านอนุมัติใบเสร็จในคิวตรวจ'],['goal','ตั้งเป้ารางวัล แล้วดู Charge Bolt เติมตามแต้ม'],['quiz','ตอบ Charge Profile / Weekly Quiz'],['iw','ชาร์จกระป๋องเพื่อลุ้น Instant Win (เดโมตั้งโอกาสสูง)'],['draw','ใช้แต้มซื้อสิทธิ์ Lucky Draw แล้วให้หลังบ้านจับรางวัล'],['rule','หลังบ้านเปิดตัวคูณ แล้วสแกนใหม่'],['suspend','หลังบ้านระงับร้านเจ๊หน่อย แล้วดูมือถือร้าน'],['tier','กด “ข้ามสัปดาห์” แล้วชาร์จอีกครั้ง เพื่อ Level Up']];
-  $('#feed').innerHTML=`<div class="panel"><h3>ลองเล่นตามนี้</h3><ol class="try">${TRY.map(([k,t])=>`<li class="${S.ui.done[k]?'done':''}">${t}</li>`).join('')}</ol></div>
+  const T2=OPT.b2b?TRY:TRY.filter(([k])=>k!=='qr'&&k!=='suspend');
+  $('#feed').innerHTML=`<div class="panel"><h3>ลองเล่นตามนี้</h3><ol class="try">${T2.map(([k,t])=>`<li class="${S.ui.done[k]?'done':''}">${t}</li>`).join('')}</ol></div>
   <div class="panel"><div class="sp"><h3>สิ่งที่เกิดขึ้นในระบบ</h3><span class="mut" style="font-size:12px">Audit Log</span></div><div>${S.log.length?S.log.slice(0,9).map(l=>`<div class="ev"><i class="${l.w==='ลูกค้า'?'c':l.w==='ร้าน'?'s':l.w==='หลังบ้าน'?'b':'a'}">${l.w}</i><span>${esc(l.t)}</span><time>${l.at}</time></div>`).join(''):'<span class="mut" style="font-size:13px">ยังไม่มีเหตุการณ์ ลองกดที่มือถือลูกค้าหรือร้านดู</span>'}</div></div>`;
 }

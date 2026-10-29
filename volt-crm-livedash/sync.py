@@ -4,7 +4,7 @@ import pathlib, re, sys
 d = pathlib.Path(__file__).parent
 import base64
 imgs = ''.join('.im-%s{background-image:url(data:image/jpeg;base64,%s)}\n' % (f.stem, base64.b64encode(f.read_bytes()).decode()) for f in sorted((d / 'img').glob('*.jpg')))
-css = '\n'.join((d / n).read_text(encoding='utf-8') for n in ('livedash.css', 'dark.css', 'ui.css', 'charge.css', 'ux.css')) + '\n' + imgs
+css = '\n'.join((d / n).read_text(encoding='utf-8') for n in ('livedash.css', 'dark.css', 'ui.css', 'charge.css', 'ux.css', 'opt.css')) + '\n' + imgs
 js = (d / 'charge.js').read_text(encoding='utf-8') + '\n' + (d / 'livedash.js').read_text(encoding='utf-8')
 targets = [d.parent / 'volt-crm-prototype' / 'index.html', d.parent / 'volt-crm-mockups' / 'index.html']
 for t in targets:

@@ -44,7 +44,7 @@
 .scr .chips::-webkit-scrollbar{display:none}
 .scr .chips>*{flex:none}
 .scr .chips.wrap{flex-wrap:wrap;overflow:visible;margin:0;padding:0}
-.scr .chips button{min-height:34px;border-radius:999px;padding:0 14px;font-size:13px;background:var(--s1);border:1px solid var(--b1);color:var(--t1)}
+.scr .chips>*{min-height:34px;border-radius:999px;padding:0 14px;font-size:13px;background:var(--s1);border:1px solid var(--b1);color:var(--t1)}
 .scr.dk .seg{background:var(--s1);border-color:var(--b1)}
 .scr.dk .seg button{font-size:13px;color:var(--t2)}
 .scr.dk .seg button[aria-pressed=true]{background:var(--t1);color:#05050A}
