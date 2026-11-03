@@ -1,0 +1,687 @@
+<title>Sealect Pitch Control</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky control bar + tabbed workspace; summary tiles → detail panels; tinned-steel neutrals, deep sea-blue accent */
+:root{
+  --bg:#EEF1F4; --surface:#FFFFFF; --sunk:#F6F8FA; --ink:#14202B; --muted:#5A6774; --line:#D8DFE6;
+  --accent:#0B5AA6; --accent-ink:#FFFFFF; --accent-soft:#E2EDF8;
+  --ok:#1D7F47; --okbg:#E3F3EA; --warn:#9A6410; --warnbg:#FBF0DC; --crit:#B83229; --critbg:#FBE5E3; --gem:#6B3FA0; --gembg:#EFE7F8;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:8px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141A; --surface:#151D25; --sunk:#111820; --ink:#E4EBF2; --muted:#93A1AE; --line:#26323D;
+  --accent:#5AA0EA; --accent-ink:#0B1520; --accent-soft:#16304A;
+  --ok:#52C185; --okbg:#143322; --warn:#E3AA4E; --warnbg:#3A2A10; --crit:#F2766C; --critbg:#3D1A17; --gem:#B996E6; --gembg:#2B1F3D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#151D25; --sunk:#111820; --ink:#E4EBF2; --muted:#93A1AE; --line:#26323D;
+  --accent:#5AA0EA; --accent-ink:#0B1520; --accent-soft:#16304A;
+  --ok:#52C185; --okbg:#143322; --warn:#E3AA4E; --warnbg:#3A2A10; --crit:#F2766C; --critbg:#3D1A17; --gem:#B996E6; --gembg:#2B1F3D; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding-block:12px 8px}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand h1{font-family:var(--f-display);font-size:19px;font-weight:700;margin:0;letter-spacing:.01em;text-wrap:balance}
+.brand small{color:var(--muted);font-size:12px}
+.bar .meta{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.count{font-family:var(--f-mono);font-size:13px;background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:999px;white-space:nowrap}
+.sync{font-size:12px;display:flex;align-items:center;gap:6px;color:var(--muted);white-space:nowrap}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+.sync.ok i{background:var(--ok)} .sync.err i{background:var(--crit)} .sync.err{color:var(--crit)}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+nav.tabs button{font:inherit;font-size:13.5px;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:8px 12px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+nav.tabs button:hover{color:var(--ink)}
+main{padding-block:20px 60px}
+section.tab{display:flex;flex-direction:column;gap:18px}
+h2{font-family:var(--f-display);font-size:17px;font-weight:600;margin:0}
+h3{font-family:var(--f-display);font-size:15px;font-weight:600;margin:0}
+.muted{color:var(--muted)} .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.panel-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.grid{display:grid;gap:14px}
+.g-tiles{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.g-2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g-3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile .lbl{font-size:12px;color:var(--muted);letter-spacing:.02em}
+.tile .val{font-family:var(--f-display);font-size:26px;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.tile .sub{font-size:12px;color:var(--muted)}
+.tile.ok{border-left:4px solid var(--ok)} .tile.warn{border-left:4px solid var(--warn)} .tile.crit{border-left:4px solid var(--crit)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok);border-color:transparent}
+.pill.warn{background:var(--warnbg);color:var(--warn);border-color:transparent}
+.pill.crit{background:var(--critbg);color:var(--crit);border-color:transparent}
+.pill.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.pill.gem{background:var(--gembg);color:var(--gem);border-color:transparent}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;font-size:12px;color:var(--muted);background:var(--sunk);position:sticky;top:0;white-space:nowrap}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.stage td{background:var(--accent-soft);color:var(--accent);font-weight:600;font-family:var(--f-display)}
+tr.late td:first-child{box-shadow:inset 3px 0 var(--crit)}
+.chip{display:inline-block;font-size:11.5px;background:var(--sunk);border:1px solid var(--line);border-radius:4px;padding:0 5px;margin:1px 2px 1px 0;white-space:nowrap}
+.chip.hot{border-color:var(--crit);color:var(--crit)}
+button,.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.sm{padding:2px 8px;font-size:12px}
+button.danger{color:var(--crit);border-color:var(--crit)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+input,select,textarea{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:5px 8px;min-width:0;max-width:100%}
+textarea{width:100%;resize:vertical}
+input[type=number]{width:78px}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);min-width:0}
+.form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.bar-h{height:8px;background:var(--sunk);border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.bar-h>span{display:block;height:100%;background:var(--accent)}
+.bar-h.ok>span{background:var(--ok)} .bar-h.warn>span{background:var(--warn)} .bar-h.crit>span{background:var(--crit)}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:grid;grid-template-columns:minmax(110px,180px) 1fr auto;gap:10px;align-items:center}
+.alerts{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.alerts li{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border-radius:6px;background:var(--sunk);font-size:13px}
+.alerts li.crit{background:var(--critbg)} .alerts li.warn{background:var(--warnbg)}
+.alerts b{flex:none}
+.kanban{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:10px;overflow-x:auto}
+.kcol{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:8px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:4px;font-size:12.5px}
+.gates{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))}
+.gate{display:flex;flex-direction:column;gap:8px}
+.gate ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.gate li label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.gate.pass{border-color:var(--ok)} .gate.fail{border-color:var(--crit)}
+.strip{display:flex;gap:6px;flex-wrap:wrap}
+.strip .g{flex:1 1 110px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--sunk)}
+.strip .g.pass{background:var(--okbg);border-color:transparent} .strip .g.fail{background:var(--critbg);border-color:transparent} .strip .g.late{border-color:var(--crit)}
+.hit{border-left:3px solid var(--crit);padding:6px 10px;background:var(--critbg);border-radius:4px;font-size:13px}
+.hit.warn{border-color:var(--warn);background:var(--warnbg)}
+.okmsg{border-left:3px solid var(--ok);padding:6px 10px;background:var(--okbg);border-radius:4px}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r);background:var(--surface)}
+.modal{position:fixed;inset:0;background:rgba(10,18,26,.45);display:flex;align-items:flex-start;justify-content:center;z-index:20;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 24px max(12px,env(safe-area-inset-left,0px))}
+.modal .panel{width:min(760px,100%);display:flex;flex-direction:column;gap:12px}
+.fgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.toast{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:9px 14px;border-radius:6px;z-index:30;font-size:13px;max-width:min(420px,calc(100% - 32px))}
+.toast.err{background:var(--crit);color:#fff}
+.guide p,.guide li{max-width:72ch}
+.guide ol,.guide ul{padding-left:20px;margin:6px 0}
+svg text{fill:var(--muted);font-family:var(--f-mono);font-size:10px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:5px}
+@media (max-width:640px){.row{grid-template-columns:1fr auto}.row .bar-h{grid-column:1/-1}.tile .val{font-size:22px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="bar">
+    <div class="brand"><h1>Sealect Pitch Control</h1><small>ซีเล็ค ทูน่าสเต็กในน้ำแร่ · Live AI Workflow · TPS</small></div>
+    <div class="meta"><span class="count" id="countdown">—</span><span class="sync" id="sync"><i></i><span>กำลังเชื่อมต่อ…</span></span></div>
+  </div>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+</div></header>
+
+<main class="wrap" id="main">
+  <section class="tab" id="tab-dash" data-live></section>
+
+  <section class="tab" id="tab-tasks" hidden>
+    <div class="panel-h"><h2>งาน (Workflow)</h2>
+      <div class="form">
+        <select id="f-stage" aria-label="กรองขั้น"></select>
+        <select id="f-person" aria-label="กรองคน"></select>
+        <select id="f-status" aria-label="กรองสถานะ"></select>
+        <input id="f-q" placeholder="ค้นหางาน" aria-label="ค้นหา">
+        <select id="f-view" aria-label="มุมมอง"><option value="table">ตาราง</option><option value="kanban">Kanban</option></select>
+        <button class="pri" data-act="task-new">+ เพิ่มงาน</button>
+      </div>
+    </div>
+    <div id="tasks-live" data-live></div>
+  </section>
+
+  <section class="tab" id="tab-gates" hidden>
+    <div class="panel-h"><h2>ด่านตรวจงาน & จุดตัดสิน 💎</h2><span class="muted">ผ่านได้ต่อเมื่อติ๊กเกณฑ์ครบทุกข้อ · บันทึกผู้ตัดสินและวันที่อัตโนมัติ</span></div>
+    <div id="gates-live" class="gates" data-live></div>
+  </section>
+
+  <section class="tab" id="tab-time" hidden>
+    <div class="panel"><div class="panel-h"><h2>ลง Timesheet</h2><span class="muted">ลงทุกวันก่อน 17:30 ตามรหัสงาน</span></div>
+      <form class="form" id="time-form">
+        <label class="f">วันที่<input type="date" id="t-date" required></label>
+        <label class="f">คน<select id="t-person" required></select></label>
+        <label class="f" style="flex:1 1 240px">งาน<select id="t-task" required></select></label>
+        <label class="f">ชั่วโมง<input type="number" id="t-hours" min="0.25" max="16" step="0.25" value="1" required></label>
+        <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="t-ai"> ใช้ AI</label>
+        <label class="f" style="flex:1 1 200px">หมายเหตุ<input id="t-note" placeholder="ทำอะไรไป"></label>
+        <button class="pri" type="submit">บันทึกเวลา</button>
+      </form>
+    </div>
+    <div id="time-live" data-live class="rows"></div>
+  </section>
+
+  <section class="tab" id="tab-team" hidden><div id="team-live" data-live class="rows"></div></section>
+
+  <section class="tab" id="tab-issues" hidden>
+    <div class="panel"><div class="panel-h"><h2>เพิ่มประเด็น / ความเสี่ยง</h2></div>
+      <form class="form" id="issue-form">
+        <label class="f" style="flex:2 1 260px">หัวข้อ<input id="i-title" required></label>
+        <label class="f">ประเภท<select id="i-type"><option>ข้อขัดแย้งใน Brief</option><option>ความเสี่ยง AI</option><option>ทรัพยากรคน</option><option>เงื่อนไขลูกค้า</option><option>การเงิน</option></select></label>
+        <label class="f">ระดับ<select id="i-sev"><option value="high">สูง</option><option value="med" selected>กลาง</option><option value="low">ต่ำ</option></select></label>
+        <label class="f">เจ้าของ<select id="i-owner"></select></label>
+        <label class="f">กำหนด<input type="date" id="i-due"></label>
+        <label class="f" style="flex:2 1 260px">สิ่งที่ต้องทำ<input id="i-action"></label>
+        <button class="pri" type="submit">เพิ่ม</button>
+      </form>
+    </div>
+    <div id="issues-live" data-live></div>
+  </section>
+
+  <section class="tab" id="tab-comp" hidden>
+    <div class="grid g-2">
+      <div class="panel"><div class="panel-h"><h2>ตรวจ Copy ก่อนส่ง (Compliance Pre-scan)</h2></div>
+        <div class="rows">
+          <textarea id="c-text" rows="8" placeholder="วาง Copy / Caption / Script ที่ต้องการตรวจ"></textarea>
+          <div class="form">
+            <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="c-ai"> ชิ้นนี้ใช้ภาพ/วิดีโอ/เสียงจาก AI</label>
+            <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="c-pack"> ใช้ Packshot จริงจากแหล่งทางการ</label>
+            <label class="f" style="flex:1 1 200px">ผูกกับงาน<select id="c-task"></select></label>
+            <button class="pri" data-act="scan">ตรวจ</button>
+            <button data-act="scan-save">บันทึกผลตรวจ</button>
+          </div>
+          <div id="c-result" class="rows"></div>
+          <p class="muted" style="margin:0;font-size:12px">ตัวตรวจนี้เป็นแค่การกรองรอบแรก ผู้ตรวจ (QC) ยังต้องอ่านทุกชิ้นเองที่ด่าน G3 คำต้องห้ามมาจาก Brief และโน้ตประชุม 2 พ.ย.</p>
+        </div>
+      </div>
+      <div class="panel" data-live id="comp-live"></div>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-quote" hidden><div id="quote-live" data-live class="rows"></div></section>
+
+  <section class="tab" id="tab-ai" hidden>
+    <div class="panel"><div class="panel-h"><h2>บันทึกการใช้ AI</h2><span class="muted">ทุก Output ต้องมีผู้ตรวจที่เป็นคน</span></div>
+      <form class="form" id="ai-form">
+        <label class="f">วันที่<input type="date" id="a-date" required></label>
+        <label class="f">คน<select id="a-person" required></select></label>
+        <label class="f" style="flex:1 1 200px">งาน<select id="a-task"></select></label>
+        <label class="f">เครื่องมือ<input id="a-tool" list="tools" required placeholder="Claude"></label>
+        <label class="f" style="flex:2 1 240px">ใช้ทำอะไร<input id="a-purpose" required></label>
+        <label class="f">ผล<select id="a-result"><option>ใช้</option><option>แก้แล้วใช้</option><option>ทิ้ง</option></select></label>
+        <label class="f">ผู้ตรวจ<select id="a-checker"></select></label>
+        <label class="f">ประหยัด (ชม.)<input type="number" id="a-saved" min="0" step="0.25" value="0"></label>
+        <button class="pri" type="submit">บันทึก</button>
+      </form>
+      <datalist id="tools"><option>Claude</option><option>ChatGPT</option><option>Gemini Deep Research</option><option>Perplexity</option><option>NotebookLM</option><option>Zocial Eye</option><option>Midjourney</option><option>Adobe Firefly</option><option>Canva Magic</option><option>Runway</option><option>CapCut</option><option>Gamma</option><option>Gemini in Meet</option><option>Tellscore</option><option>HypeAuditor</option></datalist>
+    </div>
+    <div id="ai-live" data-live class="rows"></div>
+  </section>
+
+  <section class="tab guide" id="tab-guide" hidden></section>
+</main>
+<div id="modal-root"></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TH_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TH_D=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+const pd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const fd=(s,y)=>{if(!s)return '—';const d=pd(s);return TH_D[d.getDay()]+' '+d.getDate()+' '+TH_M[d.getMonth()]+(y?' '+(d.getFullYear()+543):'')};
+const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return iso(d)};
+const isWork=s=>{const g=pd(s).getDay();return g!==0&&g!==6};
+const workdays=(a,b)=>{const o=[];if(!a||!b)return o;let x=a;let guard=0;while(x<=b&&guard++<800){if(isWork(x))o.push(x);x=addD(x,1)}return o};
+const TODAY=iso(new Date());
+const n0=v=>Math.round(+v||0).toLocaleString('th-TH');
+const n1=v=>(Math.round((+v||0)*10)/10).toLocaleString('th-TH');
+const pct=v=>Math.round(+v||0)+'%';
+
+const STAGES=[['S0','รับ Brief'],['S1','ถอด Brief & คำถามถึงลูกค้า'],['S2','Research & Social Listening'],['S3','ROAS Post-mortem'],['S4','Consumer Validation'],['S5','Insight & Strategy'],['S6','Big Idea'],['S7','Creative Samples'],['S8','Media / KOL / Live'],['S9','KPI Model & Quotation'],['S10','Compliance'],['S11','Deck & Rehearsal'],['S12','นำเสนอ & Follow-up'],['PM','บริหารโครงการ']];
+const STAGE=Object.fromEntries(STAGES);
+const ST={todo:['รอเริ่ม',''],doing:['กำลังทำ','acc'],review:['รอตรวจ','warn'],done:['เสร็จ','ok'],blocked:['ติดปัญหา','crit']};
+const SEV={high:['สูง','crit'],med:['กลาง','warn'],low:['ต่ำ','']};
+const IST={open:['เปิด','crit'],working:['กำลังแก้','warn'],closed:['ปิดแล้ว','ok']};
+const TABS=[['dash','ภาพรวม'],['tasks','งาน'],['gates','ด่าน & 💎'],['time','Timesheet'],['team','ทีม & Capacity'],['issues','ประเด็น/ความเสี่ยง'],['comp','Compliance'],['quote','Quotation'],['ai','AI Log'],['guide','คู่มือ Workflow']];
+
+const S={tasks:{},people:{},gates:{},issues:{},time:{},ailog:{},checks:{},config:{}};
+const COLS=Object.keys(S);
+let db=null, loaded=new Set(), tab='dash', pending=false, rq=false;
+
+/* ---------- helpers ---------- */
+const cfg=()=>S.config.main||{};
+const arr=c=>Object.values(S[c]);
+const tasks=()=>arr('tasks').sort((a,b)=>(a.order??999)-(b.order??999)||a.id.localeCompare(b.id));
+const people=()=>arr('people').sort((a,b)=>(a.order??99)-(b.order??99));
+const pname=id=>S.people[id]?.name||id||'—';
+const planH=t=>(t.assignees||[]).reduce((s,a)=>s+(+a.h||0),0);
+const actH=tid=>arr('time').filter(e=>e.task===tid).reduce((s,e)=>s+(+e.hours||0),0);
+const evH=t=>planH(t)*(+t.pct||0)/100;
+const pvH=(t,day)=>{const p=planH(t);if(!t.start||!t.due)return 0;if(day>=t.due)return p;if(day<t.start)return 0;const wd=workdays(t.start,t.due);return p*wd.filter(x=>x<=day).length/Math.max(1,wd.length)};
+const late=t=>t.status!=='done'&&t.due&&t.due<TODAY;
+const rate=pid=>+(S.people[pid]?.rate)||0;
+const personPlan=pid=>tasks().reduce((s,t)=>s+(t.assignees||[]).filter(a=>a.p===pid).reduce((x,a)=>x+(+a.h||0),0),0);
+const personAct=pid=>arr('time').filter(e=>e.person===pid).reduce((s,e)=>s+(+e.hours||0),0);
+const loadPct=p=>(+p.util||0)+personPlan(p.id)/(+cfg().windowHrs||96)*100;
+const loadCls=v=>v>(cfg().loadCrit??100)?'crit':v>(cfg().loadWarn??85)?'warn':'ok';
+function toast(m,err){const t=document.createElement('div');t.className='toast'+(err?' err':'');t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),err?5000:2200)}
+async function W(fn,ok){if(!db){toast('ยังไม่ได้เชื่อมฐานข้อมูล บันทึกไม่ได้',1);return false}try{await fn();if(ok)toast(ok);return true}catch(e){toast('บันทึกไม่สำเร็จ: '+(e?.message||e?.code||e),1);return false}}
+const opt=(v,l,sel)=>`<option value="${esc(v)}"${sel?' selected':''}>${esc(l)}</option>`;
+function fillSelect(el,items,first){if(!el)return;const v=el.value;el.innerHTML=(first?opt('',first):'')+items.map(([a,b])=>opt(a,b)).join('');if([...el.options].some(o=>o.value===v))el.value=v}
+function setSync(k,msg){const el=$('#sync');el.className='sync '+k;el.querySelector('span').textContent=msg}
+
+/* ---------- render scheduling ---------- */
+const editing=()=>{const a=document.activeElement;return a&&a.matches('input,textarea,select')&&a.closest('[data-live]')};
+function schedule(){if(editing()){pending=true;return}if(rq)return;rq=true;requestAnimationFrame(()=>{rq=false;render()})}
+document.addEventListener('focusout',()=>setTimeout(()=>{if(pending&&!editing()){pending=false;render()}},60));
+
+function render(){
+  const c=cfg();
+  if(c.pitchDate){const d=Math.round((pd(c.pitchDate)-pd(TODAY))/864e5);const wd=workdays(addD(TODAY,1),c.pitchDate).length;$('#countdown').textContent=d>0?`อีก ${d} วัน (${wd} วันทำการ) ถึงนำเสนอ ${fd(c.pitchDate)}`:d===0?'วันนี้นำเสนอ':'นำเสนอแล้ว '+fd(c.pitchDate)}
+  fillSelects();
+  const f={dash:rDash,tasks:rTasks,gates:rGates,time:rTime,team:rTeam,issues:rIssues,comp:rComp,quote:rQuote,ai:rAI,guide:rGuide}[tab];
+  f&&f();
+}
+function fillSelects(){
+  const P=people().map(p=>[p.id,p.name+' · '+p.role]);
+  const T=tasks().map(t=>[t.id,t.id+' '+t.name]);
+  ['#t-person','#a-person'].forEach(s=>fillSelect($(s),P));
+  fillSelect($('#a-checker'),P,'—');fillSelect($('#i-owner'),P);
+  fillSelect($('#t-task'),T);fillSelect($('#a-task'),T,'—');fillSelect($('#c-task'),T,'—');
+  fillSelect($('#f-stage'),STAGES.map(([k,v])=>[k,k+' '+v]),'ทุกขั้น');
+  fillSelect($('#f-person'),people().map(p=>[p.id,p.name]),'ทุกคน');
+  fillSelect($('#f-status'),Object.entries(ST).map(([k,v])=>[k,v[0]]),'ทุกสถานะ');
+}
+function needData(el,what){if(!db||!loaded.size){el.innerHTML=`<div class="empty">${db===null&&loaded.size===0&&dbTried?'เชื่อมต่อฐานข้อมูลไม่ได้ · เปิดหน้านี้ใน claude.ai และลงชื่อเข้าใช้เพื่อดูและบันทึกงาน':'กำลังโหลดข้อมูลทีม…'}</div>`;return true}
+  if(what&&!arr(what).length){el.innerHTML=`<div class="empty">ยังไม่มีข้อมูลในส่วนนี้ · เพิ่มรายการแรกได้จากฟอร์มด้านบน</div>`;return true}return false}
+
+/* ---------- metrics ---------- */
+function metrics(){
+  const T=tasks();const BAC=T.reduce((s,t)=>s+planH(t),0);
+  const EV=T.reduce((s,t)=>s+evH(t),0);const PV=T.reduce((s,t)=>s+pvH(t,TODAY),0);
+  const AC=arr('time').reduce((s,e)=>s+(+e.hours||0),0);
+  const costPlan=T.reduce((s,t)=>s+(t.assignees||[]).reduce((x,a)=>x+(+a.h||0)*rate(a.p),0),0);
+  const costAct=arr('time').reduce((s,e)=>s+(+e.hours||0)*rate(e.person),0);
+  const base=T.reduce((s,t)=>s+(+t.base||planH(t)),0);
+  const G=arr('gates');const gPass=G.filter(g=>g.status==='pass').length;
+  const gems=G.filter(g=>g.gem);const gemDone=gems.filter(g=>g.status==='pass').length;
+  const lateT=T.filter(late);const issuesHigh=arr('issues').filter(i=>i.status!=='closed'&&i.sev==='high');
+  const aiSaved=arr('ailog').reduce((s,a)=>s+(+a.saved||0),0);
+  const aiHrs=arr('time').filter(e=>e.ai).reduce((s,e)=>s+(+e.hours||0),0);
+  const CPI=AC?EV/AC:null, SPI=PV?EV/PV:null;
+  const EAC=CPI?costPlan/CPI:costPlan;
+  return {T,BAC,EV,PV,AC,costPlan,costAct,base,G,gPass,gems,gemDone,lateT,issuesHigh,aiSaved,aiHrs,CPI,SPI,EAC};
+}
+function alerts(m){
+  const a=[];const c=cfg();
+  m.lateT.forEach(t=>a.push(['crit','เลยกำหนด',`${t.id} ${t.name} · กำหนด ${fd(t.due)} · ${pname(t.assignees?.[0]?.p)}`]));
+  m.T.filter(t=>t.status==='blocked').forEach(t=>a.push(['crit','ติดปัญหา',`${t.id} ${t.name}${t.note?' · '+t.note:''}`]));
+  m.G.filter(g=>g.status!=='pass'&&g.due&&g.due<=TODAY).forEach(g=>a.push([g.due<TODAY?'crit':'warn','ด่านถึงกำหนด',`${g.id} ${g.name} · ผู้อนุมัติ ${pname(g.approver)}`]));
+  people().forEach(p=>{const l=loadPct(p);if(l>(c.loadCrit??100))a.push(['crit','คนเกินกำลัง',`${p.name} (${p.role}) โหลด ${pct(l)}${p.note?' · '+p.note:''}`])});
+  m.issuesHigh.forEach(i=>a.push([i.due&&i.due<TODAY?'crit':'warn','ประเด็นสูง',`${i.id} ${i.title}${i.due?' · กำหนด '+fd(i.due):''}`]));
+  const y=workdays(addD(TODAY,-6),addD(TODAY,-1)).pop();
+  if(y&&y>=(c.projectStart||'')){const active=new Set();m.T.forEach(t=>{if(t.start&&t.start<=y&&t.due>=y&&t.status!=='todo')(t.assignees||[]).forEach(x=>active.add(x.p))});
+    const logged=new Set(arr('time').filter(e=>e.date===y).map(e=>e.person));const miss=[...active].filter(p=>!logged.has(p));
+    if(miss.length)a.push(['warn','Timesheet ขาด',`${fd(y)}: ${miss.map(pname).join(', ')}`])}
+  if(m.costPlan>(c.pitchCap||Infinity))a.push(['crit','ต้นทุนเกินเพดาน',`แผนต้นทุน ${n0(m.costPlan)} ฿ > เพดาน ${n0(c.pitchCap)} ฿`]);
+  return a;
+}
+
+/* ---------- Dashboard ---------- */
+function rDash(){
+  const el=$('#tab-dash');if(needData(el,'tasks'))return;
+  const m=metrics(),c=cfg();
+  const prog=m.BAC?m.EV/m.BAC*100:0,plan=m.BAC?m.PV/m.BAC*100:0;
+  const spiC=m.SPI==null?'':m.SPI>=.95?'ok':m.SPI>=.85?'warn':'crit';
+  const costC=m.EAC>(c.pitchCap||Infinity)?'crit':m.EAC>(c.pitchCap||0)*.9?'warn':'ok';
+  const al=alerts(m);
+  const up=m.T.filter(t=>t.status!=='done'&&t.due>=TODAY&&t.due<=addD(TODAY,7)).sort((a,b)=>a.due.localeCompare(b.due));
+  const tiles=[
+    [spiC,'ความคืบหน้าจริง vs แผน',pct(prog),`แผนถึงวันนี้ ${pct(plan)} · SPI ${m.SPI==null?'—':m.SPI.toFixed(2)}`],
+    [m.CPI==null?'':m.CPI>=.9?'ok':m.CPI>=.75?'warn':'crit','Manhour ใช้จริง / แผนทั้งหมด',`${n1(m.AC)} / ${n1(m.BAC)}`,`ชม. · CPI ${m.CPI==null?'—':m.CPI.toFixed(2)} (มูลค่างาน/ชม.จริง)`],
+    [costC,'ต้นทุน Pitch (คาดการณ์)',`${n0(m.EAC)} ฿`,`ใช้จริง ${n0(m.costAct)} ฿ · เพดาน ${n0(c.pitchCap)} ฿`],
+    [m.gPass===m.G.length?'ok':'','ด่านที่ผ่าน',`${m.gPass}/${m.G.length}`,`จุดตัดสิน 💎 ตัดสินแล้ว ${m.gemDone}/${m.gems.length}`],
+    [m.lateT.length?'crit':'ok','งานเลยกำหนด',m.lateT.length,`จากทั้งหมด ${m.T.length} งาน · เสร็จ ${m.T.filter(t=>t.status==='done').length}`],
+    [m.issuesHigh.length?'warn':'ok','ประเด็นระดับสูงที่ยังเปิด',m.issuesHigh.length,`ทั้งหมดที่เปิด ${arr('issues').filter(i=>i.status!=='closed').length}`],
+    ['','AI ช่วยประหยัด (แผน)',`${n1(m.base-m.BAC)} ชม.`,`${pct(m.base?(m.base-m.BAC)/m.base*100:0)} จากฐานไม่มี AI · Log จริง ${n1(m.aiSaved)} ชม.`],
+  ];
+  el.innerHTML=`
+  <div class="grid g-tiles">${tiles.map(t=>`<div class="tile ${t[0]}"><span class="lbl">${t[1]}</span><span class="val">${t[2]}</span><span class="sub">${t[3]}</span></div>`).join('')}</div>
+  <div class="grid g-2">
+    <div class="panel"><div class="panel-h"><h3>สิ่งที่ต้องจัดการตอนนี้</h3><span class="pill ${al.some(x=>x[0]==='crit')?'crit':'ok'}">${al.length} รายการ</span></div>
+      ${al.length?`<ul class="alerts">${al.slice(0,12).map(x=>`<li class="${x[0]}"><b class="pill ${x[0]}">${x[1]}</b><span>${esc(x[2])}</span></li>`).join('')}</ul>`:'<div class="okmsg">ไม่มีเรื่องค้าง</div>'}</div>
+    <div class="panel"><div class="panel-h"><h3>Burn-up: ชั่วโมงสะสม</h3><span class="legend"><span><i style="background:var(--muted)"></i>แผน (PV)</span><span><i style="background:var(--warn)"></i>ใช้จริง (AC)</span><span><i style="background:var(--accent)"></i>มูลค่างาน (EV) วันนี้</span></span></div>${burn(m)}</div>
+  </div>
+  <div class="panel"><div class="panel-h"><h3>ด่านตรวจงาน</h3><button class="sm" data-tab="gates">เปิดด่านทั้งหมด</button></div>
+    <div class="strip">${m.G.sort((a,b)=>(a.order??0)-(b.order??0)).map(g=>`<div class="g ${g.status==='pass'?'pass':g.status==='fail'?'fail':g.due<TODAY?'late':''}"><b>${esc(g.id)}${g.gem?' 💎':''}</b><br>${esc(g.name)}<br><span class="muted">${fd(g.due)} · ${g.status==='pass'?'ผ่าน':g.status==='fail'?'ไม่ผ่าน':'รอ'}</span></div>`).join('')}</div></div>
+  <div class="grid g-2">
+    <div class="panel"><div class="panel-h"><h3>ความคืบหน้าตามขั้น</h3></div><div class="rows">${STAGES.map(([k,v])=>{const ts=m.T.filter(t=>t.stage===k);if(!ts.length)return '';const b=ts.reduce((s,t)=>s+planH(t),0),e=ts.reduce((s,t)=>s+evH(t),0),p=b?e/b*100:0,lt=ts.some(late);
+      return `<div class="row"><span>${k} ${esc(v)}</span><div class="bar-h ${lt?'crit':p>=100?'ok':''}"><span style="width:${Math.min(100,p)}%"></span></div><span class="mono">${pct(p)}</span></div>`}).join('')}</div></div>
+    <div class="panel"><div class="panel-h"><h3>โหลดทีม (งานเดิม + Pitch นี้)</h3><button class="sm" data-tab="team">ดูรายละเอียด</button></div><div class="rows">${people().filter(p=>personPlan(p.id)>0).map(p=>{const l=loadPct(p);return `<div class="row"><span>${esc(p.name)} <span class="muted">${esc(p.role)}</span></span><div class="bar-h ${loadCls(l)}"><span style="width:${Math.min(100,l/1.5)}%"></span></div><span class="mono">${pct(l)}</span></div>`}).join('')}</div><p class="muted" style="font-size:12px;margin:8px 0 0">แถบเต็มที่ 150% · เหลือง > ${c.loadWarn??85}% · แดง > ${c.loadCrit??100}%</p></div>
+  </div>
+  <div class="panel"><div class="panel-h"><h3>ครบกำหนดใน 7 วัน</h3><button class="sm" data-tab="tasks">ไปหน้างาน</button></div>
+    ${up.length?`<div class="tbl"><table><thead><tr><th>วันส่ง</th><th>งาน</th><th>ผู้รับผิดชอบ</th><th>สถานะ</th><th class="num">%</th></tr></thead><tbody>${up.map(t=>`<tr><td>${fd(t.due)}</td><td>${esc(t.id)} ${esc(t.name)}${t.gem?' 💎':''}</td><td>${(t.assignees||[]).map(a=>esc(pname(a.p))).join(', ')}</td><td><span class="pill ${ST[t.status]?.[1]}">${ST[t.status]?.[0]}</span></td><td class="num">${t.pct||0}</td></tr>`).join('')}</tbody></table></div>`:'<div class="okmsg">ไม่มีงานครบกำหนดใน 7 วัน</div>'}</div>`;
+}
+function burn(m){
+  const c=cfg();const days=workdays(c.projectStart||'2026-11-02',addD(c.pitchDate||'2026-11-18',1));if(!days.length)return '';
+  const pv=days.map(d=>m.T.reduce((s,t)=>s+pvH(t,d),0));
+  let cum=0;const byDay={};arr('time').forEach(e=>{byDay[e.date]=(byDay[e.date]||0)+(+e.hours||0)});
+  const before=arr('time').filter(e=>e.date<days[0]).reduce((s,e)=>s+(+e.hours||0),0);cum=before;
+  const ac=days.map(d=>{cum+=byDay[d]||0;return d<=TODAY?cum:null});
+  const max=Math.max(m.BAC,...ac.filter(v=>v!=null),1)*1.08;
+  const W=640,H=230,L=40,R=10,T=10,B=34;const x=i=>L+(W-L-R)*i/Math.max(1,days.length-1);const y=v=>T+(H-T-B)*(1-v/max);
+  const path=a=>a.map((v,i)=>v==null?'':`${i&&a[i-1]!=null?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  const ticks=[0,.25,.5,.75,1].map(f=>Math.round(max*f/10)*10);
+  const ti=days.indexOf(days.filter(d=>d<=TODAY).pop());
+  return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:420px" role="img" aria-label="กราฟชั่วโมงสะสม">
+  ${ticks.map(v=>`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1" fill="none"/><text x="${L-6}" y="${y(v)+3}" text-anchor="end">${v}</text>`).join('')}
+  ${days.map((d,i)=>i%2===0||i===days.length-1?`<text x="${x(i)}" y="${H-B+16}" text-anchor="middle">${pd(d).getDate()}/${pd(d).getMonth()+1}</text>`:'').join('')}
+  ${ti>=0?`<line x1="${x(ti)}" x2="${x(ti)}" y1="${T}" y2="${H-B}" stroke="var(--accent)" stroke-dasharray="3 3" fill="none"/><text x="${x(ti)}" y="${H-4}" text-anchor="middle" style="fill:var(--accent)">วันนี้</text>`:''}
+  <path d="${path(pv)}" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4"/>
+  <path d="${path(ac)}" fill="none" stroke="var(--warn)" stroke-width="2.5"/>
+  ${ti>=0?`<circle cx="${x(ti)}" cy="${y(m.EV)}" r="5" fill="var(--accent)"/><text x="${x(ti)+8}" y="${y(m.EV)-6}" style="fill:var(--accent)">EV ${n1(m.EV)}</text>`:''}
+  </svg></div>`;
+}
+
+/* ---------- Tasks ---------- */
+function rTasks(){
+  const el=$('#tasks-live');if(needData(el,'tasks'))return;
+  const fs=$('#f-stage').value,fp=$('#f-person').value,fst=$('#f-status').value,q=$('#f-q').value.trim().toLowerCase(),view=$('#f-view').value;
+  const T=tasks().filter(t=>(!fs||t.stage===fs)&&(!fp||(t.assignees||[]).some(a=>a.p===fp)||t.checker===fp)&&(!fst||t.status===fst)&&(!q||(t.id+' '+t.name+' '+(t.ai||'')+' '+(t.deliverable||'')).toLowerCase().includes(q)));
+  if(view==='kanban'){
+    el.innerHTML=`<div class="kanban">${Object.entries(ST).map(([k,v])=>`<div class="kcol"><b>${v[0]} <span class="muted">(${T.filter(t=>t.status===k).length})</span></b>${T.filter(t=>t.status===k).map(t=>`<div class="kcard ${late(t)?'late':''}"><b>${esc(t.id)} ${esc(t.name)}${t.gem?' 💎':''}</b><span class="muted">${fd(t.due)} · ${(t.assignees||[]).map(a=>esc(pname(a.p))).join(', ')}</span>${late(t)?'<span class="pill crit">เลยกำหนด</span>':''}<div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm" data-act="mv" data-id="${t.id}" data-d="-1" aria-label="ย้ายซ้าย">◀</button><button class="sm" data-act="mv" data-id="${t.id}" data-d="1" aria-label="ย้ายขวา">▶</button><button class="sm" data-act="task-edit" data-id="${t.id}">แก้ไข</button></div></div>`).join('')}</div>`).join('')}</div>`;return}
+  let cur='',rows='';
+  T.forEach(t=>{if(t.stage!==cur){cur=t.stage;rows+=`<tr class="stage"><td colspan="10">${esc(cur)} · ${esc(STAGE[cur]||'')}</td></tr>`}
+    const p=planH(t),a=actH(t.id),over=a>p*1.1&&p>0;
+    rows+=`<tr class="${late(t)?'late':''}"><td class="mono">${esc(t.id)}</td>
+    <td style="min-width:220px"><b>${esc(t.name)}</b>${t.gem?' <span class="pill gem">💎</span>':''}${late(t)?' <span class="pill crit">เลยกำหนด</span>':''}<br><span class="muted" style="font-size:12px">${esc(t.deliverable||'')}${t.kpi?' · KPI: '+esc(t.kpi):''}</span></td>
+    <td>${(t.assignees||[]).map(x=>`<span class="chip ${loadPct(S.people[x.p]||{})>(cfg().loadCrit??100)?'hot':''}">${esc(pname(x.p))} ${x.h}h</span>`).join('')}</td>
+    <td>${esc(pname(t.checker))}</td><td style="font-size:12px">${esc(t.ai||'—')}</td>
+    <td style="white-space:nowrap">${fd(t.start)}<br>→ ${fd(t.due)}</td>
+    <td class="num">${n1(p)} / <span style="color:${over?'var(--crit)':'inherit'}">${n1(a)}</span></td>
+    <td><select data-act="st" data-id="${t.id}" aria-label="สถานะ">${Object.entries(ST).map(([k,v])=>opt(k,v[0],t.status===k)).join('')}</select></td>
+    <td><input type="number" min="0" max="100" step="5" value="${+t.pct||0}" data-act="pct" data-id="${t.id}" style="width:64px" aria-label="ร้อยละ"></td>
+    <td><button class="sm" data-act="task-edit" data-id="${t.id}">แก้ไข</button></td></tr>`});
+  el.innerHTML=T.length?`<div class="tbl"><table><thead><tr><th>รหัส</th><th>งาน / Output</th><th>ผู้รับผิดชอบ</th><th>ผู้ตรวจ</th><th>AI ที่ใช้</th><th>ช่วงเวลา</th><th class="num">แผน/จริง ชม.</th><th>สถานะ</th><th>%</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<div class="empty">ไม่พบงานตามตัวกรอง</div>';
+}
+function statusPatch(t,st){let p=+t.pct||0;if(st==='todo')p=0;else if(st==='doing')p=p<=0||p>=100?25:p;else if(st==='review')p=Math.max(p,80);else if(st==='done')p=100;return {status:st,pct:p,updatedAt:TODAY}}
+
+function taskModal(id){
+  const t=id?S.tasks[id]:{id:'T'+String(tasks().length+1).padStart(2,'0'),stage:'S7',status:'todo',pct:0,assignees:[{p:people()[0]?.id,h:1}],start:TODAY,due:TODAY};
+  const P=people();
+  const aRow=(a)=>`<div class="form arow"><select class="ap">${P.map(p=>opt(p.id,p.name+' · '+p.role,p.id===a.p)).join('')}</select><input type="number" class="ah" min="0" step="0.5" value="${a.h}" aria-label="ชั่วโมง"> ชม. <button type="button" class="sm" data-act="arow-del">ลบ</button></div>`;
+  $('#modal-root').innerHTML=`<div class="modal" data-act="modal-bg"><form class="panel" id="task-form">
+   <div class="panel-h"><h2>${id?'แก้ไขงาน '+esc(id):'เพิ่มงานใหม่'}</h2><button type="button" data-act="modal-close">ปิด</button></div>
+   <div class="fgrid">
+    <label class="f">รหัส<input id="m-id" value="${esc(t.id)}" ${id?'readonly':''} required pattern="[A-Za-z0-9_-]+"></label>
+    <label class="f">ขั้น<select id="m-stage">${STAGES.map(([k,v])=>opt(k,k+' '+v,t.stage===k)).join('')}</select></label>
+    <label class="f">เริ่ม<input type="date" id="m-start" value="${esc(t.start||'')}"></label>
+    <label class="f">ส่ง<input type="date" id="m-due" value="${esc(t.due||'')}"></label>
+   </div>
+   <label class="f">ชื่องาน<input id="m-name" value="${esc(t.name||'')}" required></label>
+   <label class="f">Output ที่ต้องส่ง<input id="m-deliv" value="${esc(t.deliverable||'')}"></label>
+   <div class="fgrid">
+    <label class="f">AI ที่ใช้ (ทำอะไร)<input id="m-ai" value="${esc(t.ai||'')}"></label>
+    <label class="f">ผู้ตรวจ (Checker)<select id="m-checker">${opt('','—')}${P.map(p=>opt(p.id,p.name,p.id===t.checker)).join('')}</select></label>
+    <label class="f">KPI ของงาน<input id="m-kpi" value="${esc(t.kpi||'')}"></label>
+    <label class="f">ชม. ฐานถ้าไม่ใช้ AI<input type="number" id="m-base" min="0" step="0.5" value="${+t.base||0}"></label>
+   </div>
+   <div><span class="muted" style="font-size:12px">ผู้รับผิดชอบ + ชั่วโมงตามแผน (คนแรก = เจ้าของ)</span><div id="m-arows" class="rows">${(t.assignees||[]).map(aRow).join('')}</div><button type="button" class="sm" data-act="arow-add" style="margin-top:6px">+ เพิ่มคน</button></div>
+   <div class="fgrid">
+    <label class="f">สถานะ<select id="m-status">${Object.entries(ST).map(([k,v])=>opt(k,v[0],t.status===k)).join('')}</select></label>
+    <label class="f">% เสร็จ<input type="number" id="m-pct" min="0" max="100" value="${+t.pct||0}"></label>
+    <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="m-gem" ${t.gem?'checked':''}> จุดที่คนต้องตัดสิน 💎</label>
+   </div>
+   <label class="f">หมายเหตุ / ปัญหา<textarea id="m-note" rows="2">${esc(t.note||'')}</textarea></label>
+   <div class="form" style="justify-content:space-between">${id?'<button type="button" class="danger" data-act="task-del" data-id="'+esc(id)+'">ลบงาน</button>':'<span></span>'}<button class="pri" type="submit">บันทึก</button></div>
+  </form></div>`;
+  $('#m-arows').dataset.tpl=aRow({p:P[0]?.id,h:1});
+}
+async function saveTask(e){
+  e.preventDefault();const id=$('#m-id').value.trim();
+  const assignees=[...document.querySelectorAll('#m-arows .arow')].map(r=>({p:r.querySelector('.ap').value,h:+r.querySelector('.ah').value||0})).filter(a=>a.p);
+  const d={id,name:$('#m-name').value.trim(),stage:$('#m-stage').value,start:$('#m-start').value,due:$('#m-due').value,deliverable:$('#m-deliv').value,ai:$('#m-ai').value,checker:$('#m-checker').value,kpi:$('#m-kpi').value,base:+$('#m-base').value||0,assignees,status:$('#m-status').value,pct:Math.max(0,Math.min(100,+$('#m-pct').value||0)),gem:$('#m-gem').checked,note:$('#m-note').value,updatedAt:TODAY,order:S.tasks[id]?.order??(tasks().length+1)};
+  if(d.status==='done')d.pct=100;
+  if(await W(()=>db.collection('tasks').doc(id).set(d),'บันทึกงาน '+id+' แล้ว'))$('#modal-root').innerHTML='';
+}
+
+/* ---------- Gates ---------- */
+function rGates(){
+  const el=$('#gates-live');if(needData(el,'gates'))return;
+  el.innerHTML=arr('gates').sort((a,b)=>(a.order??0)-(b.order??0)).map(g=>{const items=g.items||[];const all=items.length&&items.every(i=>i.ok);
+    return `<div class="panel gate ${g.status||''}"><div class="panel-h"><h3>${esc(g.id)} ${esc(g.name)} ${g.gem?'<span class="pill gem">💎 คนตัดสิน</span>':''}</h3><span class="pill ${g.status==='pass'?'ok':g.status==='fail'?'crit':g.due<TODAY?'crit':''}">${g.status==='pass'?'ผ่าน':g.status==='fail'?'ไม่ผ่าน':'รอตัดสิน'}</span></div>
+    <span class="muted" style="font-size:12px">กำหนด ${fd(g.due)} · ผู้เสนอ ${esc(pname(g.owner))} · ผู้อนุมัติ ${esc(pname(g.approver))}${g.decidedAt?' · ตัดสินเมื่อ '+fd(g.decidedAt):''}</span>
+    ${g.why?`<div style="font-size:12.5px;background:var(--gembg);padding:6px 8px;border-radius:4px"><b>ทำไม AI ห้ามตัดสินแทน:</b> ${esc(g.why)}</div>`:''}
+    <ul>${items.map((it,i)=>`<li><label><input type="checkbox" data-act="gi" data-id="${g.id}" data-i="${i}" ${it.ok?'checked':''}> <span>${esc(it.t)}</span></label></li>`).join('')}</ul>
+    <label class="f">ความเห็นผู้อนุมัติ<textarea rows="2" data-act="gc" data-id="${g.id}">${esc(g.comment||'')}</textarea></label>
+    <div class="form"><button class="sm pri" data-act="gs" data-id="${g.id}" data-s="pass" ${all?'':'disabled title="ติ๊กเกณฑ์ให้ครบก่อน"'}>อนุมัติผ่าน</button><button class="sm danger" data-act="gs" data-id="${g.id}" data-s="fail">ไม่ผ่าน (ส่งกลับแก้)</button><button class="sm" data-act="gs" data-id="${g.id}" data-s="pending">รีเซ็ต</button><span class="muted" style="font-size:12px">${items.filter(i=>i.ok).length}/${items.length} เกณฑ์</span></div></div>`}).join('');
+}
+
+/* ---------- Timesheet ---------- */
+function rTime(){
+  const el=$('#time-live');if(needData(el))return;
+  const c=cfg();const days=workdays(c.projectStart||'2026-11-02',c.pitchDate&&c.pitchDate<TODAY?c.pitchDate:TODAY).slice(-12);
+  const E=arr('time');const P=people();
+  const cell=(p,d)=>E.filter(e=>e.person===p&&e.date===d).reduce((s,e)=>s+(+e.hours||0),0);
+  const fp=$('#tf-person')?.value||'';
+  const list=E.filter(e=>!fp||e.person===fp).sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.at||0)-(a.at||0)).slice(0,80);
+  el.innerHTML=`<div class="panel"><div class="panel-h"><h3>ตารางชั่วโมงรายวัน (12 วันทำการล่าสุด)</h3><span class="muted" style="font-size:12px">ช่องสีเหลือง = มีงานที่กำลังทำแต่ยังไม่ลงเวลา</span></div>
+   <div class="tbl"><table><thead><tr><th>คน</th>${days.map(d=>`<th class="num">${pd(d).getDate()}/${pd(d).getMonth()+1}</th>`).join('')}<th class="num">รวม</th><th class="num">แผน</th></tr></thead><tbody>
+   ${P.map(p=>{const tot=personAct(p.id),pl=personPlan(p.id);if(!pl&&!tot)return '';return `<tr><td>${esc(p.name)}</td>${days.map(d=>{const v=cell(p.id,d);const act=tasks().some(t=>t.status!=='todo'&&t.start<=d&&t.due>=d&&(t.assignees||[]).some(a=>a.p===p.id));return `<td class="num" style="${!v&&act&&d<TODAY?'background:var(--warnbg)':''}">${v?n1(v):'·'}</td>`}).join('')}<td class="num"><b>${n1(tot)}</b></td><td class="num" style="color:${tot>pl*1.1?'var(--crit)':'inherit'}">${n1(pl)}</td></tr>`}).join('')}
+   </tbody></table></div></div>
+   <div class="panel"><div class="panel-h"><h3>รายการเวลาที่ลง</h3><select id="tf-person" aria-label="กรองคน">${opt('','ทุกคน')}${P.map(p=>opt(p.id,p.name,p.id===fp)).join('')}</select></div>
+   ${list.length?`<div class="tbl"><table><thead><tr><th>วันที่</th><th>คน</th><th>งาน</th><th class="num">ชม.</th><th>AI</th><th>หมายเหตุ</th><th class="num">ต้นทุน ฿</th><th></th></tr></thead><tbody>${list.map(e=>`<tr><td>${fd(e.date)}</td><td>${esc(pname(e.person))}</td><td>${esc(e.task)} ${esc(S.tasks[e.task]?.name||'')}</td><td class="num">${n1(e.hours)}</td><td>${e.ai?'<span class="pill acc">AI</span>':''}</td><td>${esc(e.note||'')}</td><td class="num">${n0((+e.hours||0)*rate(e.person))}</td><td><button class="sm danger" data-act="time-del" data-id="${e.id}">ลบ</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">ยังไม่มีการลงเวลา · ใช้ฟอร์มด้านบนเพื่อลงเวลาครั้งแรก</div>'}</div>`;
+}
+
+/* ---------- Team ---------- */
+function rTeam(){
+  const el=$('#team-live');if(needData(el,'people'))return;const c=cfg();const win=+c.windowHrs||96;
+  el.innerHTML=`<div class="panel"><div class="panel-h"><h2>ทีม & Capacity</h2><span class="muted">ช่วงทำ Pitch ${win} ชม./คน (${win/8} วันทำการ) · โหลด = งานเดิม % + ชม. Pitch ÷ ${win}</span></div>
+  <div class="tbl"><table><thead><tr><th>ชื่อ</th><th>บทบาทในงานนี้</th><th class="num">งานเดิม %</th><th class="num">ว่าง ชม.</th><th class="num">แผน Pitch</th><th class="num">ใช้จริง</th><th style="min-width:140px">โหลดรวม</th><th class="num">อัตรา ฿/ชม.</th><th>หมายเหตุ</th></tr></thead><tbody>
+  ${people().map(p=>{const l=loadPct(p),free=Math.max(0,(100-(+p.util||0))/100*win),pl=personPlan(p.id);return `<tr><td><b>${esc(p.name)}</b><br><span class="muted" style="font-size:12px">${esc(p.role)} · ${esc(p.level||'')}</span></td><td style="font-size:12.5px">${esc(p.pitchRole||'')}<br><span class="muted">${esc(p.skills||'')}</span></td>
+  <td class="num"><input type="number" min="0" max="200" value="${+p.util||0}" data-act="util" data-id="${p.id}" aria-label="งานเดิม %" style="width:64px"></td><td class="num">${n1(free)}</td><td class="num" style="color:${pl>free?'var(--crit)':'inherit'}">${n1(pl)}</td><td class="num">${n1(personAct(p.id))}</td>
+  <td><div class="bar-h ${loadCls(l)}"><span style="width:${Math.min(100,l/1.5)}%"></span></div><span class="mono" style="font-size:12px">${pct(l)}</span> <span class="pill ${loadCls(l)}">${loadCls(l)==='crit'?'เกินกำลัง':loadCls(l)==='warn'?'ใกล้เต็ม':'รับได้'}</span></td>
+  <td class="num"><input type="number" min="0" step="100" value="${+p.rate||0}" data-act="rate" data-id="${p.id}" aria-label="อัตรา" style="width:80px"></td><td style="font-size:12.5px">${esc(p.note||'')}</td></tr>`}).join('')}
+  </tbody></table></div></div>
+  <div class="grid g-3">${people().filter(p=>personPlan(p.id)).map(p=>`<div class="panel"><div class="panel-h"><h3>${esc(p.name)}</h3><span class="pill ${loadCls(loadPct(p))}">${pct(loadPct(p))}</span></div><ul style="margin:0;padding-left:18px;font-size:12.5px">${tasks().filter(t=>(t.assignees||[]).some(a=>a.p===p.id)).map(t=>`<li>${esc(t.id)} ${esc(t.name)} · ${(t.assignees.find(a=>a.p===p.id)||{}).h}h · <span class="pill ${ST[t.status]?.[1]}">${ST[t.status]?.[0]}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
+}
+
+/* ---------- Issues ---------- */
+function rIssues(){
+  const el=$('#issues-live');if(needData(el,'issues'))return;
+  const I=arr('issues').sort((a,b)=>(a.status==='closed')-(b.status==='closed')||({high:0,med:1,low:2}[a.sev]-{high:0,med:1,low:2}[b.sev])||a.id.localeCompare(b.id));
+  el.innerHTML=`<div class="tbl"><table><thead><tr><th>รหัส</th><th>ประเด็น</th><th>ประเภท</th><th>ระดับ</th><th>ที่มา</th><th>สิ่งที่ต้องทำ</th><th>เจ้าของ</th><th>กำหนด</th><th>สถานะ</th><th style="min-width:180px">ผลการแก้</th></tr></thead><tbody>
+  ${I.map(i=>`<tr class="${i.status!=='closed'&&i.due&&i.due<TODAY?'late':''}"><td class="mono">${esc(i.id)}</td><td style="min-width:220px"><b>${esc(i.title)}</b>${i.detail?`<br><span class="muted" style="font-size:12px">${esc(i.detail)}</span>`:''}</td><td style="font-size:12px">${esc(i.type)}</td><td><span class="pill ${SEV[i.sev]?.[1]}">${SEV[i.sev]?.[0]}</span></td><td style="font-size:12px">${esc(i.source||'')}</td><td style="font-size:12.5px;min-width:200px">${esc(i.action||'')}</td><td>${esc(pname(i.owner))}</td><td style="white-space:nowrap">${fd(i.due)}</td>
+  <td><select data-act="ist" data-id="${i.id}" aria-label="สถานะ">${Object.entries(IST).map(([k,v])=>opt(k,v[0],i.status===k)).join('')}</select></td><td><input data-act="ires" data-id="${i.id}" value="${esc(i.resolution||'')}" placeholder="บันทึกผล" style="width:100%"></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+/* ---------- Compliance ---------- */
+const RULES=[
+ ['crit','พาดพิงคู่แข่ง/House Brand',/house\s*brand|เฮาส์\s*แบรนด์|แบรนด์ห้าง|ของห้าง|ยี่ห้อห้าง|แบรนด์อื่น|ยี่ห้ออื่น|เจ้าอื่น|ถูกกว่า|คุ้มกว่า|ดีกว่ายี่ห้อ|เหนือกว่า|nautilus|นอติลุส|ayam|อะยัม/gi,'ห้ามเอ่ยชื่อ โจมตี หรือเปรียบเทียบ ห้างเป็นคู่ค้าของลูกค้า (Brief ข้อ 8 / HoM ย้ำในประชุม)'],
+ ['crit','Claim สุขภาพ',/บำรุงสมอง|สมอง|ความจำ|ลดน้ำหนัก|ลดความอ้วน|ไม่อ้วน|ผอม|ลีน|ไดเอท|diet|เบาหวาน|น้ำตาลในเลือด|คุมน้ำตาล|แทนข้าว|แทนมื้อ|กินแทน|หัวใจ|คอเลสเตอรอล|ภูมิคุ้มกัน|ป้องกันโรค|รักษาโรค|เผาผลาญ|สร้างกล้าม|ดีต่อสุขภาพ/gi,'แคมเปญนี้ห้ามอ้างสรรพคุณด้านสุขภาพ (ฝ่ายกฎหมายลูกค้ากำชับ)'],
+ ['crit','โอเมก้า-3 / DHA',/โอเมก้า|omega|dha|epa/gi,'ไม่อยู่ในสเปกที่ได้รับ และลูกค้าห้ามโยงไปเรื่องสมอง ห้ามกล่าวถึงทั้งหมด'],
+ ['crit','อ้างความยั่งยืน',/ยั่งยืน|sustainab|รักษ์ทะเล|รักษ์โลก|เป็นมิตรต่อ(ทะเล|สิ่งแวดล้อม|โลก)|eco\b|ปลอดภัยต่อโลมา|dolphin|msc|carbon|คาร์บอน/gi,'ใช้ไม่ได้ เพราะลูกค้ายังไม่ได้ให้เอกสารรับรอง'],
+ ['crit','ข้อมูลสินค้าไม่ตรงจริง',/ทูน่าล้วน|100\s*%\s*ทูน่า|ไม่มีส่วนผสมอื่น|ไม่ใส่อะไรเลย|ไม่มีสารก่อภูมิแพ้|โซเดียมต่ำ|low\s*sodium|ไร้ไขมัน|ไม่มีไขมัน|0\s*%\s*ไขมัน|fat\s*free|ออร์แกนิก|organic|ปลอดสาร/gi,'สินค้ามีเกลือและโปรตีนถั่วเหลือง โซเดียม 420 mg ไขมัน 1 g และสารก่อภูมิแพ้คือ ปลา ถั่วเหลือง (อาจมีปลาหมึกและกุ้ง)'],
+ ['crit','บูธชิมใน Lotus\'s',/(บูธ|ชิม)[^\n]{0,30}(โลตัส|lotus)|(โลตัส|lotus)[^\n]{0,30}(บูธ|ชิมฟรี|ชิม)/gi,'Lotus\'s ไม่อนุญาตให้ตั้งบูธชิมในร้าน ต้องจัดนอกร้านหรือทำออนไลน์'],
+ ['warn','โทนเทกระจาดลดราคา',/ลดกระหน่ำ|ล้างสต็อก|เทกระจาด|ถูกที่สุด|ราคาต่ำสุด|ลดสูงสุด|ลดแหลก|ขาดทุน/gi,'HoM ไม่อยากให้ Live ดูเป็นการเทกระจาดลดราคา ให้เน้นคุณค่าและการโชว์เนื้อทูน่า'],
+ ['warn','Claim ต้องมีแหล่งอ้างอิง',/อันดับ\s*1|เบอร์\s*1|no\.?\s*1|ที่สุดในไทย|ดีที่สุด/gi,'ใช้ได้เฉพาะเมื่อแนบแหล่งที่มา [P] เช่น ส่วนแบ่งตลาด 57.5% (ข่าว พ.ย. 2568)'],
+ ['warn','ตัวเลขโภชนาการ',/\d+\s*(kcal|กิโลแคล|แคล|g\b|กรัม|mg|มก)/gi,'สเปกเป็นข้อมูลสมมติ ต้องตรวจกับฉลากจริงที่ลูกค้ายืนยันก่อนใช้'],
+ ['warn','Presenter / ดารา',/ดารา|ซุปตาร์|พรีเซนเตอร์|presenter|a-list/gi,'งบไม่พอสำหรับ Presenter ระดับ A-list ให้ใช้ Micro/Nano KOL'],
+];
+let lastScan=null;
+function scan(){
+  const txt=$('#c-text').value;const hits=[];
+  RULES.forEach(([lv,cat,re,why])=>{const m=[...new Set((txt.match(re)||[]).map(s=>s.trim()))];if(m.length)hits.push({lv,cat,words:m,why})});
+  if($('#c-ai').checked&&!/(ai|เอไอ)/i.test(txt.replace(/sustainab|dolphin/gi,'')))hits.push({lv:'crit',cat:'ไม่ติดป้าย AI',words:['—'],why:'ชิ้นที่ใช้ภาพหรือวิดีโอจาก AI ต้องติดป้าย AI ตามกติกาของแต่ละแพลตฟอร์ม เช่น "#AIGenerated / ภาพสร้างด้วย AI"'});
+  if(!$('#c-pack').checked)hits.push({lv:'warn',cat:'ภาพสินค้า',words:['ยังไม่ยืนยัน'],why:'ภาพกระป๋องต้องเป็นของจริงจากเว็บไซต์หรือร้านทางการของ Sealect ห้ามใช้ AI สร้างกระป๋องหรือฉลาก'});
+  lastScan={hits,crit:hits.filter(h=>h.lv==='crit').length,warn:hits.filter(h=>h.lv==='warn').length,text:txt};
+  $('#c-result').innerHTML=!txt.trim()?'<div class="hit warn">วาง Copy ก่อนกดตรวจ</div>':(lastScan.crit?`<b style="color:var(--crit)">ไม่ผ่าน: ${lastScan.crit} ข้อห้าม · ${lastScan.warn} ข้อควรระวัง</b>`:`<div class="okmsg">ไม่พบข้อห้าม${lastScan.warn?` · ข้อควรระวัง ${lastScan.warn}`:''} ส่งให้ QC อ่านต่อได้</div>`)+hits.map(h=>`<div class="hit ${h.lv==='warn'?'warn':''}"><b>${esc(h.cat)}</b> · พบ: ${h.words.map(w=>`<span class="chip">${esc(w)}</span>`).join('')}<br><span style="font-size:12.5px">${esc(h.why)}</span></div>`).join('');
+}
+function rComp(){
+  const el=$('#comp-live');const C=arr('checks').sort((a,b)=>(b.at||0)-(a.at||0));
+  const tot=C.length,crit=C.filter(c=>c.crit>0).length;
+  el.innerHTML=`<div class="panel-h"><h2>ประวัติการตรวจ</h2><span class="pill ${crit?'warn':'ok'}">ตรวจ ${tot} ชิ้น · มีข้อห้าม ${crit}</span></div>
+  ${!db?'<div class="empty">เชื่อมฐานข้อมูลเพื่อดูประวัติการตรวจ</div>':C.length?`<div class="tbl"><table><thead><tr><th>วันที่</th><th>งาน</th><th>ข้อความ (ย่อ)</th><th class="num">ห้าม</th><th class="num">ระวัง</th><th>QC</th></tr></thead><tbody>${C.slice(0,40).map(c=>`<tr><td>${fd(c.date)}</td><td>${esc(c.task||'—')}</td><td style="font-size:12px;min-width:200px">${esc((c.text||'').slice(0,90))}${(c.text||'').length>90?'…':''}</td><td class="num" style="color:${c.crit?'var(--crit)':'inherit'}">${c.crit}</td><td class="num">${c.warn}</td><td><select data-act="qc" data-id="${c.id}" aria-label="ผล QC">${opt('','รอ QC',!c.qc)}${opt('pass','QC ผ่าน',c.qc==='pass')}${opt('fix','ส่งกลับแก้',c.qc==='fix')}</select></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">ยังไม่มีการตรวจที่บันทึกไว้ · วาง Copy ทางซ้าย กด "ตรวจ" แล้ว "บันทึกผลตรวจ"</div>'}
+  <h3 style="margin-top:14px">กติกาที่ตัวตรวจใช้</h3><ul style="font-size:12.5px;padding-left:18px;margin:6px 0">${RULES.map(r=>`<li><span class="pill ${r[0]}">${r[0]==='crit'?'ห้าม':'ระวัง'}</span> ${esc(r[1])} · ${esc(r[3])}</li>`).join('')}</ul>`;
+}
+
+/* ---------- Quotation ---------- */
+function rQuote(){
+  const el=$('#quote-live');if(needData(el))return;const c=cfg();if(!c.lines){el.innerHTML='<div class="empty">ยังไม่มีข้อมูล Quotation</div>';return}
+  const L=c.lines;const price=L.reduce((s,l)=>s+(+l.price||0),0),cost=L.reduce((s,l)=>s+(+l.cost||0),0);
+  const media=L.filter(l=>l.type==='media').reduce((s,l)=>s+(+l.price||0),0);const live=L.filter(l=>l.type==='live').reduce((s,l)=>s+(+l.price||0),0);
+  const gp=price-cost,vat=price*(+c.vat||0)/100,wht=price*(+c.wht||0)/100,net=price+vat-wht,com=gp*(+c.commission||0)/100;
+  const cap=c.mediaScenario==='alt'?+c.mediaAlt:+c.mediaCap;
+  const split=c.split||[30,40,30];const inv=[c.signDate,c.startDate,c.endDate];const lbl=['เซ็นสัญญา','เริ่มแคมเปญ','จบแคมเปญ'];
+  const okBudget=Math.round(price)===Math.round(+c.budget);
+  el.innerHTML=`<div class="grid g-tiles">
+   <div class="tile ${okBudget?'ok':'crit'}"><span class="lbl">ราคารวม (ไม่รวม VAT)</span><span class="val">${n0(price)}</span><span class="sub">งบลูกค้า ${n0(c.budget)} ฿ ${okBudget?'· ตรงงบ':'· ต่างจากงบ '+n0(price-c.budget)+' ฿'}</span></div>
+   <div class="tile ${media>cap?'crit':'ok'}"><span class="lbl">ค่า Media</span><span class="val">${n0(media)}</span><span class="sub">เพดาน ${n0(cap)} ฿ (${c.mediaScenario==='alt'?'ตามที่ BM ขอ':'ตาม Brief'})</span></div>
+   <div class="tile"><span class="lbl">ค่า Live Commerce (แยกบรรทัด)</span><span class="val">${n0(live)}</span><span class="sub">BM ขอให้แยกเห็นชัด</span></div>
+   <div class="tile ${gp/price<.12?'warn':'ok'}"><span class="lbl">GP (กำไรขั้นต้น)</span><span class="val">${n0(gp)}</span><span class="sub">${pct(price?gp/price*100:0)} ของราคา · ค่าคอมมิชชัน ${c.commission}% = ${n0(com)} ฿</span></div>
+   <div class="tile"><span class="lbl">ลูกค้าจ่ายจริง (หลัง VAT − WHT)</span><span class="val">${n0(net)}</span><span class="sub">VAT ${c.vat}% ${n0(vat)} · WHT ${c.wht}% ${n0(wht)}</span></div>
+  </div>
+  <div class="panel"><div class="panel-h"><h3>รายการ Quotation</h3><div class="form"><label class="f">ฐานงบ Media<select data-act="cfg" data-k="mediaScenario">${opt('base','1.2 ลบ. (Brief)',c.mediaScenario!=='alt')}${opt('alt','1.4 ลบ. (BM ในประชุม)',c.mediaScenario==='alt')}</select></label><button class="sm" data-act="line-add">+ เพิ่มบรรทัด</button></div></div>
+   <div class="tbl"><table><thead><tr><th>รายการ</th><th>หมวด</th><th class="num">ราคาเสนอ ฿</th><th class="num">ต้นทุน ฿ [A]</th><th class="num">GP ฿</th><th class="num">GP%</th><th></th></tr></thead><tbody>
+   ${L.map((l,i)=>`<tr><td><input data-act="line" data-i="${i}" data-k="name" value="${esc(l.name)}" style="width:100%;min-width:220px"></td><td><select data-act="line" data-i="${i}" data-k="type">${[['media','Media'],['live','Live Commerce'],['kol','KOL/Creator'],['prod','Production'],['posm','Shelf/POSM'],['fee','Agency Fee']].map(([k,v])=>opt(k,v,l.type===k)).join('')}</select></td><td class="num"><input type="number" step="1000" data-act="line" data-i="${i}" data-k="price" value="${+l.price||0}" style="width:120px"></td><td class="num"><input type="number" step="1000" data-act="line" data-i="${i}" data-k="cost" value="${+l.cost||0}" style="width:120px"></td><td class="num">${n0(l.price-l.cost)}</td><td class="num">${pct(l.price?(l.price-l.cost)/l.price*100:0)}</td><td><button class="sm danger" data-act="line-del" data-i="${i}">ลบ</button></td></tr>`).join('')}
+   <tr><td><b>รวม</b></td><td></td><td class="num"><b>${n0(price)}</b></td><td class="num"><b>${n0(cost)}</b></td><td class="num"><b>${n0(gp)}</b></td><td class="num"><b>${pct(price?gp/price*100:0)}</b></td><td></td></tr>
+   </tbody></table></div></div>
+  <div class="grid g-2">
+   <div class="panel"><div class="panel-h"><h3>งวดชำระ & กระแสเงินเข้า (เครดิต ${c.credit} วัน)</h3></div>
+    <div class="form" style="margin-bottom:10px"><label class="f">วันเซ็นสัญญา<input type="date" data-act="cfg" data-k="signDate" value="${esc(c.signDate)}"></label><label class="f">เริ่มแคมเปญ<input type="date" data-act="cfg" data-k="startDate" value="${esc(c.startDate)}"></label><label class="f">จบแคมเปญ<input type="date" data-act="cfg" data-k="endDate" value="${esc(c.endDate)}"></label><label class="f">WHT %<input type="number" step="1" min="0" data-act="cfg" data-k="wht" value="${c.wht}"></label><label class="f">เครดิต (วัน)<input type="number" min="0" data-act="cfg" data-k="credit" value="${c.credit}"></label></div>
+    <div class="tbl"><table><thead><tr><th>งวด</th><th class="num">%</th><th>วางบิล</th><th>เงินเข้า (+${c.credit} วัน)</th><th class="num">ก่อน VAT</th><th class="num">รับสุทธิ</th></tr></thead><tbody>
+    ${split.map((s,i)=>{const amt=price*s/100;return `<tr><td>${lbl[i]}</td><td class="num">${s}</td><td>${fd(inv[i],1)}</td><td>${inv[i]?fd(addD(inv[i],+c.credit||0),1):'—'}</td><td class="num">${n0(amt)}</td><td class="num">${n0(amt*(1+(c.vat-c.wht)/100))}</td></tr>`}).join('')}
+    </tbody></table></div>
+    <p class="muted" style="font-size:12px;margin:8px 0 0">ค่า Media ต้องจ่ายให้แพลตฟอร์มระหว่างแคมเปญ แต่เงินงวด 2 เข้าหลังเริ่มแคมเปญ ${c.credit} วัน ต้องให้ MD อนุมัติวงเงินสำรองจ่าย</p></div>
+   <div class="panel"><div class="panel-h"><h3>ข้อควรตรวจก่อนส่ง (G4 💎)</h3></div><ul style="padding-left:18px;margin:0;font-size:13px">
+    <li>${okBudget?'✅':'❌'} ราคารวมตรงกับงบ ${n0(c.budget)} ฿ (ไม่รวม VAT)</li>
+    <li>${media<=cap?'✅':'❌'} ค่า Media ไม่เกิน ${n0(cap)} ฿ · <b>ต้องยืนยันกับลูกค้าว่างบคือ 1.2 หรือ 1.4 ลบ.</b></li>
+    <li>${live>0?'✅':'❌'} แยกบรรทัดค่า Live ออกจากค่า Media</li>
+    <li>⚠️ WHT: ค่าโฆษณาหัก 2% ค่าบริการหัก 3% ต้องให้บัญชียืนยันว่าจะแยกอัตราตามบรรทัดหรือไม่</li>
+    <li>⚠️ ต้นทุนแต่ละบรรทัดเป็นสมมติฐาน [A] ต้องได้ราคาจริงจาก KOL, Production และ Live Studio ก่อนวันที่ 16 พ.ย.</li>
+    <li>ค่าคอมมิชชันฝ่ายขาย = ${c.commission}% × GP = <b>${n0(com)} ฿</b></li></ul></div>
+  </div>`;
+}
+
+/* ---------- AI log ---------- */
+function rAI(){
+  const el=$('#ai-live');if(needData(el))return;const A=arr('ailog').sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.at||0)-(a.at||0));
+  const by=k=>A.filter(a=>a.result===k).length;const tools={};A.forEach(a=>tools[a.tool]=(tools[a.tool]||0)+1);
+  const nochk=A.filter(a=>!a.checker).length;
+  el.innerHTML=`<div class="grid g-tiles"><div class="tile"><span class="lbl">ครั้งที่ใช้ AI</span><span class="val">${A.length}</span><span class="sub">${Object.entries(tools).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>k+' '+v).join(' · ')||'—'}</span></div>
+  <div class="tile"><span class="lbl">ผล: ใช้ / แก้แล้วใช้ / ทิ้ง</span><span class="val">${by('ใช้')} / ${by('แก้แล้วใช้')} / ${by('ทิ้ง')}</span><span class="sub">อัตราทิ้งสูง แปลว่า Prompt ต้องปรับ</span></div>
+  <div class="tile"><span class="lbl">ชม. ที่ประหยัด (ตาม Log)</span><span class="val">${n1(A.reduce((s,a)=>s+(+a.saved||0),0))}</span><span class="sub">ชม. ที่ลงเวลาว่าใช้ AI: ${n1(arr('time').filter(e=>e.ai).reduce((s,e)=>s+(+e.hours||0),0))}</span></div>
+  <div class="tile ${nochk?'crit':'ok'}"><span class="lbl">Output ที่ยังไม่มีคนตรวจ</span><span class="val">${nochk}</span><span class="sub">ต้องเป็น 0 ก่อนถึงด่าน G5</span></div></div>
+  ${A.length?`<div class="tbl"><table><thead><tr><th>วันที่</th><th>คน</th><th>งาน</th><th>เครื่องมือ</th><th>ใช้ทำอะไร</th><th>ผล</th><th>ผู้ตรวจ</th><th class="num">ประหยัด</th><th></th></tr></thead><tbody>${A.map(a=>`<tr><td>${fd(a.date)}</td><td>${esc(pname(a.person))}</td><td>${esc(a.task||'—')}</td><td>${esc(a.tool)}</td><td>${esc(a.purpose)}</td><td><span class="pill ${a.result==='ทิ้ง'?'crit':a.result==='ใช้'?'ok':'warn'}">${esc(a.result)}</span></td><td>${a.checker?esc(pname(a.checker)):'<span class="pill crit">ยังไม่ตรวจ</span>'}</td><td class="num">${n1(a.saved)}</td><td><button class="sm danger" data-act="ai-del" data-id="${a.id}">ลบ</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">ยังไม่มีบันทึก · ทุกครั้งที่ใช้ AI กับงานนี้ ให้ลงไว้ที่ฟอร์มด้านบน</div>'}`;
+}
+
+/* ---------- Guide ---------- */
+function rGuide(){
+  const el=$('#tab-guide');if(el.dataset.done)return;el.dataset.done=1;
+  el.innerHTML=`<div class="grid g-2">
+  <div class="panel"><h2>หลักการ: AI ร่าง · คนตัดสิน · ทุกตัวเลขต้องมีที่มา</h2><ol>
+   <li><b>Brief Lock ก่อนเริ่ม:</b> ข้อห้ามจาก Brief และจากโน้ตประชุม 2 พ.ย. ต้องใส่ใน Guardrail Prompt ของทุกงาน และใช้เป็นกติกาของหน้า Compliance</li>
+   <li><b>Maker → Checker → Approver:</b> ทั้งสามต้องเป็นคนละคน AI ไม่นับเป็นผู้ตรวจ</li>
+   <li><b>ป้ายแหล่งข้อมูล:</b> [P] ข้อมูลสาธารณะพร้อมแหล่งที่มา · [C] ข้อมูลลูกค้า (สมมติ) · [A] สมมติฐานของทีม · [AI] ยังไม่ได้ตรวจ ป้าย [AI] ต้องเป็น 0 ที่ด่าน G5</li>
+   <li><b>ข้อมูลลูกค้าใช้กับ AI บัญชีองค์กรเท่านั้น</b> ห้ามนำ Quotation หรือ Margin เข้า AI สาธารณะ</li>
+   <li><b>ลงเวลาทุกวันก่อน 17:30</b> และบันทึกการใช้ AI ทุกครั้ง แดชบอร์ดคำนวณ SPI/CPI และต้นทุนจากข้อมูลนี้</li></ol></div>
+  <div class="panel"><h2>วิธีอ่านแดชบอร์ด</h2><ul>
+   <li><b>PV (แผน):</b> ชั่วโมงที่ควรทำเสร็จถึงวันนี้ กระจายตามวันทำการของแต่ละงาน</li>
+   <li><b>EV (มูลค่างาน):</b> ชั่วโมงตามแผน × % ที่ทำเสร็จจริง</li>
+   <li><b>AC (ใช้จริง):</b> ชั่วโมงจาก Timesheet</li>
+   <li><b>SPI = EV/PV:</b> ต่ำกว่า 0.95 แปลว่าช้ากว่าแผน · <b>CPI = EV/AC:</b> ต่ำกว่า 0.9 แปลว่าใช้ชั่วโมงเกินกว่างานที่ได้</li>
+   <li><b>ต้นทุนคาดการณ์ = ต้นทุนแผน ÷ CPI</b> เทียบกับเพดาน 300,000 ฿</li>
+   <li><b>สัญญาณ Manhour:</b> 🟢 ±10% · 🟡 10–20% SM ปรับงานในวันนั้น · 🔴 >20% หรือต้นทุนเกินเพดาน MD ต้องอนุมัติ</li></ul></div>
+  <div class="panel"><h2>ความเสี่ยงจากการใช้ AI 3 ข้อ</h2><ol>
+   <li><b>AI แต่งข้อมูลหรือตัวเลขขึ้นมาเอง (Hallucination):</b> เช่น สรุปว่า ROAS ตกเพราะ "ของห้างจัดโปร" ทั้งที่ไทม์ไลน์ไม่ตรง (ROAS ตกตั้งแต่ ส.ค. แต่โปรห้างเริ่ม ต.ค.) <i>ป้องกัน:</i> ใช้เครื่องมือที่ให้แหล่งอ้างอิง ตรวจกับแหล่งที่สอง ใช้ระบบป้าย [P]/[C]/[A] และตัวเลขเชิงพาณิชย์ต้องคำนวณจากสูตรที่คนตรวจซ้ำ</li>
+   <li><b>Copy หรือภาพจาก AI ละเมิดข้อห้าม:</b> AI มักโยงทูน่ากับ "โอเมก้า-3 บำรุงสมอง" "ลีน" "รักษ์ทะเล" หรือสร้างภาพกระป๋องที่ฉลากผิด <i>ป้องกัน:</i> ใช้ Guardrail Prompt และตัวตรวจในหน้า Compliance แล้วให้ QC อ่านเองที่ G3 ภาพกระป๋องต้องเป็นของจริง และต้องติดป้าย AI</li>
+   <li><b>ข้อมูลลับของลูกค้ารั่ว:</b> เช่น ยอดขายรายห้าง ข้อมูล Ads Account หรือ Quotation <i>ป้องกัน:</i> ใช้ AI บัญชีองค์กรที่ปิดการเทรนโมเดล ปิดชื่อห้างก่อนนำเข้า AI จำกัดสิทธิ์ Drive และตรวจ AI Log ทุกวัน</li></ol></div>
+  <div class="panel"><h2>RACI ของการตัดสินใจหลัก</h2><div class="tbl"><table><thead><tr><th>การตัดสินใจ</th><th>R (ผู้ทำ)</th><th>A (ผู้อนุมัติ)</th><th>C (ให้ความเห็น)</th></tr></thead><tbody>
+   <tr><td>Brief Lock + คำถามถึงลูกค้า</td><td>Sales Manager</td><td>Sales Manager</td><td>ปอนด์, ก้อย</td></tr>
+   <tr><td>💎 สาเหตุที่ ROAS ตก</td><td>ณิชา, วิน</td><td>MD</td><td>หนุ่ย</td></tr>
+   <tr><td>💎 Insight / Occasion</td><td>ก้อย</td><td>MD</td><td>ณิชา, Sales Manager</td></tr>
+   <tr><td>💎 Big Idea</td><td>เอ็ม</td><td>MD</td><td>เมย์, ก้อย, เต้</td></tr>
+   <tr><td>💎 Claim / Copy</td><td>ปอนด์ (QC ภายใน)</td><td>Sales Manager</td><td>Legal ลูกค้า (รอบละ 5 วันทำการ)</td></tr>
+   <tr><td>💎 ราคา / Margin / แบ่งงบ</td><td>Sales Manager, วิน</td><td>MD</td><td>ฝน, เต้</td></tr>
+   <tr><td>💎 Go/No-Go</td><td>Sales Manager</td><td>MD</td><td>ทั้งทีม</td></tr></tbody></table></div></div>
+  </div>`;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-tab],[data-act]');if(!b)return;
+  if(b.dataset.tab){setTab(b.dataset.tab);return}
+  const a=b.dataset.act,id=b.dataset.id;
+  if(a==='modal-bg'&&e.target===b||a==='modal-close'){$('#modal-root').innerHTML='';return}
+  if(a==='task-new')taskModal(null);
+  else if(a==='task-edit')taskModal(id);
+  else if(a==='arow-add'){$('#m-arows').insertAdjacentHTML('beforeend',$('#m-arows').dataset.tpl)}
+  else if(a==='arow-del')b.closest('.arow').remove();
+  else if(a==='task-del'){if(b.dataset.armed){if(await W(()=>db.collection('tasks').doc(id).delete(),'ลบงานแล้ว'))$('#modal-root').innerHTML=''}else{b.dataset.armed=1;b.textContent='กดอีกครั้งเพื่อยืนยันลบ'}}
+  else if(a==='mv'){const k=Object.keys(ST);const t=S.tasks[id];const i=Math.max(0,Math.min(k.length-1,k.indexOf(t.status)+(+b.dataset.d)));W(()=>db.collection('tasks').doc(id).update(statusPatch(t,k[i])))}
+  else if(a==='gs'){const s=b.dataset.s;W(()=>db.collection('gates').doc(id).update({status:s,decidedAt:s==='pending'?'':TODAY}),s==='pass'?'อนุมัติด่าน '+id:s==='fail'?'ส่งกลับแก้':'รีเซ็ตแล้ว')}
+  else if(a==='time-del'){if(b.dataset.armed)W(()=>db.collection('time').doc(id).delete(),'ลบแล้ว');else{b.dataset.armed=1;b.textContent='ยืนยัน?'}}
+  else if(a==='ai-del'){if(b.dataset.armed)W(()=>db.collection('ailog').doc(id).delete(),'ลบแล้ว');else{b.dataset.armed=1;b.textContent='ยืนยัน?'}}
+  else if(a==='scan')scan();
+  else if(a==='scan-save'){scan();if(!lastScan?.text.trim())return;W(()=>db.collection('checks').add({date:TODAY,at:Date.now(),task:$('#c-task').value,text:lastScan.text.slice(0,2000),crit:lastScan.crit,warn:lastScan.warn,cats:lastScan.hits.map(h=>h.cat),qc:''}),'บันทึกผลตรวจแล้ว')}
+  else if(a==='line-add'){const L=[...(cfg().lines||[]),{name:'รายการใหม่',type:'prod',price:0,cost:0}];W(()=>db.collection('config').doc('main').update({lines:L}))}
+  else if(a==='line-del'){if(b.dataset.armed){const L=(cfg().lines||[]).filter((_,i)=>i!==+b.dataset.i);W(()=>db.collection('config').doc('main').update({lines:L}),'ลบบรรทัดแล้ว')}else{b.dataset.armed=1;b.textContent='ยืนยัน?'}}
+});
+document.addEventListener('change',e=>{
+  const el=e.target,a=el.dataset.act,id=el.dataset.id;
+  if(['f-stage','f-person','f-status','f-view'].includes(el.id)){rTasks();return}
+  if(el.id==='tf-person'){rTime();return}
+  if(a==='st')W(()=>db.collection('tasks').doc(id).update(statusPatch(S.tasks[id],el.value)));
+  else if(a==='pct'){const p=Math.max(0,Math.min(100,+el.value||0));W(()=>db.collection('tasks').doc(id).update({pct:p,status:p>=100?'done':p>0&&S.tasks[id].status==='todo'?'doing':S.tasks[id].status,updatedAt:TODAY}))}
+  else if(a==='gi'){const g=S.gates[id];const items=(g.items||[]).map((x,i)=>i===+el.dataset.i?{...x,ok:el.checked}:x);W(()=>db.collection('gates').doc(id).update({items}))}
+  else if(a==='gc')W(()=>db.collection('gates').doc(id).update({comment:el.value}),'บันทึกความเห็นแล้ว');
+  else if(a==='util')W(()=>db.collection('people').doc(id).update({util:+el.value||0}));
+  else if(a==='rate')W(()=>db.collection('people').doc(id).update({rate:+el.value||0}));
+  else if(a==='ist')W(()=>db.collection('issues').doc(id).update({status:el.value,closedAt:el.value==='closed'?TODAY:''}));
+  else if(a==='ires')W(()=>db.collection('issues').doc(id).update({resolution:el.value}),'บันทึกแล้ว');
+  else if(a==='qc')W(()=>db.collection('checks').doc(id).update({qc:el.value}));
+  else if(a==='cfg'){const k=el.dataset.k;const v=el.type==='number'?+el.value:el.value;W(()=>db.collection('config').doc('main').update({[k]:v}))}
+  else if(a==='line'){const L=(cfg().lines||[]).map((l,i)=>i===+el.dataset.i?{...l,[el.dataset.k]:el.type==='number'?+el.value||0:el.value}:l);W(()=>db.collection('config').doc('main').update({lines:L}))}
+});
+$('#f-q').addEventListener('input',()=>rTasks());
+document.addEventListener('submit',async e=>{
+  const f=e.target;if(f.id==='task-form')return saveTask(e);
+  e.preventDefault();
+  if(f.id==='time-form'){const d={date:$('#t-date').value,person:$('#t-person').value,task:$('#t-task').value,hours:+$('#t-hours').value,ai:$('#t-ai').checked,note:$('#t-note').value.trim(),at:Date.now()};
+    if(await W(()=>db.collection('time').add(d),`ลงเวลา ${d.hours} ชม. ให้ ${pname(d.person)} แล้ว`)){$('#t-note').value=''}}
+  if(f.id==='issue-form'){const n=arr('issues').map(i=>+String(i.id).replace(/\D/g,'')||0);const id='I'+String(Math.max(0,...n)+1).padStart(2,'0');
+    const d={id,title:$('#i-title').value.trim(),type:$('#i-type').value,sev:$('#i-sev').value,owner:$('#i-owner').value,due:$('#i-due').value,action:$('#i-action').value.trim(),status:'open',source:'เพิ่มโดยทีม '+fd(TODAY),resolution:''};
+    if(await W(()=>db.collection('issues').doc(id).set(d),'เพิ่มประเด็น '+id))f.reset()}
+  if(f.id==='ai-form'){const d={date:$('#a-date').value,person:$('#a-person').value,task:$('#a-task').value,tool:$('#a-tool').value.trim(),purpose:$('#a-purpose').value.trim(),result:$('#a-result').value,checker:$('#a-checker').value,saved:+$('#a-saved').value||0,at:Date.now()};
+    if(await W(()=>db.collection('ailog').add(d),'บันทึกการใช้ AI แล้ว')){$('#a-purpose').value='';$('#a-saved').value=0}}
+});
+
+/* ---------- tabs ---------- */
+function setTab(t){if(!TABS.some(x=>x[0]===t))t='dash';tab=t;
+  document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!=='tab-'+t);
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+  if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);render();window.scrollTo(0,0)}
+$('#tabs').innerHTML=TABS.map(([k,v])=>`<button role="tab" data-tab="${k}">${v}</button>`).join('');
+addEventListener('hashchange',()=>setTab(location.hash.slice(1)));
+['#t-date','#a-date'].forEach(s=>$(s).value=TODAY);
+
+/* ---------- boot ---------- */
+let dbTried=false;
+async function boot(){
+  setTab(location.hash.slice(1)||'dash');
+  for(let i=0;i<40&&!window.claude;i++)await new Promise(r=>setTimeout(r,100));
+  const timer=setTimeout(()=>{if(!loaded.size){dbTried=true;setSync('err','โหลดข้อมูลไม่ได้');render()}},10000);
+  try{db=window.claude?.use?await window.claude.use('db'):null}catch(_){db=null}
+  dbTried=true;
+  if(!db){clearTimeout(timer);setSync('err','ไม่ได้เชื่อมฐานข้อมูล (ต้องลงชื่อเข้าใช้)');render();return}
+  COLS.forEach(c=>db.collection(c).onSnapshot(snap=>{clearTimeout(timer);const o={};snap.docs.forEach(d=>{o[d.id]={id:d.id,...d.data()}});S[c]=o;loaded.add(c);setSync('ok','ซิงก์สด · '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));schedule()},err=>{clearTimeout(timer);setSync('err','อ่านข้อมูลไม่ได้: '+(err?.message||err?.code))}));
+}
+boot();
+})();
+</script>
