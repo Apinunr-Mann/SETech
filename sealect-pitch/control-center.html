@@ -1,7 +1,7 @@
 <title>Sealect Pitch Control</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: sticky control bar + tabbed workspace; summary tiles → detail panels; tinned-steel neutrals, deep sea-blue accent */
 :root{
@@ -108,6 +108,39 @@ label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mu
 .modal{position:fixed;inset:0;background:rgba(10,18,26,.45);display:flex;align-items:flex-start;justify-content:center;z-index:20;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 24px max(12px,env(safe-area-inset-left,0px))}
 .modal .panel{width:min(760px,100%);display:flex;flex-direction:column;gap:12px}
 .fgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.office{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:start}
+@media (max-width:960px){.office{grid-template-columns:1fr}}
+.o-wrap{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:#DDF1FF;min-width:0}
+#o-stage{height:min(72vh,680px);min-height:380px}
+#o-stage canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.o-hud{position:absolute;left:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 24px)}
+.o-hud button,.o-seg button{border-radius:999px;font-family:Mitr,var(--f-body);background:#FFFFFF;color:#2B3A55;border:2px solid #FFFFFF;box-shadow:0 3px 0 rgba(43,58,85,.18)}
+.o-title{position:absolute;right:12px;bottom:12px;background:#FFFFFF;color:#2B3A55;border-radius:999px;padding:6px 16px;font-family:Mitr,var(--f-body);font-size:13px;box-shadow:0 3px 0 rgba(43,58,85,.18)}
+#o-loading{position:absolute;inset:0;display:grid;place-items:center;font-family:Mitr,var(--f-body);color:#2B3A55;font-size:16px;background:#DDF1FF}
+.o-side{display:flex;flex-direction:column;gap:10px;max-height:min(72vh,680px);overflow-y:auto}
+.o-side h3,.o-side h4{font-family:Mitr,var(--f-display);font-weight:500;margin:0}
+.o-side h4{font-size:14px;margin-top:4px}
+.o-seg{display:flex;gap:6px;background:var(--sunk);padding:4px;border-radius:999px}
+.o-seg button{flex:1;box-shadow:none;border-color:transparent;background:transparent;color:var(--ink)}
+.o-seg button[aria-pressed="true"]{background:#FFB3CB;color:#3A1F2B}
+.o-sim{display:flex;gap:8px;align-items:center;font-family:Mitr,var(--f-body)} .o-sim input{flex:1;min-width:0}
+.o-task{border:1px solid var(--line);border-radius:14px;padding:9px 11px;display:flex;flex-direction:column;gap:5px;background:var(--surface)}
+.o-btns{display:flex;gap:6px;flex-wrap:wrap}
+.o-btns button{border-radius:999px}
+.o-btns button.pri{background:#FFB3CB;border-color:#FFB3CB;color:#3A1F2B}
+.o-who{display:flex;gap:10px;align-items:center} .o-who>div{flex:1;min-width:0}
+.o-dot{width:36px;height:36px;border-radius:50%;flex:none;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+.o-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.o-stats>div{background:var(--sunk);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:3px;font-family:Mitr,var(--f-body);min-width:0}
+.o-stats small{color:var(--muted);font-size:11.5px} .o-hot{color:var(--crit)}
+.o-now{background:var(--accent-soft);border-radius:12px;padding:8px 10px;margin:0}
+.o-lb{display:flex;flex-direction:column;gap:4px}
+.o-lb button{display:flex;align-items:center;gap:8px;text-align:left;border-radius:12px;width:100%}
+.o-lb .o-dot{width:22px;height:22px;border-width:2px}
+.o-lb b{font-family:Mitr,var(--f-body);font-weight:500}
+.o-feed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;font-size:12.5px}
+.o-feed li{background:var(--sunk);border-radius:10px;padding:5px 9px}
+.o-help{margin:0;padding-left:18px;font-size:12.5px;color:var(--muted)}
 .toast{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:9px 14px;border-radius:6px;z-index:30;font-size:13px;max-width:min(420px,calc(100% - 32px))}
 .toast.err{background:var(--crit);color:#fff}
 .guide p,.guide li{max-width:72ch}
@@ -221,6 +254,17 @@ svg text{fill:var(--muted);font-family:var(--f-mono);font-size:10px}
     <div id="ai-live" data-live class="rows"></div>
   </section>
 
+  <section class="tab" id="tab-office" hidden>
+    <div class="office">
+      <div class="o-wrap">
+        <div id="o-stage"></div>
+        <div class="o-hud"><button data-act="o-cam" data-c="in" aria-label="ซูมเข้า">＋</button><button data-act="o-cam" data-c="out" aria-label="ซูมออก">－</button><button data-act="o-cam" data-c="top">มุมบน</button><button data-act="o-cam" data-c="reset">รีเซ็ตมุม</button></div>
+        <div class="o-title">TPS Pitch Office · Sealect</div>
+        <div id="o-loading">กำลังจัดโต๊ะในออฟฟิศ…</div>
+      </div>
+      <aside class="panel o-side" id="o-side" data-live></aside>
+    </div>
+  </section>
   <section class="tab guide" id="tab-guide" hidden></section>
 </main>
 <div id="modal-root"></div>
@@ -247,9 +291,9 @@ const STAGE=Object.fromEntries(STAGES);
 const ST={todo:['รอเริ่ม',''],doing:['กำลังทำ','acc'],review:['รอตรวจ','warn'],done:['เสร็จ','ok'],blocked:['ติดปัญหา','crit']};
 const SEV={high:['สูง','crit'],med:['กลาง','warn'],low:['ต่ำ','']};
 const IST={open:['เปิด','crit'],working:['กำลังแก้','warn'],closed:['ปิดแล้ว','ok']};
-const TABS=[['dash','ภาพรวม'],['tasks','งาน'],['gates','ด่าน & 💎'],['time','Timesheet'],['team','ทีม & Capacity'],['issues','ประเด็น/ความเสี่ยง'],['comp','Compliance'],['quote','Quotation'],['ai','AI Log'],['guide','คู่มือ Workflow']];
+const TABS=[['dash','ภาพรวม'],['office','Office 3D'],['tasks','งาน'],['gates','ด่าน & 💎'],['time','Timesheet'],['team','ทีม & Capacity'],['issues','ประเด็น/ความเสี่ยง'],['comp','Compliance'],['quote','Quotation'],['ai','AI Log'],['guide','คู่มือ Workflow']];
 
-const S={tasks:{},people:{},gates:{},issues:{},time:{},ailog:{},checks:{},config:{}};
+const S={tasks:{},people:{},gates:{},issues:{},time:{},ailog:{},checks:{},config:{},events:{}};
 const COLS=Object.keys(S);
 let db=null, loaded=new Set(), tab='dash', pending=false, rq=false;
 
@@ -284,7 +328,7 @@ function render(){
   const c=cfg();
   if(c.pitchDate){const d=Math.round((pd(c.pitchDate)-pd(TODAY))/864e5);const wd=workdays(addD(TODAY,1),c.pitchDate).length;$('#countdown').textContent=d>0?`อีก ${d} วัน (${wd} วันทำการ) ถึงนำเสนอ ${fd(c.pitchDate)}`:d===0?'วันนี้นำเสนอ':'นำเสนอแล้ว '+fd(c.pitchDate)}
   fillSelects();
-  const f={dash:rDash,tasks:rTasks,gates:rGates,time:rTime,team:rTeam,issues:rIssues,comp:rComp,quote:rQuote,ai:rAI,guide:rGuide}[tab];
+  const f={dash:rDash,office:rOffice,tasks:rTasks,gates:rGates,time:rTime,team:rTeam,issues:rIssues,comp:rComp,quote:rQuote,ai:rAI,guide:rGuide}[tab];
   f&&f();
 }
 function fillSelects(){
@@ -613,11 +657,226 @@ function rGuide(){
   </div>`;
 }
 
+/* ---------- Office 3D ---------- */
+const ZONES={brief:{n:'ห้องรับ Brief',x:-18,z:-12,c:0xFFD6A5,p:'board'},research:{n:'มุม Research',x:-6,z:-12,c:0xCDEAC0,p:'books'},data:{n:'Data & ROAS Lab',x:6,z:-12,c:0xBDE0FE,p:'bars'},insight:{n:'Insight Lab',x:18,z:-12,c:0xE2C2FF,p:'lens'},
+ idea:{n:'Big Idea Room',x:18,z:0,c:0xFDFFB6,p:'bulb'},studio:{n:'Creative Studio',x:6,z:0,c:0xFFC6FF,p:'easel'},live:{n:'Media & Live Studio',x:-6,z:0,c:0xA0E7E5,p:'ring'},money:{n:'ห้อง Quotation',x:-18,z:0,c:0xFFE5A0,p:'coins'},
+ qc:{n:'ด่าน Compliance',x:-18,z:12,c:0xFFADAD,p:'cone'},stage:{n:'Pitch Stage',x:-6,z:12,c:0xC3B1E1,p:'screen'},pmo:{n:'PMO Desk',x:6,z:12,c:0xB5EAD7,p:'board'},lounge:{n:'Coffee Lounge',x:18,z:12,c:0xFFDAC1,p:'coffee'}};
+const STAGE_ZONE={S0:'brief',S1:'brief',S2:'research',S4:'research',S3:'data',S5:'insight',S6:'idea',S7:'studio',S8:'live',S9:'money',S10:'qc',S11:'stage',S12:'stage',PM:'pmo'};
+const PATH=['brief','research','data','insight','idea','studio','live','money','qc','stage','pmo','lounge'];
+const GATE_AT={G0:['brief','research'],GR:['data','insight'],G1:['insight','idea'],G2:['idea','studio'],G4:['money','qc'],G3:['qc','stage']};
+const GATE_FIX={G5:[-9,18],G6:[-3,18]};
+const STAGE_GATE={S2:'G0',S3:'G0',S4:'G0',S5:'GR',S6:'G1',S7:'G2',S8:'G2',S9:'G2',S10:'G2',S11:'G4',S12:'G6'};
+const ROLE_COL={'Sales Manager':0xFF8A65,'Managing Director':0x5C6BC0,'CEO TPS':0x546E7A,'Strategic Planner':0xAB47BC,'AE':0x26A69A,'Graphic Designer':0xEC407A,'Editor':0x7E57C2,'KOL Specialist':0xFFA726,'Content Creator':0xFFCA28,'TikTok Creator':0x29B6F6,'Media Planner':0x66BB6A,'Ads Optimizer':0x8D6E63};
+const HAIR=[0x3E2723,0x212121,0x5D4037,0x4E342E,0x263238,0x6D4C41];
+const SLOTS=[[-2.5,-0.3],[2.5,-0.3],[-2.5,3.5],[2.5,3.5],[0,0.6],[0,2.6],[0,-1.6],[-1,4.4],[1,4.4],[0,-3.4]];
+const hex=n=>'#'+(n||0).toString(16).padStart(6,'0');
+let O=null,oLoading=false;
+const personTasks=pid=>tasks().filter(t=>(t.assignees||[]).some(a=>a.p===pid));
+function xp(pid){let x=0;tasks().forEach(t=>{const a=(t.assignees||[]).find(a=>a.p===pid);if(a&&t.status==='done'){x+=(+a.h||0)*10;if(!t.doneAt||!t.due||t.doneAt<=t.due)x+=20}if(t.checker===pid&&t.status==='done')x+=5});x+=arr('time').filter(e=>e.person===pid).reduce((s,e)=>s+(+e.hours||0),0)*2;return Math.round(x)}
+function loadThree(){return new Promise((res,rej)=>{if(window.THREE)return res();const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+function personState(p){
+  const zoneOf=t=>STAGE_ZONE[t.stage]||'pmo';
+  if(O.mode==='sim'){const d=O.days[O.day];const t=personTasks(p.id).find(t=>t.start<=d&&t.due>=d);return t?{zone:zoneOf(t),icon:'💻',task:t}:{zone:'lounge',icon:'☕'}}
+  const mine=personTasks(p.id).filter(t=>t.status!=='done').sort((a,b)=>(a.due||'').localeCompare(b.due||''));
+  const doing=mine.find(t=>t.status==='doing'||t.status==='blocked');
+  const rev=tasks().find(t=>t.status==='review'&&t.checker===p.id);
+  const wait=mine.find(t=>t.status==='review');
+  const ready=mine.find(t=>t.status==='todo'&&t.start<=TODAY);
+  if(doing)return{zone:zoneOf(doing),icon:doing.status==='blocked'?'🆘':'💻',task:doing};
+  if(rev)return{zone:zoneOf(rev),icon:'🔍',task:rev};
+  if(wait)return{zone:zoneOf(wait),icon:'📨',task:wait};
+  if(ready)return{zone:zoneOf(ready),icon:'🚶',task:ready};
+  return{zone:'lounge',icon:'☕'};
+}
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function oTex(text,o={}){const size=o.size||44,pad=o.pad||22;const c=document.createElement('canvas'),g=c.getContext('2d');const font=`${o.weight||500} ${size}px Mitr,"IBM Plex Sans Thai",sans-serif`;g.font=font;const w=Math.max(Math.ceil(g.measureText(text).width)+pad*2,Math.ceil(size*1.5)),h=Math.ceil(size*1.5);c.width=w;c.height=h;g.font=font;g.fillStyle=o.bg||'#FFFFFF';rr(g,3,3,w-6,h-6,(h-6)/2);g.fill();if(o.stroke){g.lineWidth=5;g.strokeStyle=o.stroke;g.stroke()}g.fillStyle=o.fg||'#2B3A55';g.textBaseline='middle';g.textAlign='center';g.fillText(text,w/2,h/2+2);const tex=new THREE.CanvasTexture(c);tex.minFilter=THREE.LinearFilter;return {tex,ar:w/h}}
+function oLabel(text,o={}){const {tex,ar}=oTex(text,o);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));const H=o.h||0.8;sp.scale.set(H*ar,H,1);sp.renderOrder=10;sp.userData.H=H;return sp}
+function setLabel(sp,text,o={}){if(sp.userData.txt===text+JSON.stringify(o))return;sp.userData.txt=text+JSON.stringify(o);const {tex,ar}=oTex(text,o);sp.material.map.dispose();sp.material.map=tex;sp.material.needsUpdate=true;const H=sp.userData.H||0.8;sp.scale.set(H*ar,H,1)}
+
+async function initOffice(){
+  if(oLoading)return;oLoading=true;
+  try{await loadThree()}catch(_){$('#o-loading').textContent='โหลดเอนจิน 3D ไม่ได้ ลองรีเฟรชหน้าอีกครั้ง';oLoading=false;return}
+  try{await document.fonts?.ready}catch(_){}
+  const T=THREE,host=$('#o-stage');
+  const M=(c,o={})=>new T.MeshStandardMaterial({color:c,roughness:.8,metalness:0,...o});
+  const renderer=new T.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+  host.appendChild(renderer.domElement);
+  const scene=new T.Scene();scene.background=new T.Color(0xDDF1FF);scene.fog=new T.Fog(0xDDF1FF,80,150);
+  const cam=new T.PerspectiveCamera(38,1,0.1,400);
+  scene.add(new T.HemisphereLight(0xFFFFFF,0xC9E4FF,0.9));
+  const sun=new T.DirectionalLight(0xFFFFFF,0.7);sun.position.set(22,45,18);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,near:1,far:120});scene.add(sun);
+  const floor=new T.Mesh(new T.BoxGeometry(60,0.6,48),M(0xF4FAFF));floor.position.set(0,-0.3,2);floor.receiveShadow=true;scene.add(floor);
+  // dotted path between zones
+  for(let i=0;i<PATH.length-1;i++){const A=ZONES[PATH[i]],B=ZONES[PATH[i+1]];const dx=B.x-A.x,dz=B.z-A.z,len=Math.hypot(dx,dz);
+    for(let k=1;k<Math.floor(len/1.2);k++){const f=k*1.2/len;const dot=new T.Mesh(new T.CylinderGeometry(0.22,0.22,0.06,12),M(0xFFFFFF));dot.position.set(A.x+dx*f,0.05,A.z+dz*f);scene.add(dot)}}
+  O={T,M,renderer,scene,cam,host,avatars:{},gates:{},signs:{},pick:[],fly:[],fx:[],orbit:{th:0.75,ph:0.95,r:64},camT:new T.Vector3(0,0,2),camC:new T.Vector3(0,0,2),ray:new T.Raycaster(),sel:null,mode:'live',day:0,playing:null,clock:new T.Clock(),seenAt:Date.now(),stackN:-1,stack:new T.Group()};
+  const c=cfg();O.days=workdays(c.projectStart||'2026-11-02',c.pitchDate||'2026-11-18');O.day=Math.max(0,O.days.filter(d=>d<=TODAY).length-1);
+  // zones
+  Object.entries(ZONES).forEach(([k,z])=>{const g=new T.Group();g.position.set(z.x,0,z.z);
+    const tile=new T.Mesh(new T.BoxGeometry(10,0.3,10),M(z.c));tile.position.y=0.15;tile.receiveShadow=true;tile.userData={kind:'zone',id:k};g.add(tile);O.pick.push(tile);
+    const rim=new T.Mesh(new T.BoxGeometry(10.4,0.18,10.4),M(0xFFFFFF));rim.position.y=0.09;g.add(rim);
+    if(k!=='lounge'&&k!=='stage')[[-2.5,-1.7],[2.5,-1.7],[-2.5,2.1],[2.5,2.1]].forEach(([x,zz])=>desk(g,x,zz));
+    prop(z.p,g);plant(g,-4.3,-4.3);
+    const sign=oLabel(z.n,{size:44,h:1.05,bg:'#FFFFFF',stroke:hex(z.c)});sign.position.set(0,4.6,-4.2);g.add(sign);O.signs[k]=sign;
+    scene.add(g)});
+  O.stack.position.set(ZONES.stage.x+4.2,0.3,ZONES.stage.z+4.2);scene.add(O.stack);
+  const ring=new T.Mesh(new T.TorusGeometry(0.95,0.09,10,40),M(0xFF5C8A,{emissive:0xFF5C8A,emissiveIntensity:.5}));ring.rotation.x=-Math.PI/2;ring.position.y=0.34;ring.visible=false;scene.add(ring);O.ring=ring;
+  function desk(g,x,z){const top=new T.Mesh(new T.BoxGeometry(2.2,0.16,1.2),M(0xFFFFFF));top.position.set(x,1.05,z);top.castShadow=true;top.receiveShadow=true;g.add(top);
+    [[-1,-.5],[1,-.5],[-1,.5],[1,.5]].forEach(([a,b])=>{const l=new T.Mesh(new T.BoxGeometry(0.1,0.95,0.1),M(0xB0BEC5));l.position.set(x+a,0.55,z+b);g.add(l)});
+    const mon=new T.Mesh(new T.BoxGeometry(1.0,0.66,0.08),M(0x37474F));mon.position.set(x,1.55,z-0.25);mon.castShadow=true;g.add(mon);
+    const scr=new T.Mesh(new T.PlaneGeometry(0.88,0.54),M(0x9FE6FF,{emissive:0x7FD8FF,emissiveIntensity:.55}));scr.position.set(x,1.55,z-0.205);g.add(scr);
+    const mug=new T.Mesh(new T.CylinderGeometry(0.1,0.1,0.18,12),M([0xFF8FB1,0xFFD166,0x8EE3C8][Math.floor(Math.random()*3)]));mug.position.set(x+0.75,1.22,z+0.2);g.add(mug)}
+  function plant(g,x,z){const pot=new T.Mesh(new T.CylinderGeometry(0.35,0.28,0.55,14),M(0xFF9E80));pot.position.set(x,0.58,z);pot.castShadow=true;g.add(pot);
+    [0,1,2].forEach(i=>{const b=new T.Mesh(new T.SphereGeometry(0.42-i*0.08,14,12),M(0x7BD389));b.position.set(x+(i-1)*0.12,1.1+i*0.38,z);b.castShadow=true;g.add(b)})}
+  function prop(kind,g){const P=(geo,col,x,y,z,o)=>{const m=new T.Mesh(geo,M(col,o));m.position.set(x,y,z);m.castShadow=true;g.add(m);return m};
+    if(kind==='board'){P(new T.BoxGeometry(2.6,1.6,0.12),0xFFFFFF,3.6,1.9,-4.5);P(new T.BoxGeometry(0.5,0.35,0.02),0xFFD166,3.0,2.1,-4.43);P(new T.BoxGeometry(0.5,0.35,0.02),0xFF8FB1,3.7,1.7,-4.43);P(new T.BoxGeometry(0.5,0.35,0.02),0x8EE3C8,4.3,2.2,-4.43)}
+    if(kind==='books'){P(new T.BoxGeometry(2.4,2.4,0.7),0xFFFFFF,3.6,1.5,-4.4);[0xFF8FB1,0x6EC6FF,0xFFD166,0x8EE3C8,0xB39DDB].forEach((cc,i)=>P(new T.BoxGeometry(0.3,0.7,0.5),cc,2.75+i*0.42,1.0,-4.25));[0xFFD166,0xFF8FB1,0x6EC6FF].forEach((cc,i)=>P(new T.BoxGeometry(0.3,0.6,0.5),cc,2.9+i*0.5,1.95,-4.25))}
+    if(kind==='bars'){[1.0,1.8,1.3,2.6].forEach((h,i)=>P(new T.BoxGeometry(0.55,h,0.55),[0x6EC6FF,0x8EE3C8,0xFFD166,0xFF8FB1][i],2.6+i*0.7,0.3+h/2,-4.2))}
+    if(kind==='lens'){const r=P(new T.TorusGeometry(0.7,0.14,12,30),0x7E57C2,3.8,2.4,-4.2);P(new T.CylinderGeometry(0.1,0.1,1.6,10),0x7E57C2,3.8,1.0,-4.2);P(new T.CircleGeometry(0.62,24),0xE1F5FE,3.8,2.4,-4.19,{transparent:true,opacity:.6})}
+    if(kind==='bulb'){P(new T.CylinderGeometry(0.08,0.08,2.2,10),0xB0BEC5,3.8,1.4,-4.0);const b=P(new T.SphereGeometry(0.6,20,16),0xFFF59D,3.8,3.0,-4.0,{emissive:0xFFEB3B,emissiveIntensity:.8});O.bulb=b}
+    if(kind==='easel'){P(new T.BoxGeometry(1.8,1.3,0.08),0xFFFFFF,3.8,2.0,-4.1);P(new T.CircleGeometry(0.35,20),0xFF8FB1,3.5,2.1,-4.05);P(new T.CircleGeometry(0.25,20),0x6EC6FF,4.1,1.8,-4.05);P(new T.BoxGeometry(0.08,1.6,0.08),0xA1887F,3.2,0.9,-4.0);P(new T.BoxGeometry(0.08,1.6,0.08),0xA1887F,4.4,0.9,-4.0)}
+    if(kind==='ring'){P(new T.TorusGeometry(0.8,0.12,12,36),0xFFFFFF,3.8,2.5,-4.0,{emissive:0xFFFFFF,emissiveIntensity:.6});P(new T.CylinderGeometry(0.06,0.06,2.2,8),0x90A4AE,3.8,1.3,-4.0);P(new T.BoxGeometry(0.5,0.35,0.35),0x37474F,3.8,2.5,-3.8)}
+    if(kind==='coins'){for(let i=0;i<6;i++)P(new T.CylinderGeometry(0.42,0.42,0.14,20),0xFFC93C,3.6,0.4+i*0.15,-4.0);for(let i=0;i<4;i++)P(new T.CylinderGeometry(0.42,0.42,0.14,20),0xFFC93C,4.4,0.4+i*0.15,-3.6)}
+    if(kind==='cone'){[[3,-4],[4.3,-3.3],[3.6,-2.6]].forEach(([x,z])=>{P(new T.ConeGeometry(0.35,0.9,16),0xFF7043,x,0.75,z);P(new T.CylinderGeometry(0.2,0.25,0.14,16),0xFFFFFF,x,0.85,z)})}
+    if(kind==='screen'){P(new T.BoxGeometry(5.6,2.8,0.2),0x37474F,0,2.2,-4.3);P(new T.PlaneGeometry(5.2,2.4),0xFFFFFF,0,2.2,-4.18,{emissive:0xC3B1E1,emissiveIntensity:.35});P(new T.BoxGeometry(1.2,1.2,0.8),0xFFFFFF,-2.8,0.9,-1.6);[-2,0,2].forEach(x=>P(new T.BoxGeometry(1.1,0.5,1.1),0xFF8FB1,x,0.55,2.4))}
+    if(kind==='coffee'){P(new T.BoxGeometry(1.0,1.3,0.8),0x8D6E63,3.8,0.95,-4.0);P(new T.BoxGeometry(3.2,0.7,1.2),0xFF8FB1,-0.5,0.65,-3.6);P(new T.BoxGeometry(3.2,0.9,0.35),0xFF8FB1,-0.5,1.0,-4.2);P(new T.CylinderGeometry(0.9,0.9,0.12,24),0xFFFFFF,1.8,0.9,1.2);P(new T.CylinderGeometry(0.1,0.1,0.6,10),0xB0BEC5,1.8,0.6,1.2)}
+  }
+  // gates
+  arr('gates').forEach(g=>buildGate(g.id));
+  // controls
+  const cv=renderer.domElement;let drag=null;
+  cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,th:O.orbit.th,ph:O.orbit.ph,moved:0};try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+  cv.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.moved=Math.max(drag.moved,Math.abs(dx)+Math.abs(dy));O.orbit.th=drag.th-dx*0.006;O.orbit.ph=Math.min(1.35,Math.max(0.22,drag.ph-dy*0.005))});
+  cv.addEventListener('pointerup',e=>{if(drag&&drag.moved<6)oPick(e);drag=null});
+  cv.addEventListener('wheel',e=>{e.preventDefault();O.orbit.r=Math.min(120,Math.max(16,O.orbit.r*(e.deltaY>0?1.1:0.9)))},{passive:false});
+  const fit=()=>{const w=host.clientWidth||600,h=host.clientHeight||400;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};
+  try{new ResizeObserver(fit).observe(host)}catch(_){addEventListener('resize',fit)}fit();
+  $('#o-loading').hidden=true;
+  officeSync();rOfficeSide();oLoop();
+}
+function buildGate(id){const T=O.T;if(O.gates[id])return;let x,z,alongX;
+  if(GATE_FIX[id]){[x,z]=GATE_FIX[id];alongX=false}else if(GATE_AT[id]){const A=ZONES[GATE_AT[id][0]],B=ZONES[GATE_AT[id][1]];x=(A.x+B.x)/2;z=(A.z+B.z)/2;alongX=Math.abs(B.x-A.x)>Math.abs(B.z-A.z)}else return;
+  const g=new T.Group();g.position.set(x,0,z);if(!alongX)g.rotation.y=Math.PI/2;
+  const mat=O.M(0xFFE066);
+  [-1.6,1.6].forEach(o=>{const p=new T.Mesh(new T.CylinderGeometry(0.28,0.32,3.4,14),mat);p.position.set(0,1.7,o);p.castShadow=true;p.userData={kind:'gate',id};g.add(p);O.pick.push(p)});
+  const top=new T.Mesh(new T.BoxGeometry(0.5,0.5,3.9),mat);top.position.set(0,3.5,0);top.castShadow=true;top.userData={kind:'gate',id};g.add(top);O.pick.push(top);
+  const sg=S.gates[id];const lab=oLabel(id+(sg?.gem?' 💎':''),{size:44,h:0.85,bg:'#FFFFFF',stroke:'#FFE066'});lab.position.set(0,4.4,0);g.add(lab);
+  O.scene.add(g);O.gates[id]={g,mat,lab};
+}
+function makeAvatar(p){const T=O.T,M=O.M;const g=new T.Group();const col=ROLE_COL[p.role]||0x90A4AE;
+  const body=new T.Mesh(new T.SphereGeometry(0.62,24,18),M(col));body.scale.set(1,1.15,0.9);body.position.y=0.95;body.castShadow=true;
+  const head=new T.Mesh(new T.SphereGeometry(0.56,24,18),M(0xFFE3CF));head.position.y=2.05;head.castShadow=true;
+  const hair=new T.Mesh(new T.SphereGeometry(0.585,24,12,0,Math.PI*2,0,Math.PI/2.1),M(HAIR[(p.order||0)%HAIR.length]));hair.position.y=2.1;hair.rotation.x=-0.25;
+  const eyeM=M(0x2B2B2B);[-0.19,0.19].forEach(x=>{const e=new T.Mesh(new T.SphereGeometry(0.075,10,8),eyeM);e.position.set(x,2.08,0.5);g.add(e)});
+  const blushM=M(0xFF9AA2,{transparent:true,opacity:.8});[-0.32,0.32].forEach(x=>{const b=new T.Mesh(new T.CircleGeometry(0.1,14),blushM);b.position.set(x,1.92,0.5);b.rotation.y=x>0?0.5:-0.5;g.add(b)});
+  const smile=new T.Mesh(new T.TorusGeometry(0.09,0.025,6,14,Math.PI),eyeM);smile.position.set(0,1.9,0.53);smile.rotation.z=Math.PI;g.add(smile);
+  [body,head].forEach(m=>{m.userData={kind:'person',id:p.id};O.pick.push(m)});g.add(body,head,hair);
+  const tag=oLabel(p.name,{size:40,h:0.62,bg:'#FFFFFF',stroke:hex(col)});tag.position.y=3.05;g.add(tag);
+  const bub=oLabel('☕',{size:46,h:0.75,bg:'#FFFFFF'});bub.position.set(0.85,3.75,0);g.add(bub);
+  return {g,body,head,tag,bub,target:new T.Vector3(),phase:Math.random()*6,id:p.id,state:{}};
+}
+function officeSync(){if(!O)return;const T=O.T;
+  people().forEach(p=>{if(!O.avatars[p.id]){const a=makeAvatar(p);a.g.position.set(ZONES.lounge.x+(Math.random()-.5)*4,0,ZONES.lounge.z+(Math.random()-.5)*4);O.avatars[p.id]=a;O.scene.add(a.g)}});
+  const occ={};
+  people().forEach(p=>{const a=O.avatars[p.id];const st=personState(p);a.state=st;const z=ZONES[st.zone]||ZONES.lounge;const i=occ[st.zone]=(occ[st.zone]||0)+1;const s=SLOTS[(i-1)%SLOTS.length];a.target.set(z.x+s[0],0,z.z+s[1]);
+    const hot=O.mode==='live'&&loadPct(p)>(cfg().loadCrit??100);setLabel(a.bub,st.icon+(hot?'!':''),{size:46,h:0.75,bg:hot?'#FFD3D3':'#FFFFFF',stroke:hot?'#FF6B6B':''})});
+  // gates
+  arr('gates').forEach(g=>{buildGate(g.id);const G=O.gates[g.id];if(!G)return;let col=0xFFE066;
+    if(O.mode==='sim'){if(g.due<O.days[O.day])col=0x7BD389}else col=g.status==='pass'?0x7BD389:g.status==='fail'?0xFF6B6B:g.due<TODAY?0xFFA552:0xFFE066;G.mat.color.setHex(col)});
+  // zone signs with counts
+  Object.keys(ZONES).forEach(k=>{const ts=tasks().filter(t=>STAGE_ZONE[t.stage]===k);const done=O.mode==='sim'?ts.filter(t=>t.due<O.days[O.day]).length:ts.filter(t=>t.status==='done').length;setLabel(O.signs[k],ZONES[k].n+(ts.length?`  ${done}/${ts.length}`:''),{size:44,h:1.05,bg:'#FFFFFF',stroke:hex(ZONES[k].c)})});
+  // finished-doc stack at the stage
+  const n=Math.min(40,O.mode==='sim'?tasks().filter(t=>t.due<O.days[O.day]).length:tasks().filter(t=>t.status==='done').length);
+  if(n!==O.stackN){O.stackN=n;while(O.stack.children.length)O.stack.remove(O.stack.children[0]);for(let i=0;i<n;i++){const d=new T.Mesh(new T.BoxGeometry(0.9,0.07,1.2),O.M([0xFFFFFF,0xFFF3B0,0xD7F5FF][i%3]));d.position.set((Math.random()-.5)*0.08,i*0.075,(Math.random()-.5)*0.08);d.rotation.y=(Math.random()-.5)*0.3;O.stack.add(d)}}
+  // replay new events as animations (works for every open viewer)
+  if(O.mode==='live'){const ev=arr('events').filter(e=>(e.at||0)>O.seenAt).sort((a,b)=>a.at-b.at);ev.forEach(e=>{if(e.kind==='submit')flyDoc(e.from,e.to);if(e.kind==='approve'){burst(e.from);burst(e.to)}if(e.kind==='log')pop(e.from,'+'+(e.h||1)+' ชม.');if(e.kind==='return')pop(e.to,'แก้อีกนิด');if(e.kind==='start')pop(e.from,'เริ่มเลย!')});if(ev.length)O.seenAt=Math.max(...ev.map(e=>e.at))}
+}
+function aPos(pid){const a=O.avatars[pid];return a?a.g.position.clone():null}
+function flyDoc(from,to){const A=aPos(from),B=aPos(to);if(!A||!B)return;const d=new O.T.Mesh(new O.T.BoxGeometry(0.7,0.08,0.9),O.M(0xFFFFFF,{emissive:0xFFF3B0,emissiveIntensity:.4}));d.castShadow=true;O.scene.add(d);O.fly.push({m:d,A:A.add(new O.T.Vector3(0,2.6,0)),B:B.add(new O.T.Vector3(0,2.6,0)),t:0,end:()=>burst(to,12)})}
+function burst(pid,n=40){const P=aPos(pid);if(!P)return;const cols=[0xFF8FB1,0xFFD166,0x6EC6FF,0x8EE3C8,0xB39DDB];for(let i=0;i<n;i++){const m=new O.T.Mesh(new O.T.BoxGeometry(0.14,0.14,0.04),O.M(cols[i%5]));m.position.copy(P).add(new O.T.Vector3(0,2.8,0));O.scene.add(m);O.fx.push({m,v:new O.T.Vector3((Math.random()-.5)*6,4+Math.random()*4,(Math.random()-.5)*6),life:1.6,spin:Math.random()*8})}}
+function pop(pid,text){const P=aPos(pid);if(!P)return;const s=oLabel(text,{size:42,h:0.7,bg:'#FFF3B0'});s.position.copy(P).add(new O.T.Vector3(0,3.6,0));O.scene.add(s);O.fx.push({m:s,v:new O.T.Vector3(0,1.4,0),life:1.6,label:true})}
+function lerpA(a,b,f){let d=b-a;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;return a+d*f}
+function oLoop(){requestAnimationFrame(oLoop);if(!O||tab!=='office')return;const dt=Math.min(0.05,O.clock.getDelta()),t=O.clock.elapsedTime;
+  Object.values(O.avatars).forEach(a=>{const d=a.target.clone().sub(a.g.position);d.y=0;const dist=d.length();
+    if(dist>0.06){const step=Math.min(dist,dt*5);a.g.position.addScaledVector(d.normalize(),step);a.g.rotation.y=lerpA(a.g.rotation.y,Math.atan2(d.x,d.z),0.2);a.g.position.y=Math.abs(Math.sin(t*11+a.phase))*0.22}
+    else{a.g.rotation.y=lerpA(a.g.rotation.y,0,0.08);a.g.position.y=0;const typing=a.state.icon==='💻';a.body.scale.y=1.15+Math.sin(t*(typing?9:2.5)+a.phase)*(typing?0.025:0.04);a.head.position.y=2.05+(typing?Math.sin(t*9+a.phase)*0.03:0)}
+    a.bub.position.y=3.75+Math.sin(t*2+a.phase)*0.08});
+  if(O.sel?.kind==='person'&&O.avatars[O.sel.id]){O.ring.visible=true;O.ring.position.x=O.avatars[O.sel.id].g.position.x;O.ring.position.z=O.avatars[O.sel.id].g.position.z;O.ring.scale.setScalar(1+Math.sin(t*4)*0.08)}else O.ring.visible=false;
+  if(O.bulb)O.bulb.material.emissiveIntensity=0.6+Math.sin(t*2)*0.3;
+  O.fly=O.fly.filter(f=>{f.t+=dt/1.3;const k=Math.min(1,f.t);f.m.position.lerpVectors(f.A,f.B,k);f.m.position.y+=Math.sin(Math.PI*k)*4;f.m.rotation.y+=dt*6;if(k>=1){O.scene.remove(f.m);f.end&&f.end();return false}return true});
+  O.fx=O.fx.filter(f=>{f.life-=dt;if(f.label){f.m.position.addScaledVector(f.v,dt);f.m.material.opacity=Math.max(0,f.life/1.6)}else{f.v.y-=9.8*dt;f.m.position.addScaledVector(f.v,dt);f.m.rotation.x+=f.spin*dt;f.m.rotation.z+=f.spin*dt}if(f.life<=0){O.scene.remove(f.m);return false}return true});
+  O.camC.lerp(O.camT,0.06);const o=O.orbit;O.cam.position.set(O.camC.x+o.r*Math.sin(o.ph)*Math.sin(o.th),o.r*Math.cos(o.ph),O.camC.z+o.r*Math.sin(o.ph)*Math.cos(o.th));O.cam.lookAt(O.camC);
+  O.renderer.render(O.scene,O.cam);
+}
+function oPick(e){const r=O.renderer.domElement.getBoundingClientRect();const v=new O.T.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);O.ray.setFromCamera(v,O.cam);const hits=O.ray.intersectObjects(O.pick,false);
+  const hit=hits.find(h=>h.object.userData.kind!=='zone')||hits[0];
+  if(!hit){O.sel=null;O.camT.set(0,0,2)}else{const u=hit.object.userData;O.sel={kind:u.kind,id:u.id};const p=hit.object.getWorldPosition(new O.T.Vector3());O.camT.set(p.x,0,p.z)}rOfficeSide()}
+
+function oTaskCard(t,owner){
+  owner=owner||(t.assignees||[])[0]?.p;const gate=STAGE_GATE[t.stage];const gOk=!gate||S.gates[gate]?.status==='pass';
+  const h=arr('time').filter(e=>e.task===t.id&&e.person===owner).reduce((s,e)=>s+(+e.hours||0),0);
+  let btn='';const d=`data-t="${esc(t.id)}" data-p="${esc(owner||'')}"`;
+  if(O.mode==='sim')btn='';
+  else if(t.status==='todo')btn=`<button class="sm pri" data-act="o-start" ${d}>เริ่มงาน</button>`;
+  else if(t.status==='doing'||t.status==='blocked')btn=`<button class="sm" data-act="o-log" ${d}>+1 ชม.</button><button class="sm pri" data-act="o-submit" ${d}>ส่งตรวจ → ${esc(pname(t.checker))}</button>`;
+  else if(t.status==='review')btn=`<button class="sm pri" data-act="o-approve" ${d}>อนุมัติ (${esc(pname(t.checker))})</button><button class="sm danger" data-act="o-return" ${d}>ส่งกลับแก้</button>`;
+  return `<div class="o-task"><div><b>${esc(t.id)}</b> ${esc(t.name)}${t.gem?' 💎':''}</div><div class="muted" style="font-size:12px">${esc(pname(owner))} · ส่ง ${fd(t.due)} · ลงแล้ว ${n1(h)} ชม. · ผู้ตรวจ ${esc(pname(t.checker))}</div><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="pill ${ST[t.status]?.[1]||''}">${ST[t.status]?.[0]||t.status}</span>${late(t)?'<span class="pill crit">เลยกำหนด</span>':''}${gOk?'':`<span class="pill warn">ด่าน ${gate} ยังไม่ผ่าน</span>`}${t.returned?`<span class="pill">ถูกส่งกลับ ${t.returned} ครั้ง</span>`:''}</div>${btn?`<div class="o-btns">${btn}</div>`:''}</div>`;
+}
+function rOfficeSide(){const el=$('#o-side');if(!el)return;
+  if(!db||!loaded.size){el.innerHTML=`<div class="empty">${dbTried&&!db?'เปิดหน้านี้ใน claude.ai และลงชื่อเข้าใช้ เพื่อให้ออฟฟิศเชื่อมกับงานจริง':'กำลังโหลดทีม…'}</div>`;return}
+  if(!O){el.innerHTML='<div class="empty">กำลังจัดโต๊ะในออฟฟิศ…</div>';return}
+  const mode=`<div class="o-seg" role="group" aria-label="โหมด"><button data-act="o-mode" data-m="live" aria-pressed="${O.mode==='live'}">ออฟฟิศสด</button><button data-act="o-mode" data-m="sim" aria-pressed="${O.mode==='sim'}">จำลองตามแผน</button></div>`+
+   (O.mode==='sim'?`<div class="o-sim"><button class="sm" data-act="o-play">${O.playing?'หยุด':'เล่น'}</button><input type="range" id="o-day" min="0" max="${O.days.length-1}" value="${O.day}" aria-label="วันจำลอง"><b id="o-daylbl">${fd(O.days[O.day])}</b></div><p class="muted" style="margin:0;font-size:12px">ตัวละครเดินไปโซนตามงานที่แผนกำหนดในวันนั้น โหมดนี้ดูอย่างเดียว ไม่บันทึกข้อมูล</p>`:'');
+  const s=O.sel;let body='';
+  if(s?.kind==='person'&&S.people[s.id]){const p=S.people[s.id];const x=xp(p.id),lv=1+Math.floor(x/100),l=loadPct(p),st=O.avatars[p.id]?.state||{};
+    const mine=personTasks(p.id).filter(t=>t.status!=='done').sort((a,b)=>(a.due||'').localeCompare(b.due||''));const rv=tasks().filter(t=>t.status==='review'&&t.checker===p.id);const done=personTasks(p.id).filter(t=>t.status==='done').length;
+    const today=arr('time').filter(e=>e.person===p.id&&e.date===TODAY).reduce((a,e)=>a+(+e.hours||0),0);
+    body=`<div class="o-who"><span class="o-dot" style="background:${hex(ROLE_COL[p.role])}"></span><div><h3>${esc(p.name)}</h3><span class="muted" style="font-size:12px">${esc(p.role)} · ${esc(p.pitchRole||'')}</span></div><button class="sm" data-act="o-clear">ปิด</button></div>
+    <div class="o-stats"><div><b>Lv.${lv}</b><div class="bar-h"><span style="width:${x%100}%"></span></div><small>${x} XP · เสร็จ ${done} งาน</small></div><div><b>${n1(today)} ชม.</b><small>ลงเวลาวันนี้</small></div><div><b class="${loadCls(l)==='crit'?'o-hot':''}">${pct(l)}</b><small>โหลดรวม</small></div></div>
+    <p class="o-now">${st.icon||''} ${O.mode==='sim'?(st.task?'ตามแผนวันนี้: '+esc(st.task.name):'ไม่มีงานตามแผน'):(st.task?({'💻':'กำลังทำ','🆘':'ติดปัญหา','🔍':'กำลังตรวจ','📨':'รอผลตรวจ','🚶':'กำลังไปเริ่ม'}[st.icon]||'')+': '+esc(st.task.name):'ว่าง พักที่ Coffee Lounge')}</p>
+    ${rv.length?`<h4>งานรอ ${esc(p.name)} ตรวจ (${rv.length})</h4>`+rv.map(t=>oTaskCard(t,t.submittedBy||t.assignees?.[0]?.p)).join(''):''}
+    <h4>งานของ ${esc(p.name)} (${mine.length})</h4>${mine.map(t=>oTaskCard(t,p.id)).join('')||'<p class="muted" style="margin:0">ไม่มีงานค้าง เก่งมาก</p>'}`;
+  }else if(s?.kind==='zone'&&ZONES[s.id]){const ts=tasks().filter(t=>STAGE_ZONE[t.stage]===s.id);
+    body=`<div class="o-who"><span class="o-dot" style="background:${hex(ZONES[s.id].c)}"></span><div><h3>${ZONES[s.id].n}</h3><span class="muted" style="font-size:12px">เสร็จ ${ts.filter(t=>t.status==='done').length}/${ts.length} งาน</span></div><button class="sm" data-act="o-clear">ปิด</button></div>${ts.map(t=>oTaskCard(t)).join('')||'<p class="muted" style="margin:0">โซนนี้ไว้พักผ่อน ไม่มีงานผูกไว้</p>'}`;
+  }else if(s?.kind==='gate'&&S.gates[s.id]){const g=S.gates[s.id],it=g.items||[];
+    body=`<div class="o-who"><span class="o-dot" style="background:${g.status==='pass'?'#7BD389':g.status==='fail'?'#FF6B6B':'#FFE066'}"></span><div><h3>ด่าน ${esc(g.id)} ${esc(g.name)}${g.gem?' 💎':''}</h3><span class="muted" style="font-size:12px">กำหนด ${fd(g.due)} · ผู้อนุมัติ ${esc(pname(g.approver))}</span></div><button class="sm" data-act="o-clear">ปิด</button></div>
+    <ul class="o-feed">${it.map(i=>`<li>${i.ok?'✅':'⬜'} ${esc(i.t)}</li>`).join('')}</ul><p style="margin:0" class="pill ${g.status==='pass'?'ok':g.status==='fail'?'crit':'warn'}">${g.status==='pass'?'ผ่านแล้ว':g.status==='fail'?'ไม่ผ่าน ต้องแก้':'รอตัดสิน'} · ${it.filter(i=>i.ok).length}/${it.length} เกณฑ์</p><button class="pri" data-tab="gates">ไปหน้าด่านเพื่อตรวจและอนุมัติ</button>`;
+  }else{const lb=people().map(p=>({p,x:xp(p.id)})).sort((a,b)=>b.x-a.x).slice(0,8);const fe=arr('events').sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,10);
+    const rvAll=tasks().filter(t=>t.status==='review');
+    body=`<h3>ยินดีต้อนรับสู่ออฟฟิศ</h3><ol class="o-help"><li>คลิกตัวละครเพื่อดูงานของคนนั้น</li><li>ทำงานตามลำดับ: เริ่มงาน → ลงเวลา → ส่งตรวจ → ผู้ตรวจอนุมัติ</li><li>ส่งตรวจได้เมื่อลงเวลาในงานนั้นแล้ว · ทุกคลิกบันทึกลงระบบจริง</li><li>ลากเพื่อหมุนมุมกล้อง · เลื่อนล้อเมาส์เพื่อซูม · คลิกซุ้มสีเหลืองเพื่อดูด่าน</li></ol>
+    ${rvAll.length?`<h4>กล่องรอตรวจ (${rvAll.length})</h4>`+rvAll.map(t=>oTaskCard(t,t.submittedBy||t.assignees?.[0]?.p)).join(''):''}
+    <h4>ดาวประจำ Pitch (XP)</h4><div class="o-lb">${lb.map((r,i)=>`<button data-act="o-sel" data-k="person" data-id="${esc(r.p.id)}"><span class="mono" style="width:18px">${i+1}</span><span class="o-dot" style="background:${hex(ROLE_COL[r.p.role])}"></span><b style="flex:1">${esc(r.p.name)}</b><span class="mono">${r.x} XP</span></button>`).join('')}</div>
+    <p class="muted" style="margin:0;font-size:11.5px">XP: งานเสร็จ ชม.แผน×10 · ส่งทันกำหนด +20 · ตรวจงานเสร็จ +5 · ลงเวลา ชม.×2</p>
+    <h4>ความเคลื่อนไหวล่าสุด</h4>${fe.length?`<ul class="o-feed">${fe.map(e=>`<li><span class="muted mono">${new Date(e.at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}</span> ${esc(e.text)}</li>`).join('')}</ul>`:'<p class="muted" style="margin:0">ยังไม่มีความเคลื่อนไหว ลองคลิกตัวละครแล้วกด "เริ่มงาน"</p>'}`;
+  }
+  el.innerHTML=mode+body;
+}
+function rOffice(){if(!O){rOfficeSide();if(db&&loaded.size)initOffice();return}officeSync();rOfficeSide()}
+function stopPlay(){if(O?.playing){clearInterval(O.playing);O.playing=null}}
+async function officeAct(b){if(!O)return;const a=b.dataset.act,tid=b.dataset.t,pid=b.dataset.p;
+  if(a==='o-sel'){O.sel={kind:b.dataset.k,id:b.dataset.id};const P=aPos(b.dataset.id);if(P)O.camT.set(P.x,0,P.z);rOfficeSide();return}
+  if(a==='o-clear'){O.sel=null;O.camT.set(0,0,2);rOfficeSide();return}
+  if(a==='o-mode'){O.mode=b.dataset.m;stopPlay();O.seenAt=Date.now();officeSync();rOfficeSide();return}
+  if(a==='o-play'){if(O.playing)stopPlay();else O.playing=setInterval(()=>{O.day=(O.day+1)%O.days.length;const r=$('#o-day');if(r)r.value=O.day;const l=$('#o-daylbl');if(l)l.textContent=fd(O.days[O.day]);officeSync();if(O.sel)rOfficeSide()},1500);rOfficeSide();return}
+  if(a==='o-cam'){const c=b.dataset.c;if(c==='in')O.orbit.r=Math.max(16,O.orbit.r*0.8);if(c==='out')O.orbit.r=Math.min(120,O.orbit.r*1.25);if(c==='top')O.orbit.ph=0.25;if(c==='reset'){Object.assign(O.orbit,{th:0.75,ph:0.95,r:64});O.camT.set(0,0,2)}return}
+  const t=S.tasks[tid];if(!t)return;
+  const ev=(kind,text,extra)=>db.collection('events').add({at:Date.now(),date:TODAY,kind,text,task:tid,...extra});
+  if(a==='o-start')W(async()=>{await db.collection('tasks').doc(tid).update(statusPatch(t,'doing'));await ev('start',`${pname(pid)} เริ่มงาน ${tid} ${t.name}`,{from:pid})},'เริ่มงาน '+tid);
+  if(a==='o-log')W(async()=>{await db.collection('time').add({date:TODAY,person:pid,task:tid,hours:1,ai:false,note:'ลงจาก Office 3D',at:Date.now()});await ev('log',`${pname(pid)} ลงเวลา 1 ชม. ใน ${tid}`,{from:pid,h:1})},'ลงเวลา 1 ชม. ให้ '+pname(pid));
+  if(a==='o-submit'){const h=arr('time').filter(e=>e.task===tid&&e.person===pid).reduce((s,e)=>s+(+e.hours||0),0);
+    if(!h){toast('ลงเวลาในงานนี้ก่อน แล้วค่อยส่งตรวจ',1);return}if(!t.checker){toast('งานนี้ยังไม่มีผู้ตรวจ ตั้งผู้ตรวจในหน้างานก่อน',1);return}
+    W(async()=>{await db.collection('tasks').doc(tid).update({...statusPatch(t,'review'),submittedBy:pid,submittedAt:TODAY});await ev('submit',`${pname(pid)} ส่ง ${tid} ให้ ${pname(t.checker)} ตรวจ`,{from:pid,to:t.checker})},'ส่งตรวจแล้ว');}
+  if(a==='o-approve')W(async()=>{await db.collection('tasks').doc(tid).update({...statusPatch(t,'done'),doneAt:TODAY,approvedBy:t.checker||''});await ev('approve',`${pname(t.checker)} อนุมัติ ${tid} ${t.name}`,{from:t.checker||'',to:t.submittedBy||(t.assignees||[])[0]?.p||''})},'อนุมัติแล้ว เยี่ยมมาก');
+  if(a==='o-return')W(async()=>{await db.collection('tasks').doc(tid).update({...statusPatch(t,'doing'),returned:(t.returned||0)+1});await ev('return',`${pname(t.checker)} ส่ง ${tid} กลับไปแก้`,{from:t.checker||'',to:t.submittedBy||(t.assignees||[])[0]?.p||''})},'ส่งกลับแก้แล้ว');
+}
+document.addEventListener('input',e=>{if(e.target.id==='o-day'&&O){O.day=+e.target.value;const l=$('#o-daylbl');if(l)l.textContent=fd(O.days[O.day]);officeSync()}});
+
 /* ---------- events ---------- */
 document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-tab],[data-act]');if(!b)return;
   if(b.dataset.tab){setTab(b.dataset.tab);return}
   const a=b.dataset.act,id=b.dataset.id;
+  if(a&&a.startsWith('o-')){officeAct(b);return}
   if(a==='modal-bg'&&e.target===b||a==='modal-close'){$('#modal-root').innerHTML='';return}
   if(a==='task-new')taskModal(null);
   else if(a==='task-edit')taskModal(id);
