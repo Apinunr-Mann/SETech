@@ -1,0 +1,538 @@
+<title>HRIS 5W1H Flow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: whiteboard-ink diagram on a faint grid paper; detail sheet below; reference sections stacked */
+:root{
+  --paper:#F5F6FA; --sheet:#FFFFFF; --ink:#1C2B6E; --ink-2:#4A5482; --line:#D7DBEA; --grid:#E8EAF3;
+  --muted:#6B7290;
+  --who:#0F7C7B; --what:#B26A00; --where:#6A3FB0; --when:#1F5FBF; --why:#B23A5E; --how:#2D7D3A;
+  --tint:.10;
+  --good:#2D7D3A; --bad:#B23A3A;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10142A; --sheet:#171C36; --ink:#DCE2FF; --ink-2:#AEB6DD; --line:#2E3560; --grid:#1A2042; --muted:#8C94BD;
+  --who:#3CC7C4; --what:#F0A93A; --where:#A983F0; --when:#6FA3FF; --why:#F07A9C; --how:#6BCB78;
+  --good:#6BCB78; --bad:#F08080; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#10142A; --sheet:#171C36; --ink:#DCE2FF; --ink-2:#AEB6DD; --line:#2E3560; --grid:#1A2042; --muted:#8C94BD;
+  --who:#3CC7C4; --what:#F0A93A; --where:#A983F0; --when:#6FA3FF; --why:#F07A9C; --how:#6BCB78;
+  --good:#6BCB78; --bad:#F08080; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.25}
+h1{font-size:clamp(28px,4.4vw,44px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:700}
+h3{font-size:17px;font-weight:600}
+p{margin:0}
+.nw{white-space:nowrap;display:inline-block}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:68ch;color:var(--ink-2);font-size:16px}
+header{display:flex;flex-direction:column;gap:10px}
+.hdr-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.boxed{display:inline-block;border:2.5px solid var(--ink);padding:2px 12px;border-radius:3px;font-family:var(--f-display);font-weight:700}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--sheet)}
+.seg button{all:unset;cursor:pointer;padding:6px 14px;font-size:14px;font-weight:500;color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.seg button:focus-visible,.chip:focus-visible,.tab:focus-visible,.node:focus-visible{outline:2px solid var(--when);outline-offset:2px}
+.ctl-label{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{all:unset;cursor:pointer;border:1.5px dashed var(--line);border-radius:6px;padding:5px 10px;font-size:13.5px;background:var(--sheet);color:var(--ink)}
+.chip[aria-pressed="true"]{border-style:solid;border-color:var(--ink);font-weight:600}
+
+/* board */
+.board{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:12px 8px 6px;position:relative}
+.board-scroll{overflow-x:auto}
+.board svg{display:block;width:100%;min-width:860px;height:auto}
+.board-foot{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);padding:6px 10px 4px}
+.lg{display:inline-flex;align-items:center;gap:6px}
+.lg i{display:inline-block;width:22px;height:0;border-top:2px solid var(--ink)}
+.lg i.d{border-top-style:dashed}
+.lg i.t{border-top:1.5px dotted var(--muted)}
+
+svg text{fill:var(--ink);font-family:var(--f-body)}
+.node{cursor:pointer;outline:none}
+.node .bg{fill:var(--sheet);stroke:var(--line);stroke-width:1.5;transition:stroke .2s,opacity .2s}
+.node .tag{stroke-width:2.5;fill:var(--sheet)}
+.node .w{font-family:var(--f-display);font-weight:700;font-size:22px;letter-spacing:.06em}
+.node .en{font-size:13px;font-weight:600}
+.node .th{font-size:12px;fill:var(--muted)}
+.node:hover .bg,.node.sel .bg{stroke-width:2.5}
+.node.dim{opacity:.28}
+.node.off{opacity:.18}
+.edge path.l{fill:none;stroke:var(--ink-2);stroke-width:2;transition:opacity .2s}
+.edge.dash path.l{stroke-dasharray:6 5}
+.edge text{font-size:12px;fill:var(--ink-2);font-weight:500}
+.edge.dim{opacity:.25}
+.edge.hot path.l{stroke:var(--ink);stroke-width:2.6}
+.edge.hot text{fill:var(--ink);font-weight:600}
+.edge .dot{fill:var(--ink)}
+.solo .edge{opacity:0}
+.solo .edge.core{opacity:1}
+.bus rect{fill:var(--paper);stroke:var(--ink-2);stroke-width:1.2}
+.bus text{font-size:12.5px;fill:var(--ink-2)}
+.tick{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:2 4}
+.howbox{fill:none;stroke:var(--ink-2);stroke-width:1.8;stroke-dasharray:10 7}
+.mk{fill:var(--ink-2)}
+.edge.hot .mkuse{fill:var(--ink)}
+.pkgnote{font-size:13px;color:var(--ink-2);min-height:1.6em}
+
+/* detail sheet */
+.detail{background:var(--sheet);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.d-head{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;padding:20px 22px 16px;border-bottom:1px solid var(--line);align-items:center}
+.d-badge{grid-row:span 2;font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:.06em;border:3px solid currentColor;border-radius:4px;padding:6px 14px}
+.d-title{font-family:var(--f-display);font-size:21px;font-weight:600;min-width:0}
+.d-q{color:var(--ink-2);min-width:0}
+.tabs{display:flex;gap:2px;padding:0 14px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{all:unset;cursor:pointer;padding:11px 12px;font-size:14px;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent,var(--ink));font-weight:600}
+.pane{padding:20px 22px 24px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 28px}
+.grid2>*{min-width:0}
+ul.feat{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px 24px}
+ul.feat li{padding-left:18px;position:relative;min-width:0}
+ul.feat li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--accent,var(--ink))}
+ul.feat b{font-weight:600}
+.pf{display:grid;grid-template-columns:1fr 28px 1fr;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.pf+.pf{margin-top:10px}
+.pf>div{padding:10px 14px;min-width:0}
+.pf .p{background:color-mix(in srgb,var(--bad) 8%,var(--sheet))}
+.pf .s{background:color-mix(in srgb,var(--good) 9%,var(--sheet))}
+.pf .ar{display:flex;align-items:center;justify-content:center;padding:0;color:var(--muted);font-family:var(--f-mono)}
+.pf small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.io{display:flex;flex-direction:column;gap:8px}
+.io-row{display:grid;grid-template-columns:76px 1fr;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line)}
+.io-row:last-child{border-bottom:0}
+.pill{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:12.5px;letter-spacing:.05em;padding:1px 8px;border-radius:3px;border:1.5px solid currentColor;text-align:center}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px}
+.kv dt{font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-top:3px}
+.kv dd{margin:0;min-width:0}
+ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.note{font-size:13.5px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:12px}
+
+/* reference sections */
+section.ref{display:flex;flex-direction:column;gap:14px}
+.table-wrap{overflow-x:auto;background:var(--sheet);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-mono);color:var(--muted);width:36px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card .mods{display:flex;gap:5px;flex-wrap:wrap}
+.card p{font-size:14px;color:var(--ink-2)}
+.road{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;background:var(--sheet);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.road>div{padding:16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px;min-width:0}
+.road>div:last-child{border-right:0}
+.road .ph{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.road ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2)}
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px 28px}
+.principles>div{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;min-width:0}
+.principles .k{font-family:var(--f-display);font-weight:700;font-size:20px;color:var(--ink-2);grid-row:span 2;line-height:1.1}
+.principles p{font-size:14px;color:var(--ink-2)}
+footer{font-size:12.5px;color:var(--muted)}
+@media (max-width:560px){
+  .pf{grid-template-columns:1fr}.pf .ar{padding:2px;transform:rotate(90deg)}
+  .d-head{grid-template-columns:1fr}.d-badge{grid-row:auto;justify-self:start}
+  .io-row{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.dot{display:none}*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="hdr-row"><span class="boxed">HRIS</span><span class="eyebrow">Product flow · 5W1H · v0.1 · พ.ย. 2569</span></div>
+  <h1><span class="nw">ระบบ HR ที่ตอบครบ</span> <span class="nw">ใคร ทำอะไร ที่ไหน</span> <span class="nw">เมื่อไร ทำไม และอย่างไร</span></h1>
+  <p class="lede">แต่ละโหนดคือโมดูลที่ขายแยกได้ และเมื่อใช้ร่วมกันข้อมูลจะไหลต่อกันเอง จนเห็นว่าคนและเวลาที่ใช้ไปสร้างกำไรขาดทุน (P&amp;L) เท่าไร แล้วผลนั้นย้อนกลับไปตั้ง KPI รอบถัดไป คลิกโหนดในแผนภาพเพื่อดูรายละเอียดการพัฒนา</p>
+</header>
+
+<div class="controls">
+  <span class="ctl-label">มุมมอง</span>
+  <div class="seg" role="group" aria-label="โหมดการใช้งาน">
+    <button id="m-suite" aria-pressed="true">ใช้ร่วมกัน (Suite)</button>
+    <button id="m-solo" aria-pressed="false">แยกโมดูล (Standalone)</button>
+  </div>
+  <span class="ctl-label">แพ็กเกจขาย</span>
+  <div class="chips" id="pkgs"></div>
+</div>
+<p class="pkgnote" id="pkgnote"></p>
+
+<div class="board" id="board">
+  <div class="board-scroll">
+  <svg id="svg" viewBox="0 0 1000 510" role="img" aria-label="แผนภาพ flow ของระบบ HRIS แบบ 5W1H">
+    <defs>
+      <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" class="mk"/>
+      </marker>
+    </defs>
+    <g class="bus">
+      <rect x="20" y="10" width="960" height="40" rx="6"/>
+      <text x="500" y="35" text-anchor="middle">Core Platform · บัญชีผู้ใช้เดียว (SSO) · Employee Master · Rules Engine · Open API · LINE / Mobile · PDPA &amp; Audit log</text>
+    </g>
+    <g id="ticks"></g>
+    <rect class="howbox" x="455" y="290" width="350" height="205" rx="6"/>
+    <g id="edges"></g>
+    <g id="nodes"></g>
+  </svg>
+  </div>
+  <div class="board-foot">
+    <span class="lg"><i></i>ข้อมูลไหลระหว่างโมดูล</span>
+    <span class="lg"><i class="d"></i>กรอบประ = เชื่อม ERP เดิมของลูกค้า หรือใช้โมดูลของเรา</span>
+    <span class="lg"><i class="t"></i>ทุกโมดูลใช้ Core Platform ร่วมกัน</span>
+  </div>
+</div>
+
+<article class="detail" id="detail" aria-live="polite"></article>
+
+<section class="ref">
+  <span class="eyebrow">ทำไมลูกค้าจะย้ายมาใช้</span>
+  <h2>Pain point ของแพลตฟอร์ม HR ในตลาด และวิธีที่เราแก้</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th></th><th>ปัญหาที่ลูกค้าเจอ</th><th>สิ่งที่เราทำต่างออกไป</th><th>โมดูลหลัก</th></tr></thead>
+    <tbody id="painrows"></tbody>
+  </table></div>
+</section>
+
+<section class="ref">
+  <span class="eyebrow">กติกาออกแบบที่ทุกทีมต้องยึด</span>
+  <h2>หลักการ UX: ใช้ง่ายโดยไม่ต้องอบรม</h2>
+  <div class="principles" id="principles"></div>
+</section>
+
+<section class="ref">
+  <span class="eyebrow">ขายแยกหรือขายรวม</span>
+  <h2>แพ็กเกจสำหรับลูกค้าองค์กร</h2>
+  <div class="cards" id="pkgcards"></div>
+  <p class="note">ทุกแพ็กเกจมี WHO แบบ lite ติดมาเสมอ เพราะทุกโมดูลต้องรู้ว่าพนักงานคือใคร ลูกค้าที่ซื้อเพิ่มภายหลังไม่ต้องย้ายข้อมูลซ้ำ แค่เปิดสิทธิ์โมดูลใหม่</p>
+</section>
+
+<section class="ref">
+  <span class="eyebrow">ลำดับการพัฒนา</span>
+  <h2>Roadmap: ใช้ภายในก่อน แล้วค่อยขาย</h2>
+  <div class="road" id="road"></div>
+</section>
+
+<footer>เอกสารร่างสำหรับวางแผนผลิตภัณฑ์ภายใน · อ้างอิงจากภาพ whiteboard HRIS (WHO · WHAT · WHERE · WHEN · WHY · HOW)</footer>
+</div>
+
+<script>
+const NODES = {
+  who:{w:"WHO",en:"Employee Data",th:"ข้อมูลพนักงาน",x:110,y:95,
+    q:"ใครคือใครในองค์กร อยู่ตำแหน่งไหน มีทักษะอะไร",
+    title:"แฟ้มพนักงานกลาง (Employee 360)",
+    summary:"ข้อมูลตั้งต้นของทุกโมดูล เก็บประวัติ สัญญาจ้าง ตำแหน่ง ผังองค์กร เอกสาร และทักษะไว้ที่เดียว ทุกโมดูลอ่านจากที่นี่ ไม่มีการกรอกซ้ำ",
+    users:"HR, หัวหน้างาน, พนักงาน (self-service)",
+    features:[
+      ["Profile 360","ประวัติ สัญญา ตำแหน่ง เงินเดือน ญาติ บัญชีธนาคาร ในหน้าเดียว"],
+      ["ผังองค์กรอัตโนมัติ","สร้างจากสายบังคับบัญชา ลากวางเพื่อปรับโครงสร้างได้"],
+      ["Self-service ผ่าน LINE","พนักงานแก้ที่อยู่ บัญชี ผู้ติดต่อฉุกเฉินเอง มีขั้นอนุมัติ"],
+      ["เอกสารพร้อมแจ้งเตือน","บัตร ใบอนุญาตทำงาน ใบประกอบวิชาชีพ เตือนก่อนหมดอายุ 30/60 วัน"],
+      ["Skill & Certificate matrix","ค้นหาคนจากทักษะ ใช้ต่อใน WHY สำหรับจัดคนลงโปรเจกต์"],
+      ["Onboarding / Offboarding","เช็กลิสต์อัตโนมัติ เปิด-ปิดสิทธิ์ทุกระบบในครั้งเดียว"],
+      ["นำเข้าจาก Excel เดิม","จับคู่คอลัมน์ให้อัตโนมัติ ตรวจข้อมูลซ้ำและผิดรูปแบบก่อนนำเข้า"],
+      ["สิทธิ์ระดับฟิลด์ + PDPA","กำหนดว่าใครเห็นฟิลด์ไหน เก็บ consent และ audit log ทุกการเปิดดู"]
+    ],
+    pains:[
+      ["ย้ายข้อมูลเข้าระบบใหม่ใช้เวลาหลายสัปดาห์ ต้องจัดไฟล์ให้ตรง template ของ vendor","อัปโหลด Excel เดิมได้เลย ระบบจับคู่คอลัมน์และชี้จุดผิดให้แก้ เป้าหมายคือเสร็จใน 1 วัน"],
+      ["พนักงานต้องติดต่อ HR ทุกครั้งที่จะแก้ข้อมูลส่วนตัว","แก้เองผ่าน LINE/มือถือ HR แค่กดอนุมัติ"],
+      ["ข้อมูลคนเดียวกันอยู่หลายระบบ ไม่ตรงกัน","Employee Master เดียว ให้ทุกโมดูลและระบบภายนอกอ่านผ่าน API"],
+      ["สิทธิ์ดูข้อมูลหยาบ หัวหน้าเห็นเงินเดือนทั้งแผนก","สิทธิ์ระดับฟิลด์ ตรงตาม PDPA และตรวจย้อนหลังได้"]
+    ],
+    mvp:["Profile + เอกสาร + ผังองค์กร","Import Excel แบบจับคู่คอลัมน์อัตโนมัติ","Self-service แก้ข้อมูลผ่าน LINE","Role / field permission + audit log"],
+    metric:"ลูกค้าใหม่นำข้อมูลเข้าครบภายใน 1 วันทำการ",
+    solo:"ใช้เป็นทะเบียนพนักงานดิจิทัลได้ทันที ส่งออกข้อมูลให้ payroll หรือระบบอื่นผ่าน API/Excel"
+  },
+  what:{w:"WHAT",en:"JD + KPI",th:"ต้องทำอะไร ผลลัพธ์คืออะไร",x:310,y:95,
+    q:"แต่ละคนต้องทำอะไร และวัดผลจากอะไรที่ธุรกิจสนใจ",
+    title:"หน้าที่งานและตัวชี้วัด (JD · KPI · OKR)",
+    summary:"กำหนดหน้าที่และผลลัพธ์ที่คาดหวังของแต่ละตำแหน่ง ตัวชี้วัดดึงจากข้อมูลจริงในโมดูลอื่น ไม่ต้องให้พนักงานกรอกตัวเลขเองตอนสิ้นปี",
+    users:"ผู้บริหาร, หัวหน้างาน, พนักงาน, HR",
+    features:[
+      ["คลัง JD + ผู้ช่วยร่าง","เลือกตำแหน่ง ระบบร่าง JD ให้ แก้ต่อได้ เก็บเวอร์ชัน"],
+      ["KPI / OKR แบบถ่ายทอด","เป้าบริษัท → หน่วยงาน → ทีม → รายบุคคล เห็นเส้นโยงทั้งสาย"],
+      ["KPI ผูกข้อมูลจริง","ยอดขาย กำไร ความตรงเวลา milestone ดึงอัตโนมัติจาก HOW / WHY / WHEN"],
+      ["Check-in รายเดือน","คุยกับหัวหน้า 10 นาที บันทึกในมือถือ แทนการประเมินปีละครั้ง"],
+      ["Competency จากค่านิยม","ผูกพฤติกรรมตามวัฒนธรรมองค์กร (จาก WHERE) เป็นหัวข้อประเมิน"],
+      ["Calibration & ผลตอบแทน","ปรับเกรดร่วมกัน แล้วส่งผลไปคำนวณขึ้นเงินเดือน/โบนัส"]
+    ],
+    pains:[
+      ["KPI เป็นแบบฟอร์มที่กรอกปีละครั้ง ไม่เกี่ยวกับผลประกอบการ","KPI ผูกกับ P&L และ milestone จริง ตัวเลขอัปเดตเองทุกเดือน"],
+      ["JD ล้าสมัย ไม่มีใครอัปเดต","JD เป็นเอกสารมีเวอร์ชัน เตือนให้ทบทวนเมื่อเปลี่ยนตำแหน่งหรือโครงสร้าง"],
+      ["ฟอร์มประเมินยาว 10 หน้า พนักงานกับหัวหน้าเบื่อ","Check-in สั้นรายเดือน ปลายปีรวมผลให้อัตโนมัติ"],
+      ["ผลประเมินอิงความรู้สึกหัวหน้า","แสดงหลักฐานประกอบ: งานที่ส่ง เวลา ผลลัพธ์ จากโมดูลอื่น"]
+    ],
+    mvp:["JD library + เทมเพลตตามอุตสาหกรรม","ตั้ง KPI แบบถ่ายทอด 3 ระดับ","Check-in รายเดือนบนมือถือ","รายงานผลรายบุคคล/ทีม"],
+    metric:"80% ของ KPI ได้ค่าจากระบบอัตโนมัติ ไม่ต้องกรอกเอง",
+    solo:"ใช้เป็นระบบประเมินผลได้เดี่ยวๆ โดยกรอก KPI เองหรือนำเข้าจาก Excel เมื่อยังไม่มี HOW/WHY"
+  },
+  where:{w:"WHERE",en:"Company · Culture · Rules",short:"Company + Culture",th:"องค์กร ค่านิยม กฎระเบียบ",x:510,y:95,
+    q:"เราทำงานในองค์กรแบบไหน มีค่านิยมและกฎอะไรที่ต้องปฏิบัติ",
+    title:"องค์กร วัฒนธรรม และกฎระเบียบ",
+    summary:"รวมคู่มือ นโยบาย ประกาศ และค่านิยมไว้ในที่เดียว และเป็น Rules Engine กลางที่กำหนดสิทธิ์ลา OT กะ ให้ทุกโมดูลใช้ร่วมกัน",
+    users:"HR, ผู้บริหาร, พนักงานทุกคน",
+    features:[
+      ["คู่มือพนักงานดิจิทัล","ค้นหาและถามเป็นภาษาพูดได้ เช่น “ลาบวชได้กี่วัน” ตอบพร้อมอ้างข้อ"],
+      ["รับทราบนโยบาย","ส่งนโยบายใหม่ให้เซ็นรับทราบ ติดตามว่าใครยังไม่อ่าน เก็บเวอร์ชัน"],
+      ["Rules Engine กลาง","ตั้งค่ากฎลา OT กะ วันหยุด ครั้งเดียว ใช้ทั้ง WHEN และ payroll"],
+      ["ชุดกฎหมายแรงงานไทย","ค่าตั้งต้นตาม พ.ร.บ.คุ้มครองแรงงาน ประกันสังคม กองทุนสำรองเลี้ยงชีพ"],
+      ["ประกาศและ Kudos","ประกาศข่าวสาร ชื่นชมเพื่อนร่วมงานตามค่านิยมองค์กร"],
+      ["หลายบริษัท หลายสาขา","กฎต่างกันตามนิติบุคคล สาขา หรือกลุ่มพนักงาน"]
+    ],
+    pains:[
+      ["คู่มือเป็น PDF ไม่มีใครเปิดอ่าน ถาม HR ซ้ำทุกวัน","ถามตอบผ่าน chat ใน LINE ได้คำตอบพร้อมอ้างอิงนโยบาย"],
+      ["ต้องตั้งกฎลา/OT ซ้ำในหลายระบบ แล้วไม่ตรงกัน","Rules Engine เดียว ทุกโมดูลอ่านกฎชุดเดียวกัน"],
+      ["ระบบต่างประเทศไม่รองรับกฎหมายแรงงานไทย","มี preset กฎหมายไทยและอัปเดตเมื่อกฎหมายเปลี่ยน"],
+      ["วัฒนธรรมองค์กรเป็นแค่โปสเตอร์","ค่านิยมผูกกับการประเมิน (WHAT) และ Kudos ที่วัดได้"]
+    ],
+    mvp:["Handbook + ค้นหา/ถามตอบ","Policy acknowledgement","Rules Engine: ลา OT กะ วันหยุด","Preset กฎหมายแรงงานไทย"],
+    metric:"คำถามนโยบายที่ถึงมือ HR ลดลง 60%",
+    solo:"ใช้เป็น intranet + คู่มือพนักงานที่ถามตอบได้ เหมาะกับลูกค้าที่มีระบบเวลาอยู่แล้ว"
+  },
+  when:{w:"WHEN",en:"Check-in/out · Leave · Manhour",short:"Check-in · Leave",th:"เวลาทำงาน การลา กำลังคน",x:710,y:95,
+    q:"ใครทำงานเมื่อไร นานเท่าไร ใช้กำลังคนไปกับงานอะไร",
+    title:"เวลา การลา และ Manhour",
+    summary:"ลงเวลาเข้า-ออก ขอลา ขอ OT จัดกะ และลง timesheet ตามโปรเจกต์ ชั่วโมงทำงานถูกแปลงเป็นต้นทุนส่งต่อให้ WHY และ HOW",
+    users:"พนักงาน, หัวหน้างาน, HR, Payroll",
+    features:[
+      ["Check-in หลายช่องทาง","GPS + geofence, QR, สแกนหน้า, ผ่าน LINE ไม่ต้องลงแอป ใช้ offline ได้"],
+      ["ลา / OT ใน 2 แตะ","ระบบเช็กสิทธิ์คงเหลือตามกฎใน WHERE ให้ทันที"],
+      ["จัดกะแบบลากวาง","เตือนเมื่อคนไม่พอหรือผิดกฎชั่วโมงทำงาน"],
+      ["Timesheet ตามโปรเจกต์","เสนอชั่วโมงให้อัตโนมัติจากเวลาเข้า-ออก แค่เลือกโปรเจกต์"],
+      ["Manpower dashboard","ใครมา ใครลา ใครว่าง ใครทำงานเกิน แบบ real-time"],
+      ["ส่งออก Payroll","คำนวณ OT ตามกฎหมาย ส่งเข้า payroll หรือ HOW ได้เลย"]
+    ],
+    pains:[
+      ["แอปลงเวลาช้า GPS เพี้ยน พนักงานลงเวลาไม่ได้","หลายวิธีสำรองกัน + offline mode + ส่งผ่าน LINE"],
+      ["ลงเวลาเข้า-ออก แล้วยังต้องกรอก timesheet ซ้ำ","ระบบร่าง timesheet จากเวลาเข้า-ออกให้ แก้แค่ส่วนต่าง"],
+      ["หัวหน้าต้องกดอนุมัติลา/OT ทีละรายการ","อนุมัติหลายรายการพร้อมกัน และตั้งกฎอนุมัติอัตโนมัติได้"],
+      ["รู้แค่ว่ามาทำงาน แต่ไม่รู้ว่าเวลาหมดไปกับงานไหน","Manhour × อัตราต้นทุน ส่งไปเป็นต้นทุนโปรเจกต์ทันที"]
+    ],
+    mvp:["Check-in GPS/QR ผ่าน LINE","ขอลา/OT + อนุมัติ","Timesheet ตามโปรเจกต์","Export payroll (Excel / API)"],
+    metric:"ลงเวลาสำเร็จในครั้งแรก ≥ 98% · ใช้เวลาไม่เกิน 5 วินาที",
+    solo:"ขายเป็นระบบลงเวลา + ลา ที่เร็วที่สุดในตลาด เป็นประตูเข้าลูกค้า SME"
+  },
+  why:{w:"WHY",en:"Timeline · Project Progress",short:"Timeline + Progress",th:"ทำไมต้องทำ ความคืบหน้างาน",x:910,y:95,
+    q:"งานที่ทำอยู่เพื่อเป้าหมายอะไร คืบหน้าแค่ไหน คุ้มค่าหรือไม่",
+    title:"Timeline และความคืบหน้าโปรเจกต์",
+    summary:"ผูกงานรายวันเข้ากับโปรเจกต์และเป้าหมายบริษัท ให้ทุกคนเห็นว่างานของตัวเองมีผลต่ออะไร และส่งต้นทุน/มูลค่างานไปคำนวณกำไรใน HOW",
+    users:"PM, หัวหน้างาน, ผู้บริหาร, ลูกค้า (รายงานความคืบหน้า)",
+    features:[
+      ["Timeline + Kanban","Gantt สำหรับผู้บริหาร Kanban สำหรับทีม ข้อมูลชุดเดียวกัน"],
+      ["Milestone ผูกเป้าหมาย","ทุกงานโยงไปที่โปรเจกต์และ objective บริษัท ตอบคำถาม “ทำไปทำไม”"],
+      ["จัดคนลงงาน","ดูทักษะจาก WHO และเวลาว่างจาก WHEN ก่อนมอบหมาย"],
+      ["Budget vs Actual","ต้นทุนคนจริงจาก manhour เทียบงบโปรเจกต์ เตือนเมื่อเกิน"],
+      ["รายงานความคืบหน้าให้ลูกค้า","ลิงก์รายงานสรุปที่ส่งลูกค้าได้ทันที"],
+      ["แจ้งเตือนความเสี่ยง","งานช้า คนล้นงาน งบเกิน ขึ้นเตือนก่อนเกิดปัญหา"]
+    ],
+    pains:[
+      ["เครื่องมือบริหารโปรเจกต์แยกจาก HR จึงไม่รู้ต้นทุนคนจริง","ดึง manhour และอัตราต้นทุนจาก WHO/WHEN อัตโนมัติ"],
+      ["พนักงานไม่เห็นว่างานของตัวเองสำคัญอย่างไร","แสดงเส้นโยง งาน → โปรเจกต์ → รายได้ → เป้าบริษัท"],
+      ["ต้องอัปเดตความคืบหน้าหลายที่ (แชต อีเมล ไฟล์)","อัปเดตครั้งเดียว ทุกคนเห็นตรงกัน สรุปส่งลูกค้าได้"],
+      ["รู้ว่าโปรเจกต์ขาดทุนตอนปิดงานไปแล้ว","เห็นกำไรขั้นต้นรายโปรเจกต์ระหว่างทาง"]
+    ],
+    mvp:["โปรเจกต์ + milestone + Kanban","มอบหมายงานพร้อมดูภาระงาน","Budget vs Actual จาก manhour","รายงานความคืบหน้าแบบลิงก์"],
+    metric:"ทุกโปรเจกต์เห็นต้นทุนคนจริงไม่เกิน 1 วันหลังลงเวลา",
+    solo:"ใช้เป็นเครื่องมือบริหารโปรเจกต์ได้ โดยกรอกอัตราต้นทุนคนเองเมื่อยังไม่มี WHO/WHEN"
+  },
+  how:{w:"HOW",en:"ERP + Cash Flow",th:"P&L · กระแสเงินสด",x:630,y:325,
+    q:"ธุรกิจทำเงินอย่างไร คนและเวลาที่ใช้ไปคุ้มค่าหรือไม่",
+    title:"ERP, กระแสเงินสด และ P&L",
+    summary:"รวมต้นทุนคน (payroll + manhour) กับรายได้โปรเจกต์ ออกมาเป็น P&L รายโปรเจกต์ รายหน่วยงาน และรายบุคคล แล้วส่งเป้าหมายกลับไปตั้ง KPI ใน WHAT",
+    users:"CEO, CFO, บัญชี, ผู้บริหารหน่วยงาน",
+    features:[
+      ["Connector ERP เดิม","เชื่อม Express, SAP Business One, Odoo, PEAK, FlowAccount, Xero ไม่บังคับเปลี่ยน"],
+      ["P&L หลายมิติ","ต่อโปรเจกต์ ต่อหน่วยงาน ต่อคน (revenue per head)"],
+      ["Cash flow forecast","คาดการณ์เงินเดือน OT และรับเงินตาม milestone ล่วงหน้า 3-6 เดือน"],
+      ["Payroll costing","ปันส่วนเงินเดือนลงโปรเจกต์ตาม manhour"],
+      ["รายงานภาครัฐ","ส่งออก ภ.ง.ด.1, สปส.1-10, กองทุนสำรองเลี้ยงชีพ"],
+      ["ส่งเป้ากลับไปที่ KPI","ตั้งเป้ากำไร/ต้นทุนเป็น KPI ของหน่วยงานใน WHAT ได้ในคลิกเดียว"]
+    ],
+    pains:[
+      ["ข้อมูล HR กับการเงินแยกกัน ผู้บริหารต้องรวม Excel เอง","รวมต้นทุนคนกับรายได้ในหน้าเดียว อัปเดตทุกวัน"],
+      ["รู้ต้นทุนคนเฉพาะตอนปิดงบสิ้นเดือน","ต้นทุนคนแบบ real-time จาก manhour"],
+      ["vendor บังคับให้เปลี่ยน ERP ทั้งระบบ","ใช้ ERP เดิมต่อได้ผ่าน connector (กรอบประในภาพ)"],
+      ["ตั้ง KPI ไม่สัมพันธ์กับตัวเลขธุรกิจ","เป้า P&L ไหลกลับไปเป็น KPI ใน WHAT"]
+    ],
+    mvp:["Connector 2 ตัวแรก (ERP ที่ลูกค้าใช้มากที่สุด)","P&L รายโปรเจกต์","Payroll costing จาก manhour","Cash flow 90 วัน"],
+    metric:"ผู้บริหารเห็น P&L รายโปรเจกต์ได้โดยไม่ต้องเปิด Excel",
+    solo:"ขายเป็น add-on บน Suite เป็นหลัก เพราะคุณค่าเกิดเมื่อมีข้อมูลจาก WHO/WHEN/WHY"
+  }
+};
+
+const EDGES = [
+  {id:"e-why-how", from:"why", to:"how", d:"M910,215 L910,390 L812,390", lx:902, ly:250, label:"ต้นทุน & มูลค่าโปรเจกต์", anchor:"end", main:true},
+  {id:"e-how-what", from:"how", to:"what", d:"M455,390 L310,390 L310,222", lx:322, ly:365, label:"เป้า P&L → KPI", anchor:"start", main:true},
+  {id:"e-when-how", from:"when", to:"how", d:"M710,215 L710,286", lx:700, ly:268, label:"Manhour × อัตราต้นทุน", anchor:"end"},
+  {id:"e-who-what", from:"who", to:"what", d:"M190,140 L223,140", label:"ตำแหน่ง → JD"},
+  {id:"e-where-what", from:"where", to:"what", d:"M430,175 L397,175", label:"ค่านิยม → Competency"},
+  {id:"e-where-when", from:"where", to:"when", d:"M590,140 L623,140", label:"กฎลา / OT / กะ"},
+  {id:"e-when-why", from:"when", to:"why", d:"M790,140 L823,140", label:"Timesheet ตามโปรเจกต์"},
+  {id:"e-when-what", from:"when", to:"what", d:"M650,215 C600,275 430,275 360,220", label:"สถิติเวลา → KPI วินัย"},
+];
+
+const PKGS = [
+  {id:"starter",name:"HR Starter",mods:["who","when","where"],desc:"ทะเบียนพนักงาน ลงเวลา ลา และคู่มือ สำหรับ SME ที่เพิ่งเลิกใช้ Excel"},
+  {id:"perf",name:"Performance",mods:["who","what","where"],desc:"JD, KPI ที่ผูกค่านิยมองค์กร สำหรับองค์กรที่มีระบบเวลาอยู่แล้ว"},
+  {id:"project",name:"Project & Manpower",mods:["who","when","why"],desc:"บริษัทรับงานโปรเจกต์ ที่ปรึกษา ก่อสร้าง agency ที่ต้องรู้ต้นทุนคนต่อโปรเจกต์"},
+  {id:"suite",name:"Full Suite",mods:["who","what","where","when","why","how"],desc:"ครบ 5W1H ข้อมูลไหลถึง P&L และย้อนกลับไปตั้ง KPI"}
+];
+
+const PAINS = [
+  ["ราคาต่อหัวสูง และต้องซื้อแพ็กเกจใหญ่ทั้งที่ใช้ไม่กี่ฟีเจอร์","ซื้อทีละโมดูล เริ่มเล็กแล้วเปิดเพิ่มได้ ไม่ต้องย้ายข้อมูล","ทุกโมดูล"],
+  ["หน้าจอซับซ้อน ต้องอบรม พนักงานไม่ยอมใช้","ใช้ผ่าน LINE และมือถือก่อน งานประจำวันจบใน 3 แตะ","WHEN · WHO"],
+  ["ข้อมูล HR ไม่เชื่อมผลธุรกิจ ผู้บริหารไม่เห็นคุณค่า","โยงคน → เวลา → โปรเจกต์ → P&L → KPI เป็นวงเดียว","HOW · WHY · WHAT"],
+  ["ติดตั้งนาน 3-6 เดือน ต้องจ้างที่ปรึกษา","เทมเพลตตามอุตสาหกรรม + นำเข้า Excel อัตโนมัติ เป้า go-live 7 วัน","WHO · WHERE"],
+  ["ปรับแบบฟอร์มหรือขั้นอนุมัติต้องจ้าง vendor แก้","ตั้งค่า form, workflow, กฎ เองแบบ no-code","WHERE"],
+  ["ไม่รองรับกฎหมายไทยหรืออัปเดตช้า","preset กฎหมายแรงงาน ภาษี ประกันสังคม และอัปเดตให้เมื่อกฎหมายเปลี่ยน","WHERE · HOW"],
+  ["รายงานเยอะแต่ไม่ตอบคำถามผู้บริหาร","Dashboard ตั้งจากคำถาม เช่น “ทีมไหนกำไรต่อหัวต่ำสุด”","HOW"],
+  ["ข้อมูลถูกล็อกในระบบ ย้ายออกยาก","Open API และส่งออกข้อมูลทั้งหมดได้ทุกเมื่อ","Core Platform"]
+];
+
+const PRINCIPLES = [
+  ["3","งานประจำวันจบใน 3 แตะ","ลงเวลา ขอลา อนุมัติ ต้องเสร็จภายใน 3 แตะ ถ้าเกินต้องออกแบบใหม่"],
+  ["0","ไม่กรอกซ้ำ","ข้อมูลที่ระบบมีแล้วต้องเติมให้เอง ผู้ใช้แค่ยืนยันหรือแก้"],
+  ["L","LINE ก่อนแอป","พนักงานไม่ต้องติดตั้งแอปใหม่ งานหลักทำผ่าน LINE OA ได้"],
+  ["?","ถามเป็นภาษาพูด","ค้นหาข้อมูลและนโยบายด้วยประโยคธรรมดา ไม่ต้องรู้เมนู"],
+  ["!","เตือนก่อนเกิดปัญหา","ระบบบอกสิ่งที่ต้องทำ ไม่ใช่รอให้ผู้ใช้เข้ามาหา"],
+  ["7","Go-live ใน 7 วัน","เทมเพลตพร้อมใช้ และนำเข้าข้อมูลเดิมได้ทันที"]
+];
+
+const ROAD = [
+  ["ระยะ 0 · เดือน 1-2","Core Platform",["SSO, สิทธิ์, audit log","Employee Master + API","Rules Engine","LINE OA gateway"]],
+  ["ระยะ 1 · เดือน 3-5","WHO + WHEN (ใช้ภายใน)",["แฟ้มพนักงาน + import","ลงเวลา ลา OT","Timesheet ตามโปรเจกต์","Pilot กับพนักงานเราเอง"]],
+  ["ระยะ 2 · เดือน 6-8","WHERE + WHAT",["Handbook ถามตอบได้","Preset กฎหมายไทย","JD + KPI แบบถ่ายทอด","เปิดขาย HR Starter"]],
+  ["ระยะ 3 · เดือน 9-11","WHY",["Timeline / Kanban","Budget vs Actual","รายงานให้ลูกค้า","เปิดขาย Project & Manpower"]],
+  ["ระยะ 4 · เดือน 12+","HOW",["ERP connector 2 ตัวแรก","P&L รายโปรเจกต์/คน","Cash flow forecast","เปิดขาย Full Suite"]]
+];
+
+const ORDER = ["who","what","where","when","why","how"];
+const NS="http://www.w3.org/2000/svg";
+const $=s=>document.querySelector(s);
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e;};
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pill = k => `<span class="pill" style="color:var(--${k})">${NODES[k].w}</span>`;
+
+let state={sel:"who",tab:"overview",mode:"suite",pkg:null};
+
+/* ---- draw ---- */
+const W=160,H=120;
+function drawNodes(){
+  const g=$("#nodes"), t=$("#ticks");
+  ORDER.forEach(k=>{
+    const n=NODES[k];
+    if(k!=="how") el("line",{x1:n.x,y1:50,x2:n.x,y2:n.y,class:"tick"},t);
+    const grp=el("g",{class:"node",tabindex:"0",role:"button","data-k":k,"aria-label":`${n.w} ${n.en}`},g);
+    const x=n.x-W/2,y=n.y;
+    el("rect",{x,y,width:W,height:H,rx:8,class:"bg"},grp);
+    el("rect",{x:n.x-48,y:y+14,width:96,height:34,rx:3,class:"tag",style:`stroke:var(--${k})`},grp);
+    const w=el("text",{x:n.x,y:y+39,"text-anchor":"middle",class:"w",style:`fill:var(--${k})`},grp);w.textContent=n.w;
+    const en=el("text",{x:n.x,y:y+72,"text-anchor":"middle",class:"en"},grp);en.textContent=n.short||n.en;
+    const th=el("text",{x:n.x,y:y+94,"text-anchor":"middle",class:"th"},grp);th.textContent=n.th;
+    grp.addEventListener("click",()=>select(k));
+    grp.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(k);}});
+  });
+  // HOW subtitle inside the dashed frame
+  const s=el("text",{x:630,y:478,"text-anchor":"middle",style:"font-size:12px;fill:var(--muted)"},g);
+  s.textContent="P&L · เชื่อม ERP เดิมของลูกค้าได้";
+}
+function drawEdges(){
+  const g=$("#edges");
+  EDGES.forEach(e=>{
+    const grp=el("g",{class:"edge"+(e.from==="how"||e.to==="how"?" dash":""),"data-id":e.id},g);
+    const p=el("path",{d:e.d,class:"l","marker-end":"url(#arw)",id:"p-"+e.id},grp);
+    const tt=el("title",{},grp);tt.textContent=e.label;
+    if(e.lx){const t=el("text",{x:e.lx,y:e.ly,"text-anchor":e.anchor||"middle"},grp);t.textContent=e.label;}
+    if(!reduced){
+      const c=el("circle",{r:3.2,class:"dot"},grp);
+      const am=el("animateMotion",{dur:e.main?"2.6s":"3.4s",repeatCount:"indefinite"},c);
+      el("mpath",{href:"#p-"+e.id},am);
+    }
+  });
+}
+
+/* ---- state ---- */
+function applyBoard(){
+  const svg=$("#svg");
+  svg.classList.toggle("solo",state.mode==="solo");
+  const pkgMods=state.pkg?PKGS.find(p=>p.id===state.pkg).mods:null;
+  document.querySelectorAll(".node").forEach(n=>{
+    const k=n.dataset.k;
+    n.classList.toggle("sel",k===state.sel);
+    n.classList.toggle("off",!!pkgMods&&!pkgMods.includes(k));
+    n.querySelector(".bg").style.stroke=k===state.sel?`var(--${k})`:"";
+  });
+  document.querySelectorAll(".edge").forEach(g=>{
+    const e=EDGES.find(x=>x.id===g.dataset.id);
+    const touches=e.from===state.sel||e.to===state.sel;
+    const inPkg=!pkgMods||(pkgMods.includes(e.from)&&pkgMods.includes(e.to));
+    g.classList.toggle("hot",touches&&inPkg);
+    g.classList.toggle("dim",!inPkg||(!touches&&!pkgMods&&!e.main));
+  });
+  $("#m-suite").setAttribute("aria-pressed",state.mode==="suite");
+  $("#m-solo").setAttribute("aria-pressed",state.mode==="solo");
+  document.querySelectorAll("#pkgs .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.p===state.pkg));
+  const p=state.pkg&&PKGS.find(x=>x.id===state.pkg);
+  $("#pkgnote").innerHTML = state.mode==="solo"
+    ? "โหมดแยกโมดูล: แต่ละโมดูลทำงานได้เอง โดยใช้ Core Platform ร่วมกัน ดูแท็บ “ใช้แยกได้อย่างไร” ของแต่ละโหนด"
+    : p ? `<b>${p.name}</b> · ${p.desc}` : "คลิกแพ็กเกจเพื่อดูว่ารวมโมดูลไหน และข้อมูลไหลถึงไหน";
+}
+function select(k){state.sel=k;applyBoard();renderDetail();}
+
+const TABS=[["overview","ภาพรวม"],["features","ฟีเจอร์หลัก"],["pains","Pain point → ทางแก้"],["links","ข้อมูลเข้า-ออก"],["mvp","MVP & ใช้แยกได้อย่างไร"]];
+function renderDetail(){
+  const k=state.sel,n=NODES[k];
+  const d=$("#detail");
+  d.style.setProperty("--accent",`var(--${k})`);
+  let body="";
+  if(state.tab==="overview"){
+    body=`<div class="grid2"><div style="display:flex;flex-direction:column;gap:12px"><p>${n.summary}</p><p class="note">คำถามที่โมดูลนี้ตอบ: ${n.q}</p></div>
+      <dl class="kv"><dt>ผู้ใช้หลัก</dt><dd>${n.users}</dd><dt>ตัวชี้วัดสำเร็จ</dt><dd>${n.metric}</dd><dt>บนกระดาน</dt><dd>${n.en} = ${n.w}</dd></dl></div>`;
+  } else if(state.tab==="features"){
+    body=`<ul class="feat">${n.features.map(([a,b])=>`<li><b>${a}</b><br>${b}</li>`).join("")}</ul>`;
+  } else if(state.tab==="pains"){
+    body=n.pains.map(([p,s])=>`<div class="pf"><div class="p"><small>ปัญหาในตลาด</small>${p}</div><div class="ar">→</div><div class="s"><small>ของเรา</small>${s}</div></div>`).join("");
+  } else if(state.tab==="links"){
+    const ins=EDGES.filter(e=>e.to===k), outs=EDGES.filter(e=>e.from===k);
+    const row=(e,dir)=>{const o=dir==="in"?e.from:e.to;return `<div class="io-row">${pill(o)}<div>${dir==="in"?"รับ":"ส่ง"}: ${e.label}</div></div>`;};
+    body=`<div class="grid2"><div class="io"><h3>รับข้อมูลจาก</h3>${ins.length?ins.map(e=>row(e,"in")).join(""):'<p class="note">Employee Master จาก Core Platform</p>'}</div>
+      <div class="io"><h3>ส่งข้อมูลให้</h3>${outs.length?outs.map(e=>row(e,"out")).join(""):'<p class="note">—</p>'}${k==="who"?`<div class="io-row"><span class="pill" style="color:var(--ink-2)">ALL</span><div>ส่ง: รหัสพนักงาน ตำแหน่ง อัตราต้นทุน ให้ทุกโมดูลผ่าน Core</div></div>`:""}</div></div>`;
+  } else {
+    body=`<div class="grid2"><div><h3 style="margin-bottom:8px">ขอบเขต MVP</h3><ol class="steps">${n.mvp.map(m=>`<li>${m}</li>`).join("")}</ol></div>
+      <div><h3 style="margin-bottom:8px">ใช้แยกได้อย่างไร</h3><p>${n.solo}</p><p class="note" style="margin-top:12px">อยู่ในแพ็กเกจ: ${PKGS.filter(p=>p.mods.includes(k)).map(p=>p.name).join(", ")}</p></div></div>`;
+  }
+  d.innerHTML=`<div class="d-head"><span class="d-badge" style="color:var(--${k})">${n.w}</span><div class="d-title">${n.title}</div><div class="d-q">${n.en} · ${n.th}</div></div>
+    <div class="tabs" role="tablist">${TABS.map(([id,l])=>`<button class="tab" role="tab" id="tab-${id}" aria-selected="${state.tab===id}" data-t="${id}">${l}</button>`).join("")}</div>
+    <div class="pane" role="tabpanel">${body}</div>`;
+  d.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{state.tab=b.dataset.t;renderDetail();}));
+}
+
+/* ---- static sections ---- */
+function renderStatic(){
+  $("#pkgs").innerHTML=PKGS.map(p=>`<button class="chip" data-p="${p.id}" aria-pressed="false">${p.name}</button>`).join("");
+  document.querySelectorAll("#pkgs .chip").forEach(c=>c.addEventListener("click",()=>{state.pkg=state.pkg===c.dataset.p?null:c.dataset.p;if(state.pkg)state.mode="suite";applyBoard();}));
+  $("#painrows").innerHTML=PAINS.map((r,i)=>`<tr><td class="n">${String(i+1).padStart(2,"0")}</td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("");
+  $("#principles").innerHTML=PRINCIPLES.map(([k,h,p])=>`<div><span class="k">${k}</span><h3>${h}</h3><p>${p}</p></div>`).join("");
+  $("#pkgcards").innerHTML=PKGS.map(p=>`<div class="card"><h3>${p.name}</h3><div class="mods">${p.mods.map(pill).join("")}</div><p>${p.desc}</p></div>`).join("");
+  $("#road").innerHTML=ROAD.map(([ph,h,items])=>`<div><span class="ph">${ph}</span><h3>${h}</h3><ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul></div>`).join("");
+  $("#m-suite").addEventListener("click",()=>{state.mode="suite";applyBoard();});
+  $("#m-solo").addEventListener("click",()=>{state.mode="solo";state.pkg=null;applyBoard();});
+}
+
+drawEdges(); drawNodes(); renderStatic(); applyBoard(); renderDetail();
+</script>
