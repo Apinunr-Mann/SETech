@@ -9,7 +9,7 @@
   --paper:#FAFAFC; --sheet:#FFFFFF; --ink:#23263A; --ink-2:#555A75; --muted:#80859E; --line:#E3E5EE; --rule:#ECEEF4;
   --conn:#B3B8C9; --shadow:0 10px 24px rgba(30,34,60,.10),0 2px 6px rgba(30,34,60,.08);
   --shadow-up:0 18px 36px rgba(30,34,60,.16),0 4px 10px rgba(30,34,60,.10);
-  --who:#0E8C8A; --what:#D97706; --where:#8B2BE2; --when:#1D5FE0; --why:#D6336C; --how:#2F8F3A;
+  --who:#0E8C8A; --what:#D97706; --where:#8B2BE2; --when:#1D5FE0; --why:#D6336C; --how:#2F8F3A; --learn:#C2410C;
   --good:#2F8F3A; --bad:#C2413A;
   --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
   --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -19,18 +19,18 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#14151F; --sheet:#1D1F2C; --ink:#E9EAF2; --ink-2:#B5B8CC; --muted:#8A8EA6; --line:#2F3244; --rule:#232536;
   --conn:#4E5370; --shadow:0 10px 24px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.35); --shadow-up:0 18px 36px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.4);
-  --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68;
+  --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68; --learn:#FF8A4C;
   --good:#5CCB68; --bad:#FF8A80; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --paper:#14151F; --sheet:#1D1F2C; --ink:#E9EAF2; --ink-2:#B5B8CC; --muted:#8A8EA6; --line:#2F3244; --rule:#232536;
   --conn:#4E5370; --shadow:0 10px 24px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.35); --shadow-up:0 18px 36px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.4);
-  --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68;
+  --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68; --learn:#FF8A4C;
   --good:#5CCB68; --bad:#FF8A80; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
-.wrap{max-width:1240px;margin:0 auto;padding-block:20px 64px;
+.wrap{max-width:1240px;margin:0 auto;padding-block:14px 64px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   display:flex;flex-direction:column;gap:16px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.25}
@@ -60,11 +60,15 @@ header{display:flex;flex-direction:column;gap:4px}
 .board{border:1px solid var(--line);border-radius:14px;overflow-x:auto;
   background-color:var(--sheet);background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--rule) 31px 32px)}
 .canvas{position:relative;min-width:1000px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
-  column-gap:30px;row-gap:66px;padding:60px 26px 18px;align-items:start}
+  column-gap:30px;row-gap:64px;padding:56px 26px 14px;align-items:start}
 .canvas svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
 .wire{fill:none;stroke:var(--conn);stroke-width:2;stroke-dasharray:7 7;transition:stroke .25s,opacity .25s}
 .wire.hot{stroke:var(--hc,var(--ink-2));stroke-width:2.4}
 .wire.main{stroke-width:2.4}
+.wire.hrd{stroke:color-mix(in srgb,var(--learn) 55%,var(--conn));stroke-dasharray:2 6;stroke-linecap:round;stroke-width:2.6}
+.elabel.hrd{border-color:color-mix(in srgb,var(--learn) 45%,var(--line));color:var(--learn)}
+.wire.hrd.hot{stroke:var(--hc)}
+.elabel.hrd.hot{color:var(--ink);border-color:var(--hc)}
 .wire.dim{opacity:.22}
 .flow{fill:none;stroke:var(--hc,var(--ink-2));stroke-width:2.4;stroke-dasharray:7 7;opacity:0;animation:march 1.1s linear infinite}
 .wire.hot+.flow{opacity:1}
@@ -83,6 +87,8 @@ header{display:flex;flex-direction:column;gap:4px}
 .card[data-k="who"]{--rot:-3deg}.card[data-k="what"]{--rot:2.5deg}.card[data-k="where"]{--rot:-2deg}
 .card[data-k="when"]{--rot:3deg}.card[data-k="why"]{--rot:-2.5deg}.card[data-k="how"]{--rot:1.5deg}
 .card.how{grid-row:2;grid-column:3 / span 2;justify-self:center;width:calc(50% - 15px)}
+.card.learn{grid-row:2;grid-column:1;--rot:-2deg}
+.card.learn .inner{border:1.8px solid color-mix(in srgb,var(--k) 40%,var(--sheet))}
 .card:hover{--rot:0deg;--lift:-6px;box-shadow:var(--shadow-up)}
 .card.sel{--rot:0deg;--lift:-4px;box-shadow:var(--shadow-up),0 0 0 2.5px var(--k)}
 .card.off{opacity:.3;filter:grayscale(.9)}
@@ -103,11 +109,12 @@ header{display:flex;flex-direction:column;gap:4px}
 .card.drop{animation:drop .55s cubic-bezier(.2,.9,.3,1.25) both}
 @keyframes drop{from{transform:translateY(-20px) rotate(calc(var(--rot) * -1));opacity:.2}to{transform:translateY(var(--lift)) rotate(var(--rot));opacity:1}}
 
-.foot{grid-column:1 / -1;grid-row:3;display:flex;justify-content:space-between;align-items:center;gap:10px 20px;flex-wrap:wrap;position:relative;z-index:1;margin-top:-30px}
+.foot{grid-column:1 / -1;grid-row:3;display:flex;justify-content:space-between;align-items:center;gap:10px 20px;flex-wrap:wrap;position:relative;z-index:1;margin-top:-46px}
 .tape{background:color-mix(in srgb,var(--what) 18%,var(--sheet));color:var(--ink-2);font-size:12.5px;padding:5px 14px;transform:rotate(-1deg)}
 .tape b{font-family:var(--f-display);color:var(--ink)}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
 .legend i{display:inline-block;width:22px;vertical-align:middle;border-top:2px dashed var(--conn);margin-right:6px}
+.legend i.h{border-top:2.6px dotted var(--learn)}
 
 /* detail sheet */
 .detail{background:var(--sheet);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
@@ -173,9 +180,9 @@ footer{font-size:12.5px;color:var(--muted)}
 
 <div class="wrap">
 <header>
-  <div class="hdr-row"><span class="boxed">HRIS</span><span class="eyebrow">Product flow · 5W1H · v0.3</span></div>
+  <div class="hdr-row"><span class="boxed">HRIS</span><span class="eyebrow">Product flow · 5W1H · v0.4</span></div>
   <h1>ระบบ HR ที่ตอบครบ ใคร ทำอะไร ที่ไหน เมื่อไร ทำไม และอย่างไร</h1>
-  <p class="lede">แต่ละการ์ดคือโมดูลที่ขายแยกได้ ใช้ร่วมกันแล้วข้อมูลไหลถึง P&amp;L และย้อนกลับไปตั้ง KPI · คลิกการ์ดเพื่อดูรายละเอียดด้านล่าง</p>
+  <p class="lede">แต่ละการ์ดคือโมดูลที่ขายแยกได้ ใช้ร่วมกันแล้วข้อมูลไหลถึง P&amp;L และย้อนกลับไปตั้ง KPI พร้อมระบบพัฒนาคน (HRD / E-Learning) · คลิกการ์ดเพื่อดูรายละเอียดด้านล่าง</p>
 </header>
 
 <div class="controls">
@@ -194,7 +201,7 @@ footer{font-size:12.5px;color:var(--muted)}
     <svg class="wires" id="wires" aria-hidden="true"></svg>
     <div class="foot">
       <div class="tape"><b>Core Platform</b> · SSO · Employee Master · Rules Engine · Open API · LINE · PDPA</div>
-      <div class="legend"><span><i></i>ข้อมูลส่งต่อระหว่างโมดูล</span><span>กรอบประที่ HOW = เชื่อม ERP เดิมของลูกค้าได้</span></div>
+      <div class="legend"><span><i></i>ข้อมูลส่งต่อระหว่างโมดูล</span><span><i class="h"></i>เส้นพัฒนาคน (HRD / E-Learning)</span><span>กรอบประที่ HOW = เชื่อม ERP เดิมของลูกค้าได้</span></div>
     </div>
   </div>
 </div>
@@ -373,6 +380,31 @@ const NODES = {
     mvp:["Connector 2 ตัวแรก (ERP ที่ลูกค้าใช้มากที่สุด)","P&L รายโปรเจกต์","Payroll costing จาก manhour","Cash flow 90 วัน"],
     metric:"ผู้บริหารเห็น P&L รายโปรเจกต์ได้โดยไม่ต้องเปิด Excel",
     solo:"ขายเป็น add-on บน Suite เป็นหลัก เพราะคุณค่าเกิดเมื่อมีข้อมูลจาก WHO/WHEN/WHY"
+  },
+  learn:{w:"HRD",en:"E-Learning · Development",short:"E-Learning",th:"พัฒนาคน เรียนออนไลน์",
+    q:"แต่ละคนต้องเรียนรู้อะไรเพิ่ม เพื่อทำงานตาม JD และ KPI ได้ดีขึ้น",
+    title:"HRD และ E-Learning",
+    summary:"ระบบพัฒนาบุคลากรแบบออนไลน์ แนะนำหลักสูตรจากช่องว่างระหว่างทักษะที่คนมี (WHO) กับสิ่งที่ตำแหน่งต้องการ (WHAT) เมื่อเรียนจบจะส่ง certificate กลับเข้าแฟ้มพนักงาน และส่งค่าใช้จ่ายกับผลลัพธ์การพัฒนาไปให้ HOW",
+    users:"HRD / L&D, พนักงาน, หัวหน้างาน, ผู้บริหาร",
+    features:[
+      ["คลังหลักสูตร + สร้างคอร์สเอง","อัปโหลดวิดีโอ สไลด์ PDF ทำเป็นบทเรียนพร้อมแบบทดสอบได้เอง"],
+      ["Micro-learning บนมือถือ / LINE","บทเรียนสั้น 3-5 นาที เรียนระหว่างวันได้ แจ้งเตือนผ่าน LINE"],
+      ["แผนพัฒนารายบุคคล (IDP) อัตโนมัติ","เทียบ competency ที่ตำแหน่งต้องการกับผลประเมิน แล้วเสนอหลักสูตรที่ควรเรียน"],
+      ["Onboarding & Compliance course","ปฐมนิเทศ นโยบาย PDPA ความปลอดภัย จาก WHERE มอบหมายให้อัตโนมัติเมื่อเริ่มงาน"],
+      ["แบบทดสอบและ Certificate","ออกใบรับรองอัตโนมัติ บันทึกเข้า Skill matrix และเตือนเมื่อต้องต่ออายุ"],
+      ["Classroom & OJT","อบรมในห้อง ลงทะเบียน เช็กชื่อด้วย QR รวมอยู่ในประวัติเดียวกับการเรียนออนไลน์"],
+      ["ผู้ช่วยสร้างข้อสอบ","ร่างคำถามจากเนื้อหาบทเรียน ให้ HRD ตรวจและแก้ก่อนใช้"],
+      ["รายงานชั่วโมงอบรม & ROI","ชั่วโมงเรียน ค่าใช้จ่ายต่อหัว และผลงานก่อน-หลังอบรมเทียบกับ KPI"]
+    ],
+    pains:[
+      ["LMS แยกจากระบบ HR ต้องนำเข้ารายชื่อพนักงานเองทุกครั้ง","ใช้ Employee Master เดียวกัน เริ่มงานวันแรกก็มีคอร์สรออยู่แล้ว"],
+      ["จัดหลักสูตรตามความรู้สึก ไม่ได้ผูกกับ KPI","IDP สร้างจากช่องว่าง competency และ KPI จริงจาก WHAT"],
+      ["พนักงานไม่เข้าเรียน เพราะต้องนั่งหน้าคอมนาน","บทเรียนสั้นบนมือถือ / LINE พร้อมแจ้งเตือน"],
+      ["ผู้บริหารมองการอบรมเป็นแค่ต้นทุน ไม่เห็นผลตอบแทน","เทียบผลงานก่อน-หลังอบรม และต้นทุนพัฒนาต่อหัวใน HOW"]
+    ],
+    mvp:["คลังหลักสูตร + คอร์สวิดีโอและแบบทดสอบ","เรียนผ่านมือถือ / LINE","Onboarding course มอบหมายอัตโนมัติ","Certificate บันทึกเข้า Skill matrix"],
+    metric:"พนักงานเรียนจบหลักสูตรที่ได้รับมอบหมาย ≥ 85%",
+    solo:"ขายเป็น LMS บนมือถือได้ทันที นำเข้ารายชื่อพนักงานจาก Excel เมื่อยังไม่มี WHO"
   }
 };
 
@@ -384,6 +416,12 @@ const EDGES = [
   {id:"e-where-what", from:"where", to:"what", d:"M430,175 L397,175", label:"ค่านิยม → Competency"},
   {id:"e-where-when", from:"where", to:"when", d:"M590,140 L623,140", label:"กฎลา / OT / กะ"},
   {id:"e-when-why", from:"when", to:"why", d:"M790,140 L823,140", label:"Timesheet ตามโปรเจกต์"},
+  {id:"e-who-learn", from:"who", to:"learn", label:"ทักษะที่ขาด → หลักสูตรที่ควรเรียน"},
+  {id:"e-learn-who", from:"learn", to:"who", label:"Certificate → Skill matrix"},
+  {id:"e-what-learn", from:"what", to:"learn", label:"Competency gap → แผนพัฒนา (IDP)"},
+  {id:"e-where-learn", from:"where", to:"learn", label:"นโยบาย / ค่านิยม → Onboarding course"},
+  {id:"e-learn-what", from:"learn", to:"what", label:"ผลการเรียน → หลักฐานประกอบการประเมิน"},
+  {id:"e-learn-how", from:"learn", to:"how", label:"ค่าอบรม → ROI การพัฒนาคน"},
   {id:"e-when-what", from:"when", to:"what", d:"M650,215 C600,275 430,275 360,220", label:"สถิติเวลา → KPI วินัย"},
 ];
 
@@ -391,10 +429,12 @@ const PKGS = [
   {id:"starter",name:"HR Starter",mods:["who","when","where"],desc:"ทะเบียนพนักงาน ลงเวลา ลา และคู่มือ สำหรับ SME ที่เพิ่งเลิกใช้ Excel"},
   {id:"perf",name:"Performance",mods:["who","what","where"],desc:"JD, KPI ที่ผูกค่านิยมองค์กร สำหรับองค์กรที่มีระบบเวลาอยู่แล้ว"},
   {id:"project",name:"Project & Manpower",mods:["who","when","why"],desc:"บริษัทรับงานโปรเจกต์ ที่ปรึกษา ก่อสร้าง agency ที่ต้องรู้ต้นทุนคนต่อโปรเจกต์"},
-  {id:"suite",name:"Full Suite",mods:["who","what","where","when","why","how"],desc:"ครบ 5W1H ข้อมูลไหลถึง P&L และย้อนกลับไปตั้ง KPI"}
+  {id:"hrd",name:"Learning (HRD)",mods:["who","what","learn"],desc:"E-Learning บนมือถือ ผูกกับ competency และ KPI สำหรับองค์กรที่ต้องพัฒนาคนต่อเนื่อง"},
+  {id:"suite",name:"Full Suite",mods:["who","what","where","when","why","how","learn"],desc:"ครบ 5W1H + HRD ข้อมูลไหลถึง P&L และย้อนกลับไปตั้ง KPI และแผนพัฒนาคน"}
 ];
 
 const PAINS = [
+  ["ระบบอบรม (LMS) แยกจาก HR การอบรมไม่ผูกกับผลงาน","E-Learning ใช้ข้อมูลพนักงานชุดเดียวกัน แนะนำคอร์สจาก competency gap และวัดผลกับ KPI","HRD · WHAT"],
   ["ราคาต่อหัวสูง และต้องซื้อแพ็กเกจใหญ่ทั้งที่ใช้ไม่กี่ฟีเจอร์","ซื้อทีละโมดูล เริ่มเล็กแล้วเปิดเพิ่มได้ ไม่ต้องย้ายข้อมูล","ทุกโมดูล"],
   ["หน้าจอซับซ้อน ต้องอบรม พนักงานไม่ยอมใช้","ใช้ผ่าน LINE และมือถือก่อน งานประจำวันจบใน 3 แตะ","WHEN · WHO"],
   ["ข้อมูล HR ไม่เชื่อมผลธุรกิจ ผู้บริหารไม่เห็นคุณค่า","โยงคน → เวลา → โปรเจกต์ → P&L → KPI เป็นวงเดียว","HOW · WHY · WHAT"],
@@ -418,10 +458,10 @@ const ROAD = [
   ["ระยะ 0 · เดือน 1-2","Core Platform",["SSO, สิทธิ์, audit log","Employee Master + API","Rules Engine","LINE OA gateway"]],
   ["ระยะ 1 · เดือน 3-5","WHO + WHEN (ใช้ภายใน)",["แฟ้มพนักงาน + import","ลงเวลา ลา OT","Timesheet ตามโปรเจกต์","Pilot กับพนักงานเราเอง"]],
   ["ระยะ 2 · เดือน 6-8","WHERE + WHAT",["Handbook ถามตอบได้","Preset กฎหมายไทย","JD + KPI แบบถ่ายทอด","เปิดขาย HR Starter"]],
-  ["ระยะ 3 · เดือน 9-11","WHY",["Timeline / Kanban","Budget vs Actual","รายงานให้ลูกค้า","เปิดขาย Project & Manpower"]],
+  ["ระยะ 3 · เดือน 9-11","WHY + HRD",["Timeline / Kanban","Budget vs Actual","E-Learning + IDP","เปิดขาย Project & Manpower และ Learning"]],
   ["ระยะ 4 · เดือน 12+","HOW",["ERP connector 2 ตัวแรก","P&L รายโปรเจกต์/คน","Cash flow forecast","เปิดขาย Full Suite"]]
 ];
-const ORDER = ["who","what","where","when","why","how"];
+const ORDER = ["who","what","where","when","why","how","learn"];
 /* kind: arc = over the top between neighbours; down/right/loop = to and from HOW (whiteboard arrows) */
 const FLOW = [
   {from:"who",to:"what",label:"ตำแหน่ง → JD",kind:"arc"},
@@ -430,7 +470,10 @@ const FLOW = [
   {from:"when",to:"why",label:"Timesheet ตามโปรเจกต์",kind:"arc"},
   {from:"when",to:"how",label:"Manhour × อัตราต้นทุน",kind:"down"},
   {from:"why",to:"how",label:"ต้นทุน & มูลค่าโปรเจกต์",kind:"right",main:true},
-  {from:"how",to:"what",label:"เป้า P&L → KPI",kind:"loop",main:true}
+  {from:"how",to:"what",label:"เป้า P&L → KPI",kind:"loop",main:true},
+  {from:"who",to:"learn",label:"Skill gap ⇄ Certificate",kind:"vdown",both:true,hrd:true},
+  {from:"what",to:"learn",label:"Competency gap → IDP",kind:"diag",hrd:true},
+  {from:"learn",to:"how",label:"ค่าอบรม → ROI",kind:"side",hrd:true}
 ];
 const NS="http://www.w3.org/2000/svg";
 const $=s=>document.querySelector(s);
@@ -480,17 +523,26 @@ function drawWires(){
     }else if(f.kind==="right"){
       const sx=a.x+a.w/2, sy=a.y+a.h+2, ex=b.x+b.w+6, ey=b.y+b.h*.55;
       d=`M${sx},${sy} L${sx},${ey-26} Q${sx},${ey} ${sx-26},${ey} L${ex},${ey}`;
+    }else if(f.kind==="vdown"){
+      const x=a.x+a.w/2, sy=a.y+a.h+6, ey=b.y-6;
+      d=`M${x},${sy} L${x},${ey}`;
+    }else if(f.kind==="diag"){
+      const sx=a.x+a.w*.2, sy=a.y+a.h+2, ex=b.x+b.w+6, ey=b.y+b.h*.3;
+      d=`M${sx},${sy} L${sx},${ey-22} Q${sx},${ey} ${sx-22},${ey} L${ex},${ey}`;
+    }else if(f.kind==="side"){
+      const sx=a.x+a.w+2, sy=a.y+a.h*.8, ex=b.x-6, ey=b.y+b.h*.85;
+      d=`M${sx},${sy} C${sx+70},${sy} ${ex-70},${ey} ${ex},${ey}`;
     }else{
       const sx=a.x-2, sy=a.y+a.h*.55, ex=b.x+b.w/2, ey=b.y+b.h+6;
       d=`M${sx},${sy} L${ex+26},${sy} Q${ex},${sy} ${ex},${sy-26} L${ex},${ey}`;
     }
     const p=document.createElementNS(NS,"path");
-    p.setAttribute("d",d);p.setAttribute("class","wire"+(f.main?" main":""));p.setAttribute("marker-end","url(#ah)");
+    p.setAttribute("d",d);p.setAttribute("class","wire"+(f.main?" main":"")+(f.hrd?" hrd":""));p.setAttribute("marker-end","url(#ah)");if(f.both)p.setAttribute("marker-start","url(#ah)");
     p.dataset.from=f.from;p.dataset.to=f.to;svg.appendChild(p);
     const fl=document.createElementNS(NS,"path");fl.setAttribute("d",d);fl.setAttribute("class","flow");svg.appendChild(fl);
-    const L=p.getTotalLength(),pt=p.getPointAtLength(L*(f.kind==="right"?.32:f.kind==="loop"?.42:.5));
+    const L=p.getTotalLength(),pt=p.getPointAtLength(L*(f.kind==="right"?.32:f.kind==="loop"?.42:f.kind==="diag"?.3:.5));
     const lab=document.createElement("div");
-    lab.className="elabel"+(f.main?" main":"");lab.textContent=f.label;lab.style.left=pt.x+"px";lab.style.top=pt.y+"px";
+    lab.className="elabel"+(f.main?" main":"")+(f.hrd?" hrd":"");lab.textContent=f.label;lab.style.left=pt.x+"px";lab.style.top=pt.y+"px";
     lab.dataset.from=f.from;lab.dataset.to=f.to;cv.appendChild(lab);
   });
   applyBoard();
