@@ -4,10 +4,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Itim&display=swap">
 <style>
-/* Layout: pinned cards zig-zag down a lined notebook page (left), sticky detail sheet (right); reference sections below */
+/* Layout: one-screen whiteboard — five pinned cards in a row, HOW pinned underneath, wires between; detail sheet below */
 :root{
   --paper:#FAFAFC; --sheet:#FFFFFF; --ink:#23263A; --ink-2:#555A75; --muted:#80859E; --line:#E3E5EE; --rule:#ECEEF4;
-  --conn:#B9BDCC; --shadow:0 10px 24px rgba(30,34,60,.10),0 2px 6px rgba(30,34,60,.08);
+  --conn:#B3B8C9; --shadow:0 10px 24px rgba(30,34,60,.10),0 2px 6px rgba(30,34,60,.08);
   --shadow-up:0 18px 36px rgba(30,34,60,.16),0 4px 10px rgba(30,34,60,.10);
   --who:#0E8C8A; --what:#D97706; --where:#8B2BE2; --when:#1D5FE0; --why:#D6336C; --how:#2F8F3A;
   --good:#2F8F3A; --bad:#C2413A;
@@ -17,119 +17,113 @@
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#14151F; --sheet:#1D1F2C; --ink:#E9EAF2; --ink-2:#B5B8CC; --muted:#8A8EA6; --line:#2F3244; --rule:#1E2030;
+  --paper:#14151F; --sheet:#1D1F2C; --ink:#E9EAF2; --ink-2:#B5B8CC; --muted:#8A8EA6; --line:#2F3244; --rule:#232536;
   --conn:#4E5370; --shadow:0 10px 24px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.35); --shadow-up:0 18px 36px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.4);
   --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68;
   --good:#5CCB68; --bad:#FF8A80; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --paper:#14151F; --sheet:#1D1F2C; --ink:#E9EAF2; --ink-2:#B5B8CC; --muted:#8A8EA6; --line:#2F3244; --rule:#1E2030;
+  --paper:#14151F; --sheet:#1D1F2C; --ink:#E9EAF2; --ink-2:#B5B8CC; --muted:#8A8EA6; --line:#2F3244; --rule:#232536;
   --conn:#4E5370; --shadow:0 10px 24px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.35); --shadow-up:0 18px 36px rgba(0,0,0,.55),0 4px 10px rgba(0,0,0,.4);
   --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68;
   --good:#5CCB68; --bad:#FF8A80; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
-.wrap{max-width:1200px;margin:0 auto;padding-block:28px 64px;
+.wrap{max-width:1240px;margin:0 auto;padding-block:20px 64px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:28px}
+  display:flex;flex-direction:column;gap:16px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.25}
-h1{font-size:clamp(28px,4.4vw,44px);font-weight:700;letter-spacing:-.01em}
+h1{font-size:clamp(22px,2.6vw,30px);font-weight:700}
 h2{font-size:24px;font-weight:700}
 h3{font-size:17px;font-weight:600}
 p{margin:0}
-.nw{white-space:nowrap;display:inline-block}
 .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.lede{max-width:68ch;color:var(--ink-2);font-size:16px}
-header{display:flex;flex-direction:column;gap:10px}
+header{display:flex;flex-direction:column;gap:4px}
 .hdr-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.boxed{display:inline-block;border:2.5px solid var(--ink);padding:2px 12px;border-radius:3px;font-family:var(--f-display);font-weight:700}
+.boxed{display:inline-block;border:2.5px solid var(--ink);padding:0 10px;border-radius:3px;font-family:var(--f-display);font-weight:700;font-size:18px}
+.lede{color:var(--ink-2);font-size:14.5px}
 
 /* controls */
-.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.controls{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
 .seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--sheet)}
-.seg button{all:unset;cursor:pointer;padding:6px 14px;font-size:14px;font-weight:500;color:var(--ink)}
+.seg button{all:unset;cursor:pointer;padding:5px 13px;font-size:13.5px;font-weight:500;color:var(--ink)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
 .seg button:focus-visible,.chip:focus-visible,.tab:focus-visible,.card:focus-visible{outline:2px solid var(--when);outline-offset:3px}
 .ctl-label{font-size:13px;color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{all:unset;cursor:pointer;border:1.5px dashed var(--line);border-radius:6px;padding:5px 10px;font-size:13.5px;background:var(--sheet);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{all:unset;cursor:pointer;border:1.5px dashed var(--line);border-radius:6px;padding:4px 10px;font-size:13px;background:var(--sheet);color:var(--ink)}
 .chip[aria-pressed="true"]{border-style:solid;border-color:var(--ink);font-weight:600}
-.pkgnote{font-size:13px;color:var(--ink-2);min-height:1.6em;margin-top:-16px}
+.pkgnote{font-size:13px;color:var(--ink-2);flex-basis:100%}
 
-/* stage */
-.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:28px;align-items:start}
-.board{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;
-  background-color:var(--sheet);
-  background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--rule) 31px 32px);
-  padding:22px 0 44px}
-.board svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+/* board */
+.board{border:1px solid var(--line);border-radius:14px;overflow-x:auto;
+  background-color:var(--sheet);background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--rule) 31px 32px)}
+.canvas{position:relative;min-width:1000px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  column-gap:30px;row-gap:66px;padding:60px 26px 18px;align-items:start}
+.canvas svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
 .wire{fill:none;stroke:var(--conn);stroke-width:2;stroke-dasharray:7 7;transition:stroke .25s,opacity .25s}
 .wire.hot{stroke:var(--hc,var(--ink-2));stroke-width:2.4}
-.wire.loop{stroke-dasharray:3 6;stroke-width:2.2}
-.wire.dim{opacity:.25}
-.flow{fill:none;stroke:var(--hc,var(--ink-2));stroke-width:2.4;stroke-dasharray:7 7;opacity:0;animation:march 1.2s linear infinite}
+.wire.main{stroke-width:2.4}
+.wire.dim{opacity:.22}
+.flow{fill:none;stroke:var(--hc,var(--ink-2));stroke-width:2.4;stroke-dasharray:7 7;opacity:0;animation:march 1.1s linear infinite}
 .wire.hot+.flow{opacity:1}
 @keyframes march{to{stroke-dashoffset:-28}}
 .solo .wire,.solo .flow,.solo .elabel{opacity:0!important}
 .elabel{position:absolute;z-index:2;transform:translate(-50%,-50%);font-size:12px;line-height:1.3;padding:3px 9px;border-radius:999px;
   background:var(--sheet);border:1px solid var(--line);color:var(--ink-2);white-space:nowrap;pointer-events:none;transition:opacity .25s,color .25s,border-color .25s}
-.elabel.hot{color:var(--ink);border-color:var(--hc);font-weight:600}
+.elabel.main{border-style:dashed;border-color:var(--conn);color:var(--ink)}
+.elabel.hot{color:var(--ink);border-color:var(--hc);border-style:solid;font-weight:600}
 .elabel.dim{opacity:.3}
-.elabel.vert{transform:translate(-50%,-50%) rotate(90deg)}
 
-.tape{position:relative;z-index:2;margin:0 auto 34px;width:max-content;max-width:calc(100% - 32px);text-align:center;
-  background:color-mix(in srgb,var(--what) 18%,var(--sheet));color:var(--ink-2);font-size:12.5px;padding:6px 16px;transform:rotate(-1.2deg);
-  box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.tape b{font-family:var(--f-display);color:var(--ink)}
-
-.cards{position:relative;z-index:1;display:flex;flex-direction:column;gap:58px;padding:0 64px 0 22px}
-.card{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:block;width:min(310px,82%);
-  background:var(--sheet);border-radius:18px;padding:34px 14px 14px;box-shadow:var(--shadow);
+.card{all:unset;box-sizing:border-box;cursor:pointer;position:relative;z-index:1;display:block;width:100%;
+  background:var(--sheet);border-radius:16px;padding:28px 10px 10px;box-shadow:var(--shadow);
   --rot:0deg;--lift:0px;transform:translateY(var(--lift)) rotate(var(--rot));
   transition:transform .45s cubic-bezier(.2,.9,.3,1.3),box-shadow .3s,opacity .3s,filter .3s}
-.card:nth-child(odd){align-self:flex-start;margin-left:2%;--rot:4deg}
-.card:nth-child(even){align-self:flex-end;--rot:-5deg}
+.card[data-k="who"]{--rot:-3deg}.card[data-k="what"]{--rot:2.5deg}.card[data-k="where"]{--rot:-2deg}
+.card[data-k="when"]{--rot:3deg}.card[data-k="why"]{--rot:-2.5deg}.card[data-k="how"]{--rot:1.5deg}
+.card.how{grid-row:2;grid-column:3 / span 2;justify-self:center;width:calc(50% - 15px)}
 .card:hover{--rot:0deg;--lift:-6px;box-shadow:var(--shadow-up)}
 .card.sel{--rot:0deg;--lift:-4px;box-shadow:var(--shadow-up),0 0 0 2.5px var(--k)}
-.card.off{opacity:.32;filter:grayscale(.9)}
-.card .pin{position:absolute;top:9px;left:50%;width:22px;height:26px;transform:translateX(-50%);color:var(--k);transition:transform .35s}
+.card.off{opacity:.3;filter:grayscale(.9)}
+.card .pin{position:absolute;top:6px;left:50%;width:20px;height:24px;transform:translateX(-50%);color:var(--k)}
 .card.sel .pin{animation:pin .5s ease-out}
 @keyframes pin{0%{transform:translate(-50%,-10px) rotate(-14deg)}60%{transform:translate(-50%,2px) rotate(4deg)}100%{transform:translate(-50%,0)}}
-.card .inner{display:block;border-radius:12px;padding:16px 18px 16px;background:color-mix(in srgb,var(--k) 7%,var(--sheet));
+.card .inner{display:block;border-radius:11px;padding:12px 14px 12px;background:color-mix(in srgb,var(--k) 7%,var(--sheet));
   border:1px solid color-mix(in srgb,var(--k) 16%,var(--sheet))}
 .card.how .inner{border:1.8px dashed color-mix(in srgb,var(--k) 55%,var(--sheet))}
-.card .top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.card .num{font-family:var(--f-hand);font-size:40px;line-height:1;color:var(--k)}
-.card .w{font-family:var(--f-display);font-weight:700;font-size:13px;letter-spacing:.14em;color:var(--k);border:1.5px solid currentColor;border-radius:4px;padding:1px 7px}
-.card .t{display:block;font-family:var(--f-display);font-weight:600;font-size:21px;line-height:1.25;margin-top:12px;color:var(--ink)}
-.card .d{display:block;font-size:13.5px;line-height:1.5;color:var(--ink-2);margin-top:6px}
-.card .more{display:block;margin-top:10px;font-size:12px;font-family:var(--f-mono);color:var(--k);opacity:0;transition:opacity .25s}
-.card:hover .more,.card.sel .more{opacity:1}
-.solo .card .stamp{display:inline-block}
-.card .stamp{display:none;position:absolute;right:-8px;top:-10px;transform:rotate(10deg);font-family:var(--f-hand);font-size:13px;color:var(--k);
+.card .top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.card .num{font-family:var(--f-hand);font-size:30px;line-height:1;color:var(--k)}
+.card .w{font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--k);border:1.5px solid currentColor;border-radius:4px;padding:0 6px}
+.card .t{display:block;font-family:var(--f-display);font-weight:600;font-size:16.5px;line-height:1.25;margin-top:8px;color:var(--ink)}
+.card .d{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:12.5px;line-height:1.5;color:var(--ink-2);margin-top:4px}
+.card .stamp{display:none;position:absolute;right:-8px;top:-10px;transform:rotate(10deg);font-family:var(--f-hand);font-size:12.5px;color:var(--k);
   border:2px solid var(--k);border-radius:6px;padding:0 6px;background:var(--sheet)}
+.solo .card .stamp{display:inline-block}
 .card.drop{animation:drop .55s cubic-bezier(.2,.9,.3,1.25) both}
-@keyframes drop{from{transform:translateY(-22px) rotate(calc(var(--rot) * -1));opacity:.2}to{transform:translateY(var(--lift)) rotate(var(--rot));opacity:1}}
-.legend{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);padding:30px 22px 0}
-.legend i{display:inline-block;width:24px;vertical-align:middle;border-top:2px dashed var(--conn);margin-right:6px}
-.legend i.l{border-top-style:dotted}
+@keyframes drop{from{transform:translateY(-20px) rotate(calc(var(--rot) * -1));opacity:.2}to{transform:translateY(var(--lift)) rotate(var(--rot));opacity:1}}
+
+.foot{grid-column:1 / -1;grid-row:3;display:flex;justify-content:space-between;align-items:center;gap:10px 20px;flex-wrap:wrap;position:relative;z-index:1;margin-top:-30px}
+.tape{background:color-mix(in srgb,var(--what) 18%,var(--sheet));color:var(--ink-2);font-size:12.5px;padding:5px 14px;transform:rotate(-1deg)}
+.tape b{font-family:var(--f-display);color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:22px;vertical-align:middle;border-top:2px dashed var(--conn);margin-right:6px}
 
 /* detail sheet */
-.detail{background:var(--sheet);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);
-  position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);max-height:calc(100vh - 32px);overflow-y:auto}
-.d-head{display:flex;flex-direction:column;gap:6px;padding:20px 22px 14px;border-bottom:1px solid var(--line);
+.detail{background:var(--sheet);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.d-head{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;padding:14px 22px;border-bottom:1px solid var(--line);
   background:color-mix(in srgb,var(--accent) 7%,var(--sheet))}
-.d-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.d-num{font-family:var(--f-hand);font-size:34px;line-height:1;color:var(--accent)}
+.d-num{font-family:var(--f-hand);font-size:32px;line-height:1;color:var(--accent)}
 .d-badge{font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.12em;border:2px solid currentColor;border-radius:4px;padding:1px 8px;color:var(--accent)}
-.d-title{font-family:var(--f-display);font-size:21px;font-weight:600}
+.d-title{font-family:var(--f-display);font-size:20px;font-weight:600}
 .d-q{color:var(--ink-2);font-size:14px}
-.tabs{display:flex;gap:2px;padding:0 12px;border-bottom:1px solid var(--line);overflow-x:auto;position:sticky;top:0;background:var(--sheet);z-index:1}
-.tab{all:unset;cursor:pointer;padding:11px 10px;font-size:13.5px;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap}
+.tabs{display:flex;gap:2px;padding:0 14px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{all:unset;cursor:pointer;padding:10px 12px;font-size:14px;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
-.pane{padding:18px 22px 22px;display:flex;flex-direction:column;gap:14px}
-ul.feat{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.pane{padding:18px 22px 22px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px 28px}
+.grid2>*{min-width:0}
+ul.feat{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px 28px}
 ul.feat li{padding-left:18px;position:relative;min-width:0}
 ul.feat li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--accent)}
 ul.feat b{font-weight:600}
@@ -138,7 +132,6 @@ ul.feat b{font-weight:600}
 .pf .p{background:color-mix(in srgb,var(--bad) 8%,var(--sheet))}
 .pf .s{background:color-mix(in srgb,var(--good) 9%,var(--sheet))}
 .pf small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
-.io h3{margin-bottom:4px}
 .io-row{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line)}
 .io-row:last-child{border-bottom:0}
 .pill{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.05em;padding:1px 7px;border-radius:4px;border:1.5px solid currentColor;text-align:center}
@@ -147,9 +140,10 @@ ul.feat b{font-weight:600}
 .kv dd{margin:0;min-width:0}
 ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
 .note{font-size:13.5px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:12px}
+.stack{display:flex;flex-direction:column;gap:12px}
 
 /* reference sections */
-section.ref{display:flex;flex-direction:column;gap:14px}
+section.ref{display:flex;flex-direction:column;gap:14px;margin-top:16px}
 .table-wrap{overflow-x:auto;background:var(--sheet);border:1px solid var(--line);border-radius:12px}
 table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
 th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -170,29 +164,18 @@ td.n{font-family:var(--f-hand);font-size:18px;color:var(--muted);width:40px}
 .principles .k{font-family:var(--f-hand);font-size:28px;color:var(--ink-2);grid-row:span 2;line-height:1}
 .principles p{font-size:14px;color:var(--ink-2)}
 footer{font-size:12.5px;color:var(--muted)}
-
-@media (max-width:960px){
-  .stage{grid-template-columns:minmax(0,1fr)}
-  .detail{position:static;max-height:none;overflow:visible}
-  .tabs{position:static}
-}
-@media (max-width:520px){
-  .cards{padding:0 46px 0 10px;gap:64px}
-  .card{width:88%}
-  .card .t{font-size:19px}
-  .io-row{grid-template-columns:1fr}
-}
+@media (max-width:560px){.io-row{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){
-  .card,.card .pin,.wire{transition:none}
+  .card,.wire{transition:none}
   .card.drop,.card.sel .pin,.flow{animation:none}
 }
 </style>
 
 <div class="wrap">
 <header>
-  <div class="hdr-row"><span class="boxed">HRIS</span><span class="eyebrow">Product flow · 5W1H · v0.2</span></div>
-  <h1><span class="nw">ระบบ HR ที่ตอบครบ</span> <span class="nw">ใคร ทำอะไร ที่ไหน</span> <span class="nw">เมื่อไร ทำไม และอย่างไร</span></h1>
-  <p class="lede">แต่ละการ์ดคือโมดูลที่ขายแยกได้ เมื่อใช้ร่วมกัน ข้อมูลจะไหลต่อกันจนถึงกำไรขาดทุน (P&amp;L) แล้วย้อนกลับไปตั้ง KPI รอบถัดไป คลิกการ์ดเพื่อดูรายละเอียดการพัฒนา</p>
+  <div class="hdr-row"><span class="boxed">HRIS</span><span class="eyebrow">Product flow · 5W1H · v0.3</span></div>
+  <h1>ระบบ HR ที่ตอบครบ ใคร ทำอะไร ที่ไหน เมื่อไร ทำไม และอย่างไร</h1>
+  <p class="lede">แต่ละการ์ดคือโมดูลที่ขายแยกได้ ใช้ร่วมกันแล้วข้อมูลไหลถึง P&amp;L และย้อนกลับไปตั้ง KPI · คลิกการ์ดเพื่อดูรายละเอียดด้านล่าง</p>
 </header>
 
 <div class="controls">
@@ -203,18 +186,20 @@ footer{font-size:12.5px;color:var(--muted)}
   </div>
   <span class="ctl-label">แพ็กเกจขาย</span>
   <div class="chips" id="pkgs"></div>
+  <p class="pkgnote" id="pkgnote"></p>
 </div>
-<p class="pkgnote" id="pkgnote"></p>
 
-<div class="stage">
-  <div class="board" id="board">
+<div class="board" id="board">
+  <div class="canvas" id="canvas">
     <svg class="wires" id="wires" aria-hidden="true"></svg>
-    <div class="tape"><b>Core Platform</b> · SSO · Employee Master · Rules Engine · Open API · LINE · PDPA</div>
-    <div class="cards" id="cards"></div>
-    <div class="legend"><span><i></i>ข้อมูลส่งต่อไปโมดูลถัดไป</span><span><i class="l"></i>วงจรป้อนกลับ P&amp;L → KPI</span><span>กรอบประบนการ์ด HOW = เชื่อม ERP เดิมของลูกค้าได้</span></div>
+    <div class="foot">
+      <div class="tape"><b>Core Platform</b> · SSO · Employee Master · Rules Engine · Open API · LINE · PDPA</div>
+      <div class="legend"><span><i></i>ข้อมูลส่งต่อระหว่างโมดูล</span><span>กรอบประที่ HOW = เชื่อม ERP เดิมของลูกค้าได้</span></div>
+    </div>
   </div>
-  <article class="detail" id="detail" aria-live="polite"></article>
 </div>
+
+<article class="detail" id="detail" aria-live="polite"></article>
 
 <section class="ref">
   <span class="eyebrow">ทำไมลูกค้าจะย้ายมาใช้</span>
@@ -437,13 +422,15 @@ const ROAD = [
   ["ระยะ 4 · เดือน 12+","HOW",["ERP connector 2 ตัวแรก","P&L รายโปรเจกต์/คน","Cash flow forecast","เปิดขาย Full Suite"]]
 ];
 const ORDER = ["who","what","where","when","why","how"];
+/* kind: arc = over the top between neighbours; down/right/loop = to and from HOW (whiteboard arrows) */
 const FLOW = [
-  {from:"who",to:"what",label:"ตำแหน่ง → JD"},
-  {from:"what",to:"where",label:"ค่านิยม ↔ Competency"},
-  {from:"where",to:"when",label:"กฎลา / OT / กะ"},
-  {from:"when",to:"why",label:"Timesheet ตามโปรเจกต์"},
-  {from:"why",to:"how",label:"ต้นทุน & มูลค่าโปรเจกต์"},
-  {from:"how",to:"what",label:"เป้า P&L → KPI",loop:true}
+  {from:"who",to:"what",label:"ตำแหน่ง → JD",kind:"arc"},
+  {from:"where",to:"what",label:"ค่านิยม → Competency",kind:"arc"},
+  {from:"where",to:"when",label:"กฎลา / OT / กะ",kind:"arc"},
+  {from:"when",to:"why",label:"Timesheet ตามโปรเจกต์",kind:"arc"},
+  {from:"when",to:"how",label:"Manhour × อัตราต้นทุน",kind:"down"},
+  {from:"why",to:"how",label:"ต้นทุน & มูลค่าโปรเจกต์",kind:"right",main:true},
+  {from:"how",to:"what",label:"เป้า P&L → KPI",kind:"loop",main:true}
 ];
 const NS="http://www.w3.org/2000/svg";
 const $=s=>document.querySelector(s);
@@ -453,68 +440,62 @@ const num=k=>String(ORDER.indexOf(k)+1).padStart(2,"0");
 const PIN=`<svg class="pin" viewBox="0 0 24 28" aria-hidden="true"><path fill="currentColor" d="M7 2h10v2l-1.6 1.4.9 6.1 3.2 2.6V16H13.2l-.7 9.5h-1L10.8 16H4.5v-1.9l3.2-2.6.9-6.1L7 4z"/></svg>`;
 let state={sel:"who",tab:"overview",mode:"suite",pkg:null};
 
-/* ---- cards ---- */
 function renderCards(){
-  $("#cards").innerHTML=ORDER.map(k=>{const n=NODES[k];return `
+  const html=ORDER.map(k=>{const n=NODES[k];return `
     <button class="card ${k}" data-k="${k}" style="--k:var(--${k})" aria-label="${num(k)} ${n.w} ${n.en}">
       ${PIN}<span class="stamp">ขายแยกได้</span>
       <span class="inner">
         <span class="top"><span class="num">${num(k)}</span><span class="w">${n.w}</span></span>
         <span class="t">${n.short||n.en}</span>
         <span class="d">${n.q}</span>
-        <span class="more">ดูรายละเอียด →</span>
       </span>
     </button>`;}).join("");
+  $("#wires").insertAdjacentHTML("afterend",html);
   document.querySelectorAll(".card").forEach((c,i)=>{
-    c.addEventListener("click",()=>select(c.dataset.k,true));
+    c.addEventListener("click",()=>select(c.dataset.k));
     c.addEventListener("mouseenter",()=>hover(c.dataset.k));
     c.addEventListener("mouseleave",()=>hover(null));
     c.addEventListener("focus",()=>hover(c.dataset.k));
     c.addEventListener("blur",()=>hover(null));
-    if(!reduced){c.style.animationDelay=(i*90)+"ms";c.classList.add("drop");c.addEventListener("animationend",e=>{if(e.animationName==="drop")c.classList.remove("drop");},{once:false});}
+    if(!reduced){c.style.animationDelay=(i*80)+"ms";c.classList.add("drop");c.addEventListener("animationend",e=>{if(e.animationName==="drop")c.classList.remove("drop");});}
   });
 }
 
-/* ---- connectors (layout boxes, unaffected by card rotation) ---- */
-function box(k){const c=document.querySelector(`.card[data-k="${k}"]`);return {x:c.offsetLeft,y:c.offsetTop,w:c.offsetWidth,h:c.offsetHeight,el:c};}
+/* wires use layout boxes (offset*), so card tilt and hover lift never move them */
+function box(k){const c=document.querySelector(`.card[data-k="${k}"]`);return {x:c.offsetLeft,y:c.offsetTop,w:c.offsetWidth,h:c.offsetHeight};}
 function drawWires(){
-  const board=$("#board"),svg=$("#wires");
-  const W=board.clientWidth, cards=$("#cards");
-  const ox=cards.offsetLeft, oy=cards.offsetTop;
-  svg.setAttribute("viewBox",`0 0 ${W} ${board.clientHeight}`);
+  const cv=$("#canvas"),svg=$("#wires");
+  svg.setAttribute("viewBox",`0 0 ${cv.clientWidth} ${cv.clientHeight}`);
   svg.innerHTML=`<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--conn)"/></marker></defs>`;
-  board.querySelectorAll(".elabel").forEach(e=>e.remove());
-  FLOW.forEach((f,i)=>{
-    const a=box(f.from),b=box(f.to);
-    a.x+=ox;a.y+=oy;b.x+=ox;b.y+=oy;
-    let d,lx,ly,vert=false;
-    if(!f.loop&&W<600){
-      const sx=a.x+a.w/2, sy=a.y+a.h-2, ex=b.x+b.w/2, ey=b.y-4;
-      d=`M${sx},${sy} C${sx},${sy+28} ${ex},${ey-28} ${ex},${ey}`;
-    }else if(!f.loop){
-      const aLeft=a.x+a.w/2<W/2;
-      const sx=aLeft?a.x+a.w-6:a.x+6, sy=a.y+a.h*.72;
-      const ex=b.x+b.w/2, ey=b.y-4;
-      d=`M${sx},${sy} C${sx+(aLeft?90:-90)},${sy+30} ${ex+(aLeft?-70:70)},${ey-70} ${ex},${ey}`;
+  cv.querySelectorAll(".elabel").forEach(e=>e.remove());
+  FLOW.forEach(f=>{
+    const a=box(f.from),b=box(f.to);let d;
+    if(f.kind==="arc"){
+      const ltr=a.x<b.x;
+      const sx=ltr?a.x+a.w-34:a.x+34, ex=ltr?b.x+34:b.x+b.w-34, sy=a.y-2, ey=b.y-6, top=Math.min(sy,ey)-58;
+      d=`M${sx},${sy} C${sx},${top} ${ex},${top} ${ex},${ey}`;
+    }else if(f.kind==="down"){
+      const sx=a.x+a.w/2, sy=a.y+a.h+2, ex=b.x+b.w*.72, ey=b.y-6;
+      d=`M${sx},${sy} C${sx},${sy+36} ${ex},${ey-36} ${ex},${ey}`;
+    }else if(f.kind==="right"){
+      const sx=a.x+a.w/2, sy=a.y+a.h+2, ex=b.x+b.w+6, ey=b.y+b.h*.55;
+      d=`M${sx},${sy} L${sx},${ey-26} Q${sx},${ey} ${sx-26},${ey} L${ex},${ey}`;
     }else{
-      const gx=W-22;
-      const sx=a.x+a.w-4, sy=a.y+a.h*.55, ex=b.x+b.w-4, ey=b.y+b.h*.55;
-      d=`M${sx},${sy} C${gx+6},${sy} ${gx},${sy-40} ${gx},${sy-80} L${gx},${ey+80} C${gx},${ey+40} ${gx+6},${ey} ${ex+4},${ey}`;
-      lx=gx;ly=(sy+ey)/2;vert=true;
+      const sx=a.x-2, sy=a.y+a.h*.55, ex=b.x+b.w/2, ey=b.y+b.h+6;
+      d=`M${sx},${sy} L${ex+26},${sy} Q${ex},${sy} ${ex},${sy-26} L${ex},${ey}`;
     }
     const p=document.createElementNS(NS,"path");
-    p.setAttribute("d",d);p.setAttribute("class","wire"+(f.loop?" loop":""));p.setAttribute("marker-end","url(#ah)");
+    p.setAttribute("d",d);p.setAttribute("class","wire"+(f.main?" main":""));p.setAttribute("marker-end","url(#ah)");
     p.dataset.from=f.from;p.dataset.to=f.to;svg.appendChild(p);
     const fl=document.createElementNS(NS,"path");fl.setAttribute("d",d);fl.setAttribute("class","flow");svg.appendChild(fl);
-    if(!f.loop){const L=p.getTotalLength(),pt=p.getPointAtLength(L*.5);lx=pt.x;ly=pt.y;}
+    const L=p.getTotalLength(),pt=p.getPointAtLength(L*(f.kind==="right"?.32:f.kind==="loop"?.42:.5));
     const lab=document.createElement("div");
-    lab.className="elabel"+(vert?" vert":"");lab.textContent=f.label;lab.style.left=lx+"px";lab.style.top=ly+"px";
-    lab.dataset.from=f.from;lab.dataset.to=f.to;board.appendChild(lab);
+    lab.className="elabel"+(f.main?" main":"");lab.textContent=f.label;lab.style.left=pt.x+"px";lab.style.top=pt.y+"px";
+    lab.dataset.from=f.from;lab.dataset.to=f.to;cv.appendChild(lab);
   });
   applyBoard();
 }
 
-/* ---- state ---- */
 let hoverK=null;
 function hover(k){hoverK=k;applyWires();}
 function applyWires(){
@@ -523,8 +504,8 @@ function applyWires(){
   document.querySelectorAll(".wire,.elabel").forEach(e=>{
     const f=e.dataset.from,t=e.dataset.to;
     const inPkg=!pkgMods||(pkgMods.includes(f)&&pkgMods.includes(t));
-    const hot=inPkg&&(f===focus||t===focus);
-    e.classList.toggle("hot",hot);e.classList.toggle("dim",!inPkg);
+    e.classList.toggle("hot",inPkg&&(f===focus||t===focus));
+    e.classList.toggle("dim",!inPkg);
     e.style.setProperty("--hc",`var(--${focus})`);
   });
 }
@@ -543,38 +524,34 @@ function applyBoard(){
   document.querySelectorAll("#pkgs .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.p===state.pkg));
   const p=state.pkg&&PKGS.find(x=>x.id===state.pkg);
   $("#pkgnote").innerHTML=state.mode==="solo"
-    ?"โหมดแยกโมดูล: แต่ละการ์ดใช้งานได้เองบน Core Platform ดูแท็บ “ใช้แยกได้อย่างไร” ของแต่ละโมดูล"
-    :p?`<b>${p.name}</b> · ${p.desc}`:"คลิกแพ็กเกจเพื่อดูว่ารวมโมดูลไหน และข้อมูลไหลถึงไหน";
+    ?"โหมดแยกโมดูล: แต่ละการ์ดใช้งานได้เองบน Core Platform ดูแท็บ “MVP & ขายแยก” ของแต่ละโมดูล"
+    :p?`<b>${p.name}</b> · ${p.desc}`:"เลือกแพ็กเกจเพื่อดูว่ารวมโมดูลไหน และข้อมูลไหลถึงไหน";
 }
-function select(k,fromClick){
-  state.sel=k;applyBoard();renderDetail();
-  if(fromClick&&window.matchMedia("(max-width:960px)").matches){$("#detail").scrollIntoView({behavior:reduced?"auto":"smooth",block:"start"});}
-}
+function select(k){state.sel=k;applyBoard();renderDetail();}
 
-const TABS=[["overview","ภาพรวม"],["features","ฟีเจอร์"],["pains","Pain point"],["links","ข้อมูลเข้า-ออก"],["mvp","MVP & ขายแยก"]];
+const TABS=[["overview","ภาพรวม"],["features","ฟีเจอร์หลัก"],["pains","Pain point → ทางแก้"],["links","ข้อมูลเข้า-ออก"],["mvp","MVP & ขายแยก"]];
 function renderDetail(){
   const k=state.sel,n=NODES[k],d=$("#detail");
   d.style.setProperty("--accent",`var(--${k})`);
   let body="";
   if(state.tab==="overview"){
-    body=`<p>${n.summary}</p><p class="note">คำถามที่โมดูลนี้ตอบ: ${n.q}</p>
-      <dl class="kv"><dt>ผู้ใช้หลัก</dt><dd>${n.users}</dd><dt>ตัวชี้วัดสำเร็จ</dt><dd>${n.metric}</dd><dt>บนกระดาน</dt><dd>${n.en} = ${n.w}</dd></dl>`;
+    body=`<div class="grid2"><div class="stack"><p>${n.summary}</p><p class="note">คำถามที่โมดูลนี้ตอบ: ${n.q}</p></div>
+      <dl class="kv"><dt>ผู้ใช้หลัก</dt><dd>${n.users}</dd><dt>ตัวชี้วัดสำเร็จ</dt><dd>${n.metric}</dd><dt>บนกระดาน</dt><dd>${n.en} = ${n.w}</dd></dl></div>`;
   }else if(state.tab==="features"){
     body=`<ul class="feat">${n.features.map(([a,b])=>`<li><b>${a}</b><br>${b}</li>`).join("")}</ul>`;
   }else if(state.tab==="pains"){
-    body=n.pains.map(([p,s])=>`<div class="pf"><div class="p"><small>ปัญหาในตลาด</small>${p}</div><div class="s"><small>ของเรา</small>${s}</div></div>`).join("");
+    body=`<div class="grid2">${n.pains.map(([p,s])=>`<div class="pf"><div class="p"><small>ปัญหาในตลาด</small>${p}</div><div class="s"><small>ของเรา</small>${s}</div></div>`).join("")}</div>`;
   }else if(state.tab==="links"){
     const ins=EDGES.filter(e=>e.to===k),outs=EDGES.filter(e=>e.from===k);
-    const row=(e,dir)=>{const o=dir==="in"?e.from:e.to;return `<div class="io-row">${pill(o)}<div>${e.label}</div></div>`;};
-    body=`<div class="io"><h3>รับข้อมูลจาก</h3>${ins.length?ins.map(e=>row(e,"in")).join(""):'<p class="note">Employee Master จาก Core Platform</p>'}</div>
-      <div class="io"><h3>ส่งข้อมูลให้</h3>${outs.map(e=>row(e,"out")).join("")}${k==="who"?`<div class="io-row"><span class="pill" style="color:var(--ink-2)">ALL</span><div>รหัสพนักงาน ตำแหน่ง อัตราต้นทุน ให้ทุกโมดูลผ่าน Core</div></div>`:""}</div>`;
+    const row=(e,dir)=>`<div class="io-row">${pill(dir==="in"?e.from:e.to)}<div>${e.label}</div></div>`;
+    body=`<div class="grid2"><div><h3>รับข้อมูลจาก</h3>${ins.length?ins.map(e=>row(e,"in")).join(""):'<p class="note" style="margin-top:8px">Employee Master จาก Core Platform</p>'}</div>
+      <div><h3>ส่งข้อมูลให้</h3>${outs.map(e=>row(e,"out")).join("")}${k==="who"?`<div class="io-row"><span class="pill" style="color:var(--ink-2)">ALL</span><div>รหัสพนักงาน ตำแหน่ง อัตราต้นทุน ให้ทุกโมดูลผ่าน Core</div></div>`:""}</div></div>`;
   }else{
-    body=`<div><h3 style="margin-bottom:8px">ขอบเขต MVP</h3><ol class="steps">${n.mvp.map(m=>`<li>${m}</li>`).join("")}</ol></div>
-      <div><h3 style="margin-bottom:6px">ใช้แยกได้อย่างไร</h3><p>${n.solo}</p></div>
-      <p class="note">อยู่ในแพ็กเกจ: ${PKGS.filter(p=>p.mods.includes(k)).map(p=>p.name).join(", ")}</p>`;
+    body=`<div class="grid2"><div><h3 style="margin-bottom:8px">ขอบเขต MVP</h3><ol class="steps">${n.mvp.map(m=>`<li>${m}</li>`).join("")}</ol></div>
+      <div class="stack"><h3>ใช้แยกได้อย่างไร</h3><p>${n.solo}</p><p class="note">อยู่ในแพ็กเกจ: ${PKGS.filter(p=>p.mods.includes(k)).map(p=>p.name).join(", ")}</p></div></div>`;
   }
-  d.innerHTML=`<div class="d-head"><div class="d-row"><span class="d-num">${num(k)}</span><span class="d-badge">${n.w}</span></div>
-      <div class="d-title">${n.title}</div><div class="d-q">${n.en} · ${n.th}</div></div>
+  d.innerHTML=`<div class="d-head"><span class="d-num">${num(k)}</span><span class="d-badge">${n.w}</span>
+      <span class="d-title">${n.title}</span><span class="d-q">${n.en} · ${n.th}</span></div>
     <div class="tabs" role="tablist">${TABS.map(([id,l])=>`<button class="tab" role="tab" id="tab-${id}" aria-selected="${state.tab===id}" data-t="${id}">${l}</button>`).join("")}</div>
     <div class="pane" role="tabpanel">${body}</div>`;
   d.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{state.tab=b.dataset.t;renderDetail();}));
@@ -592,7 +569,7 @@ function renderStatic(){
 }
 
 renderStatic(); renderCards(); renderDetail(); drawWires();
-if("ResizeObserver" in window){new ResizeObserver(()=>drawWires()).observe($("#board"));}
+if("ResizeObserver" in window){new ResizeObserver(()=>drawWires()).observe($("#canvas"));}
 else window.addEventListener("resize",drawWires);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawWires);
 </script>
