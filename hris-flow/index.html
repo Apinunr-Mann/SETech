@@ -60,7 +60,7 @@ header{display:flex;flex-direction:column;gap:4px}
 .board{border:1px solid var(--line);border-radius:14px;overflow-x:auto;
   background-color:var(--sheet);background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--rule) 31px 32px)}
 .canvas{position:relative;min-width:1000px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
-  column-gap:30px;row-gap:64px;padding:56px 26px 14px;align-items:start}
+  column-gap:30px;row-gap:60px;padding:76px 26px 14px;align-items:start}
 .canvas svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
 .wire{fill:none;stroke:var(--conn);stroke-width:2;stroke-dasharray:7 7;transition:stroke .25s,opacity .25s}
 .wire.hot{stroke:var(--hc,var(--ink-2));stroke-width:2.4}
@@ -515,7 +515,7 @@ function drawWires(){
     const a=box(f.from),b=box(f.to);let d;
     if(f.kind==="arc"){
       const ltr=a.x<b.x;
-      const sx=ltr?a.x+a.w-34:a.x+34, ex=ltr?b.x+34:b.x+b.w-34, sy=a.y-2, ey=b.y-6, top=Math.min(sy,ey)-58;
+      const sx=ltr?a.x+a.w-34:a.x+34, ex=ltr?b.x+34:b.x+b.w-34, sy=a.y-2, ey=b.y-6, top=Math.min(sy,ey)-46;
       d=`M${sx},${sy} C${sx},${top} ${ex},${top} ${ex},${ey}`;
     }else if(f.kind==="down"){
       const sx=a.x+a.w/2, sy=a.y+a.h+2, ex=b.x+b.w*.72, ey=b.y-6;
