@@ -176,11 +176,70 @@ footer{font-size:12.5px;color:var(--muted)}
   .card,.wire{transition:none}
   .card.drop,.card.sel .pin,.flow{animation:none}
 }
+
+/* ---- pricing & projection ---- */
+:root{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--s1:#3987e5;--s2:#d95926;--s3:#199e70}}
+:root[data-theme="dark"]{--s1:#3987e5;--s2:#d95926;--s3:#199e70}
+.jump{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+.jump a{color:var(--ink-2);text-decoration:none;border-bottom:1.5px dashed var(--line)}
+.jump a:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.sub{color:var(--ink-2);max-width:80ch}
+.panel{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.price-layout{display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.price-layout{grid-template-columns:minmax(0,1fr)}}
+table.compact{min-width:0;font-size:14px}
+table.compact td,table.compact th{padding:8px 10px}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.bcard{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.bcard.hl{border:2px solid var(--ink)}
+.bcard .price{font-family:var(--f-display);font-size:28px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.bcard .price small{font-family:var(--f-body);font-size:12.5px;font-weight:400;color:var(--muted)}
+.bcard .was{font-size:12.5px;color:var(--muted)}
+.bcard .was s{margin-right:6px}
+.save{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,var(--good) 14%,var(--sheet));color:var(--ink)}
+.bcard p{font-size:13.5px;color:var(--ink-2)}
+.bcard .mods{display:flex;gap:4px;flex-wrap:wrap}
+.meta{font-size:12.5px;color:var(--muted)}
+.field{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:14px}
+.field label{color:var(--ink-2)}
+.field output{font-family:var(--f-display);font-weight:700;font-size:18px;min-width:5ch;font-variant-numeric:tabular-nums}
+.field input[type=range]{width:min(200px,100%);accent-color:var(--ink)}
+.field select{font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--sheet);color:var(--ink)}
+.fields{display:flex;flex-wrap:wrap;gap:12px 32px}
+.src a{color:var(--ink-2)}
+.us td{background:color-mix(in srgb,var(--when) 6%,var(--sheet))}
+.kpi th.sc,.kpi td.sc{text-align:right}
+.kpi th.sc span{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:14px;letter-spacing:0;text-transform:none;color:var(--ink)}
+.sw{display:inline-block;width:12px;height:3px;border-radius:2px}
+.kpi td.big{font-family:var(--f-display);font-weight:700;font-size:16px}
+.chart-wrap{position:relative;overflow-x:auto}
+.chart-wrap svg{display:block;width:100%;min-width:560px;height:auto}
+.chart-wrap .gl{stroke:var(--rule);stroke-width:1}
+.chart-wrap .ax{fill:var(--muted);font-size:11px;font-family:var(--f-body)}
+.chart-wrap .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart-wrap .el{font-size:12px;font-family:var(--f-body);fill:var(--ink)}
+.chart-wrap .xh{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+.tip{position:absolute;pointer-events:none;background:var(--sheet);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:8px;padding:8px 10px;font-size:12.5px;line-height:1.5;min-width:150px;z-index:3}
+.tip b{font-family:var(--f-display)}
+.tip .r{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+.legend2{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.legend2 span{display:inline-flex;align-items:center;gap:6px}
+.bar{height:8px;border-radius:0 4px 4px 0;background:var(--ink-2);min-width:2px}
+.bars td{vertical-align:middle}
+.bars .bcell{width:38%}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.grid-3>*{min-width:0}
+.warn{border-left:3px solid var(--what);padding:8px 12px;background:color-mix(in srgb,var(--what) 8%,var(--sheet));border-radius:0 8px 8px 0;font-size:13.5px;color:var(--ink-2)}
+ul.assume{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2);columns:2 320px;column-gap:32px}
+ul.assume li{break-inside:avoid;margin-bottom:4px}
 </style>
 
 <div class="wrap">
 <header>
-  <div class="hdr-row"><span class="boxed">HRIS</span><span class="eyebrow">Product flow · 5W1H · v0.4</span></div>
+  <div class="hdr-row"><span class="boxed">HRIS</span><span class="eyebrow">Product flow · 5W1H · v0.5</span></div>
+  <nav class="jump" aria-label="ไปยังส่วน"><a href="#board">Flow</a><a href="#pricing">ราคาแพ็กเกจ</a><a href="#projection">Projection ปี 2570</a></nav>
   <h1>ระบบ HR ที่ตอบครบ ใคร ทำอะไร ที่ไหน เมื่อไร ทำไม และอย่างไร</h1>
   <p class="lede">แต่ละการ์ดคือโมดูลที่ขายแยกได้ ใช้ร่วมกันแล้วข้อมูลไหลถึง P&amp;L และย้อนกลับไปตั้ง KPI พร้อมระบบพัฒนาคน (HRD / E-Learning) · คลิกการ์ดเพื่อดูรายละเอียดด้านล่าง</p>
 </header>
@@ -223,12 +282,85 @@ footer{font-size:12.5px;color:var(--muted)}
   <div class="principles" id="principles"></div>
 </section>
 
-<section class="ref">
-  <span class="eyebrow">ขายแยกหรือขายรวม</span>
-  <h2>แพ็กเกจสำหรับลูกค้าองค์กร</h2>
-  <div class="pcards" id="pkgcards"></div>
-  <p class="note">ทุกแพ็กเกจมี WHO แบบ lite ติดมาเสมอ เพราะทุกโมดูลต้องรู้ว่าพนักงานคือใคร ลูกค้าที่ซื้อเพิ่มภายหลังไม่ต้องย้ายข้อมูลซ้ำ แค่เปิดสิทธิ์โมดูลใหม่</p>
+<section class="ref" id="pricing">
+  <span class="eyebrow">Subscription รายเดือน · ราคาไม่รวม VAT 7%</span>
+  <h2>ราคาแพ็กเกจ: Standalone และ Bundle</h2>
+  <p class="sub">คิดต่อพนักงานต่อเดือน ขั้นต่ำ 30 คนต่อบริษัท จ่ายรายปีล่วงหน้าจ่ายเพียง 10 เดือน (ฟรี 2 เดือน) องค์กร 300 คนขึ้นไปลด 10% และ 1,000 คนขึ้นไปลด 20%</p>
+
+  <div class="price-layout">
+    <div class="panel">
+      <h3>Standalone รายโมดูล</h3>
+      <table class="compact"><thead><tr><th>โมดูล</th><th class="num">บาท / คน / เดือน</th></tr></thead><tbody id="mod-prices"></tbody></table>
+      <p class="meta">ซื้อโมดูลใดก็ได้ จะได้ WHO แบบ lite มาด้วยฟรี · HOW มีค่าเชื่อม ERP ครั้งแรก 25,000 บาท</p>
+    </div>
+    <div class="stack">
+      <h3>Bundle</h3>
+      <div class="bcards" id="bundles"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>บิลตัวอย่างของลูกค้า</h3>
+    <div class="field"><label for="calc-emp">จำนวนพนักงาน</label><input type="range" id="calc-emp" min="30" max="1500" step="10" value="150"><output id="calc-emp-out" for="calc-emp">150</output><span class="meta">คน · คิด % เทียบค่าจ้างเฉลี่ย 18,000 บาท/คน/เดือน (สมมติฐาน)</span></div>
+    <div class="table-wrap" style="border:0"><table class="compact" style="min-width:560px"><thead><tr><th>แพ็กเกจ</th><th class="num">ต่อเดือน</th><th class="num">ต่อปี (จ่ายรายปี)</th><th class="num">ต่อคน / เดือน</th><th class="num">% ของค่าจ้าง</th></tr></thead><tbody id="calc-rows"></tbody></table></div>
+  </div>
+
+  <div class="stack">
+    <h3>เทียบกับเจ้าที่เผยแพร่ราคาในตลาด</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>ผู้ให้บริการ</th><th>รูปแบบราคา</th><th>ราคาที่เผยแพร่</th><th>ครอบคลุม</th></tr></thead>
+      <tbody id="market"></tbody>
+    </table></div>
+    <p class="meta">ราคาคู่แข่งรวบรวมจากหน้าเว็บไซต์และบทความรีวิว ณ พ.ย. 2569 ยังไม่ได้ขอใบเสนอราคาจริง ควรยืนยันก่อนใช้ตั้งราคาขั้นสุดท้าย</p>
+    <div class="warn">จุดที่ต้องตัดสินใจ: คู่แข่งระดับราคาเดียวกัน (เช่น HumanOS ฿50) รวมระบบคำนวณเงินเดือน (Payroll) แล้ว แต่ระบบของเรายังไม่มี Payroll ในแผน แนะนำให้เพิ่มเป็น add-on ราว ฿20/คน หรือเชื่อมกับผู้ให้บริการ Payroll เดิมของลูกค้า มิฉะนั้น HR Starter จะเสียเปรียบในลูกค้า SME ที่ซื้อเพราะเรื่องเงินเดือนเป็นหลัก</div>
+  </div>
 </section>
+
+<section class="ref" id="projection">
+  <span class="eyebrow">Projection · ม.ค. – ธ.ค. 2570 (2027)</span>
+  <h2>ประมาณการรายได้ ถ้าปิดลูกค้าได้ 20 / 50 / 100 ราย ภายในสิ้นปีหน้า</h2>
+  <p class="sub">ลูกค้าใหม่ทยอยเข้ามาแบบเร่งขึ้นทุกเดือนนับจากเดือนที่เริ่มขาย ปรับสมมติฐานด้านล่างแล้วตัวเลขทั้งหมดจะคำนวณใหม่</p>
+  <div class="panel">
+    <div class="fields">
+      <div class="field"><label for="pj-start">เริ่มขายเดือน</label><select id="pj-start"></select></div>
+      <div class="field"><label for="pj-churn">ลูกค้ายกเลิก (รายเดือน)</label><input type="range" id="pj-churn" min="0" max="5" step="0.5" value="1"><output id="pj-churn-out" for="pj-churn">1%</output></div>
+      <div class="field"><label for="pj-prepay">สัดส่วนจ่ายรายปี</label><input type="range" id="pj-prepay" min="0" max="100" step="10" value="40"><output id="pj-prepay-out" for="pj-prepay">40%</output></div>
+    </div>
+  </div>
+
+  <div class="table-wrap"><table class="kpi">
+    <thead><tr><th>ตัวชี้วัด (ถึง ธ.ค. 2570)</th><th class="sc"><span><i class="sw" style="background:var(--s1)"></i>20 ราย</span></th><th class="sc"><span><i class="sw" style="background:var(--s2)"></i>50 ราย</span></th><th class="sc"><span><i class="sw" style="background:var(--s3)"></i>100 ราย</span></th></tr></thead>
+    <tbody id="kpi"></tbody>
+  </table></div>
+
+  <div class="panel">
+    <h3>รายได้ประจำต่อเดือน (MRR) รายเดือน ปี 2570</h3>
+    <div class="legend2"><span><i class="sw" style="background:var(--s1)"></i>20 ราย</span><span><i class="sw" style="background:var(--s2)"></i>50 ราย</span><span><i class="sw" style="background:var(--s3)"></i>100 ราย</span></div>
+    <div class="chart-wrap" id="chart"></div>
+  </div>
+
+  <div class="panel">
+    <div class="hdr-row" style="justify-content:space-between">
+      <h3>แยกตามมิติ</h3>
+      <div class="seg" role="group" aria-label="เลือกฉากทัศน์">
+        <button id="sc-20" aria-pressed="false">20 ราย</button><button id="sc-50" aria-pressed="false">50 ราย</button><button id="sc-100" aria-pressed="true">100 ราย</button>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div><h3 style="font-size:15px;margin-bottom:6px">ตามแพ็กเกจ</h3><table class="compact bars"><thead><tr><th>แพ็กเกจ</th><th class="num">ลูกค้า</th><th class="num">รายได้ปี 70</th><th></th></tr></thead><tbody id="by-pkg"></tbody></table></div>
+      <div><h3 style="font-size:15px;margin-bottom:6px">ตามขนาดลูกค้า</h3><table class="compact bars"><thead><tr><th>ขนาด</th><th class="num">ลูกค้า</th><th class="num">รายได้ปี 70</th><th></th></tr></thead><tbody id="by-seg"></tbody></table></div>
+    </div>
+    <h3 style="font-size:15px">รายไตรมาส</h3>
+    <div class="table-wrap" style="border:0"><table class="compact" style="min-width:640px"><thead><tr><th>ไตรมาส</th><th class="num">ลูกค้าสะสม</th><th class="num">รายได้รับรู้</th><th class="num">ค่าติดตั้ง</th><th class="num">เงินสดรับ</th><th class="num">กำไรขั้นต้น</th></tr></thead><tbody id="by-q"></tbody></table></div>
+  </div>
+
+  <div class="stack">
+    <h3>สมมติฐานในโมเดล</h3>
+    <ul class="assume" id="assume"></ul>
+    <div class="warn">Roadmap เดิมวางให้เปิดขาย Full Suite ได้ราวเดือนที่ 12 ถ้าเริ่มพัฒนาตอนนี้ ลูกค้า Full Suite (สมมติ 25% ของ mix) จะเริ่มซื้อได้ราวปลายปี 2570 ตัวเลขช่วงต้นปีจึงสมจริงก็ต่อเมื่อเร่ง HOW/WHY ให้เร็วขึ้น หรือขาย Full Suite แบบ early access ไปก่อน</div>
+  </div>
+</section>
+
 
 <section class="ref">
   <span class="eyebrow">ลำดับการพัฒนา</span>
@@ -614,7 +746,6 @@ function renderStatic(){
   document.querySelectorAll("#pkgs .chip").forEach(c=>c.addEventListener("click",()=>{state.pkg=state.pkg===c.dataset.p?null:c.dataset.p;if(state.pkg)state.mode="suite";applyBoard();}));
   $("#painrows").innerHTML=PAINS.map((r,i)=>`<tr><td class="n">${String(i+1).padStart(2,"0")}</td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("");
   $("#principles").innerHTML=PRINCIPLES.map(([k,h,p])=>`<div><span class="k">${k}</span><h3>${h}</h3><p>${p}</p></div>`).join("");
-  $("#pkgcards").innerHTML=PKGS.map(p=>`<div class="pcard"><h3>${p.name}</h3><div class="mods">${p.mods.map(pill).join("")}</div><p>${p.desc}</p></div>`).join("");
   $("#road").innerHTML=ROAD.map(([ph,h,items])=>`<div><span class="ph">${ph}</span><h3>${h}</h3><ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul></div>`).join("");
   $("#m-suite").addEventListener("click",()=>{state.mode="suite";applyBoard();});
   $("#m-solo").addEventListener("click",()=>{state.mode="solo";state.pkg=null;applyBoard();});
@@ -624,4 +755,147 @@ renderStatic(); renderCards(); renderDetail(); drawWires();
 if("ResizeObserver" in window){new ResizeObserver(()=>drawWires()).observe($("#canvas"));}
 else window.addEventListener("resize",drawWires);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawWires);
+
+/* ================= pricing & projection ================= */
+const MOD_PRICE={who:25,what:45,where:20,when:40,why:50,how:60,learn:40};
+const BUNDLE={starter:{price:59,setup:0},perf:{price:65,setup:9900},project:{price:85,setup:9900},hrd:{price:79,setup:9900},suite:{price:169,setup:39000}};
+const MIX={starter:.35,perf:.15,project:.15,hrd:.10,suite:.25};
+const SEG=[{id:"s",name:"S · 30–99 คน",emp:50,share:.50},{id:"m",name:"M · 100–299 คน",emp:150,share:.35},{id:"l",name:"L · 300+ คน",emp:500,share:.15}];
+const MIN_SEATS=30, WAGE=18000, COST_EMP=15, SETUP_COST=.6;
+const MONTHS=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const SCN=[{n:20,c:"var(--s1)"},{n:50,c:"var(--s2)"},{n:100,c:"var(--s3)"}];
+const MARKET=[
+  ["HumanOS","ต่อผู้ใช้ต่อเดือน","ฟรี ≤ 10 คน · Medium ฿50 / คน","HR + Payroll + OT","https://humanos.biz/en/pricing-eng/"],
+  ["empeo","แพ็กเกจรายปีต่อบริษัท + add-on ต่อคน","Lite ฿13,900 · Basic ฿28,900 · Pro ฿69,900 · Enterprise ฿179,000 ต่อปี · Timesheet +฿15, Performance +฿60 / คน / เดือน","HRM + Payroll, add-on แยก","https://www.empeo.com/en/pricing/"],
+  ["BetterHR","ต่อพนักงานต่อเดือน","ประมาณ ฿80 / คน (จากบทความรีวิว)","HR + Payroll + Attendance","https://www.hono.ai/blog/thailand-payroll-software"],
+  ["Zimyo","ต่อพนักงานต่อเดือน","เริ่ม ฿50 / คน","HRMS","https://zimyo.com/south-east/thailand"]
+];
+const disc=e=>e>=1000?.2:e>=300?.1:0;
+const seats=e=>Math.max(e,MIN_SEATS);
+const baht=n=>"฿"+Math.round(n).toLocaleString("th-TH");
+const mb=n=>n>=1e6?(n/1e6).toFixed(2)+" ล้าน":Math.round(n).toLocaleString("th-TH");
+const pkgName=id=>PKGS.find(p=>p.id===id).name;
+
+function renderPricing(){
+  $("#mod-prices").innerHTML=ORDER.map(k=>`<tr><td style="white-space:nowrap">${pill(k)} ${NODES[k].short||NODES[k].en}</td><td class="num">${MOD_PRICE[k]}</td></tr>`).join("");
+  $("#bundles").innerHTML=PKGS.map(p=>{const b=BUNDLE[p.id],sum=p.mods.reduce((a,k)=>a+MOD_PRICE[k],0),save=Math.round((1-b.price/sum)*100);
+    return `<div class="bcard${p.id==="suite"?" hl":""}"><h3>${p.name}</h3><div class="mods">${p.mods.map(pill).join("")}</div>
+      <div class="price">฿${b.price} <small>/ คน / เดือน</small></div>
+      <div class="was"><s>ซื้อแยก ฿${sum}</s><span class="save">ประหยัด ${save}%</span></div>
+      <p>${p.desc}</p><span class="meta">ค่าติดตั้ง ${b.setup?baht(b.setup):"ฟรี (ตั้งค่าเองใน 7 วัน)"}</span></div>`;}).join("");
+  $("#market").innerHTML=MARKET.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]} <span class="src">· <a href="${r[4]}" target="_blank" rel="noopener">ที่มา</a></span></td></tr>`).join("")+
+    `<tr class="us"><td><b>ของเรา</b></td><td>ต่อพนักงานต่อเดือน ขั้นต่ำ 30 คน</td><td>Standalone ฿20–60 · Bundle ฿59–169 / คน</td><td>HR + เวลา + KPI + โปรเจกต์ + E-Learning + P&amp;L ในระบบเดียว</td></tr>`;
+  const r=$("#calc-emp");r.addEventListener("input",calc);calc();
+}
+function calc(){
+  const e=+$("#calc-emp").value;$("#calc-emp-out").textContent=e.toLocaleString("th-TH");
+  $("#calc-rows").innerHTML=PKGS.map(p=>{const m=BUNDLE[p.id].price*seats(e)*(1-disc(e));
+    return `<tr><td>${p.name}</td><td class="num">${baht(m)}</td><td class="num">${baht(m*10)}</td><td class="num">${baht(m/e)}</td><td class="num">${(m/(e*WAGE)*100).toFixed(2)}%</td></tr>`;}).join("")+
+    (disc(e)?`<tr><td colspan="5" class="meta">รวมส่วนลดปริมาณ ${disc(e)*100}% แล้ว</td></tr>`:"");
+}
+
+function model(N,start,churn,prepay){
+  const W=MONTHS.reduce((a,_,m)=>a+(m>=start?m-start+1:0),0);
+  const out={mrr:Array(12).fill(0),rev:Array(12).fill(0),setup:Array(12).fill(0),cash:Array(12).fill(0),gp:Array(12).fill(0),cust:Array(12).fill(0),
+    pkg:{},seg:{},emp:0};
+  Object.keys(MIX).forEach(p=>out.pkg[p]={cust:0,rev:0});SEG.forEach(g=>out.seg[g.id]={cust:0,rev:0});
+  Object.keys(MIX).forEach(p=>SEG.forEach(g=>{
+    const share=MIX[p]*g.share, list=BUNDLE[p].price*seats(g.emp)*(1-disc(g.emp));
+    let A=0,P=0;
+    for(let m=0;m<12;m++){
+      const nw=m>=start?N*(m-start+1)/W*share:0;
+      A=A*(1-churn)+nw*(1-prepay);const nP=nw*prepay;P+=nP;
+      const sub=A*list+P*list*10/12, set=nw*BUNDLE[p].setup;
+      out.mrr[m]+=sub;out.rev[m]+=sub;out.setup[m]+=set;
+      out.cash[m]+=A*list+nP*list*10+set;
+      out.gp[m]+=sub-(A+P)*seats(g.emp)*COST_EMP+set*(1-SETUP_COST);
+      out.cust[m]+=A+P;
+      out.pkg[p].rev+=sub+set;out.seg[g.id].rev+=sub+set;
+    }
+    out.pkg[p].cust+=A+P;out.seg[g.id].cust+=A+P;out.emp+=(A+P)*g.emp;
+  }));
+  const s=a=>a.reduce((x,y)=>x+y,0);
+  out.tRev=s(out.rev);out.tSetup=s(out.setup);out.tCash=s(out.cash);out.tGp=s(out.gp);
+  return out;
+}
+
+let pjSel=100;
+function renderProjection(){
+  const start=+$("#pj-start").value, churn=+$("#pj-churn").value/100, prepay=+$("#pj-prepay").value/100;
+  $("#pj-churn-out").textContent=$("#pj-churn").value+"%";$("#pj-prepay-out").textContent=$("#pj-prepay").value+"%";
+  const R=SCN.map(s=>model(s.n,start,churn,prepay));
+  const rows=[
+    ["ลูกค้าที่ยังใช้งาน ณ ธ.ค.",r=>Math.round(r.cust[11])+" ราย"],
+    ["พนักงานที่อยู่บนระบบ",r=>Math.round(r.emp).toLocaleString("th-TH")+" คน"],
+    ["MRR เดือน ธ.ค.",r=>mb(r.mrr[11])+" บาท",true],
+    ["ARR run-rate (MRR ธ.ค. × 12)",r=>mb(r.mrr[11]*12)+" บาท",true],
+    ["รายได้ค่าบริการที่รับรู้ทั้งปี",r=>mb(r.tRev)+" บาท"],
+    ["ค่าติดตั้ง (one-time)",r=>mb(r.tSetup)+" บาท"],
+    ["รายได้รวมปี 2570",r=>mb(r.tRev+r.tSetup)+" บาท",true],
+    ["เงินสดรับทั้งปี (รวมจ่ายรายปีล่วงหน้า)",r=>mb(r.tCash)+" บาท"],
+    ["กำไรขั้นต้น",r=>mb(r.tGp)+" บาท ("+Math.round(r.tGp/(r.tRev+r.tSetup||1)*100)+"%)"],
+    ["รายได้เฉลี่ยต่อลูกค้าต่อเดือน (ธ.ค.)",r=>baht(r.mrr[11]/(r.cust[11]||1))]
+  ];
+  $("#kpi").innerHTML=rows.map(([l,f,big])=>`<tr><td>${l}</td>${R.map(r=>`<td class="sc num${big?" big":""}">${f(r)}</td>`).join("")}</tr>`).join("");
+  drawChart(R,start);
+  const sel=R[SCN.findIndex(s=>s.n===pjSel)];
+  const maxP=Math.max(...Object.values(sel.pkg).map(v=>v.rev)),maxS=Math.max(...Object.values(sel.seg).map(v=>v.rev));
+  $("#by-pkg").innerHTML=Object.entries(sel.pkg).sort((a,b)=>b[1].rev-a[1].rev).map(([p,v])=>`<tr><td>${pkgName(p)}</td><td class="num">${v.cust.toFixed(1)}</td><td class="num">${mb(v.rev)}</td><td class="bcell"><div class="bar" style="width:${v.rev/maxP*100}%"></div></td></tr>`).join("");
+  $("#by-seg").innerHTML=SEG.map(g=>{const v=sel.seg[g.id];return `<tr><td>${g.name}<div class="meta">สมมติ ${g.emp} คน</div></td><td class="num">${v.cust.toFixed(1)}</td><td class="num">${mb(v.rev)}</td><td class="bcell"><div class="bar" style="width:${v.rev/maxS*100}%"></div></td></tr>`;}).join("");
+  $("#by-q").innerHTML=[0,1,2,3].map(q=>{const r=a=>a.slice(q*3,q*3+3).reduce((x,y)=>x+y,0);
+    return `<tr><td>Q${q+1}/2570</td><td class="num">${sel.cust[q*3+2].toFixed(1)}</td><td class="num">${mb(r(sel.rev))}</td><td class="num">${mb(r(sel.setup))}</td><td class="num">${mb(r(sel.cash))}</td><td class="num">${mb(r(sel.gp))}</td></tr>`;}).join("");
+  SCN.forEach(s=>$("#sc-"+s.n).setAttribute("aria-pressed",s.n===pjSel));
+  $("#assume").innerHTML=[
+    `ลูกค้าใหม่เริ่มเข้าตั้งแต่ ${MONTHS[start]} 2570 และเพิ่มขึ้นแบบเส้นตรงทุกเดือน (เดือนหลังมากกว่าเดือนแรก)`,
+    `Mix แพ็กเกจ: ${Object.entries(MIX).map(([p,v])=>pkgName(p)+" "+v*100+"%").join(" · ")}`,
+    `ขนาดลูกค้า: ${SEG.map(g=>g.name+" "+g.share*100+"% (เฉลี่ย "+g.emp+" คน)").join(" · ")}`,
+    `ขั้นต่ำ 30 คน · ส่วนลดปริมาณ 300+ คน 10% และ 1,000+ คน 20%`,
+    `จ่ายรายปี ${Math.round(prepay*100)}%: จ่าย 10 เดือนล่วงหน้า รับรู้รายได้เฉลี่ยตลอดปี และไม่ยกเลิกระหว่างปี`,
+    `ยกเลิกรายเดือน ${(churn*100).toFixed(1)}% ใช้กับลูกค้าที่จ่ายรายเดือน`,
+    `ต้นทุน cloud + support ฿${COST_EMP} / คน / เดือน · ต้นทุนติดตั้ง ${SETUP_COST*100}% ของค่าติดตั้ง (ยังไม่รวมเงินเดือนทีมพัฒนาและการตลาด)`,
+    `ไม่รวม VAT และยังไม่รวม Payroll add-on`
+  ].map(t=>`<li>${t}</li>`).join("");
+}
+
+function drawChart(R,start){
+  const W=760,H=300,L=58,Rm=118,T=14,B=30,iw=W-L-Rm,ih=H-T-B;
+  const max=Math.max(...R.map(r=>Math.max(...r.mrr)))||1;
+  const step=[50e3,100e3,200e3,250e3,500e3,1e6,2e6].find(s=>max/s<=6)||1e6, ym=Math.ceil(max/step)*step;
+  const x=m=>L+iw*m/11, y=v=>T+ih*(1-v/ym);
+  let g="";
+  for(let v=0;v<=ym+1;v+=step){g+=`<line class="gl" x1="${L}" x2="${L+iw}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-8}" y="${y(v)+4}" text-anchor="end">${v>=1e6?(v/1e6).toFixed(v%1e6?1:0)+" ล้าน":v/1e3+"k"}</text>`;}
+  MONTHS.forEach((mn,m)=>{g+=`<text class="ax" x="${x(m)}" y="${H-10}" text-anchor="middle">${mn}</text>`;});
+  // direct end labels, nudged apart
+  const ends=R.map((r,i)=>({i,y:y(r.mrr[11])})).sort((a,b)=>a.y-b.y);
+  for(let k=1;k<ends.length;k++)if(ends[k].y-ends[k-1].y<16)ends[k].y=ends[k-1].y+16;
+  R.forEach((r,i)=>{
+    g+=`<path class="ln" style="stroke:${SCN[i].c}" d="${r.mrr.map((v,m)=>(m?"L":"M")+x(m).toFixed(1)+","+y(v).toFixed(1)).join("")}"/>`;
+    const e=ends.find(z=>z.i===i);
+    g+=`<circle cx="${x(11)}" cy="${y(r.mrr[11])}" r="4" style="fill:${SCN[i].c};stroke:var(--sheet);stroke-width:2"/><text class="el" x="${x(11)+10}" y="${e.y+4}">${SCN[i].n} ราย · ${mb(r.mrr[11])}</text>`;
+  });
+  g+=`<line class="xh" id="xh" x1="0" x2="0" y1="${T}" y2="${T+ih}" visibility="hidden"/><g id="xdots"></g><rect id="hit" x="${L}" y="${T}" width="${iw}" height="${ih}" fill="transparent"/>`;
+  const wrap=$("#chart");
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กราฟ MRR รายเดือนปี 2570 ของ 3 ฉากทัศน์">${g}</svg><div class="tip" id="tip" hidden></div>`;
+  const svg=wrap.querySelector("svg"),tip=$("#tip");
+  const move=ev=>{
+    const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+    const m=Math.max(0,Math.min(11,Math.round((p.x-L)/iw*11)));
+    const xh=$("#xh");xh.setAttribute("x1",x(m));xh.setAttribute("x2",x(m));xh.setAttribute("visibility","visible");
+    $("#xdots").innerHTML=R.map((r,i)=>`<circle cx="${x(m)}" cy="${y(r.mrr[m])}" r="4.5" style="fill:${SCN[i].c};stroke:var(--sheet);stroke-width:2"/>`).join("");
+    tip.hidden=false;
+    tip.innerHTML=`<b>${MONTHS[m]} 2570</b>${m<start?'<div class="meta">ยังไม่เริ่มขาย</div>':""}`+R.map((r,i)=>`<div class="r"><span><i class="sw" style="background:${SCN[i].c}"></i> ${SCN[i].n} ราย</span><span>${baht(r.mrr[m])}</span></div>`).join("");
+    const box=wrap.getBoundingClientRect(),sx=ev.clientX-box.left+wrap.scrollLeft;
+    tip.style.left=Math.min(sx+14,wrap.scrollWidth-180)+"px";tip.style.top="18px";
+  };
+  const leave=()=>{tip.hidden=true;$("#xh").setAttribute("visibility","hidden");$("#xdots").innerHTML="";};
+  const hit=$("#hit");hit.addEventListener("pointermove",move);hit.addEventListener("pointerdown",move);hit.addEventListener("pointerleave",leave);
+}
+
+function initProjection(){
+  $("#pj-start").innerHTML=MONTHS.slice(0,9).map((m,i)=>`<option value="${i}"${i===3?" selected":""}>${m} 2570</option>`).join("");
+  ["#pj-start","#pj-churn","#pj-prepay"].forEach(s=>$(s).addEventListener("input",renderProjection));
+  SCN.forEach(s=>$("#sc-"+s.n).addEventListener("click",()=>{pjSel=s.n;renderProjection();}));
+  renderProjection();
+}
+renderPricing(); initProjection();
 </script>
