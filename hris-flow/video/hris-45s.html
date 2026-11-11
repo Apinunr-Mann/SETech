@@ -1,0 +1,212 @@
+<title>HRIS 45s Video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Itim&display=swap">
+<style>
+/* Source for the 45-second HRIS video: one 1280×720 frame; every motion is a CSS animation on one shared clock so frames can be rendered deterministically */
+:root{
+  color-scheme:dark;
+  --stage:#141729; --panel:#1C2038; --card:#1F2440; --line:#2C3155; --ink:#EEF0FA; --ink-2:#B4B9D6; --muted:#7F86AB; --rule:#1A1E35;
+  --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68; --learn:#FF8A4C;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --good:#5CCB68; --bad:#FF8A80;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-hand:"Itim","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#0C0E18}
+#frame{position:relative;width:1280px;height:720px;overflow:hidden;color:var(--ink);font-family:var(--f-body);
+  background-color:var(--stage);background-image:repeating-linear-gradient(to bottom,transparent 0 39px,var(--rule) 39px 40px)}
+.brand{position:absolute;left:40px;top:26px;display:flex;gap:10px;align-items:center;z-index:4}
+.brand b{border:2.5px solid var(--ink);padding:0 9px;border-radius:3px;font-family:var(--f-display);font-size:18px}
+.brand span{font-family:var(--f-mono);font-size:13px;letter-spacing:.12em;color:var(--muted)}
+.prog{position:absolute;left:0;bottom:0;height:5px;width:100%;background:var(--ink);transform-origin:left;animation:grow 45s linear both;z-index:4}
+.scene{position:absolute;inset:0;padding:84px 80px 110px;display:flex;flex-direction:column;gap:22px}
+.cap{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);white-space:nowrap;font-size:22px;background:rgba(8,10,20,.85);padding:8px 22px;border-radius:10px}
+.eyebrow{font-family:var(--f-mono);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.h{font-family:var(--f-display);font-weight:700;font-size:44px;line-height:1.18;margin:0;max-width:1120px}
+.big{font-family:var(--f-display);font-weight:700;font-size:74px;line-height:1.1;margin:0;max-width:1120px}
+.big em{font-style:normal;color:var(--what)}
+.lead{font-size:24px;color:var(--ink-2);margin:0}
+.pill{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:16px;letter-spacing:.08em;padding:2px 10px;border-radius:4px;border:2px solid currentColor}
+
+@keyframes fin{from{opacity:0}}
+@keyframes fout{to{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}}
+@keyframes pop{from{opacity:0;transform:scale(.8)}}
+@keyframes drop{from{opacity:0;transform:translateY(-60px) rotate(-10deg)}}
+@keyframes grow{from{transform:scaleX(0)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+
+.pins{display:flex;gap:20px}
+.pins span{width:34px;height:40px;color:var(--k)}
+.pins svg{width:100%;height:100%}
+
+.pains{display:flex;flex-direction:column;gap:14px}
+.pain{display:grid;grid-template-columns:1fr 50px 1fr;border-radius:14px;overflow:hidden;border:1px solid var(--line);font-size:23px}
+.pain>div{padding:14px 20px}
+.pain .p{background:color-mix(in srgb,var(--bad) 15%,var(--stage))}
+.pain .s{background:color-mix(in srgb,var(--good) 15%,var(--stage))}
+.pain .a{display:flex;align-items:center;justify-content:center;background:var(--panel);color:var(--muted)}
+
+.mods{display:grid;grid-template-columns:repeat(5,1fr);column-gap:22px;row-gap:28px}
+.pcard{position:relative;background:var(--card);border-radius:18px;padding:30px 12px 12px;box-shadow:0 14px 30px rgba(0,0,0,.45)}
+.pcard{transform:rotate(var(--r,0deg))}
+.pcard .pin{position:absolute;top:7px;left:50%;width:22px;height:26px;transform:translateX(-50%);color:var(--k)}
+.pcard .inner{display:block;border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--k) 12%,var(--card));border:1px solid color-mix(in srgb,var(--k) 30%,var(--card))}
+.pcard .row{display:flex;justify-content:space-between;align-items:center}
+.pcard .n{font-family:var(--f-hand);font-size:36px;line-height:1;color:var(--k)}
+.pcard .w{font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.12em;color:var(--k);border:1.5px solid currentColor;border-radius:4px;padding:0 6px}
+.pcard .t{display:block;font-family:var(--f-display);font-weight:600;font-size:20px;margin-top:8px}
+.mods .learn{grid-column:1;grid-row:2}.mods .how{grid-column:4;grid-row:2}
+.mods .how .inner{border-style:dashed;border-width:2px}
+.mods .txt{grid-column:2 / span 2;grid-row:2;align-self:center;font-size:24px;color:var(--ink-2);padding-left:10px}
+.mods .txt b{color:var(--ink);font-family:var(--f-display)}
+
+.loop{display:grid;grid-template-columns:520px 1fr;gap:60px;align-items:center}
+.loop svg{width:520px;height:auto;overflow:visible}
+.arc{fill:none;stroke-width:3.5;stroke-dasharray:1;stroke-dashoffset:1}
+.loop text{font-family:var(--f-body);fill:var(--ink)}
+.side{display:flex;flex-direction:column;gap:18px}
+.side .k{font-family:var(--f-display);font-weight:700;font-size:40px;line-height:1.2}
+.side p{margin:0;font-size:23px;color:var(--ink-2)}
+
+.price{display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:center}
+.price svg{width:100%;height:auto;overflow:visible}
+.price text{font-family:var(--f-body);fill:var(--ink)}
+.bar-r{transform-box:fill-box;transform-origin:left center}
+.callout{background:var(--panel);border:2px solid var(--ink);border-radius:18px;padding:24px 26px;display:flex;flex-direction:column;gap:10px}
+.callout .v{font-family:var(--f-display);font-weight:700;font-size:66px;line-height:1}
+.callout .v small{font-size:20px;color:var(--muted);font-weight:500}
+.callout p{margin:0;font-size:19px;color:var(--ink-2)}
+
+.proj{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center}
+.proj svg{width:100%;height:auto;overflow:visible}
+.proj text{font-family:var(--f-body);fill:var(--ink)}
+.ln{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
+.kpi{display:flex;flex-direction:column;gap:14px}
+.hero{background:var(--panel);border:2px solid var(--s3);border-radius:18px;padding:20px 24px}
+.hero .l{font-size:18px;color:var(--ink-2)}
+.hero .v{font-family:var(--f-display);font-weight:700;font-size:64px;line-height:1.05;font-variant-numeric:tabular-nums}
+.hero .v small{font-size:22px;color:var(--muted)}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:16px;color:var(--ink-2)}
+.mini b{display:block;font-family:var(--f-display);font-size:30px;color:var(--ink);font-variant-numeric:tabular-nums}
+.sw{display:inline-block;width:16px;height:5px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.note{font-size:15px;color:var(--muted)}
+
+.close{margin:auto 0;display:flex;flex-direction:column;gap:26px}
+.asks{display:flex;gap:14px;flex-wrap:wrap}
+.asks span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 18px;font-size:20px}
+</style>
+
+<div id="frame"></div>
+
+<script>
+/* ---------- data (same model and figures as the HRIS document) ---------- */
+const MODS=[["who","WHO","Employee Data"],["what","WHAT","JD + KPI"],["where","WHERE","Company + Culture"],["when","WHEN","Check-in · Leave"],["why","WHY","Timeline + Progress"],["how","HOW","ERP + Cash Flow"],["learn","HRD","E-Learning"]];
+const PKGS=[["HR Starter",59,85],["Performance",65,90],["Project & Manpower",85,115],["Learning (HRD)",79,110],["Full Suite",169,280]];
+const BUNDLE={starter:{price:59,setup:0},perf:{price:65,setup:9900},project:{price:85,setup:9900},hrd:{price:79,setup:9900},suite:{price:169,setup:39000}};
+const MIX={starter:.35,perf:.15,project:.15,hrd:.10,suite:.25};
+const SEG=[{emp:50,share:.50},{emp:150,share:.35},{emp:500,share:.15}];
+const disc=e=>e>=1000?.2:e>=300?.1:0, seats=e=>Math.max(e,30);
+function model(N,start=3,churn=.01,prepay=.4){
+  const W=[...Array(12)].reduce((a,_,m)=>a+(m>=start?m-start+1:0),0);const mrr=Array(12).fill(0);
+  Object.keys(MIX).forEach(p=>SEG.forEach(g=>{const share=MIX[p]*g.share,list=BUNDLE[p].price*seats(g.emp)*(1-disc(g.emp));let A=0,P=0;
+    for(let m=0;m<12;m++){const nw=m>=start?N*(m-start+1)/W*share:0;A=A*(1-churn)+nw*(1-prepay);P+=nw*prepay;mrr[m]+=A*list+P*list*10/12;}}));
+  return mrr;
+}
+const R=[20,50,100].map(n=>model(n));
+const ARR=R.map(r=>r[11]*12/1e6);
+
+/* ---------- timeline helpers (absolute seconds) ---------- */
+const a=(name,start,dur,fill="backwards",ease="cubic-bezier(.2,.8,.2,1)")=>`${name} ${dur}s ${ease} ${start}s ${fill}`;
+const st=(...anims)=>`style="animation:${anims.join(",")}"`;
+const scene=(s,e,body,cap)=>`<section class="scene" ${st(a("fin",s,.45),a("fout",e-.45,.45,"forwards","ease"))}>${body}</section>
+  <div class="cap" ${st(a("fin",s+.3,.4),a("fout",e-.45,.45,"forwards","ease"))}>${cap}</div>`;
+const PIN=`<svg class="pin" viewBox="0 0 24 28"><path fill="currentColor" d="M7 2h10v2l-1.6 1.4.9 6.1 3.2 2.6V16H13.2l-.7 9.5h-1L10.8 16H4.5v-1.9l3.2-2.6.9-6.1L7 4z"/></svg>`;
+
+/* S1 0–5.5 */
+const s1=scene(0,5.5,`<div class="close">
+  <span class="eyebrow" ${st(a("rise",.2,.7))}>HRIS · 5W1H + HRD</span>
+  <p class="big" ${st(a("rise",.5,.8))}>ระบบ HR ที่เชื่อม <em>คน → เวลา → งาน → กำไร</em></p>
+  <p class="lead" ${st(a("rise",1.3,.7))}>7 โมดูล · ขายแยกหรือขายเป็นชุด · Subscription รายเดือน</p>
+  <div class="pins">${MODS.map((m,i)=>`<span style="--k:var(--${m[0]});animation:${a("drop",1.9+i*.2,.7,"backwards","cubic-bezier(.2,.9,.3,1.3)")}">${PIN}</span>`).join("")}</div></div>`,
+ "แพลตฟอร์ม HR ที่ต่อข้อมูลคนไปถึงกำไรขาดทุนขององค์กร");
+
+/* S2 5.5–12 */
+const pains=[["ต้องซื้อแพ็กเกจใหญ่ ราคาต่อหัวสูง","ซื้อทีละโมดูล เริ่มเล็กแล้วขยาย"],["ใช้ยาก ต้องอบรม พนักงานไม่ใช้","ใช้ผ่าน LINE จบใน 3 แตะ"],["ข้อมูล HR ไม่เชื่อมผลธุรกิจ","คน → เวลา → โปรเจกต์ → P&L"],["ติดตั้งนาน 3-6 เดือน","นำเข้า Excel เดิม go-live 7 วัน"]];
+const s2=scene(5.5,12,`<span class="eyebrow" ${st(a("rise",5.8,.6))}>ปัญหาในตลาด</span>
+  <h2 class="h" ${st(a("rise",6,.7))}>ระบบ HR วันนี้ ยังแก้ไม่ตรงจุด</h2>
+  <div class="pains">${pains.map((p,i)=>`<div class="pain" ${st(a("rise",6.8+i*1.15,.6))}><div class="p">${p[0]}</div><div class="a">→</div><div class="s">${p[1]}</div></div>`).join("")}</div>`,
+ "เราแก้ 4 ปัญหาที่ลูกค้าเจอกับระบบ HR ในตลาด");
+
+/* S3 12–20 */
+const rot=[-3,2.5,-2,3,-2.5,1.5,-2];
+const s3=scene(12,20,`<span class="eyebrow" ${st(a("rise",12.3,.6))}>ผลิตภัณฑ์</span>
+  <h2 class="h" ${st(a("rise",12.5,.7))}>7 โมดูล ตอบครบ 5W1H และพัฒนาคน</h2>
+  <div class="mods">${MODS.map((m,i)=>`<div class="${m[0]}" style="--k:var(--${m[0]});animation:${a("drop",13.2+i*.55,.75,"backwards","cubic-bezier(.2,.9,.3,1.3)")}"><div class="pcard" style="--r:${rot[i]}deg">${PIN}
+    <span class="inner"><span class="row"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="w">${m[1]}</span></span><span class="t">${m[2]}</span></span></div></div>`).join("")}
+    <div class="txt" ${st(a("rise",17.3,.7))}><b>ทุกโมดูลขายแยกได้</b><br>ใช้ข้อมูลพนักงานชุดเดียวกัน ไม่ต้องย้ายข้อมูลเมื่อซื้อเพิ่ม</div></div>`,
+ "ใคร ทำอะไร ที่ไหน เมื่อไร ทำไม อย่างไร และระบบ E-Learning");
+
+/* S4 20–28 */
+const ring=[["who","WHO","คน"],["when","WHEN","เวลา"],["why","WHY","โปรเจกต์"],["how","HOW","P&L"],["what","WHAT","KPI"],["learn","HRD","พัฒนาคน"]];
+const cx=260,cy=230,rr=180,pt=i=>{const t=-Math.PI/2+i*Math.PI/3;return [cx+rr*Math.cos(t),cy+rr*Math.sin(t)];};
+let ringSvg="";
+ring.forEach((_,i)=>{const [x1,y1]=pt(i),[x2,y2]=pt((i+1)%6),mx=(x1+x2)/2,my=(y1+y2)/2;
+  ringSvg+=`<path class="arc" pathLength="1" d="M${x1},${y1} Q${mx+(mx-cx)*.35},${my+(my-cy)*.35} ${x2},${y2}" style="stroke:var(--${ring[(i+1)%6][0]});animation:${a("draw",21.4+i*.85,.8,"both","ease-in-out")}"/>`;});
+ring.forEach(([k,w,t],i)=>{const [x,y]=pt(i);ringSvg+=`<g style="transform-box:fill-box;transform-origin:center;animation:${a("pop",20.4+i*.12,.5)}"><circle cx="${x}" cy="${y}" r="44" style="fill:var(--card);stroke:var(--${k});stroke-width:3.5"/><text x="${x}" y="${y-1}" text-anchor="middle" style="font-family:var(--f-display);font-weight:700;font-size:19px;fill:var(--${k})">${w}</text><text x="${x}" y="${y+20}" text-anchor="middle" style="font-size:14px;fill:var(--ink-2)">${t}</text></g>`;});
+ringSvg+=`<g style="transform-box:fill-box;transform-origin:center;animation:${a("pop",20.3,.5)}"><text x="${cx}" y="${cy-4}" text-anchor="middle" style="font-family:var(--f-display);font-weight:700;font-size:24px;fill:var(--where)">WHERE</text><text x="${cx}" y="${cy+20}" text-anchor="middle" style="font-size:15px;fill:var(--ink-2)">กฎ · ค่านิยม</text></g>`;
+const s4=scene(20,28,`<span class="eyebrow" ${st(a("rise",20.2,.6))}>จุดต่าง</span>
+  <div class="loop"><svg viewBox="0 0 520 460">${ringSvg}</svg>
+  <div class="side"><span class="k" ${st(a("rise",21,.7))}>ข้อมูลชุดเดียว<br>ไหลเป็นวงจร</span>
+  <p ${st(a("rise",22.6,.6))}>เวลาทำงาน → ต้นทุนโปรเจกต์</p><p ${st(a("rise",23.6,.6))}>ต้นทุน + รายได้ → P&amp;L</p><p ${st(a("rise",24.6,.6))}>เป้า P&amp;L → KPI</p><p ${st(a("rise",25.6,.6))}>ช่องว่าง KPI → แผนพัฒนาคน</p></div></div>`,
+ "ไม่ต้องกรอกซ้ำ ผู้บริหารเห็นว่าคนและเวลาสร้างกำไรเท่าไร");
+
+/* S5 28–34.5 */
+const PW=720,PL=200,sc=v=>PL+(PW-PL-80)*v/180,rowH=62;
+let priceSvg=`<rect x="${sc(50)}" y="0" width="${sc(80)-sc(50)}" height="${PKGS.length*rowH}" style="fill:rgba(238,240,250,.15);animation:${a("fin",28.8,.6)}"/>
+  <text x="${(sc(50)+sc(80))/2}" y="${PKGS.length*rowH+26}" text-anchor="middle" style="font-size:15px;fill:var(--muted);animation:${a("fin",28.8,.6)}">ช่วงราคาคู่แข่ง ฿50–80</text>`;
+PKGS.forEach((p,i)=>{const y=i*rowH+12;const last=i===PKGS.length-1;
+  priceSvg+=`<text x="${PL-14}" y="${y+25}" text-anchor="end" style="font-size:19px;font-weight:600">${p[0]}</text>
+  <rect class="bar-r" x="${PL}" y="${y}" width="${sc(p[1])-PL}" height="36" rx="4" style="fill:${last?"var(--ink)":"var(--ink-2)"};animation:${a("grow",29.2+i*.45,.8)}"/>
+  <text x="${sc(p[1])+12}" y="${y+25}" style="font-family:var(--f-display);font-weight:700;font-size:21px;animation:${a("fin",29.7+i*.45,.4)}">฿${p[1]}</text>`;});
+const s5=scene(28,34.5,`<span class="eyebrow" ${st(a("rise",28.2,.6))}>ราคา · บาท / คน / เดือน</span>
+  <h2 class="h" ${st(a("rise",28.4,.7))}>ราคาแข่งขันได้ ซื้อแยกหรือซื้อเป็นชุด</h2>
+  <div class="price"><svg viewBox="0 0 ${PW} ${PKGS.length*rowH+34}">${priceSvg}</svg>
+  <div class="callout" ${st(a("pop",31.9,.6,"backwards","cubic-bezier(.2,.9,.3,1.3)"))}><span class="note">Full Suite · ครบ 7 โมดูล</span><span class="v">฿169 <small>/ คน / เดือน</small></span><p>ประหยัด 40% เทียบซื้อแยก</p><p>ขั้นต่ำ 30 คน · จ่ายรายปีฟรี 2 เดือน</p></div></div>`,
+ "เริ่มต้น ฿59 อยู่ในช่วงราคาคู่แข่ง Full Suite แทนระบบหลายเจ้า");
+
+/* S6 34.5–41 */
+const CW=640,CH=320,CL=56,CT=20,CB=34,iw=CW-CL-150,ih=CH-CT-CB,ym=1.4e6,X=m=>CL+iw*m/11,Y=v=>CT+ih*(1-v/ym);
+let projSvg="";[0,.5e6,1e6].forEach(v=>{projSvg+=`<line x1="${CL}" x2="${CL+iw}" y1="${Y(v)}" y2="${Y(v)}" style="stroke:var(--rule);stroke-width:1.5"/><text x="${CL-10}" y="${Y(v)+5}" text-anchor="end" style="font-size:14px;fill:var(--muted)">${v?v/1e6+" ล้าน":"0"}</text>`;});
+["ม.ค.","เม.ย.","ก.ค.","ต.ค.","ธ.ค."].forEach((l,k)=>{projSvg+=`<text x="${X([0,3,6,9,11][k])}" y="${CH-6}" text-anchor="middle" style="font-size:14px;fill:var(--muted)">${l}</text>`;});
+const ends=R.map((r,i)=>({i,y:Y(r[11])})).sort((p,q)=>p.y-q.y);for(let k=1;k<3;k++)if(ends[k].y-ends[k-1].y<22)ends[k].y=ends[k-1].y+22;
+R.forEach((r,i)=>{projSvg+=`<path class="ln" pathLength="1" style="stroke:var(--s${i+1});animation:${a("draw",35.3+i*.3,2.4,"both","ease-in-out")}" d="${r.map((v,m)=>(m?"L":"M")+X(m)+","+Y(v)).join("")}"/>
+  <text x="${X(11)+12}" y="${ends.find(e=>e.i===i).y+5}" style="font-size:16px;animation:${a("fin",37.6+i*.3,.4)}">${[20,50,100][i]} ราย · ${(r[11]/1e6).toFixed(2)} ล้าน/เดือน</text>`;});
+const s6=scene(34.5,41,`<span class="eyebrow" ${st(a("rise",34.7,.6))}>Projection · ถึง ธ.ค. 2570</span>
+  <h2 class="h" ${st(a("rise",34.9,.7))}>ถ้าปิดลูกค้าได้ 20 / 50 / 100 ราย</h2>
+  <div class="proj"><div><svg viewBox="0 0 ${CW} ${CH}">${projSvg}</svg><span class="note">สมมติฐาน: เริ่มขาย เม.ย. 2570 · ยกเลิก 1%/เดือน · จ่ายรายปี 40%</span></div>
+  <div class="kpi"><div class="hero" ${st(a("pop",35.8,.6))}><div class="l"><i class="sw" style="background:var(--s3)"></i>ARR เมื่อปิดได้ 100 ราย</div><div class="v"><span id="cnt">0.0</span> <small>ล้านบาท</small></div></div>
+  <div class="mini"><div ${st(a("rise",37.4,.6))}><i class="sw" style="background:var(--s2)"></i>50 ราย<b>${ARR[1].toFixed(1)} ล้าน</b></div><div ${st(a("rise",37.8,.6))}><i class="sw" style="background:var(--s1)"></i>20 ราย<b>${ARR[0].toFixed(1)} ล้าน</b></div></div></div></div>`,
+ "100 ราย ≈ ARR "+ARR[2].toFixed(1)+" ล้านบาท ณ สิ้นปี 2570 (รายได้ประจำ × 12)");
+
+/* S7 41–45 */
+const s7=scene(41,45.6,`<div class="close"><span class="eyebrow" ${st(a("rise",41.2,.6))}>สรุป</span>
+  <p class="big" style="font-size:62px;animation:${a("rise",41.4,.7)}">ขายได้ทั้งแยกและชุด ราคาแข่งขันได้ เชื่อมคนถึงกำไร</p>
+  <div class="asks" ${st(a("rise",42.3,.6))}><span>ขอตัดสินใจ: Payroll add-on</span><span>เร่ง Full Suite</span><span>Pilot ทดสอบราคา 5-10 ราย</span></div></div>`,
+ "พร้อมเดินหน้า: ขอ 3 การตัดสินใจเพื่อเริ่ม pilot");
+
+document.getElementById("frame").innerHTML=`<div class="brand"><b>HRIS</b><span>CEO BRIEFING · 45s</span></div>${s1+s2+s3+s4+s5+s6+s7}<div class="prog"></div>`;
+
+/* ---------- shared clock: renderer calls setTime(ms); in a browser it plays itself ---------- */
+const cnt=document.getElementById("cnt");
+function setTime(ms){
+  document.getAnimations().forEach(an=>{an.pause();an.currentTime=ms;});
+  const p=Math.min(1,Math.max(0,(ms/1000-35.9)/2.2)),e=1-Math.pow(1-p,3);cnt.textContent=(ARR[2]*e).toFixed(1);
+}
+window.setTime=setTime;
+if(!/render/.test(location.hash)){let t0=performance.now();(function tick(){const ms=(performance.now()-t0)%45000;setTime(ms);requestAnimationFrame(tick);})();}
+</script>
