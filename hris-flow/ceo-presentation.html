@@ -1,0 +1,422 @@
+<title>HRIS CEO Briefing</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Itim&display=swap">
+<style>
+/* Layout: a video player — 16:9 stage (1280×720 design space, scaled to fit) over a control bar; deliberately one dark "screening room" look */
+:root{
+  color-scheme:dark;
+  --room:#0C0E18; --stage:#141729; --panel:#1C2038; --line:#2C3155; --ink:#EEF0FA; --ink-2:#B4B9D6; --muted:#7F86AB;
+  --who:#35C9C6; --what:#F5A524; --where:#B57BFF; --when:#6B9BFF; --why:#FF6B9A; --how:#5CCB68; --learn:#FF8A4C;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --good:#5CCB68; --bad:#FF8A80; --paper-line:#1A1E35;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hand:"Itim","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--room);color:var(--ink);font-family:var(--f-body);line-height:1.5}
+.app{min-height:100%;display:flex;flex-direction:column;gap:12px;padding-block:14px 18px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1400px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px 16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.boxed{border:2.5px solid var(--ink);padding:0 9px;border-radius:3px;font-family:var(--f-display);font-weight:700;font-size:17px}
+.top .t{font-family:var(--f-display);font-weight:600;font-size:16px}
+.top a{color:var(--ink-2);font-size:13px}
+
+.screen{position:relative;width:100%;height:56vw;max-width:100%;margin:0 auto;background:var(--stage);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;
+  background-color:var(--stage);background-image:repeating-linear-gradient(to bottom,transparent 0 39px,var(--paper-line) 39px 40px)}
+.scene{position:absolute;inset:0;padding:40px 72px 150px;display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-family:var(--f-mono);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.h{font-family:var(--f-display);font-weight:700;font-size:40px;line-height:1.18;margin:0;text-wrap:balance;max-width:1080px}
+.lead{font-size:22px;color:var(--ink-2);max-width:900px;margin:0}
+
+/* subtitles */
+.cap{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:min(1120px,94%);text-align:center;font-size:18px;line-height:1.45;
+  background:rgba(8,10,20,.82);color:var(--ink);padding:10px 20px;border-radius:10px;z-index:5}
+.nocap .cap{display:none}
+
+/* overlay start */
+.start{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:0 28px 96px;z-index:6;pointer-events:none}
+.start button{pointer-events:auto;all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--room);font-family:var(--f-display);font-weight:700;font-size:20px;padding:14px 24px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.start button:focus-visible{outline:3px solid var(--when);outline-offset:3px}
+.start svg{width:20px;height:20px}
+
+/* controls */
+.bar{display:flex;flex-direction:column;gap:10px}
+.segs{display:flex;gap:4px}
+.seg{all:unset;cursor:pointer;flex:1 1 0;height:22px;display:flex;align-items:center;position:relative}
+.seg i{display:block;width:100%;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.seg i b{display:block;height:100%;width:0;background:var(--ink)}
+.seg:hover i{height:8px}
+.seg:focus-visible{outline:2px solid var(--when);outline-offset:2px;border-radius:4px}
+.seg .tt{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--panel);border:1px solid var(--line);font-size:12.5px;padding:3px 8px;border-radius:6px;display:none;z-index:3}
+.seg:hover .tt{display:block}
+.ctl{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap}
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-size:14px;color:var(--ink)}
+.btn:hover{border-color:var(--ink-2)}
+.btn:focus-visible{outline:2px solid var(--when);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--room);border-color:var(--ink)}
+.btn svg{width:16px;height:16px}
+.btn.play{padding:7px 16px;font-weight:600}
+.now{font-size:14px;color:var(--ink-2);margin-right:auto;min-width:0}
+.now b{color:var(--ink);font-family:var(--f-display)}
+.hint{font-size:12px;color:var(--muted)}
+.voice-note{font-size:12.5px;color:var(--muted)}
+
+/* motion primitives: base style is the final state, so reduced motion simply shows it */
+.in{animation:rise .7s cubic-bezier(.2,.8,.2,1) backwards}
+.pop{animation:pop .55s cubic-bezier(.2,.9,.3,1.35) backwards}
+.drop{animation:drop .7s cubic-bezier(.2,.9,.3,1.25) backwards}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}}
+@keyframes pop{from{opacity:0;transform:scale(.85)}}
+@keyframes drop{from{opacity:0;transform:translateY(-40px) rotate(-8deg)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.still #host *{animation:none!important}
+.still .arc,.still .ln{stroke-dashoffset:0!important}
+.paused .stage *,.paused .stage *::before,.paused .stage *::after{animation-play-state:paused!important}
+
+/* shared bits */
+.pill{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.08em;padding:1px 8px;border-radius:4px;border:2px solid currentColor}
+.pcard{position:relative;background:#1F2440;border-radius:18px;padding:30px 12px 12px;box-shadow:0 14px 30px rgba(0,0,0,.4);transform:rotate(var(--r,0deg));cursor:pointer;transition:transform .35s}
+.pcard:hover,.pcard.sel{transform:rotate(0) translateY(-6px)}
+.pcard.sel{box-shadow:0 14px 30px rgba(0,0,0,.4),0 0 0 3px var(--k)}
+.pcard .pin{position:absolute;top:7px;left:50%;width:22px;height:26px;transform:translateX(-50%);color:var(--k)}
+.pcard .inner{display:block;border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--k) 12%,#1F2440);border:1px solid color-mix(in srgb,var(--k) 30%,#1F2440)}
+.pcard .row{display:flex;justify-content:space-between;align-items:center}
+.pcard .n{font-family:var(--f-hand);font-size:34px;line-height:1;color:var(--k)}
+.pcard .w{font-family:var(--f-display);font-weight:700;font-size:13px;letter-spacing:.12em;color:var(--k);border:1.5px solid currentColor;border-radius:4px;padding:0 6px}
+.pcard .t{display:block;font-family:var(--f-display);font-weight:600;font-size:19px;margin-top:8px}
+.note{font-size:15px;color:var(--muted)}
+
+/* scene specifics */
+.title-wrap{margin:auto 0;display:flex;flex-direction:column;gap:24px}
+.title-wrap .big{font-family:var(--f-display);font-weight:700;font-size:72px;line-height:1.08;margin:0;max-width:1100px;text-wrap:balance}
+.title-wrap .big em{font-style:normal;color:var(--what)}
+.pins{display:flex;gap:18px;align-items:center}
+.pins span{width:30px;height:36px;color:var(--k)}
+.meta{font-family:var(--f-mono);font-size:15px;color:var(--muted);letter-spacing:.06em}
+
+.pains{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pain{display:grid;grid-template-columns:1fr 40px 1fr;border-radius:14px;overflow:hidden;border:1px solid var(--line);font-size:19px}
+.pain>div{padding:16px 18px}
+.pain .p{background:color-mix(in srgb,var(--bad) 14%,var(--stage))}
+.pain .s{background:color-mix(in srgb,var(--good) 14%,var(--stage))}
+.pain .a{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:20px;background:var(--panel)}
+.pain small{display:block;font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+
+.mods{display:grid;grid-template-columns:repeat(5,1fr);column-gap:22px;row-gap:26px;align-items:start}
+.mods .learn{grid-column:1;grid-row:2}.mods .how{grid-column:3 / span 2;justify-self:center;width:calc(50% - 11px);grid-row:2}
+.mods .how .inner{border-style:dashed;border-width:2px}
+.modinfo{grid-column:2 / span 1;grid-row:2;align-self:center;font-size:17px;color:var(--ink-2);min-height:120px}
+.modinfo b{display:block;font-family:var(--f-display);font-size:20px;color:var(--ink)}
+.mods .info2{grid-column:5;grid-row:2}
+
+.loop{display:grid;grid-template-columns:540px 1fr;gap:70px;align-items:center;flex:1}
+.loop svg{width:520px;height:auto;overflow:visible}
+.loop .arc{fill:none;stroke-width:3;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease forwards}
+.loop .nd circle{stroke-width:3}
+.loop text{font-family:var(--f-body);fill:var(--ink)}
+.loop .lb{font-size:14px;fill:var(--ink-2)}
+.loop .nw{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.06em}
+.steps{display:flex;flex-direction:column;gap:12px;font-size:19px}
+.steps div{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline}
+
+.princ{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.princ div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px}
+.princ .k{font-family:var(--f-hand);font-size:54px;line-height:1;grid-row:span 2;color:var(--what)}
+.princ h3{margin:0;font-family:var(--f-display);font-size:22px}
+.princ p{margin:0;color:var(--ink-2);font-size:16px}
+
+.price{display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start}
+.price svg{width:100%;height:auto;overflow:visible}
+.price .bar-r{animation:grow 1s cubic-bezier(.2,.8,.2,1) backwards;transform-box:fill-box;transform-origin:left center}
+@keyframes grow{from{transform:scaleX(0)}}
+.price text{font-family:var(--f-body);fill:var(--ink)}
+.price .ax{fill:var(--muted);font-size:13px}
+.callout{background:var(--panel);border:2px solid var(--ink);border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:10px}
+.callout .v{font-family:var(--f-display);font-weight:700;font-size:56px;line-height:1}
+.callout .v small{font-size:18px;font-weight:500;color:var(--muted)}
+.callout ul{margin:0;padding-left:20px;color:var(--ink-2);font-size:16px;display:flex;flex-direction:column;gap:4px}
+
+.proj{display:grid;grid-template-columns:1fr 470px;gap:32px;align-items:start}
+.proj svg{width:100%;height:auto;overflow:visible}
+.proj .ln{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.2s ease forwards}
+.proj text{font-family:var(--f-body);fill:var(--ink)}
+.proj .ax{fill:var(--muted);font-size:13px}
+.proj .gl{stroke:var(--paper-line);stroke-width:1.5}
+.kgrid{display:grid;grid-template-columns:auto repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-variant-numeric:tabular-nums}
+.kgrid>div{padding:8px 12px;border-bottom:1px solid var(--line);font-size:15px}
+.kgrid .hd{font-family:var(--f-display);font-weight:600;background:var(--panel);text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.kgrid .hd.l{justify-content:flex-start}
+.kgrid .v{text-align:right;font-family:var(--f-display);font-weight:600;font-size:18px}
+.kgrid .r{color:var(--ink-2)}
+.kgrid .sel{background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.sw{display:inline-block;width:14px;height:4px;border-radius:2px}
+
+.road{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:30px}
+.road::before{content:"";position:absolute;left:0;right:0;top:9px;height:3px;background:var(--line)}
+.road .fill{position:absolute;left:0;top:9px;height:3px;width:100%;background:var(--ink);transform-origin:left;animation:grow 4s linear backwards}
+.road>div.ph{position:relative;padding-top:34px;display:flex;flex-direction:column;gap:6px}
+.road>div.ph::before{content:"";position:absolute;top:0;left:0;width:21px;height:21px;border-radius:50%;background:var(--stage);border:3px solid var(--ink)}
+.road .when{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.road h3{margin:0;font-family:var(--f-display);font-size:21px}
+.road ul{margin:0;padding-left:18px;font-size:15px;color:var(--ink-2)}
+
+.asks{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ask{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.ask .n{font-family:var(--f-hand);font-size:48px;line-height:1;color:var(--what)}
+.ask h3{margin:0;font-family:var(--f-display);font-size:23px}
+.ask p{margin:0;color:var(--ink-2);font-size:16.5px}
+.ask .opt{font-size:14.5px;color:var(--ink);border-top:1px dashed var(--line);padding-top:10px}
+
+.close{margin:auto 0;display:flex;flex-direction:column;gap:20px}
+.close .big{font-family:var(--f-display);font-weight:700;font-size:58px;line-height:1.12;margin:0;max-width:1050px}
+.close a{color:var(--ink);font-size:20px}
+.close .row{display:flex;gap:14px;flex-wrap:wrap}
+
+@media (prefers-reduced-motion:reduce){
+  .in,.pop,.drop,.price .bar-r,.road .fill{animation:none}
+  .loop .arc,.proj .ln{animation:none;stroke-dashoffset:0}
+  .pcard{transition:none}
+}
+@media (max-width:640px){.hint{display:none}.top .t{font-size:14px}}
+</style>
+
+<div class="app">
+  <div class="top">
+    <div class="brand"><span class="boxed">HRIS</span><span class="t">CEO Briefing · ระบบ HR 5W1H + HRD</span></div>
+    <a href="https://claude.ai/artifact/Hi7tmYqwdpZoH7pdJsKhqs" target="_blank" rel="noopener">เปิดเอกสารฉบับเต็ม</a>
+  </div>
+
+  <div class="screen" id="screen">
+    <div class="stage" id="stage"><div id="host"></div><div class="cap" id="cap" aria-live="polite"></div></div>
+    <div class="start" id="start"><button id="start-btn"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M5 3l12 7-12 7z"/></svg>เริ่มนำเสนอ</button></div>
+  </div>
+
+  <div class="bar">
+    <div class="segs" id="segs" role="tablist" aria-label="บท"></div>
+    <div class="ctl">
+      <button class="btn" id="prev" aria-label="บทก่อนหน้า"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M4 3h2v14H4zM17 3v14L7 10z"/></svg></button>
+      <button class="btn play" id="play" aria-label="เล่น"><svg viewBox="0 0 20 20" aria-hidden="true" id="play-ico"><path fill="currentColor" d="M5 3l12 7-12 7z"/></svg><span id="play-txt">เล่น</span></button>
+      <button class="btn" id="next" aria-label="บทถัดไป"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M14 3h2v14h-2zM3 3v14l10-7z"/></svg></button>
+      <span class="now" id="now"></span>
+      <button class="btn" id="cc" aria-pressed="true">คำบรรยาย</button>
+      <button class="btn" id="voice" aria-pressed="false">เสียงพากย์</button>
+      <button class="btn" id="fs">เต็มจอ</button>
+    </div>
+    <span class="hint">Space เล่น/หยุด · ← → เปลี่ยนบท · F เต็มจอ · คลิกการ์ดหรือปุ่มในฉากเพื่อดูรายละเอียดระหว่างนำเสนอ</span>
+    <span class="voice-note" id="voice-note" hidden></span>
+  </div>
+</div>
+
+<script>
+/* ---------- data (same figures as the full HRIS document) ---------- */
+const MODS=[
+  {k:"who",w:"WHO",t:"Employee Data",q:"แฟ้มพนักงานกลาง ข้อมูลตั้งต้นของทุกโมดูล นำเข้าจาก Excel ได้ใน 1 วัน"},
+  {k:"what",w:"WHAT",t:"JD + KPI",q:"หน้าที่และ KPI ที่ดึงตัวเลขจริงจากโมดูลอื่น ไม่ต้องกรอกเองปลายปี"},
+  {k:"where",w:"WHERE",t:"Company + Culture",q:"คู่มือที่ถามตอบได้ และ Rules Engine กลางสำหรับลา OT กะ ตามกฎหมายไทย"},
+  {k:"when",w:"WHEN",t:"Check-in · Leave",q:"ลงเวลาผ่าน LINE ลา/OT ใน 2 แตะ และ timesheet ตามโปรเจกต์"},
+  {k:"why",w:"WHY",t:"Timeline + Progress",q:"โปรเจกต์ผูกเป้าหมาย เห็นต้นทุนคนจริงเทียบงบระหว่างทาง"},
+  {k:"how",w:"HOW",t:"ERP + Cash Flow",q:"P&L รายโปรเจกต์/รายคน เชื่อม ERP เดิมของลูกค้าได้"},
+  {k:"learn",w:"HRD",t:"E-Learning",q:"เรียนบนมือถือ แผนพัฒนารายคนจาก competency gap และ certificate กลับเข้าแฟ้ม"}
+];
+const PKGS=[{id:"starter",name:"HR Starter",mods:["who","when","where"],price:59,sum:85},{id:"perf",name:"Performance",mods:["who","what","where"],price:65,sum:90},
+  {id:"project",name:"Project & Manpower",mods:["who","when","why"],price:85,sum:115},{id:"hrd",name:"Learning (HRD)",mods:["who","what","learn"],price:79,sum:110},
+  {id:"suite",name:"Full Suite",mods:["who","what","where","when","why","how","learn"],price:169,sum:280}];
+const BUNDLE={starter:{price:59,setup:0},perf:{price:65,setup:9900},project:{price:85,setup:9900},hrd:{price:79,setup:9900},suite:{price:169,setup:39000}};
+const MIX={starter:.35,perf:.15,project:.15,hrd:.10,suite:.25};
+const SEG=[{emp:50,share:.50},{emp:150,share:.35},{emp:500,share:.15}];
+const MONTHS=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const SCN=[{n:20,c:"var(--s1)"},{n:50,c:"var(--s2)"},{n:100,c:"var(--s3)"}];
+const disc=e=>e>=1000?.2:e>=300?.1:0, seats=e=>Math.max(e,30);
+function model(N,start=3,churn=.01,prepay=.4){
+  const W=MONTHS.reduce((a,_,m)=>a+(m>=start?m-start+1:0),0);
+  const o={mrr:Array(12).fill(0),rev:0,setup:0,cash:0,gp:0,cust:0,emp:0};
+  Object.keys(MIX).forEach(p=>SEG.forEach(g=>{
+    const share=MIX[p]*g.share,list=BUNDLE[p].price*seats(g.emp)*(1-disc(g.emp));let A=0,P=0;
+    for(let m=0;m<12;m++){const nw=m>=start?N*(m-start+1)/W*share:0;A=A*(1-churn)+nw*(1-prepay);const nP=nw*prepay;P+=nP;
+      const sub=A*list+P*list*10/12,set=nw*BUNDLE[p].setup;o.mrr[m]+=sub;o.rev+=sub;o.setup+=set;o.cash+=A*list+nP*list*10+set;
+      o.gp+=sub-(A+P)*seats(g.emp)*15+set*.4;}
+    o.cust+=A+P;o.emp+=(A+P)*g.emp;}));
+  return o;
+}
+const R=SCN.map(s=>model(s.n));
+const mb=n=>n>=1e6?(n/1e6).toFixed(2)+" ล้าน":Math.round(n/1e3)+"K";
+const PIN=`<svg class="pin" viewBox="0 0 24 28" aria-hidden="true"><path fill="currentColor" d="M7 2h10v2l-1.6 1.4.9 6.1 3.2 2.6V16H13.2l-.7 9.5h-1L10.8 16H4.5v-1.9l3.2-2.6.9-6.1L7 4z"/></svg>`;
+const pill=k=>{const m=MODS.find(x=>x.k===k);return `<span class="pill" style="color:var(--${k})">${m.w}</span>`;};
+const d=(s)=>`style="animation-delay:${s}s"`;
+
+/* ---------- scenes ---------- */
+const SCENES=[
+{title:"เปิดเรื่อง",dur:11,
+ say:"วันนี้เราจะเสนอระบบ HRIS ที่เชื่อมข้อมูลคน เวลา งาน และกำไร ไว้ในวงจรเดียว ขายได้ทั้งแยกโมดูลและขายเป็นชุดแบบ subscription รายเดือน",
+ html:()=>`<div class="title-wrap"><span class="eyebrow in">CEO Briefing · พฤศจิกายน 2569</span>
+  <p class="big in" ${d(.3)}>ระบบ HR ที่เชื่อม <em>คน → เวลา → งาน → กำไร</em> ไว้ในที่เดียว</p>
+  <p class="lead in" ${d(.9)}>5W1H + HRD · 7 โมดูล ใช้ร่วมกันหรือขายแยกได้ · Subscription รายเดือน</p>
+  <div class="pins">${MODS.map((m,i)=>`<span class="drop" style="--k:var(--${m.k});animation-delay:${1.4+i*.18}s">${PIN}</span>`).join("")}</div></div>`},
+{title:"ปัญหาในตลาด",dur:16,
+ say:"ระบบ HR ที่ขายอยู่ทุกวันนี้มีปัญหาซ้ำ ๆ สี่เรื่อง คือ ต้องซื้อแพ็กเกจใหญ่ ใช้งานยากจนพนักงานไม่ใช้ ข้อมูลไม่เชื่อมกับผลธุรกิจ และติดตั้งนานหลายเดือน เราออกแบบมาเพื่อแก้ทั้งสี่ข้อนี้",
+ html:()=>`<span class="eyebrow in">ทำไมต้องทำ</span><h2 class="h in" ${d(.2)}>ระบบ HR ในตลาดวันนี้ ยังแก้ปัญหาไม่ตรงจุด</h2>
+  <div class="pains">${[
+   ["ราคาต่อหัวสูง ต้องซื้อแพ็กเกจใหญ่ทั้งที่ใช้ไม่กี่ฟีเจอร์","ซื้อทีละโมดูล เริ่มเล็กแล้วเปิดเพิ่มได้"],
+   ["หน้าจอซับซ้อน ต้องอบรม พนักงานไม่ยอมใช้","ใช้ผ่าน LINE งานประจำวันจบใน 3 แตะ"],
+   ["ข้อมูล HR ไม่เชื่อมผลธุรกิจ","โยงคน → เวลา → โปรเจกต์ → P&L → KPI"],
+   ["ติดตั้งนาน 3-6 เดือน ต้องจ้างที่ปรึกษา","นำเข้า Excel เดิม + เทมเพลต go-live ใน 7 วัน"]
+  ].map((r,i)=>`<div class="pain in" ${d(1.4+i*1.6)}><div class="p"><small>ปัญหา</small>${r[0]}</div><div class="a">→</div><div class="s"><small>ของเรา</small>${r[1]}</div></div>`).join("")}</div>`},
+{title:"7 โมดูล",dur:18,
+ say:"ระบบแบ่งเป็นเจ็ดโมดูล ตอบคำถามว่าใคร ทำอะไร ที่ไหน เมื่อไร ทำไม และอย่างไร พร้อมระบบพัฒนาคนผ่าน E-Learning ทุกโมดูลขายแยกได้ และใช้ข้อมูลพนักงานชุดเดียวกัน คลิกการ์ดเพื่อดูว่าแต่ละโมดูลทำอะไร",
+ html:()=>`<span class="eyebrow in">ผลิตภัณฑ์</span><h2 class="h in" ${d(.2)}>7 โมดูล ตอบครบ 5W1H และพัฒนาคน</h2>
+  <div class="mods">${MODS.map((m,i)=>`<div class="pcard drop ${m.k}" data-k="${m.k}" tabindex="0" role="button" style="--k:var(--${m.k});--r:${[-3,2.5,-2,3,-2.5,1.5,-2][i]}deg;animation-delay:${.9+i*.45}s">${PIN}
+    <span class="inner"><span class="row"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="w">${m.w}</span></span><span class="t">${m.t}</span></span></div>`).join("")}
+    <div class="modinfo in" id="modinfo" ${d(4.5)}><b>คลิกการ์ด</b>เพื่อดูว่าโมดูลนั้นทำอะไร</div></div>`,
+ after:el=>{const info=el.querySelector("#modinfo");el.querySelectorAll(".pcard").forEach(c=>{const f=()=>{el.querySelectorAll(".pcard").forEach(x=>x.classList.toggle("sel",x===c));const m=MODS.find(x=>x.k===c.dataset.k);info.innerHTML=`<b style="color:var(--${m.k})">${m.w} · ${m.t}</b>${m.q}`;};
+   c.addEventListener("click",f);c.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();f();}});});}},
+{title:"วงจรข้อมูล",dur:20,
+ say:"จุดต่างที่สำคัญที่สุดคือข้อมูลไหลเป็นวงจรเดียว เวลาทำงานของพนักงานกลายเป็นต้นทุนโปรเจกต์ ต้นทุนและรายได้รวมเป็นกำไรขาดทุน แล้วเป้ากำไรถูกส่งกลับไปตั้ง KPI ช่องว่างของ KPI กลายเป็นแผนพัฒนาคน และ certificate กลับเข้าแฟ้มพนักงาน ผู้บริหารจึงเห็นว่าคนและเวลาสร้างกำไรเท่าไร",
+ html:()=>{const ring=[["who","WHO","คน"],["when","WHEN","เวลา"],["why","WHY","โปรเจกต์"],["how","HOW","P&L"],["what","WHAT","KPI"],["learn","HRD","พัฒนาคน"]];
+  const lab=["Manhour × อัตราต้นทุน","Timesheet ตามโปรเจกต์","ต้นทุน & มูลค่างาน","เป้า P&L → KPI","Competency gap → IDP","Certificate → Skill"];
+  const cx=300,cy=235,r=185;const pt=i=>{const a=-Math.PI/2+i*2*Math.PI/6;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  let s="";ring.forEach((_,i)=>{const [x1,y1]=pt(i),[x2,y2]=pt((i+1)%6);const mx=(x1+x2)/2,my=(y1+y2)/2,ox=(mx-cx)*.35,oy=(my-cy)*.35;
+    s+=`<path class="arc" pathLength="1" d="M${x1},${y1} Q${mx+ox},${my+oy} ${x2},${y2}" style="stroke:var(--${ring[(i+1)%6][0]});animation-delay:${1.6+i*1.9}s" marker-end="url(#m)"/>`;
+    const lx=mx+ox*1.3,ly=my+oy*1.3+4;s+=`<text class="lb in" x="${lx}" y="${ly}" text-anchor="${lx<cx-20?"end":lx>cx+20?"start":"middle"}" style="animation-delay:${2.2+i*1.9}s">${lab[i]}</text>`;});
+  ring.forEach(([k,w,t],i)=>{const [x,y]=pt(i);s+=`<g class="nd pop" style="animation-delay:${.5+i*.15}s;transform-box:fill-box;transform-origin:center"><circle cx="${x}" cy="${y}" r="40" style="fill:#1F2440;stroke:var(--${k})"/><text class="nw" x="${x}" y="${y-2}" text-anchor="middle" style="fill:var(--${k})">${w}</text><text x="${x}" y="${y+17}" text-anchor="middle" style="font-size:13px;fill:var(--ink-2)">${t}</text></g>`;});
+  s+=`<g class="pop" style="animation-delay:.3s;transform-box:fill-box;transform-origin:center"><text x="${cx}" y="${cy-6}" text-anchor="middle" style="font-family:var(--f-display);font-weight:700;font-size:21px;fill:var(--where)">WHERE</text><text x="${cx}" y="${cy+18}" text-anchor="middle" style="font-size:14px;fill:var(--ink-2)">กฎ · ค่านิยม ใช้ร่วมทุกโมดูล</text></g>`;
+  return `<span class="eyebrow in">จุดต่าง</span><h2 class="h in" ${d(.2)}>ข้อมูลชุดเดียว ไหลเป็นวงจร ไม่ต้องกรอกซ้ำ</h2>
+   <div class="loop"><svg viewBox="0 0 600 470" role="img" aria-label="วงจรข้อมูลระหว่างโมดูล"><defs><marker id="m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--ink-2)"/></marker></defs>${s}</svg>
+   <div class="steps">${[["คน → เวลา","ลงเวลาผ่าน LINE กลายเป็น manhour"],["เวลา → งาน","timesheet ผูกกับโปรเจกต์"],["งาน → กำไร","ต้นทุนคนจริงเทียบรายได้ = P&L"],["กำไร → KPI","เป้า P&L ไหลกลับไปตั้ง KPI"],["KPI → พัฒนาคน","ช่องว่าง competency กลายเป็นแผนเรียน"]].map((r,i)=>`<div class="in" style="animation-delay:${2+i*1.9}s"><span class="pill" style="color:var(--${["when","why","how","what","learn"][i]})">${r[0]}</span><span>${r[1]}</span></div>`).join("")}</div></div>`;}},
+{title:"ทำไมลูกค้าเลือกเรา",dur:14,
+ say:"หลักการออกแบบมีหกข้อ งานประจำวันจบในสามแตะ ไม่ต้องกรอกข้อมูลซ้ำ ใช้ผ่าน LINE โดยไม่ต้องลงแอปใหม่ ถามเป็นภาษาพูดได้ ระบบเตือนก่อนเกิดปัญหา และเริ่มใช้งานได้ภายในเจ็ดวัน",
+ html:()=>`<span class="eyebrow in">ประสบการณ์ผู้ใช้</span><h2 class="h in" ${d(.2)}>ใช้ง่ายโดยไม่ต้องอบรม</h2>
+  <div class="princ">${[["3","จบใน 3 แตะ","ลงเวลา ขอลา อนุมัติ"],["0","ไม่กรอกซ้ำ","ระบบเติมให้ ผู้ใช้แค่ยืนยัน"],["L","LINE ก่อนแอป","ไม่ต้องติดตั้งแอปใหม่"],["?","ถามเป็นภาษาพูด","“ลาบวชได้กี่วัน” ได้คำตอบพร้อมอ้างข้อ"],["!","เตือนก่อนเกิดปัญหา","งบเกิน งานช้า เอกสารหมดอายุ"],["7","Go-live ใน 7 วัน","นำเข้า Excel เดิมได้ทันที"]]
+   .map((r,i)=>`<div class="pop" ${d(1+i*1.6)}><span class="k">${r[0]}</span><h3>${r[1]}</h3><p>${r[2]}</p></div>`).join("")}</div>`},
+{title:"ราคา",dur:20,
+ say:"ด้านราคา เราคิดต่อพนักงานต่อเดือน ขั้นต่ำสามสิบคน แพ็กเกจเริ่มต้น HR Starter ห้าสิบเก้าบาท อยู่ในช่วงเดียวกับคู่แข่งที่เผยแพร่ราคาห้าสิบถึงแปดสิบบาท ส่วน Full Suite ร้อยหกสิบเก้าบาท ครบทุกโมดูล ประหยัดสี่สิบเปอร์เซ็นต์เทียบกับซื้อแยก และแทนการซื้อระบบ HR ระบบโปรเจกต์ และ E-Learning จากหลายเจ้า",
+ html:()=>{const W=760,L=190,max=180,sc=v=>L+(W-L-60)*v/max,rowH=58;let s="";
+  s+=`<rect x="${sc(50)}" y="0" width="${sc(80)-sc(50)}" height="${PKGS.length*rowH+6}" style="fill:color-mix(in srgb,var(--ink) 8%,transparent)" class="in" ${d(1)}></rect><text class="ax in" x="${(sc(50)+sc(80))/2}" y="${PKGS.length*rowH+30}" text-anchor="middle" ${d(1)}>ช่วงราคาคู่แข่งที่เผยแพร่ ฿50–80</text>`;
+  [0,50,100,150].forEach(v=>{s+=`<text class="ax" x="${sc(v)}" y="${PKGS.length*rowH+52}" text-anchor="middle">฿${v}</text>`;});
+  PKGS.forEach((p,i)=>{const y=i*rowH+12;s+=`<text x="${L-14}" y="${y+22}" text-anchor="end" style="font-size:17px;font-weight:600">${p.name}</text>
+   <rect class="bar-r" x="${L}" y="${y}" width="${sc(p.price)-L}" height="32" rx="4" style="fill:${p.id==="suite"?"var(--ink)":"var(--ink-2)"};animation-delay:${2+i*.9}s"/>
+   <text class="in" x="${sc(p.price)+10}" y="${y+22}" style="font-family:var(--f-display);font-weight:700;font-size:18px;animation-delay:${2.6+i*.9}s">฿${p.price}<tspan style="font-family:var(--f-body);font-weight:400;font-size:13px;fill:var(--muted)"> · ประหยัด ${Math.round((1-p.price/p.sum)*100)}%</tspan></text>`;});
+  return `<span class="eyebrow in">Subscription รายเดือน · บาท / คน / เดือน · ไม่รวม VAT</span><h2 class="h in" ${d(.2)}>ราคาเข้าถึงได้ แข่งขันได้ และซื้อแยกได้</h2>
+   <div class="price"><svg viewBox="0 0 ${W} ${PKGS.length*rowH+60}" role="img" aria-label="ราคาแพ็กเกจเทียบช่วงราคาคู่แข่ง">${s}</svg>
+   <div class="callout pop" ${d(7)}><span class="note">Full Suite · ครบ 7 โมดูล</span><span class="v">฿169 <small>/ คน / เดือน</small></span>
+   <ul><li>ซื้อแยกรวม ฿280 · ประหยัด 40%</li><li>บริษัท 150 คน ≈ ฿25,350 / เดือน (≈ 0.9% ของค่าจ้าง*)</li><li>จ่ายรายปีฟรี 2 เดือน · 300+ คนลด 10%</li></ul>
+   <span class="note">*สมมติค่าจ้างเฉลี่ย 18,000 บาท</span></div></div>`;}},
+{title:"Projection 2570",dur:22,
+ say:"ถ้าเริ่มขายเดือนเมษายนปีหน้า และปิดลูกค้าได้หนึ่งร้อยรายภายในธันวาคม รายได้ประจำจะอยู่ที่ประมาณหนึ่งจุดสองสี่ล้านบาทต่อเดือน หรือ ARR ราวสิบสี่จุดเก้าล้านบาท แต่รายได้ที่รับรู้ทั้งปีจะอยู่ที่ประมาณห้าจุดเก้าสี่ล้านบาท เพราะลูกค้าส่วนใหญ่เข้ามาช่วงครึ่งปีหลัง ส่วนเงินสดรับสูงกว่า เพราะลูกค้าที่จ่ายรายปีจ่ายล่วงหน้า คลิกหัวคอลัมน์เพื่อไฮไลต์แต่ละฉากทัศน์",
+ html:()=>{const W=640,H=300,L=60,T=10,B=34,iw=W-L-140,ih=H-T-B,ym=1.4e6;const x=m=>L+iw*m/11,y=v=>T+ih*(1-v/ym);let s="";
+  [0,.5e6,1e6].forEach(v=>{s+=`<line class="gl" x1="${L}" x2="${L+iw}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-10}" y="${y(v)+4}" text-anchor="end">${v?v/1e6+" ล้าน":"0"}</text>`;});
+  [0,3,6,9,11].forEach(m=>{s+=`<text class="ax" x="${x(m)}" y="${H-8}" text-anchor="middle">${MONTHS[m]}</text>`;});
+  const ends=R.map((r,i)=>({i,y:y(r.mrr[11])})).sort((a,b)=>a.y-b.y);for(let k=1;k<3;k++)if(ends[k].y-ends[k-1].y<20)ends[k].y=ends[k-1].y+20;
+  R.forEach((r,i)=>{s+=`<path class="ln sc${i}" pathLength="1" style="stroke:${SCN[i].c};animation-delay:${1.5+i*.6}s" d="${r.mrr.map((v,m)=>(m?"L":"M")+x(m)+","+y(v)).join("")}"/>
+   <text class="in sc${i}" x="${x(11)+12}" y="${ends.find(e=>e.i===i).y+5}" style="font-size:15px;animation-delay:${3.6+i*.6}s">${SCN[i].n} ราย · ${mb(r.mrr[11])}</text>`;});
+  const rows=[["MRR ธ.ค. 2570",r=>mb(r.mrr[11])],["ARR run-rate",r=>mb(r.mrr[11]*12)],["รายได้รวมปี 2570",r=>mb(r.rev+r.setup)],["เงินสดรับปี 2570",r=>mb(r.cash)],["กำไรขั้นต้น",r=>Math.round(r.gp/(r.rev+r.setup)*100)+"%"],["พนักงานบนระบบ",r=>Math.round(r.emp).toLocaleString("th-TH")+" คน"]];
+  return `<span class="eyebrow in">Projection · ม.ค. – ธ.ค. 2570</span><h2 class="h in" ${d(.2)}>ปิดได้ 100 ราย = ARR ราว ${(R[2].mrr[11]*12/1e6).toFixed(1)} ล้านบาท ณ สิ้นปีหน้า</h2>
+   <div class="proj"><div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="MRR รายเดือนปี 2570 สามฉากทัศน์">${s}</svg>
+   <p class="note in" ${d(5)}>สมมติฐาน: เริ่มขาย เม.ย. 2570 · ยกเลิก 1%/เดือน · จ่ายรายปี 40% · Full Suite 25% ของลูกค้า · ยังไม่รวมเงินเดือนทีมพัฒนาและการตลาด</p></div>
+   <div class="kgrid in" ${d(4)} id="kg"><div class="hd l">ถึง ธ.ค. 2570</div>${SCN.map((c,i)=>`<div class="hd sc" data-i="${i}" role="button" tabindex="0"><i class="sw" style="background:${c.c}"></i>${c.n} ราย</div>`).join("")}
+   ${rows.map(([l,f])=>`<div class="r">${l}</div>${R.map((r,i)=>`<div class="v c${i}">${f(r)}</div>`).join("")}`).join("")}</div></div>`;},
+ after:el=>{el.querySelectorAll(".kgrid .sc").forEach(h=>{const f=()=>{const i=+h.dataset.i;el.querySelectorAll(".kgrid .v").forEach(v=>v.classList.toggle("sel",v.classList.contains("c"+i)));
+   el.querySelectorAll(".proj .ln,.proj text[class*=sc]").forEach(p=>p.style.opacity=p.classList.contains("sc"+i)?"1":".25");};h.addEventListener("click",f);h.addEventListener("keydown",e=>{if(e.key==="Enter")f();});});}},
+{title:"Roadmap",dur:16,
+ say:"แผนพัฒนาเริ่มจาก Core Platform จากนั้นใช้ WHO และ WHEN ภายในองค์กรก่อน แล้วเปิดขาย HR Starter ในระยะที่สอง ตามด้วย WHY และ E-Learning และปิดท้ายด้วย HOW เพื่อขาย Full Suite",
+ html:()=>`<span class="eyebrow in">ลำดับการพัฒนา</span><h2 class="h in" ${d(.2)}>ใช้ภายในก่อน แล้วค่อยขาย</h2>
+  <div class="road"><span class="fill" ${d(1)}></span>${[["เดือน 1-2","Core Platform",["SSO, สิทธิ์, audit log","Employee Master + API","LINE OA gateway"]],["เดือน 3-5","WHO + WHEN",["แฟ้มพนักงาน + import","ลงเวลา ลา OT","Pilot ภายใน"]],["เดือน 6-8","WHERE + WHAT",["Handbook ถามตอบได้","JD + KPI","เปิดขาย HR Starter"]],["เดือน 9-11","WHY + HRD",["Timeline / Kanban","E-Learning + IDP","เปิดขาย Project, Learning"]],["เดือน 12+","HOW",["ERP connector","P&L รายโปรเจกต์","เปิดขาย Full Suite"]]]
+   .map((p,i)=>`<div class="ph in" style="animation-delay:${1.2+i*.8}s"><span class="when">${p[0]}</span><h3>${p[1]}</h3><ul>${p[2].map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("")}</div>`},
+{title:"สิ่งที่ขอให้ตัดสินใจ",dur:20,
+ say:"มีสามเรื่องที่ขอให้ตัดสินใจ หนึ่ง จะเพิ่มระบบเงินเดือนเป็น add-on หรือเชื่อมกับผู้ให้บริการเดิม เพราะคู่แข่งราคาเดียวกันรวม Payroll แล้ว สอง จะเร่งพัฒนา HOW และ WHY หรือเปิด Full Suite แบบ early access เพราะ roadmap เดิมขาย Full Suite ได้ช้ากว่าที่ projection สมมติ และสาม ทดสอบราคากับลูกค้านำร่องห้าถึงสิบรายก่อนล็อกราคา",
+ html:()=>`<span class="eyebrow in">Next step</span><h2 class="h in" ${d(.2)}>3 เรื่องที่ขอให้ตัดสินใจ</h2>
+  <div class="asks">${[["Payroll","คู่แข่งราคาเดียวกันรวมระบบเงินเดือนแล้ว เรายังไม่มี","ทางเลือก: add-on ราว ฿20/คน หรือเชื่อมผู้ให้บริการ Payroll เดิมของลูกค้า"],
+   ["เร่ง Full Suite","Projection สมมติ 25% ของลูกค้าซื้อ Full Suite ตั้งแต่ เม.ย. 2570 แต่ roadmap ขายได้ราวเดือนที่ 12","ทางเลือก: เร่งทีม HOW/WHY หรือเปิด early access"],
+   ["ทดสอบราคา","ราคาคู่แข่งมาจากเว็บไซต์และบทความ ยังไม่ได้ขอใบเสนอราคาจริง","ทางเลือก: Pilot 5-10 ราย ก่อนล็อกราคา"]]
+   .map((a,i)=>`<div class="ask pop" style="animation-delay:${1.5+i*4.5}s"><span class="n">${i+1}</span><h3>${a[0]}</h3><p>${a[1]}</p><span class="opt">${a[2]}</span></div>`).join("")}</div>`},
+{title:"สรุป",dur:10,
+ say:"สรุป เรามีผลิตภัณฑ์ที่ขายได้ทั้งแยกและชุด ราคาแข่งขันได้ และมีวงจรข้อมูลที่คู่แข่งยังไม่มี รายละเอียดทั้งหมดอยู่ในเอกสารฉบับเต็ม",
+ html:()=>`<div class="close"><span class="eyebrow in">สรุป</span><p class="big in" ${d(.3)}>ขายได้ทั้งแยกและชุด ราคาแข่งขันได้ และเชื่อมคนถึงกำไร</p>
+  <div class="row in" ${d(1.2)}>${["who","what","where","when","why","how","learn"].map(pill).join("")}</div>
+  <a class="in" ${d(2)} href="https://claude.ai/artifact/Hi7tmYqwdpZoH7pdJsKhqs" target="_blank" rel="noopener">เปิดเอกสารฉบับเต็ม: flow, ราคา และ projection ที่ปรับสมมติฐานได้</a></div>`}
+];
+
+/* ---------- player ---------- */
+const $=s=>document.querySelector(s);
+const st={i:0,t:0,playing:false,cc:true,voice:false,speaking:false,started:false};
+const stage=$("#stage"),host=$("#host"),screen=$("#screen");
+const ICON_PLAY='<path fill="currentColor" d="M5 3l12 7-12 7z"/>',ICON_PAUSE='<path fill="currentColor" d="M4 3h4v14H4zM12 3h4v14h-4z"/>';
+
+$("#segs").innerHTML=SCENES.map((s,i)=>`<button class="seg" role="tab" aria-label="บทที่ ${i+1} ${s.title}" data-i="${i}"><i><b></b></i><span class="tt">${i+1}. ${s.title}</span></button>`).join("");
+document.querySelectorAll(".seg").forEach(b=>b.addEventListener("click",()=>{go(+b.dataset.i);if(!st.playing)play();}));
+
+function fit(){const pw=screen.parentElement.clientWidth,ah=Math.max(220,window.innerHeight-(document.fullscreenElement?120:190));const s=Math.min(pw/1280,ah/720);
+  screen.style.width=1280*s+"px";screen.style.height=720*s+"px";stage.style.transform=`scale(${s})`;}
+new ResizeObserver(fit).observe(screen.parentElement);window.addEventListener("resize",fit);fit();
+
+function go(i,still){
+  screen.classList.toggle("still",!!still);
+  st.i=Math.max(0,Math.min(SCENES.length-1,i));st.t=0;
+  const sc=SCENES[st.i];
+  host.innerHTML=`<div class="scene">${sc.html()}</div>`;sc.after&&sc.after(host);
+  $("#cap").textContent=sc.say;
+  $("#now").innerHTML=`<b>${st.i+1}/${SCENES.length}</b> · ${sc.title}`;
+  paint();speak();
+  try{history.replaceState(null,"","#scene-"+(st.i+1));}catch(e){}
+}
+function paint(){document.querySelectorAll(".seg").forEach((b,k)=>{b.querySelector("b").style.width=(k<st.i?100:k>st.i?0:Math.min(100,st.t/(SCENES[st.i].dur*1000)*100))+"%";b.setAttribute("aria-selected",k===st.i);});}
+function play(){
+  st.playing=true;st.started=true;$("#start").hidden=true;screen.classList.remove("paused");
+  $("#play-ico").innerHTML=ICON_PAUSE;$("#play-txt").textContent="หยุด";$("#play").setAttribute("aria-label","หยุดชั่วคราว");
+  if(st.voice&&window.speechSynthesis){if(speechSynthesis.paused)speechSynthesis.resume();else if(!speechSynthesis.speaking)speak();}
+}
+function pause(){
+  st.playing=false;screen.classList.add("paused");
+  $("#play-ico").innerHTML=ICON_PLAY;$("#play-txt").textContent="เล่น";$("#play").setAttribute("aria-label","เล่น");
+  try{window.speechSynthesis&&speechSynthesis.pause();}catch(e){}
+}
+function speak(){
+  if(!window.speechSynthesis)return;try{speechSynthesis.cancel();}catch(e){}st.speaking=false;
+  if(!st.voice||!st.playing&&st.started===false)return;
+  const u=new SpeechSynthesisUtterance(SCENES[st.i].say);u.lang="th-TH";u.rate=1.05;
+  const v=speechSynthesis.getVoices().find(v=>/^th/i.test(v.lang));if(v)u.voice=v;
+  u.onstart=()=>{st.speaking=true;};u.onend=u.onerror=()=>{st.speaking=false;};
+  st.speaking=true;speechSynthesis.speak(u);if(!st.playing)speechSynthesis.pause();
+}
+let last=performance.now();
+function loop(now){
+  const dt=now-last;last=now;
+  if(st.playing){st.t+=dt;paint();
+    if(st.t>=SCENES[st.i].dur*1000&&!(st.voice&&st.speaking)){
+      if(st.i<SCENES.length-1)go(st.i+1);else{st.t=SCENES[st.i].dur*1000;pause();}
+    }}
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+$("#play").addEventListener("click",()=>st.playing?pause():play());
+$("#start-btn").addEventListener("click",()=>{go(st.i);play();});
+$("#prev").addEventListener("click",()=>go(st.i-1));
+$("#next").addEventListener("click",()=>go(st.i+1));
+$("#cc").addEventListener("click",()=>{st.cc=!st.cc;screen.classList.toggle("nocap",!st.cc);$("#cc").setAttribute("aria-pressed",st.cc);});
+$("#voice").addEventListener("click",()=>{
+  st.voice=!st.voice;$("#voice").setAttribute("aria-pressed",st.voice);
+  const note=$("#voice-note");
+  if(st.voice&&!window.speechSynthesis){note.hidden=false;note.textContent="เบราว์เซอร์นี้ไม่รองรับเสียงพากย์ ใช้คำบรรยายบนจอแทน";st.voice=false;$("#voice").setAttribute("aria-pressed",false);return;}
+  if(st.voice){const has=speechSynthesis.getVoices().some(v=>/^th/i.test(v.lang));note.hidden=has;note.textContent="ไม่พบเสียงภาษาไทยในเครื่องนี้ ระบบจะลองอ่านด้วยเสียงที่มี";if(!st.playing)play();else speak();}
+  else{note.hidden=true;try{speechSynthesis.cancel();}catch(e){}st.speaking=false;}
+});
+$("#fs").addEventListener("click",()=>{const el=document.documentElement;(document.fullscreenElement?document.exitFullscreen():el.requestFullscreen?el.requestFullscreen():Promise.reject()).catch(()=>{});});
+document.addEventListener("keydown",e=>{
+  if(e.target.closest("input,select,textarea"))return;
+  if(e.key===" "){e.preventDefault();st.playing?pause():play();}
+  else if(e.key==="ArrowRight")go(st.i+1);else if(e.key==="ArrowLeft")go(st.i-1);
+  else if(e.key==="f"||e.key==="F")$("#fs").click();
+});
+
+/* open on the requested chapter (#scene-N) or the title, fully drawn and paused */
+const m=/^#scene-(\d+)$/.exec(location.hash);
+go(m?(+m[1]-1):0,true);pause();$("#start").hidden=false;
+window.addEventListener("hashchange",()=>{const k=/^#scene-(\d+)$/.exec(location.hash);if(k&&+k[1]-1!==st.i)go(+k[1]-1);});
+</script>
