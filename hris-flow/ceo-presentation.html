@@ -30,43 +30,42 @@ body{background:var(--room);color:var(--ink);font-family:var(--f-body);line-heig
 .screen{position:relative;width:100%;height:56vw;max-width:100%;margin:0 auto;background:var(--stage);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 .stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;
   background-color:var(--stage);background-image:repeating-linear-gradient(to bottom,transparent 0 39px,var(--paper-line) 39px 40px)}
-.scene{position:absolute;inset:0;padding:40px 72px 150px;display:flex;flex-direction:column;gap:18px}
+.scene{position:absolute;inset:0;padding:48px 72px 70px;display:flex;flex-direction:column;gap:18px}
 .eyebrow{font-family:var(--f-mono);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .h{font-family:var(--f-display);font-weight:700;font-size:40px;line-height:1.18;margin:0;text-wrap:balance;max-width:1080px}
 .lead{font-size:22px;color:var(--ink-2);max-width:900px;margin:0}
 
-/* subtitles */
-.cap{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:min(1120px,94%);text-align:center;font-size:18px;line-height:1.45;
-  background:rgba(8,10,20,.82);color:var(--ink);padding:10px 20px;border-radius:10px;z-index:5}
-.nocap .cap{display:none}
-
-/* overlay start */
-.start{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:0 28px 96px;z-index:6;pointer-events:none}
-.start button{pointer-events:auto;all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--room);font-family:var(--f-display);font-weight:700;font-size:20px;padding:14px 24px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.start button:focus-visible{outline:3px solid var(--when);outline-offset:3px}
-.start svg{width:20px;height:20px}
+/* side arrows on the slide */
+.edge{position:absolute;top:0;bottom:0;width:8%;display:flex;align-items:center;justify-content:center;z-index:6;opacity:0;transition:opacity .2s;cursor:pointer}
+.edge.l{left:0}.edge.r{right:0}
+.screen:hover .edge{opacity:.85}
+.edge:focus-visible{opacity:1;outline:2px solid var(--when);outline-offset:-4px}
+.edge span{width:44px;height:44px;border-radius:50%;background:rgba(8,10,20,.7);display:flex;align-items:center;justify-content:center}
+.edge svg{width:18px;height:18px;color:var(--ink)}
+.edge[disabled]{display:none}
 
 /* controls */
 .bar{display:flex;flex-direction:column;gap:10px}
-.segs{display:flex;gap:4px}
-.seg{all:unset;cursor:pointer;flex:1 1 0;height:22px;display:flex;align-items:center;position:relative}
-.seg i{display:block;width:100%;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
-.seg i b{display:block;height:100%;width:0;background:var(--ink)}
-.seg:hover i{height:8px}
-.seg:focus-visible{outline:2px solid var(--when);outline-offset:2px;border-radius:4px}
-.seg .tt{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--panel);border:1px solid var(--line);font-size:12.5px;padding:3px 8px;border-radius:6px;display:none;z-index:3}
-.seg:hover .tt{display:block}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:13px;color:var(--ink-2)}
+.dot b{font-family:var(--f-display);color:var(--ink)}
+.dot:hover{border-color:var(--ink-2)}
+.dot[aria-current="true"]{background:var(--ink);color:var(--room);border-color:var(--ink)}
+.dot[aria-current="true"] b{color:var(--room)}
+.dot:focus-visible{outline:2px solid var(--when);outline-offset:2px}
 .ctl{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap}
-.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-size:14px;color:var(--ink)}
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-size:14px;color:var(--ink)}
 .btn:hover{border-color:var(--ink-2)}
 .btn:focus-visible{outline:2px solid var(--when);outline-offset:2px}
 .btn[aria-pressed="true"]{background:var(--ink);color:var(--room);border-color:var(--ink)}
+.btn[disabled]{opacity:.35;cursor:default}
 .btn svg{width:16px;height:16px}
-.btn.play{padding:7px 16px;font-weight:600}
+.btn.main{font-weight:600}
 .now{font-size:14px;color:var(--ink-2);margin-right:auto;min-width:0}
 .now b{color:var(--ink);font-family:var(--f-display)}
 .hint{font-size:12px;color:var(--muted)}
-.voice-note{font-size:12.5px;color:var(--muted)}
+.notes{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:16px;line-height:1.6;color:var(--ink)}
+.notes small{display:block;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
 
 /* motion primitives: base style is the final state, so reduced motion simply shows it */
 .in{animation:rise .7s cubic-bezier(.2,.8,.2,1) backwards}
@@ -78,7 +77,6 @@ body{background:var(--room);color:var(--ink);font-family:var(--f-body);line-heig
 @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 .still #host *{animation:none!important}
 .still .arc,.still .ln{stroke-dashoffset:0!important}
-.paused .stage *,.paused .stage *::before,.paused .stage *::after{animation-play-state:paused!important}
 
 /* shared bits */
 .pill{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.08em;padding:1px 8px;border-radius:4px;border:2px solid currentColor}
@@ -110,6 +108,7 @@ body{background:var(--room);color:var(--ink);font-family:var(--f-body);line-heig
 .pain small{display:block;font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
 
 .mods{display:grid;grid-template-columns:repeat(5,1fr);column-gap:22px;row-gap:26px;align-items:start}
+.mods>*{min-width:0}
 .mods .learn{grid-column:1;grid-row:2}.mods .how{grid-column:3 / span 2;justify-self:center;width:calc(50% - 11px);grid-row:2}
 .mods .how .inner{border-style:dashed;border-width:2px}
 .modinfo{grid-column:2 / span 1;grid-row:2;align-self:center;font-size:17px;color:var(--ink-2);min-height:120px}
@@ -194,23 +193,23 @@ body{background:var(--room);color:var(--ink);font-family:var(--f-body);line-heig
   </div>
 
   <div class="screen" id="screen">
-    <div class="stage" id="stage"><div id="host"></div><div class="cap" id="cap" aria-live="polite"></div></div>
-    <div class="start" id="start"><button id="start-btn"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M5 3l12 7-12 7z"/></svg>เริ่มนำเสนอ</button></div>
+    <div class="stage" id="stage"><div id="host"></div></div>
+    <button class="edge l" id="edge-prev" aria-label="สไลด์ก่อนหน้า"><span><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M13 3L6 10l7 7 1.4-1.4L8.8 10l5.6-5.6z"/></svg></span></button>
+    <button class="edge r" id="edge-next" aria-label="สไลด์ถัดไป"><span><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M7 3l7 7-7 7-1.4-1.4L11.2 10 5.6 4.4z"/></svg></span></button>
   </div>
 
   <div class="bar">
-    <div class="segs" id="segs" role="tablist" aria-label="บท"></div>
     <div class="ctl">
-      <button class="btn" id="prev" aria-label="บทก่อนหน้า"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M4 3h2v14H4zM17 3v14L7 10z"/></svg></button>
-      <button class="btn play" id="play" aria-label="เล่น"><svg viewBox="0 0 20 20" aria-hidden="true" id="play-ico"><path fill="currentColor" d="M5 3l12 7-12 7z"/></svg><span id="play-txt">เล่น</span></button>
-      <button class="btn" id="next" aria-label="บทถัดไป"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M14 3h2v14h-2zM3 3v14l10-7z"/></svg></button>
-      <span class="now" id="now"></span>
-      <button class="btn" id="cc" aria-pressed="true">คำบรรยาย</button>
-      <button class="btn" id="voice" aria-pressed="false">เสียงพากย์</button>
+      <button class="btn" id="prev"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M13 3L6 10l7 7 1.4-1.4L8.8 10l5.6-5.6z"/></svg>ก่อนหน้า</button>
+      <button class="btn main" id="next">ถัดไป<svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M7 3l7 7-7 7-1.4-1.4L11.2 10 5.6 4.4z"/></svg></button>
+      <span class="now" id="now" aria-live="polite"></span>
+      <button class="btn" id="replay">เล่นแอนิเมชันซ้ำ</button>
+      <button class="btn" id="notes-btn" aria-pressed="false">โน้ตผู้นำเสนอ</button>
       <button class="btn" id="fs">เต็มจอ</button>
     </div>
-    <span class="hint">Space เล่น/หยุด · ← → เปลี่ยนบท · F เต็มจอ · คลิกการ์ดหรือปุ่มในฉากเพื่อดูรายละเอียดระหว่างนำเสนอ</span>
-    <span class="voice-note" id="voice-note" hidden></span>
+    <div class="notes" id="notes" hidden><small>โน้ตผู้นำเสนอ</small><span id="notes-txt"></span></div>
+    <nav class="dots" id="dots" aria-label="สไลด์ทั้งหมด"></nav>
+    <span class="hint">→ / Space ถัดไป · ← ก่อนหน้า · N โน้ต · F เต็มจอ · คลิกการ์ดหรือหัวคอลัมน์ในสไลด์เพื่อดูรายละเอียด</span>
   </div>
 </div>
 
@@ -342,81 +341,52 @@ const SCENES=[
   <a class="in" ${d(2)} href="https://claude.ai/artifact/Hi7tmYqwdpZoH7pdJsKhqs" target="_blank" rel="noopener">เปิดเอกสารฉบับเต็ม: flow, ราคา และ projection ที่ปรับสมมติฐานได้</a></div>`}
 ];
 
-/* ---------- player ---------- */
+/* ---------- presenter: click-through slides ---------- */
 const $=s=>document.querySelector(s);
-const st={i:0,t:0,playing:false,cc:true,voice:false,speaking:false,started:false};
+const st={i:0,notes:false};
 const stage=$("#stage"),host=$("#host"),screen=$("#screen");
-const ICON_PLAY='<path fill="currentColor" d="M5 3l12 7-12 7z"/>',ICON_PAUSE='<path fill="currentColor" d="M4 3h4v14H4zM12 3h4v14h-4z"/>';
+const PACE=.4; /* scene timings were written for narration; compress them for a live presenter */
 
-$("#segs").innerHTML=SCENES.map((s,i)=>`<button class="seg" role="tab" aria-label="บทที่ ${i+1} ${s.title}" data-i="${i}"><i><b></b></i><span class="tt">${i+1}. ${s.title}</span></button>`).join("");
-document.querySelectorAll(".seg").forEach(b=>b.addEventListener("click",()=>{go(+b.dataset.i);if(!st.playing)play();}));
+$("#dots").innerHTML=SCENES.map((s,i)=>`<button class="dot" data-i="${i}"><b>${i+1}</b>${s.title}</button>`).join("");
+document.querySelectorAll(".dot").forEach(b=>b.addEventListener("click",()=>go(+b.dataset.i)));
 
-function fit(){const pw=screen.parentElement.clientWidth,ah=Math.max(220,window.innerHeight-(document.fullscreenElement?120:190));const s=Math.min(pw/1280,ah/720);
+function fit(){const pw=screen.parentElement.clientWidth,ah=Math.max(220,window.innerHeight-(document.fullscreenElement?110:(st.notes?260:200)));const s=Math.min(pw/1280,ah/720);
   screen.style.width=1280*s+"px";screen.style.height=720*s+"px";stage.style.transform=`scale(${s})`;}
-new ResizeObserver(fit).observe(screen.parentElement);window.addEventListener("resize",fit);fit();
+new ResizeObserver(fit).observe(screen.parentElement);window.addEventListener("resize",fit);document.addEventListener("fullscreenchange",fit);fit();
 
 function go(i,still){
-  screen.classList.toggle("still",!!still);
-  st.i=Math.max(0,Math.min(SCENES.length-1,i));st.t=0;
+  st.i=Math.max(0,Math.min(SCENES.length-1,i));
   const sc=SCENES[st.i];
+  screen.classList.toggle("still",!!still);
   host.innerHTML=`<div class="scene">${sc.html()}</div>`;sc.after&&sc.after(host);
-  $("#cap").textContent=sc.say;
-  $("#now").innerHTML=`<b>${st.i+1}/${SCENES.length}</b> · ${sc.title}`;
-  paint();speak();
+  host.querySelectorAll("[style*='animation-delay']").forEach(el=>{const v=parseFloat(el.style.animationDelay);if(!isNaN(v))el.style.animationDelay=(v*PACE).toFixed(2)+"s";});
+  $("#now").innerHTML=`<b>${st.i+1} / ${SCENES.length}</b> · ${sc.title}`;
+  $("#notes-txt").textContent=sc.say;
+  document.querySelectorAll(".dot").forEach((b,k)=>b.setAttribute("aria-current",k===st.i));
+  const first=st.i===0,last=st.i===SCENES.length-1;
+  $("#prev").disabled=first;$("#edge-prev").disabled=first;$("#next").disabled=last;$("#edge-next").disabled=last;
   try{history.replaceState(null,"","#scene-"+(st.i+1));}catch(e){}
 }
-function paint(){document.querySelectorAll(".seg").forEach((b,k)=>{b.querySelector("b").style.width=(k<st.i?100:k>st.i?0:Math.min(100,st.t/(SCENES[st.i].dur*1000)*100))+"%";b.setAttribute("aria-selected",k===st.i);});}
-function play(){
-  st.playing=true;st.started=true;$("#start").hidden=true;screen.classList.remove("paused");
-  $("#play-ico").innerHTML=ICON_PAUSE;$("#play-txt").textContent="หยุด";$("#play").setAttribute("aria-label","หยุดชั่วคราว");
-  if(st.voice&&window.speechSynthesis){if(speechSynthesis.paused)speechSynthesis.resume();else if(!speechSynthesis.speaking)speak();}
-}
-function pause(){
-  st.playing=false;screen.classList.add("paused");
-  $("#play-ico").innerHTML=ICON_PLAY;$("#play-txt").textContent="เล่น";$("#play").setAttribute("aria-label","เล่น");
-  try{window.speechSynthesis&&speechSynthesis.pause();}catch(e){}
-}
-function speak(){
-  if(!window.speechSynthesis)return;try{speechSynthesis.cancel();}catch(e){}st.speaking=false;
-  if(!st.voice||!st.playing&&st.started===false)return;
-  const u=new SpeechSynthesisUtterance(SCENES[st.i].say);u.lang="th-TH";u.rate=1.05;
-  const v=speechSynthesis.getVoices().find(v=>/^th/i.test(v.lang));if(v)u.voice=v;
-  u.onstart=()=>{st.speaking=true;};u.onend=u.onerror=()=>{st.speaking=false;};
-  st.speaking=true;speechSynthesis.speak(u);if(!st.playing)speechSynthesis.pause();
-}
-let last=performance.now();
-function loop(now){
-  const dt=now-last;last=now;
-  if(st.playing){st.t+=dt;paint();
-    if(st.t>=SCENES[st.i].dur*1000&&!(st.voice&&st.speaking)){
-      if(st.i<SCENES.length-1)go(st.i+1);else{st.t=SCENES[st.i].dur*1000;pause();}
-    }}
-  requestAnimationFrame(loop);
-}
-requestAnimationFrame(loop);
-
-$("#play").addEventListener("click",()=>st.playing?pause():play());
-$("#start-btn").addEventListener("click",()=>{go(st.i);play();});
-$("#prev").addEventListener("click",()=>go(st.i-1));
-$("#next").addEventListener("click",()=>go(st.i+1));
-$("#cc").addEventListener("click",()=>{st.cc=!st.cc;screen.classList.toggle("nocap",!st.cc);$("#cc").setAttribute("aria-pressed",st.cc);});
-$("#voice").addEventListener("click",()=>{
-  st.voice=!st.voice;$("#voice").setAttribute("aria-pressed",st.voice);
-  const note=$("#voice-note");
-  if(st.voice&&!window.speechSynthesis){note.hidden=false;note.textContent="เบราว์เซอร์นี้ไม่รองรับเสียงพากย์ ใช้คำบรรยายบนจอแทน";st.voice=false;$("#voice").setAttribute("aria-pressed",false);return;}
-  if(st.voice){const has=speechSynthesis.getVoices().some(v=>/^th/i.test(v.lang));note.hidden=has;note.textContent="ไม่พบเสียงภาษาไทยในเครื่องนี้ ระบบจะลองอ่านด้วยเสียงที่มี";if(!st.playing)play();else speak();}
-  else{note.hidden=true;try{speechSynthesis.cancel();}catch(e){}st.speaking=false;}
-});
+const next=()=>go(st.i+1),prev=()=>go(st.i-1);
+$("#next").addEventListener("click",next);$("#prev").addEventListener("click",prev);
+$("#edge-next").addEventListener("click",next);$("#edge-prev").addEventListener("click",prev);
+$("#replay").addEventListener("click",()=>go(st.i));
+$("#notes-btn").addEventListener("click",()=>{st.notes=!st.notes;$("#notes").hidden=!st.notes;$("#notes-btn").setAttribute("aria-pressed",st.notes);fit();});
 $("#fs").addEventListener("click",()=>{const el=document.documentElement;(document.fullscreenElement?document.exitFullscreen():el.requestFullscreen?el.requestFullscreen():Promise.reject()).catch(()=>{});});
 document.addEventListener("keydown",e=>{
   if(e.target.closest("input,select,textarea"))return;
-  if(e.key===" "){e.preventDefault();st.playing?pause():play();}
-  else if(e.key==="ArrowRight")go(st.i+1);else if(e.key==="ArrowLeft")go(st.i-1);
+  if(e.target.closest("[role=button]")&&(e.key===" "||e.key==="Enter"))return;
+  if(["ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();next();}
+  else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();prev();}
+  else if(e.key==="Home")go(0);else if(e.key==="End")go(SCENES.length-1);
+  else if(e.key==="n"||e.key==="N")$("#notes-btn").click();
   else if(e.key==="f"||e.key==="F")$("#fs").click();
 });
+let sx=null;screen.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;},{passive:true});
+screen.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)(dx<0?next:prev)();sx=null;});
 
-/* open on the requested chapter (#scene-N) or the title, fully drawn and paused */
+/* open on #scene-N or the title, fully drawn */
 const m=/^#scene-(\d+)$/.exec(location.hash);
-go(m?(+m[1]-1):0,true);pause();$("#start").hidden=false;
+go(m?(+m[1]-1):0,true);
 window.addEventListener("hashchange",()=>{const k=/^#scene-(\d+)$/.exec(location.hash);if(k&&+k[1]-1!==st.i)go(+k[1]-1);});
 </script>
