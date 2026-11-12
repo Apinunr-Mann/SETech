@@ -1,0 +1,521 @@
+<title>SETech Layers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Anuphan:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a business built in four layers — each solution is a contour band, from people (core) out to brand (edge) */
+:root{
+  --bg:#EEECEB; --surface:#FAF9F8; --fg:#161213; --muted:#6B6466; --line:#D9D4D3;
+  --red:#E1251B; --l1:#E1251B; --l2:#F2643A; --l3:#F2A33A; --l4:#8C1C30;
+  --band:#8C1C30; --band-fg:#FCEFEF;
+  --display:"Archivo","Anuphan",system-ui,sans-serif;
+  --body:"Anuphan","Archivo",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141112; --surface:#1D191A; --fg:#F3EFEE; --muted:#A39A9C; --line:#332D2E;
+  --band:#5E1220; --band-fg:#FCEFEF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141112; --surface:#1D191A; --fg:#F3EFEE; --muted:#A39A9C; --line:#332D2E;
+  --band:#5E1220; --band-fg:#FCEFEF; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+section{padding-block:clamp(64px,9vw,120px)}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.025em;line-height:1.02;margin:0;text-wrap:balance}
+h1{font-size:clamp(52px,8.4vw,116px)}
+h2{font-size:clamp(36px,5vw,64px)}
+h3{font-size:clamp(22px,2.2vw,28px);letter-spacing:-.015em}
+p{margin:0}
+.lede{font-size:clamp(17px,1.5vw,19px);color:var(--muted);max-width:52ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--c,var(--red));flex:none}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;font:600 15px var(--body);text-decoration:none;border:1.5px solid var(--fg);cursor:pointer;background:transparent;color:var(--fg);transition:transform .2s,background .2s,color .2s}
+.btn.solid{background:var(--fg);color:var(--bg)}
+.btn:hover{transform:translateY(-2px)}
+.btn.solid:hover{background:var(--red);border-color:var(--red);color:#fff}
+:focus-visible{outline:2.5px solid var(--red);outline-offset:3px}
+
+/* nav */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;gap:24px;height:64px}
+.logo{font:800 22px var(--display);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo i{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 50% 50%,var(--l4) 0 22%,var(--l1) 23% 46%,var(--l2) 47% 70%,var(--l3) 71%)}
+.logo b{color:var(--red)}
+.links{display:flex;gap:22px;margin-left:auto;font-size:14px}
+.links a{text-decoration:none;color:var(--muted)}
+.links a:hover{color:var(--fg)}
+.bag{font:500 13px var(--mono);border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--surface);display:flex;gap:8px;align-items:center}
+.bag span{background:var(--red);color:#fff;border-radius:999px;min-width:20px;text-align:center;padding:0 6px}
+.theme{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;width:36px;height:36px;cursor:pointer;font-size:15px}
+@media (max-width:860px){.links{display:none}.bag{margin-left:auto}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding-block:clamp(48px,7vw,96px) clamp(40px,6vw,80px)}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero .lede{margin-top:24px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-art{position:relative;aspect-ratio:1;max-width:100%}
+.hero-art canvas{width:100%;height:100%;display:block}
+.hero-art .note{position:absolute;right:4%;top:8%;font:500 12px var(--mono);background:var(--surface);border:1px solid var(--line);padding:8px 12px;border-radius:8px;max-width:220px;line-height:1.5}
+.ticker{display:flex;flex-wrap:wrap;gap:12px 28px;font:400 12px var(--mono);color:var(--muted);border-top:1px solid var(--line);padding-block:18px;letter-spacing:.04em}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.hero-art{max-width:520px;width:100%;margin-inline:auto}}
+
+/* statement */
+.statement{background:var(--surface)}
+.statement .grid{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:end}
+.legend{display:grid;gap:14px;font-size:15px}
+.legend div{display:flex;gap:14px;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.legend .swatch{width:34px;height:34px;border-radius:50%;flex:none;background:var(--c)}
+.legend small{display:block;font:400 11px var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+@media (max-width:860px){.statement .grid{grid-template-columns:1fr}}
+
+/* layers */
+.head{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:end;margin-bottom:48px}
+@media (max-width:860px){.head{grid-template-columns:1fr}}
+.layers{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.layer{background:var(--surface);border-radius:4px;display:flex;flex-direction:column;box-shadow:0 1px 0 var(--line);min-width:0}
+.layer .art{aspect-ratio:4/5;position:relative;overflow:hidden}
+.layer .art canvas{width:100%;height:100%;display:block}
+.layer .art q{position:absolute;left:14px;top:14px;right:40%;font:500 12px/1.45 var(--body);quotes:none;background:var(--surface);padding:8px 10px;border-radius:3px}
+.layer .pin{position:absolute;right:14px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--fg)}
+.layer .txt{padding:20px;display:grid;gap:10px;flex:1;align-content:start}
+.layer .txt p{font-size:14.5px;color:var(--muted)}
+.prods{list-style:none;margin:6px 0 0;padding:0;border-top:1px solid var(--line)}
+.prods li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.prods li span:last-child{font:400 12px var(--mono);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+@media (max-width:1000px){.layers{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.layers{grid-template-columns:1fr}}
+
+/* journey */
+.journey{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:start}
+.journey .sun{position:sticky;top:100px;aspect-ratio:1;max-width:100%}
+.journey .sun canvas{width:100%;height:100%}
+.steps{list-style:none;margin:32px 0 0;padding:0}
+.steps li{display:grid;grid-template-columns:96px 1fr;gap:16px;padding-block:18px;border-top:1px solid var(--line)}
+.steps .when{font:500 13px var(--mono);font-variant-numeric:tabular-nums}
+.steps h3{font-size:19px;margin:4px 0 4px}
+.steps p{color:var(--muted);font-size:14.5px}
+@media (max-width:860px){.journey{grid-template-columns:1fr}.journey .sun{position:static;max-width:420px;width:100%;margin-inline:auto}}
+
+/* catalogue — pinned paper */
+.catalogue{background:var(--surface)}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 22px}
+.paper{background:var(--bg);padding:22px 20px 18px;position:relative;box-shadow:0 10px 24px -14px rgba(20,10,10,.35);transform:rotate(var(--r,0deg));transition:transform .25s;display:grid;gap:8px;min-width:0}
+.paper:hover{transform:rotate(0) translateY(-4px)}
+.paper::before{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 2px 3px rgba(0,0,0,.3);transform:translateX(-50%)}
+.paper h3{font-size:20px}
+.paper p{font-size:13.5px;color:var(--muted)}
+.paper .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;padding-top:10px;border-top:1px dashed var(--line)}
+.paper .price{font:500 13px var(--mono);font-variant-numeric:tabular-nums}
+.add{font:600 12px var(--body);border:1px solid var(--fg);background:transparent;color:var(--fg);border-radius:999px;padding:6px 12px;cursor:pointer}
+.add[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+@media (max-width:1000px){.board{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.board{grid-template-columns:1fr}}
+
+/* principles — stacked bands */
+.principles{display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:center}
+.stack{display:grid;gap:0;justify-items:center}
+.stack div{height:34px;width:var(--w);background:var(--c);border-radius:3px 3px 0 0}
+.rules{display:grid;gap:0}
+.rule{display:grid;grid-template-columns:auto 1fr;gap:18px;padding-block:22px;border-top:1px solid var(--line)}
+.rule .n{font:500 12px var(--mono);color:var(--muted);padding-top:8px}
+.rule h3{font-size:clamp(22px,2.4vw,30px)}
+.rule p{color:var(--muted);margin-top:6px;font-size:15px}
+@media (max-width:860px){.principles{grid-template-columns:1fr}}
+
+/* voices */
+.voices{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.voice{border-top:3px solid var(--c);padding-top:16px;display:grid;gap:10px;align-content:start}
+.voice blockquote{margin:0;font-size:16px;line-height:1.55}
+.voice cite{font:400 12px var(--mono);color:var(--muted);font-style:normal}
+.tag{font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);padding:2px 7px;border-radius:3px;justify-self:start}
+@media (max-width:1000px){.voices{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.voices{grid-template-columns:1fr}}
+
+/* sessions band */
+.band{background:var(--band);color:var(--band-fg)}
+.band .eyebrow,.band .lede{color:color-mix(in srgb,var(--band-fg) 70%,transparent)}
+.sessions{list-style:none;margin:40px 0 0;padding:0}
+.sessions li{display:grid;grid-template-columns:120px 1fr auto;gap:24px;align-items:center;padding-block:22px;border-top:1px solid color-mix(in srgb,var(--band-fg) 22%,transparent)}
+.sessions .d{font:800 26px var(--display);line-height:1}
+.sessions .d small{display:block;font:400 11px var(--mono);margin-top:6px;opacity:.7}
+.sessions h3{font-size:clamp(20px,2.2vw,28px)}
+.sessions p{opacity:.75;font-size:14.5px;margin-top:4px}
+.band .btn{border-color:var(--band-fg);color:var(--band-fg)}
+.band .btn:hover{background:var(--band-fg);color:var(--band)}
+@media (max-width:700px){.sessions li{grid-template-columns:1fr}}
+
+/* ways to start — circles */
+.ways{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.way{display:grid;gap:14px;justify-items:start}
+.way .circle{width:100%;aspect-ratio:1;border-radius:50%;background:var(--c);display:grid;place-items:center;max-width:320px;justify-self:center}
+.way .circle span{font:800 clamp(28px,3.4vw,44px) var(--display);color:#fff;letter-spacing:-.02em;text-align:center;line-height:1}
+.way .circle small{display:block;font:500 12px var(--mono);letter-spacing:.06em;margin-top:8px;opacity:.85}
+.way ul{margin:0;padding-left:18px;color:var(--muted);font-size:14.5px}
+@media (max-width:860px){.ways{grid-template-columns:1fr}.way .circle{max-width:260px}}
+
+/* contact */
+.contact{display:grid;grid-template-columns:1fr 1.1fr;gap:56px}
+form{background:var(--surface);padding:clamp(20px,3vw,36px);display:grid;gap:16px;grid-template-columns:1fr 1fr;border-radius:4px}
+form .full{grid-column:1/-1}
+label{display:grid;gap:6px;font:500 12px var(--mono);letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+input,select,textarea{font:400 15px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:11px 12px;width:100%}
+textarea{min-height:96px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font:500 14px var(--body);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chips input{width:auto;accent-color:var(--red)}
+.done{grid-column:1/-1;font-size:15px;color:var(--fg);background:var(--bg);border-left:3px solid var(--red);padding:12px 14px}
+.info{display:grid;gap:18px;margin-top:32px;font-size:15px}
+.info div{display:grid;grid-template-columns:110px 1fr;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.info dt{font:500 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:860px){.contact{grid-template-columns:1fr}form{grid-template-columns:1fr}}
+
+/* footer */
+footer{background:var(--fg);color:var(--bg);padding-block:56px 0;overflow:hidden}
+.fcols{display:flex;flex-wrap:wrap;justify-content:space-between;gap:32px;font-size:14px}
+.fcols nav{display:flex;flex-wrap:wrap;gap:20px;height:auto}
+.fcols a{text-decoration:none;opacity:.75}
+.fcols a:hover{opacity:1}
+.wordmark{font:800 clamp(96px,24vw,340px)/.8 var(--display);letter-spacing:-.06em;margin-top:48px;white-space:nowrap}
+.wordmark b{color:var(--red)}
+.fine{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font:400 12px var(--mono);opacity:.6;padding-block:20px}
+.mock{position:fixed;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:30;font:500 11px var(--mono);background:var(--red);color:#fff;padding:6px 10px;border-radius:999px;letter-spacing:.05em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="หลัก">
+      <a class="logo" href="#top"><i aria-hidden="true"></i><span><b>SE</b>Tech</span></a>
+      <div class="links">
+        <a href="#layers">โซลูชัน</a>
+        <a href="#journey">วิธีทำงาน</a>
+        <a href="#catalogue">แคตตาล็อก</a>
+        <a href="#academy">AI Academy</a>
+        <a href="#start">เริ่มต้น</a>
+        <a href="#contact">ติดต่อ</a>
+      </div>
+      <div class="bag" aria-live="polite">Bag <span id="bagCount">0</span></div>
+      <button class="theme" id="themeBtn" type="button" aria-label="สลับธีม">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="eyebrow"><span class="dot"></span>Super Empower Tech</div>
+        <h1 style="margin-top:20px">Empower<br>your <em>next.</em></h1>
+        <p class="lede">เทคโนโลยีที่เข้าใจคน เพื่อธุรกิจที่ไปได้ไกลกว่า SETech วางระบบเป็นชั้น เริ่มจากคนในองค์กร ขยายไปถึงลูกค้า การเรียนรู้ และแบรนด์</p>
+        <div class="cta">
+          <a class="btn solid" href="#layers">ค้นพบโซลูชันของคุณ ↗</a>
+          <a class="btn" href="#contact">คุยกับทีม SETech</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <canvas id="heroRings" aria-hidden="true"></canvas>
+        <p class="note">ทุกการเติบโตเริ่มที่แกนกลาง: คน ส่วนวงที่อยู่นอกสุดคือแบรนด์ที่คนภายนอกมองเห็น</p>
+      </div>
+    </div>
+    <div class="ticker">
+      <span>คน · ลูกค้า · การเรียนรู้ · แบรนด์</span>
+      <span>4 ชั้น · 11 โซลูชัน</span>
+      <span>TH / EN</span>
+      <span>BKK <b id="clock">--:--:--</b></span>
+    </div>
+  </div>
+
+  <section class="statement">
+    <div class="wrap grid">
+      <div>
+        <div class="eyebrow">แนวคิด</div>
+        <h2 style="margin-top:16px">หลายองค์กรซื้อเทคโนโลยีทีละชิ้น เราวางมันเป็นชั้น</h2>
+      </div>
+      <div>
+        <p class="lede" style="margin-bottom:28px">ระบบสี่ชั้นที่ต่อกันได้ทั้งหมด เลือกเริ่มจากชั้นที่องค์กรต้องการที่สุดก่อน แล้วค่อยต่อชั้นถัดไปเมื่อพร้อม</p>
+        <div class="legend">
+          <div style="--c:var(--l1)"><span class="swatch"></span><span><small>ชั้น 1 · แกนกลาง</small>People Platform</span></div>
+          <div style="--c:var(--l2)"><span class="swatch"></span><span><small>ชั้น 2</small>Customer &amp; Marketing Tech</span></div>
+          <div style="--c:var(--l3)"><span class="swatch"></span><span><small>ชั้น 3</small>Learning &amp; AI Academy</span></div>
+          <div style="--c:var(--l4)"><span class="swatch"></span><span><small>ชั้น 4 · ขอบนอก</small>Creative &amp; Brand Services</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="layers">
+    <div class="wrap">
+      <div class="head">
+        <h2>สี่ชั้น เลือกชั้นที่ใช่</h2>
+        <p class="lede">แต่ละชั้นมีสีและหน้าที่ของตัวเอง ยิ่งใกล้แกนกลางยิ่งเกี่ยวกับคนในองค์กร ยิ่งออกไปด้านนอกยิ่งเกี่ยวกับคนที่มองเข้ามา</p>
+      </div>
+      <div class="layers">
+        <article class="layer">
+          <div class="art"><canvas data-blob="l1" aria-hidden="true"></canvas><q>ให้คนเติบโต ให้องค์กรไปต่อ</q><span class="pin"></span></div>
+          <div class="txt">
+            <div class="eyebrow"><span class="dot" style="--c:var(--l1)"></span>ชั้น 1</div>
+            <h3>People Platform</h3>
+            <p>เชื่อมทุกมิติของคน งาน และข้อมูลไว้ในแพลตฟอร์มเดียว เลือกเฉพาะสิ่งที่องค์กรต้องการ</p>
+            <ul class="prods"><li><span>HRIS 5W1H</span><span>฿20</span></li><li><span>CRMCC</span><span>฿69</span></li><li><span>SEEThrough Dashboard</span><span>฿49</span></li></ul>
+          </div>
+        </article>
+        <article class="layer">
+          <div class="art"><canvas data-blob="l2" aria-hidden="true"></canvas><q>เปลี่ยนทุกการเชื่อมต่อ เป็นความสัมพันธ์</q><span class="pin"></span></div>
+          <div class="txt">
+            <div class="eyebrow"><span class="dot" style="--c:var(--l2)"></span>ชั้น 2</div>
+            <h3>Customer &amp; Marketing Tech</h3>
+            <p>สร้างประสบการณ์ที่ต่อเนื่องตั้งแต่หน้าร้านถึงหน้าจอ พร้อมเครื่องมือดูแลลูกค้าที่โตไปกับคุณ</p>
+            <ul class="prods"><li><span>LINE CRM Loyalty</span><span>฿1,490</span></li><li><span>AI Camera / O2O Kit</span><span>ตามโจทย์</span></li></ul>
+          </div>
+        </article>
+        <article class="layer">
+          <div class="art"><canvas data-blob="l3" aria-hidden="true"></canvas><q>ทักษะใหม่ เริ่มได้วันนี้</q><span class="pin"></span></div>
+          <div class="txt">
+            <div class="eyebrow"><span class="dot" style="--c:var(--l3)"></span>ชั้น 3</div>
+            <h3>Learning &amp; AI Academy</h3>
+            <p>ยกระดับทีมด้วย AI และการเรียนรู้ที่ลงมือทำได้จริง เลือกรอบเรียนที่ใช่สำหรับองค์กร</p>
+            <ul class="prods"><li><span>AI Kickstarter</span><span>฿4,900</span></li><li><span>E-Learning Library</span><span>฿1,900</span></li></ul>
+          </div>
+        </article>
+        <article class="layer">
+          <div class="art"><canvas data-blob="l4" aria-hidden="true"></canvas><q>สร้างแบรนด์ ที่คนอยากเป็นส่วนหนึ่ง</q><span class="pin"></span></div>
+          <div class="txt">
+            <div class="eyebrow"><span class="dot" style="--c:var(--l4)"></span>ชั้น 4</div>
+            <h3>Creative &amp; Brand Services</h3>
+            <p>จากแนวคิดถึงประสบการณ์ ทำโปรเจกต์ร่วมกับทีมสร้างสรรค์ที่เข้าใจธุรกิจของคุณ</p>
+            <ul class="prods"><li><span>Employer Branding</span><span>ตามโจทย์</span></li><li><span>Knowledge Management</span><span>ตามโจทย์</span></li><li><span>Fandom Marketing</span><span>ตามโจทย์</span></li><li><span>Event Management</span><span>ตามโจทย์</span></li></ul>
+          </div>
+        </article>
+      </div>
+      <p class="eyebrow" style="margin-top:20px">ราคาที่แสดงเป็นราคาเริ่มต้นตัวอย่าง</p>
+    </div>
+  </section>
+
+  <section id="journey">
+    <div class="wrap journey">
+      <div class="sun"><canvas id="sunRings" aria-hidden="true"></canvas></div>
+      <div>
+        <div class="eyebrow">วิธีทำงาน</div>
+        <h2 style="margin-top:16px">จากวันแรก ถึงวันที่ทีมใช้เองได้</h2>
+        <p class="lede" style="margin-top:18px">ทุกโปรเจกต์เดินจากแกนกลางออกไปด้านนอก ตัวอย่างเส้นทางของลูกค้าองค์กรหนึ่งราย</p>
+        <ol class="steps">
+          <li><span class="when">สัปดาห์ 1</span><div><div class="eyebrow"><span class="dot" style="--c:var(--l1)"></span>ชั้น 1</div><h3>ฟังก่อนเสนอ</h3><p>คุยกับผู้บริหารและทีม HR เพื่อหาว่าคน งาน และข้อมูลติดขัดตรงไหน</p></div></li>
+          <li><span class="when">สัปดาห์ 2</span><div><div class="eyebrow"><span class="dot" style="--c:var(--l1)"></span>ชั้น 1</div><h3>วางแกนกลาง</h3><p>ติดตั้ง HRIS 5W1H และ SEEThrough Dashboard ให้ข้อมูลคนอยู่ที่เดียว</p></div></li>
+          <li><span class="when">สัปดาห์ 4</span><div><div class="eyebrow"><span class="dot" style="--c:var(--l2)"></span>ชั้น 2</div><h3>เชื่อมถึงลูกค้า</h3><p>เปิด LINE CRM Loyalty ให้ทีมขายเห็นลูกค้าคนเดียวกันทั้งหน้าร้านและออนไลน์</p></div></li>
+          <li><span class="when">สัปดาห์ 6</span><div><div class="eyebrow"><span class="dot" style="--c:var(--l3)"></span>ชั้น 3</div><h3>สอนให้ใช้เป็น</h3><p>AI Kickstarter สำหรับหัวหน้าทีม แล้วต่อด้วย E-Learning Library ให้ทั้งองค์กร</p></div></li>
+          <li><span class="when">สัปดาห์ 10</span><div><div class="eyebrow"><span class="dot" style="--c:var(--l4)"></span>ชั้น 4</div><h3>เล่าเรื่องออกไปข้างนอก</h3><p>Employer Branding และอีเวนต์ที่สะท้อนสิ่งที่เปลี่ยนไปข้างใน</p></div></li>
+          <li><span class="when">ต่อเนื่อง</span><div><div class="eyebrow"><span class="dot"></span>ทุกชั้น</div><h3>วัดผลทุกไตรมาส</h3><p>ทบทวนตัวเลขร่วมกัน แล้วเลือกว่าจะต่อชั้นไหนเพิ่ม</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalogue" id="catalogue">
+    <div class="wrap">
+      <div class="head">
+        <h2>แคตตาล็อก หยิบใส่ถุงได้เลย</h2>
+        <p class="lede">เลือกโซลูชันที่สนใจใส่ Bag แล้วส่งให้ทีมเราประเมินพร้อมกันในครั้งเดียว</p>
+      </div>
+      <div class="board" id="board"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap principles">
+      <div class="stack" aria-hidden="true" id="stack"></div>
+      <div>
+        <div class="eyebrow">หลักการ</div>
+        <h2 style="margin-top:16px">สามข้อที่เรายึดทุกโปรเจกต์</h2>
+        <div class="rules" style="margin-top:28px">
+          <div class="rule"><span class="n">ข้อ 1</span><div><h3>เข้าใจคนก่อนเลือกเทคโนโลยี</h3><p>เราเริ่มจากวิธีทำงานจริงของทีม แล้วค่อยหาเครื่องมือที่เข้ากับมัน</p></div></div>
+          <div class="rule"><span class="n">ข้อ 2</span><div><h3>จ่ายเฉพาะสิ่งที่ใช้</h3><p>ทุกโซลูชันแยกซื้อได้ ไม่ต้องรับทั้งชุด</p></div></div>
+          <div class="rule"><span class="n">ข้อ 3</span><div><h3>ทำได้จริง วัดผลได้</h3><p>ทุกงานจบด้วยตัวเลขที่ทีมคุณเปิดดูเองได้</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <h2>เสียงจากแต่ละชั้น</h2>
+        <p class="lede">พื้นที่สำหรับรีวิวจากลูกค้าจริง ข้อความด้านล่างเป็นตัวอย่างการจัดวางเท่านั้น</p>
+      </div>
+      <div class="voices">
+        <figure class="voice" style="--c:var(--l1);margin:0"><span class="tag">ตัวอย่าง</span><blockquote>ข้อความรีวิวจากฝ่าย HR ว่าข้อมูลพนักงานอยู่ในที่เดียวแล้วเปลี่ยนการทำงานอย่างไร</blockquote><cite>ผู้จัดการฝ่ายบุคคล · ชั้น 1</cite></figure>
+        <figure class="voice" style="--c:var(--l2);margin:0"><span class="tag">ตัวอย่าง</span><blockquote>ข้อความรีวิวจากทีมการตลาดเรื่องสมาชิก LINE และยอดซื้อซ้ำ</blockquote><cite>หัวหน้าการตลาด · ชั้น 2</cite></figure>
+        <figure class="voice" style="--c:var(--l3);margin:0"><span class="tag">ตัวอย่าง</span><blockquote>ข้อความรีวิวจากผู้เรียน AI Kickstarter ว่าเอาไปใช้กับงานอะไร</blockquote><cite>ผู้เข้าอบรม · ชั้น 3</cite></figure>
+        <figure class="voice" style="--c:var(--l4);margin:0"><span class="tag">ตัวอย่าง</span><blockquote>ข้อความรีวิวจากแบรนด์ที่ทำ Employer Branding หรืออีเวนต์ร่วมกัน</blockquote><cite>ผู้บริหารแบรนด์ · ชั้น 4</cite></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="academy">
+    <div class="wrap">
+      <div class="head" style="margin-bottom:0">
+        <div><div class="eyebrow">AI Academy</div><h2 style="margin-top:16px">รอบเรียนที่กำลังจะมา</h2></div>
+        <p class="lede">เปิดรอบสำหรับองค์กรทุกเดือน วันที่และหัวข้อด้านล่างเป็นตัวอย่างสำหรับ mockup</p>
+      </div>
+      <ul class="sessions">
+        <li><div class="d">04 ธ.ค.<small>พฤหัส · 09:30</small></div><div><h3>AI Kickstarter สำหรับหัวหน้าทีม</h3><p>หนึ่งวันเต็ม ใช้ AI กับงานเอกสาร รายงาน และการประชุม</p></div><a class="btn" href="#contact">จองที่นั่ง</a></li>
+        <li><div class="d">11 ธ.ค.<small>พฤหัส · 13:30</small></div><div><h3>Prompt สำหรับงาน HR</h3><p>ครึ่งวัน เขียนประกาศรับสมัคร คัดเรซูเม่ และสรุปผลประเมิน</p></div><a class="btn" href="#contact">จองที่นั่ง</a></li>
+        <li><div class="d">18 ธ.ค.<small>พฤหัส · 09:30</small></div><div><h3>AI กับ LINE CRM</h3><p>ออกแบบข้อความและแคมเปญสมาชิกด้วยข้อมูลลูกค้าจริง</p></div><a class="btn" href="#contact">จองที่นั่ง</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="wrap">
+      <div class="head">
+        <h2>เริ่มได้สามทาง</h2>
+        <p class="lede">เลือกตามขนาดของสิ่งที่อยากเปลี่ยน ทุกทางต่อกันได้ในภายหลัง</p>
+      </div>
+      <div class="ways">
+        <div class="way"><div class="circle" style="--c:var(--l1)"><span>฿20<small>เริ่มต้น / ผู้ใช้</small></span></div><h3>หยิบโซลูชันสำเร็จรูป</h3><ul><li>HRIS, CRMCC, Dashboard</li><li>เปิดใช้ได้ภายในสัปดาห์</li><li>เพิ่มหรือลดได้ทุกเดือน</li></ul><a class="btn" href="#catalogue">ดูแคตตาล็อก</a></div>
+        <div class="way"><div class="circle" style="--c:var(--l3)"><span>฿1,900<small>เริ่มต้น</small></span></div><h3>อบรมทั้งทีม</h3><ul><li>AI Kickstarter และ E-Learning</li><li>รอบเฉพาะองค์กร</li><li>วัดผลก่อนและหลังเรียน</li></ul><a class="btn solid" href="#academy">ดูรอบเรียน</a></div>
+        <div class="way"><div class="circle" style="--c:var(--l4)"><span>ตามโจทย์<small>ประเมินฟรี</small></span></div><h3>โปรเจกต์ร่วมกัน</h3><ul><li>O2O, Branding, Event, KM</li><li>ทีมสร้างสรรค์ดูแลตั้งแต่ไอเดีย</li><li>ใบเสนอราคาภายใน 3 วันทำการ</li></ul><a class="btn" href="#contact">เริ่มต้นโปรเจกต์</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="padding-top:0">
+    <div class="wrap contact">
+      <div>
+        <div class="eyebrow">ติดต่อ</div>
+        <h2 style="margin-top:16px">เล่าโจทย์ให้เราฟัง</h2>
+        <p class="lede" style="margin-top:18px">บอกเราว่าอยากเริ่มที่ชั้นไหน ทีม SETech จะติดต่อกลับพร้อมแผนเริ่มต้น</p>
+        <dl class="info">
+          <div><dt>สำนักงาน</dt><dd style="margin:0">กรุงเทพฯ (ใส่ที่อยู่จริง)</dd></div>
+          <div><dt>อีเมล</dt><dd style="margin:0">hello@setech.example</dd></div>
+          <div><dt>เวลาทำการ</dt><dd style="margin:0">จันทร์–ศุกร์ 09:00–18:00</dd></div>
+        </dl>
+      </div>
+      <form id="form" novalidate>
+        <label>ชื่อ<input id="f-name" required placeholder="ชื่อ-นามสกุล"></label>
+        <label>บริษัท<input id="f-company" placeholder="ชื่อองค์กร"></label>
+        <label class="full">อีเมลที่ทำงาน<input id="f-email" type="email" required placeholder="name@company.co.th"></label>
+        <fieldset class="full" style="border:0;padding:0;margin:0;display:grid;gap:8px">
+          <legend style="font:500 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">สนใจชั้นไหน</legend>
+          <div class="chips">
+            <label><input type="checkbox" id="c1" checked> People</label>
+            <label><input type="checkbox" id="c2"> Customer</label>
+            <label><input type="checkbox" id="c3"> Learning</label>
+            <label><input type="checkbox" id="c4"> Brand</label>
+          </div>
+        </fieldset>
+        <label class="full">โจทย์ของคุณ<textarea id="f-msg" placeholder="เช่น อยากให้ข้อมูลพนักงานและลูกค้าอยู่ในที่เดียว"></textarea></label>
+        <p class="full eyebrow" id="bagNote">ใน Bag: ยังไม่มีรายการ</p>
+        <button class="btn solid full" type="submit" style="justify-content:center">ส่งโจทย์</button>
+        <p class="done" id="done" hidden></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fcols">
+      <p style="max-width:38ch;opacity:.8">SETech · Super Empower Tech<br>เทคโนโลยีที่เข้าใจคน เพื่อธุรกิจที่ไปได้ไกลกว่า</p>
+      <nav aria-label="ท้ายหน้า"><a href="#layers">โซลูชัน</a><a href="#catalogue">แคตตาล็อก</a><a href="#academy">AI Academy</a><a href="#contact">ติดต่อ</a></nav>
+    </div>
+    <div class="wordmark" aria-hidden="true"><b>SE</b>Tech</div>
+    <div class="fine"><span>© 2026 SETech · Mockup</span><span>TH / EN</span></div>
+  </div>
+</footer>
+<div class="mock">MOCKUP</div>
+
+<script>
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function hex(h){h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.substr(i,2),16))}
+function mix(a,b,t){const A=hex(a),B=hex(b);return'#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('')}
+function fit(c){const r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=Math.max(1,r.width*d);c.height=Math.max(1,r.height*d);return c.getContext('2d')}
+
+// contour rings: a stack of offset circles, light outside to deep at the core
+function rings(c,{stops,cx,cy,r0,n,drift,t=0}){
+  const g=fit(c),W=c.width,H=c.height,R=Math.min(W,H);
+  g.clearRect(0,0,W,H);
+  for(let i=0;i<n;i++){
+    const k=i/(n-1);
+    const seg=k*(stops.length-1),j=Math.min(stops.length-2,Math.floor(seg));
+    g.fillStyle=mix(stops[j],stops[j+1],seg-j);
+    const a=t+i*.35;
+    g.beginPath();
+    g.arc(W*cx+Math.cos(a)*drift*R*k,H*cy+Math.sin(a)*drift*R*k,R*r0*(1-k*.94),0,Math.PI*2);
+    g.fill();
+  }
+}
+let t=0;
+function draw(){
+  const bg=css('--bg')||'#EEECEB';
+  rings(document.getElementById('heroRings'),{stops:[bg,css('--l3'),css('--l2'),css('--l1'),css('--l4')],cx:.52,cy:.52,r0:.6,n:22,drift:.05,t});
+  rings(document.getElementById('sunRings'),{stops:[bg,'#F7C873',css('--l3'),css('--l2'),css('--l1')],cx:.5,cy:.5,r0:.52,n:18,drift:.03,t:t*.7});
+  document.querySelectorAll('[data-blob]').forEach((c,i)=>{
+    const col=css('--'+c.dataset.blob),sf=css('--surface');
+    rings(c,{stops:[sf,mix(sf,col,.35),col,mix(col,'#140808',.35)],cx:.55+(i%2?-.08:.06),cy:.62,r0:.62,n:14,drift:.07,t:t+i});
+  });
+}
+draw();
+if(!reduce){(function loop(){t+=.004;draw();requestAnimationFrame(loop)})();}
+addEventListener('resize',draw);
+
+// theme toggle
+document.getElementById('themeBtn').onclick=()=>{
+  const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme=dark?'light':'dark';draw();
+};
+
+// clock
+const clk=document.getElementById('clock');
+function tick(){clk.textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Bangkok'})}
+tick();setInterval(tick,1000);
+
+// catalogue
+const items=[
+ ['HRIS 5W1H','l1','ระบบข้อมูลพนักงาน ใคร ทำอะไร ที่ไหน เมื่อไร','฿20'],
+ ['CRMCC','l1','ศูนย์กลางดูแลความสัมพันธ์ภายในองค์กร','฿69'],
+ ['SEEThrough Dashboard','l1','เห็นภาพคนและงานทั้งองค์กรในหน้าเดียว','฿49'],
+ ['LINE CRM Loyalty','l2','ระบบสมาชิกและสะสมแต้มบน LINE','฿1,490'],
+ ['AI Camera / O2O Kit','l2','เชื่อมหน้าร้านกับออนไลน์ด้วยกล้อง AI','ตามโจทย์'],
+ ['AI Kickstarter','l3','คอร์สเริ่มใช้ AI กับงานจริงสำหรับทีม','฿4,900'],
+ ['E-Learning Library','l3','คลังบทเรียนออนไลน์สำหรับทั้งองค์กร','฿1,900'],
+ ['Employer Branding','l4','เล่าเรื่ององค์กรให้คนเก่งอยากร่วมงาน','ตามโจทย์'],
+ ['Knowledge Management','l4','เก็บความรู้ในองค์กรให้ค้นเจอและใช้ต่อได้','ตามโจทย์'],
+ ['Fandom Marketing','l4','เปลี่ยนลูกค้าให้เป็นแฟนตัวจริงของแบรนด์','ตามโจทย์'],
+ ['Event Management','l4','อีเวนต์ที่สร้างประสบการณ์ร่วมกับแบรนด์','ตามโจทย์']
+];
+const bag=new Set(),board=document.getElementById('board');
+const rot=[-1.6,1.2,-.6,1.8,-1.2,.8,-1.8,1.4,-.4,1,-1.4];
+items.forEach(([n,l,d,p],i)=>{
+  const el=document.createElement('article');el.className='paper';
+  el.style.cssText=`--c:var(--${l});--r:${rot[i]}deg`;
+  el.innerHTML=`<div class="eyebrow"><span class="dot" style="--c:var(--${l})"></span>ชั้น ${l[1]}</div><h3>${n}</h3><p>${d}</p><div class="row"><span class="price">${p==='ตามโจทย์'?p:'เริ่ม '+p}</span><button class="add" type="button" aria-pressed="false">+ Bag</button></div>`;
+  el.querySelector('.add').onclick=e=>{
+    const b=e.currentTarget,on=!bag.has(n);on?bag.add(n):bag.delete(n);
+    b.setAttribute('aria-pressed',on);b.textContent=on?'✓ ใน Bag':'+ Bag';updateBag();
+  };
+  board.appendChild(el);
+});
+function updateBag(){
+  document.getElementById('bagCount').textContent=bag.size;
+  document.getElementById('bagNote').textContent=bag.size?'ใน Bag: '+[...bag].join(', '):'ใน Bag: ยังไม่มีรายการ';
+}
+
+// stacked bands
+const st=document.getElementById('stack'),sc=['l3','l3','l2','l2','l1','l1','l4','l4'];
+sc.forEach((c,i)=>{const d=document.createElement('div');d.style.cssText=`--c:var(--${c});--w:${42+i*8}%;opacity:${.55+i*.06}`;st.appendChild(d)});
+
+// form
+document.getElementById('form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('f-name').value.trim(),email=document.getElementById('f-email').value.trim(),done=document.getElementById('done');
+  done.hidden=false;
+  done.textContent=(!name||!/.+@.+\..+/.test(email))?'กรุณากรอกชื่อและอีเมลที่ทำงานให้ครบ':`ขอบคุณคุณ${name} นี่เป็น mockup จึงยังไม่ได้ส่งข้อมูลจริง ในเว็บจริงทีมจะติดต่อกลับที่ ${email}`;
+});
+</script>
