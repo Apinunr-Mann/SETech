@@ -1,0 +1,568 @@
+{
+ "meta": {
+  "level": "individual",
+  "entityName": "สุภาวดี ประเสริฐ",
+  "entityNameEn": "L4 ผู้จัดการ",
+  "path": [
+   "บริษัท ตัวอย่าง จำกัด (มหาชน)",
+   "สายงานเทคโนโลยี",
+   "แผนกดิจิทัลและข้อมูล",
+   "แผนกย่อยวิเคราะห์ข้อมูล"
+  ],
+  "organization": "บริษัท ตัวอย่าง จำกัด (มหาชน)",
+  "cycle": "การประเมินสมรรถนะประจำปี 2569",
+  "cycleEn": "Annual Competency Assessment 2026",
+  "period": "ต.ค. – พ.ย. 2569",
+  "reportDate": "16 พฤศจิกายน 2569",
+  "confidentiality": "ลับเฉพาะบุคคล",
+  "method": "360° (ผู้บังคับบัญชา 50% · เพื่อนร่วมงาน 25% · ผู้ใต้บังคับบัญชา 25%)"
+ },
+ "foreword": {
+  "signer": {
+   "name": "ฝ่ายทรัพยากรบุคคล",
+   "title": "Human Resources"
+  }
+ },
+ "participation": {
+  "invited": 1,
+  "completed": 1,
+  "reliability": null
+ },
+ "scale": [
+  {
+   "level": 1,
+   "label": "เริ่มต้น",
+   "labelEn": "Foundational",
+   "desc": "มีความรู้พื้นฐาน ต้องได้รับคำแนะนำใกล้ชิด"
+  },
+  {
+   "level": 2,
+   "label": "กำลังพัฒนา",
+   "labelEn": "Developing",
+   "desc": "ทำได้ในสถานการณ์ทั่วไปภายใต้การกำกับ"
+  },
+  {
+   "level": 3,
+   "label": "ชำนาญ",
+   "labelEn": "Proficient",
+   "desc": "ทำได้ด้วยตนเองอย่างสม่ำเสมอ"
+  },
+  {
+   "level": 4,
+   "label": "ชำนาญสูง",
+   "labelEn": "Advanced",
+   "desc": "แก้ปัญหาซับซ้อนและแนะนำผู้อื่นได้"
+  },
+  {
+   "level": 5,
+   "label": "เชี่ยวชาญ",
+   "labelEn": "Expert",
+   "desc": "เป็นแบบอย่างและกำหนดมาตรฐานให้องค์กร"
+  }
+ ],
+ "clusters": [
+  {
+   "id": "core",
+   "name": "สมรรถนะหลัก",
+   "nameEn": "Core Competencies",
+   "tagline": "ค่านิยมและพฤติกรรมพื้นฐานที่ทุกคนในองค์กรต้องมีร่วมกัน",
+   "whatItMeasures": "พฤติกรรมพื้นฐานที่สะท้อนค่านิยมองค์กร ใช้กับพนักงานทุกระดับ เป็นตัวกำหนด “วิธีการ” ทำงานมากกว่า “ผลลัพธ์” ของงาน",
+   "whyItMatters": "งานวิจัยด้านวัฒนธรรมองค์กรชี้ว่าพฤติกรรมร่วมเป็นตัวแปรนำของความผูกพันและการรักษาพนักงาน ช่องว่างในกลุ่มนี้จึงเป็นสัญญาณเตือนล่วงหน้าของปัญหาวัฒนธรรม"
+  },
+  {
+   "id": "lead",
+   "name": "สมรรถนะการบริหาร",
+   "nameEn": "Leadership Competencies",
+   "tagline": "ความสามารถในการกำหนดทิศทาง นำคน และนำการเปลี่ยนแปลง",
+   "whatItMeasures": "ความสามารถในการคิดเชิงกลยุทธ์ ตัดสินใจ พัฒนาคน และนำการเปลี่ยนแปลง ระดับที่คาดหวังเพิ่มขึ้นตามระดับตำแหน่ง",
+   "whyItMatters": "คุณภาพของหัวหน้างานอธิบายความแตกต่างของความผูกพันในทีมได้สูงสุดราว 70% (Gallup, 2015) ช่องว่างในกลุ่มนี้จึงส่งผลทวีคูณต่อทั้งหน่วยงาน"
+  },
+  {
+   "id": "func",
+   "name": "สมรรถนะตามสายงาน",
+   "nameEn": "Functional Competencies",
+   "tagline": "ความเชี่ยวชาญเชิงเทคนิคและดิจิทัลที่ขับเคลื่อนผลงาน",
+   "whatItMeasures": "ความรู้และทักษะเฉพาะที่จำเป็นต่อการส่งมอบผลงาน รวมถึงทักษะข้อมูลและดิจิทัลที่กลายเป็นทักษะพื้นฐานของทุกสายงาน",
+   "whyItMatters": "ครึ่งชีวิตของทักษะเชิงเทคนิคสั้นลงเหลือประมาณ 2.5–5 ปี การลงทุนพัฒนากลุ่มนี้อย่างต่อเนื่องจึงเป็นเงื่อนไขของความสามารถในการแข่งขัน"
+  }
+ ],
+ "competencies": [
+  {
+   "id": "C1",
+   "no": 1,
+   "cluster": "core",
+   "name": "ความซื่อสัตย์และความรับผิดชอบ",
+   "nameEn": "Integrity & Accountability",
+   "definition": "ยึดมั่นในจริยธรรม รักษาคำมั่น และรับผิดชอบต่อผลลัพธ์ของตนเอง",
+   "score": 3.36,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prev": 3.39,
+   "development": {
+    "outcome": "รักษามาตรฐานจริยธรรมระดับสูงอย่างต่อเนื่อง",
+    "action": "ใช้ผู้มีคะแนนสูงเป็น Culture Ambassador และ mentor พนักงานใหม่",
+    "ratio": "20"
+   },
+   "raters": {
+    "self": 3.48,
+    "manager": 3.18,
+    "peer": 3.58,
+    "subordinate": 3.51
+   },
+   "teamAvg": 2.65
+  },
+  {
+   "id": "C2",
+   "no": 2,
+   "cluster": "core",
+   "name": "การมุ่งเน้นลูกค้า",
+   "nameEn": "Customer Centricity",
+   "definition": "เข้าใจความต้องการของลูกค้าภายในและภายนอก และส่งมอบคุณค่าที่เกินความคาดหวัง",
+   "score": 2.76,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prev": 2.77,
+   "development": {
+    "outcome": "คะแนนความพึงพอใจลูกค้าภายในเพิ่มขึ้น",
+    "action": "ทำ Customer Journey Workshop ข้ามแผนก และหมุนเวียนงานหน้าบ้าน 2 สัปดาห์",
+    "ratio": "70"
+   },
+   "raters": {
+    "self": 3.15,
+    "manager": 3.16,
+    "peer": 2.15,
+    "subordinate": 2.55
+   },
+   "teamAvg": 2.27
+  },
+  {
+   "id": "C3",
+   "no": 3,
+   "cluster": "core",
+   "name": "การทำงานร่วมกัน",
+   "nameEn": "Collaboration",
+   "definition": "ทำงานข้ามสายงาน แบ่งปันข้อมูล และสร้างความไว้วางใจเพื่อเป้าหมายร่วม",
+   "score": 2.32,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 0,
+   "dist": [
+    0,
+    1,
+    0,
+    0,
+    0
+   ],
+   "prev": 2.3,
+   "development": {
+    "outcome": "ลดรอบเวลาส่งต่องานข้ามสายงาน",
+    "action": "ตั้งทีมโครงการข้ามสายงาน (cross-functional squad) พร้อม OKR ร่วม",
+    "ratio": "70"
+   },
+   "raters": {
+    "self": 3,
+    "manager": 2.29,
+    "peer": 2.31,
+    "subordinate": 2.38
+   },
+   "teamAvg": 2.27
+  },
+  {
+   "id": "C4",
+   "no": 4,
+   "cluster": "core",
+   "name": "การเรียนรู้และปรับตัว",
+   "nameEn": "Learning Agility",
+   "definition": "เรียนรู้สิ่งใหม่อย่างรวดเร็วและปรับวิธีทำงานเมื่อบริบทเปลี่ยน",
+   "score": 2.51,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 0,
+   "dist": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prev": 2.56,
+   "development": {
+    "outcome": "พนักงานปรับตัวกับระบบงานใหม่ได้เร็วขึ้น",
+    "action": "จัด Learning Sprint รายไตรมาส และกำหนด “ชั่วโมงเรียนรู้” 4 ชม./เดือน",
+    "ratio": "10"
+   },
+   "raters": {
+    "self": 2.53,
+    "manager": 2.2,
+    "peer": 2.92,
+    "subordinate": 2.72
+   },
+   "teamAvg": 2.12
+  },
+  {
+   "id": "L1",
+   "no": 5,
+   "cluster": "lead",
+   "name": "การคิดเชิงกลยุทธ์",
+   "nameEn": "Strategic Thinking",
+   "definition": "มองภาพรวม เชื่อมโยงงานกับทิศทางองค์กร และคาดการณ์ผลระยะยาว",
+   "score": 3.51,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "prev": 3.52,
+   "development": {
+    "outcome": "แผนงานระดับแผนกเชื่อมโยงกับกลยุทธ์องค์กรชัดเจน",
+    "action": "ให้ผู้จัดการร่วมจัดทำแผนกลยุทธ์ประจำปี และเข้าหลักสูตร Strategic Foresight",
+    "ratio": "70"
+   },
+   "raters": {
+    "self": 3.83,
+    "manager": 3.61,
+    "peer": 3.47,
+    "subordinate": 3.33
+   },
+   "teamAvg": 1.74
+  },
+  {
+   "id": "L2",
+   "no": 6,
+   "cluster": "lead",
+   "name": "การพัฒนาคนและทีม",
+   "nameEn": "Developing People",
+   "definition": "โค้ช ให้ feedback และสร้างโอกาสการเติบโตให้ทีม",
+   "score": 2.97,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prev": 2.94,
+   "development": {
+    "outcome": "ทุกคนในทีมมี IDP ที่ติดตามได้",
+    "action": "ฝึกทักษะ Coaching แก่หัวหน้างาน และกำหนด 1-on-1 อย่างน้อยเดือนละครั้ง",
+    "ratio": "20"
+   },
+   "raters": {
+    "self": 4.13,
+    "manager": 2.94,
+    "peer": 3.03,
+    "subordinate": 2.98
+   },
+   "teamAvg": 1.71
+  },
+  {
+   "id": "L3",
+   "no": 7,
+   "cluster": "lead",
+   "name": "การตัดสินใจ",
+   "nameEn": "Decision Making",
+   "definition": "ตัดสินใจอย่างมีหลักฐาน ทันเวลา และรับผิดชอบต่อผลการตัดสินใจ",
+   "score": 3.25,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prev": 3.11,
+   "development": {
+    "outcome": "การตัดสินใจรวดเร็วและมีหลักฐานรองรับ",
+    "action": "นำ Decision Log มาใช้ในการประชุมบริหาร และทบทวนผลทุกไตรมาส",
+    "ratio": "70"
+   },
+   "raters": {
+    "self": 3.75,
+    "manager": 3.11,
+    "peer": 3.34,
+    "subordinate": 3.47
+   },
+   "teamAvg": 1.77
+  },
+  {
+   "id": "L4",
+   "no": 8,
+   "cluster": "lead",
+   "name": "การนำการเปลี่ยนแปลง",
+   "nameEn": "Change Leadership",
+   "definition": "สื่อสารเหตุผลของการเปลี่ยนแปลง สร้างแรงจูงใจ และขับเคลื่อนให้เกิดผล",
+   "score": 3.03,
+   "required": 3,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prev": 2.95,
+   "development": {
+    "outcome": "โครงการเปลี่ยนแปลงบรรลุเป้าหมายตามกำหนด",
+    "action": "มอบหมายผู้บริหารเป็น Change Sponsor ของโครงการจริง พร้อม Executive Coach",
+    "ratio": "70"
+   },
+   "raters": {
+    "self": 3.54,
+    "manager": 3.19,
+    "peer": 2.47,
+    "subordinate": 3.28
+   },
+   "teamAvg": 1.59
+  },
+  {
+   "id": "F1",
+   "no": 9,
+   "cluster": "func",
+   "name": "การใช้ข้อมูลเพื่อการวิเคราะห์",
+   "nameEn": "Data Literacy",
+   "definition": "อ่าน วิเคราะห์ และสื่อสารข้อมูลเพื่อสนับสนุนการตัดสินใจ",
+   "score": 3.26,
+   "required": 4,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 0,
+   "dist": [
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   "prev": 3.26,
+   "development": {
+    "outcome": "รายงานและการตัดสินใจอ้างอิงข้อมูลมากขึ้น",
+    "action": "หลักสูตร Data Storytelling แบบ blended และ Data Clinic รายสัปดาห์",
+    "ratio": "10"
+   },
+   "raters": {
+    "self": 4.08,
+    "manager": 3.13,
+    "peer": 3.36,
+    "subordinate": 3.43
+   },
+   "teamAvg": 2.29
+  },
+  {
+   "id": "F2",
+   "no": 10,
+   "cluster": "func",
+   "name": "ทักษะดิจิทัลและ AI",
+   "nameEn": "Digital & AI Fluency",
+   "definition": "ใช้เครื่องมือดิจิทัลและ AI อย่างมีวิจารณญาณเพื่อยกระดับผลิตภาพ",
+   "score": 4.49,
+   "required": 4,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "prev": 4.45,
+   "development": {
+    "outcome": "ผลิตภาพเพิ่มขึ้นจากการใช้ AI อย่างปลอดภัย",
+    "action": "โปรแกรม AI Fluency 3 ระดับ + Use-case Challenge ภายในหน่วยงาน",
+    "ratio": "70"
+   },
+   "raters": {
+    "self": 5,
+    "manager": 4.27,
+    "peer": 4.73,
+    "subordinate": 4.7
+   },
+   "teamAvg": 2.64
+  },
+  {
+   "id": "F3",
+   "no": 11,
+   "cluster": "func",
+   "name": "ความเป็นเลิศด้านกระบวนการ",
+   "nameEn": "Process Excellence",
+   "definition": "ออกแบบ ปรับปรุง และควบคุมกระบวนการให้มีประสิทธิภาพและคุณภาพ",
+   "score": 4.02,
+   "required": 4,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "prev": 3.84,
+   "development": {
+    "outcome": "ลดความสูญเปล่าในกระบวนการหลัก",
+    "action": "โครงการ Lean/Kaizen ที่วัดผลได้ โดยมี Green Belt เป็นพี่เลี้ยง",
+    "ratio": "70"
+   },
+   "raters": {
+    "self": 3.81,
+    "manager": 3.77,
+    "peer": 4.03,
+    "subordinate": 4.49
+   },
+   "teamAvg": 2.79
+  },
+  {
+   "id": "F4",
+   "no": 12,
+   "cluster": "func",
+   "name": "ความเชี่ยวชาญในวิชาชีพ",
+   "nameEn": "Professional Expertise",
+   "definition": "ความรู้เชิงลึกในสาขางานของตน และประยุกต์ใช้กับสถานการณ์จริง",
+   "score": 4,
+   "required": 4,
+   "sd": null,
+   "ci95": null,
+   "n": 1,
+   "pctMeet": 1,
+   "dist": [
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "prev": 4.05,
+   "development": {
+    "outcome": "รักษาความเชี่ยวชาญระดับสูงและถ่ายทอดสู่รุ่นถัดไป",
+    "action": "จัดทำ Knowledge Map และให้ผู้เชี่ยวชาญเป็นวิทยากรภายใน",
+    "ratio": "20"
+   },
+   "raters": {
+    "self": 4.57,
+    "manager": 3.85,
+    "peer": 4.12,
+    "subordinate": 4.16
+   },
+   "teamAvg": 2.47
+  }
+ ],
+ "breakdown": null,
+ "keyPlayers": [
+  {
+   "role": "ตัวท่าน (พนักงาน)",
+   "icon": "exec",
+   "items": [
+    [
+     "เลือกเป้าหมาย",
+     "เลือก 1–2 สมรรถนะลำดับแรกจากรายงานนี้"
+    ],
+    [
+     "ลงมือฝึก",
+     "ขอรับงานที่ใช้สมรรถนะนั้นจริง"
+    ],
+    [
+     "สะท้อนผล",
+     "บันทึกสิ่งที่เรียนรู้และขอ feedback สม่ำเสมอ"
+    ]
+   ]
+  },
+  {
+   "role": "ผู้บังคับบัญชา",
+   "icon": "lead",
+   "items": [
+    [
+     "ตกลง IDP",
+     "ร่วมกำหนดเป้าหมายและตัวชี้วัดภายใน 30 วัน"
+    ],
+    [
+     "เปิดโอกาส",
+     "มอบหมายงาน stretch ที่ตรงกับช่องว่าง"
+    ],
+    [
+     "โค้ช",
+     "1-on-1 อย่างน้อยเดือนละครั้ง"
+    ]
+   ]
+  },
+  {
+   "role": "HR / Mentor",
+   "icon": "hr",
+   "items": [
+    [
+     "แนะนำการเรียนรู้",
+     "เสนอหลักสูตรและแหล่งเรียนรู้ที่เหมาะสม"
+    ],
+    [
+     "จับคู่ Mentor",
+     "เชื่อมกับผู้มีจุดแข็งในสมรรถนะเดียวกัน"
+    ],
+    [
+     "ติดตาม",
+     "ประเมินความคืบหน้ากลางปี"
+    ]
+   ]
+  }
+ ],
+ "person": {
+  "id": "E1127",
+  "name": "สุภาวดี ประเสริฐ",
+  "jobLevel": "L4 ผู้จัดการ",
+  "position": "หัวหน้างานวิเคราะห์ข้อมูล",
+  "raterCounts": {
+   "self": 1,
+   "manager": 1,
+   "peer": 4,
+   "subordinate": 5
+  }
+ }
+}

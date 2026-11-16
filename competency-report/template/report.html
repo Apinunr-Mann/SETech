@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>Competency Assessment Report</title>
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<main id="report"></main>
+<script src="report.js"></script>
+<script>
+  // Data source, in priority order:
+  //  1) window.__REPORT_DATA__ injected by the server / exporter
+  //  2) ?data=<url to payload json>   e.g. report.html?data=../data/sample-individual.json
+  (async () => {
+    let data = window.__REPORT_DATA__;
+    if (!data) {
+      const url = new URLSearchParams(location.search).get('data') || '../data/sample-company.json';
+      data = await (await fetch(url)).json();
+    }
+    renderReport(data);
+    await document.fonts.ready;
+    window.__READY__ = true;
+  })();
+</script>
+</body>
+</html>
