@@ -1,0 +1,236 @@
+customer	ch	product	bu	billing	gp	temp	stage	lead	close	owner	note	prob	action
+Suntory	C	Strategy	GGEZ	300000	250000	H	L	26-06	26-07	B
+Suntory	C	Event	GGEZ	1050000	200000	H	L	26-06	26-07	B
+Suntory	C	Ads	GGEZ	2450000	-329000	H	L	26-06	26-07	B
+Suntory	C	Management Fee 15%	GGEZ	911550	701894	H	L	26-06	26-07	B
+TCL	R	Ads	Goodtech	3223200	242305	H	L	26-01	26-03	B
+TCL	R	PR	Goodtech	2000000	400000	H	L	26-01	26-03	B
+TCL	R	KOL	Goodtech	6500000	1000350	H	W	26-01	26-03	B
+Bunny Shake	C	Ads	Goodtech	360000	-96000	H	L	25-10	26-02	B
+Bunny Shake	C	Live	Goodtech	480000	144000	H	L	25-10	26-02	B
+Bunny Shake	C	Management Fee 15%	Goodtech	336600	176570	H	L	25-10	26-02	B
+Dogster	O	Ads	Goodtech	36000	36000	H	W	26-02	26-02	B
+Suntory	C	KOL	Goodtech	1500000	300000	H	L	26-06	26-07	B
+TCL	R	Research + AI Admin	SETech	2000000	600000	H	L	26-01	26-03	B
+Pramy	R	Event	SETech	858000	120000	W	W	26-01	26-02	B
+K.Dream จัดอีเว้นท์	M	AI	SETech			W	L	26-02		B
+S.C.S ( Popteen )	C	Production	SETech			W	L	26-02		B
+Dermie	C	Year Plan	SETech	3000000	1400000	W	L	26-02	26-03	B
+Pramy Pet Expo	C	Event	SETech	600000	150000	H	L	26-04	26-05	B
+Event AKINS	R	Event	SETech	5000000	2000000	H	W	26-05	26-06	B
+TCL Product Launch	R	Event	SETech	900000	270000	H	W	26-03	26-04	B
+TCL Production จีน	R	Production	SETech	300000	95429	H	W	26-06	26-07	B
+TCL Production ต่างจังหวัด	R	Production	SETech	80000	30000	H	L	26-06	26-07	B
+ตรางู	C	CAM	SETech	1000000	300000	W	L	26-06	26-07	B	ลูกค้าต้องของบปีหน้า ซึ่งผู้ใหญ่ยังไม่มีฟีตแบ็คอื่นเพิ่มเติม	50
+Grandmontte	R	MA	SETech	180000	80000	W	L	26-06	26-07	B	รอเสนอ Mock Up ให้ลูกค้าตัดสินใจอีกที	50
+Glico Pejoy 2026	C	CRM	Snaptech	70000	28000	W	W	25-08	26-02	B
+Bunny Shake	C	KOL	TPM	600000	180000	H	L	25-10	26-02	B
+Glico Pejoy 2026	C	Campaign Collab	TPM	960000	144000	H	W	25-08	26-02	B
+Cerapure	R	KOL	TPM	60000	21000	H	W	26-01	26-02	B
+KCG	R	KOL	TPM	200000	60000	W	L	26-01	26-02	B
+Lin	R	KOL	TPM	91500	21760	H	W	26-01	26-01	B
+Lin	R	Management Fee 15%	TPM	8500	9150	H	W	26-01	26-01	B
+Alfie Nano KOL	C	KOL	TPM	190000	48000	H	L	25-12	26-01	B
+Alfie Nano KOL	C	Management Fee 10%	TPM	19000	17000	H	L	25-12	26-01	B
+Pretz Nono KOL	C	KOL	TPM	190000	48000	H	W	26-01	26-03	B
+Pretz Nono KOL	C	Management Fee 10%	TPM	19000	17000	H	W	26-01	26-03	B
+Teenie Nono KOL	C	KOL	TPM	190000	48000	H	L	26-01	26-03	B
+Teenie Nono KOL	C	Management Fee 10%	TPM	19000	17000	H	L	26-01	26-03	B
+Dogster	O	MA	TPM	95200	47940	W	W	26-02	26-03	B
+SET TFEX	C	KOL	TPM	800000	120000	H	L	26-04	26-05	B
+Imperial VAN	O	KOL	TPM	200000	30000	H	W	26-04	26-05	B
+Imperial Gold Selection Butter Cookies	C	KOL	TPM	300000	60000	W	W	26-03	26-04	B
+SET Invester + มารวย	C	Campaign	TPM	793120	130964	H	L	26-05	26-06	B
+Dogster	R	Ads	TPM	112700	14700	H	W	26-05	26-06	B
+Dogster	O	Ads	TPM	98000	14700	H	W	26-04	26-05	B
+Glico Pejoy 2026	C	MA	TPS	1722000	1191840	H	W	25-08	26-02	B
+Glico Pejoy 2026	C	Management Fee 10%	TPS	307200	138240	H	W	25-08	26-02	B
+Glico Pejoy 2026	C	Campaign Collab	TPS	1200000	240000	H	W	25-08	26-02	B
+Glico Pejoy 2026	C	CRM	TPS	150000	80000	H	W	25-08	26-02	B
+Pretz Nono KOL	C	KOL	TPS	220000	13000	H	W	26-01	26-03	B
+Pretz Nono KOL	C	Management Fee 10%	TPS	22000	18370	H	W	26-01	26-03	B
+TCL Presenter KV ( Phone )	R	Production	TPS			H	L	26-02	26-04	B
+TCL Presenter VDO ( HA )	R	Production	TPS			H	L	26-02	26-04	B
+TCL Presenter VDO ( Phone )	R	Production	TPS			H	L	26-02	26-04	B
+TCL KV Production Additional	R	KV Retouch	TPS	4500	1000	H	W	26-01	26-01	B
+TCL	R	AE	TPS	25000	22500	H	W	26-01	26-03	B
+TCL	R	Creative	TPS	1600000	1029330	H	L	26-01	26-03	B
+Bunny Shake	C	MA	TPS	2964000	1317000	H	L	25-10	26-02	B
+Bunny Shake	C	Management Fee 15%	TPS	236600	76570	H	L	25-10	26-02	B
+Alfie Nano KOL	C	KOL	TPS	220000	13000	H	L	25-12	26-01	B
+Alfie Nano KOL	C	Management Fee 10%	TPS	22000	18370	H	L	25-12	26-01	B
+Teenie Nono KOL	C	KOL	TPS	220000	13000	H	L	26-01	26-03	B
+Teenie Nono KOL	C	Management Fee 10%	TPS	22000	18370	H	L	26-01	26-03	B
+อาหารยอดคุณ	O	MA	TPS	214500	193775	H	W	26-01	26-01	B
+อาหารยอดคุณ	O	Tiktok	TPS	363000	303500	H	W	26-01	26-01	B
+อาหารยอดคุณ	O	Ads	TPS	1100000	-110000	H	W	26-01	26-01	B
+อาหารยอดคุณ	O	Management Fee 10%	TPS	167750	30238	H	W	26-01	26-01	B
+อาหารยอดคุณ ( GAME )	O	Games	TPS			W	L	26-01	26-03	B
+Popcorn Concession Gezhi Town + Astronaut	O	MA	TPS	23000	21050	H	W	26-01	26-01	B
+Popcorn Concession Gezhi Town + Astronaut	O	Management Fee 13%	TPS	2990	1691	H	W	26-01	26-01	B
+Popcorn Concession Gundam + Winnie The Pooh	O	MA	TPS	40500	36675	H	W	26-01	26-01	B
+Popcorn Concession Gundam + Winnie The Pooh	O	Management Fee 13%	TPS	5265	2977	H	W	26-01	26-01	B
+Meko Clinic	R	Production	TPS	2000000	635000	W	L	26-01	26-03	B
+Popcorn Concession ราคี	O	MA	TPS	17500	15625	H	W	26-02	26-03	B
+Popcorn Concession ราคี	O	MA	TPS	2275	1286	H	W	26-02	26-03	B
+Dogster	O	Ads	TPS	414000	11790	H	W	26-02	26-02	B
+วังขนาย	R	MA	TPS			H	L	26-02	26-03	B
+Popcorn Concession ( April )	O	MA	TPS	75710	60945	H	W	26-03	26-03	B
+Popcorn Concession ( May )	O	MA	TPS	64410	56340	H	W	26-03	26-03	B
+SET : Streaming	C	Campaign	TPS	3000000	1000000	W	L	26-03	26-04	B
+SET : Aomwise	C	Campaign	TPS	1500000	500000	W	L	26-03	26-04	B
+SET TFEX	C	KOL	TPS	890000	90000	H	L	26-04	26-05	B
+SET TFEX	C	Fee	TPS	106800	49840	H	L	26-04	26-05	B
+Popcorn Concession ( June )	O	MA	TPS	155940	140623	H	W	26-04	26-05	B
+Popcorn Concession Promote App	O	MA	TPS	102265	80921	H	W	26-05	26-06	B
+SET : SME ต้องรอด	R	Campaign	TPS	298040	50888	H	W	26-05	26-06	B
+SET E-Learning + Happy Money	C	Campaign	TPS	992400	182780	H	L	26-05	26-06	B
+Air X	C	CAM	TPS	11000000	1650000	H	L	26-05	26-07	B
+Suntory	C	Production	TPS	777000	385000	H	L	26-06	26-07	B
+SET : พัฒนาความรู้ธุรกิจ	C	CAM	TPM	389800	58379	H	W	26-06	26-07	B
+SET : พัฒนาความรู้ธุรกิจ	C	AW	TPS	42000	31460	H	W	26-06	26-07	B
+SET : Thailand Focus + SET Award	C	CAM	TPS	300000	60000	H	L	26-06	26-07	B
+Popcorn Concession Harry Potter + Odyssey	O	Production	TPS	34000	31800	H	W	26-07	26-08	B
+Popcorn Concession Harry Potter + Odyssey	O	Management Fee 13%	TPS	4420	1921	H	W	26-07	26-08	B
+Pet Fair SEA	O	Event	SETech	800000	120000	H	L	26-07	26-08	B
+ข้าวเบญจรงค์	C	MA	TPS	600000	353300	H	L	26-07	26-08	B
+Popteen	C	Production	TPS	1000000	350000	H	W	26-07	26-08	B	รับบรีฟและเสนอปีที่ 2 แล้ว และรอบนี้มีการใช้ ซัพนอกเข้ามาช่วยเสนอไอเดียคิดว่าแนวโน้มน่าจะต้องดีกว่าปีที่แล้ว	80
+Catcha	C	Production	TPS	1000000	350000	H	PS	26-07	26-11	B	รับบรีฟและเสนอปีที่ 2 แล้ว และรอบนี้มีการใช้ ซัพนอกเข้ามาช่วยเสนอไอเดียคิดว่าแนวโน้มน่าจะต้องดีกว่าปีที่แล้ว	80
+TCL Dance Challenge	O	Production	TPM	350000	50000	H	L	26-08	26-09	B
+Smart Heart	O	Seeding	TPS	100000	20000	H	L	26-08	26-09	B
+อาหารยอดคุณ	O	PR Page	TPS	100000	20000	H	W	26-08	26-09	B
+เทรดดัชนี SET50 ที่ TFEX	O	KOL	TPM	800000	100000	H	L	26-08	26-09	B	ลูกค้าชมในมีต คิดว่าโอกาสในการได้งานสูง	90
+SET Education ผ่าน Influencer Marketing	O	KOL	TPM	500000	100000	H	L	26-08	26-09	B	ส่งแค่แผนไม่ได้ Present เลยไม่รู้แนวโน้มลูกค้า	50
+Akin Sponcon JAS.PER	O	OTH	SETech	300000	119270	H	W	26-08	26-09	B
+Zober-L	C	Spon Con	SETech	600000	300000	H	L	26-09	26-10	B	ลูกค้าสนใจแต่ BG ค่อนข้างเยอะ เลยต้องลองเสนอผู้บริหารและเอามาปรับกันอีกรอบ	50
+TCL	R	KOL	TPS	450000	100000	H	W	26-01	26-03	B	BG Additional	100
+Yummy Tale	C	MA	TPS	3000000	800000	W	LI	26-10	26-11	B
+Akin OOH Plan B	O		SETech	870144	82944	H	L	26-10	26-10	B	รอลูกค้าตัดสินใจแพคเกจ	80
+SET Education	O	Production	TPS	200000	70000	H	L	26-10	26-10	B	ส่งแค่แผนไม่มีการนำเสนอ	50
+แม่ประนอม	O	Campaign	TPS	1000000	200000	H	LI	26-10	26-12	B	รอ Brief	50
+แม่ประนอม	O	MA	TPS	3500000	1500000	H	LI	26-10	26-12	B	รอ Brief	50
+Akin Website	O		SETech			H	L	26-10	26-10	B	รอประชุมกับลูกค้าว่าจะเอา Feature อะไรบ้าง	50
+Breaker	C	Production	TPS			H	PS	26-10	26-11	B	รอรับบรีฟ แต่จากที่ลูกค้าส่งงานให้เพิ่ม งานเราน่าจะโอเคกว่าปีก่อน	80
+BMN	R	Krungsri Event	SETech	1000000	200000	W	QS	26-10	26-11	B	รอรับบรีฟ แต่จากที่ลูกค้าส่งงานให้เพิ่ม งานเราน่าจะโอเคกว่าปีก่อน	80
+Smart Heart	O	Seeding	TPM	300000	50000	H	QS	26-08	26-11	B
+Smart Heart	O	Seeding	TPM	1000000	300000	H	QS	26-08	26-11	B
+HOYA TH	R	CRM	Code Play	450000	160000	H	W	25-10	26-04	N
+425Degree	R	Collab	GGEZ	1500000		W	L	26-02	26-06	N
+PLAYMORE	R	Game Collab / School Tour	GGEZ	500000		W	L		26-06	N
+bewell	R	IP Collab	GGEZ			C	L	26-02	26-10	N
+Muay	R	Game Collab	GGEZ			C	L	26-04	26-06	N
+Neobun	R	Game Collab	GGEZ			C	L	26-04	26-06	N
+SCG	R	Ads	Goodtech	300000	150000	W	L	26-02	26-06	N
+HOYA TH	R	Campaign	SETech	300000	100000	H	L	25-10	26-02	N
+Vet Planet Pet Expo	R	Event	SETech	450000	250000	H	L	26-01	26-03	N
+Vet Planet VRVC	R	Event	SETech	450000	200000	H	L	25-12	26-03	N
+Bewell	R	Event Campaign Collab HOYA	SETech	550000	350000	W	L	26-01	26-03	N
+Dunlop TH	C	Event	SETech	650000	150000	W	L	26-03	26-07	N
+HOYA TH	R	Event Campaign Collab Bewell	SETech	550000	350000	W	L	26-02	26-04	N
+Khaokho Talaypu	C	KOL	TPM	120000		H	L	26-03	26-04	N
+Kindee	C	KOL	TPM	77000	20000	H	W	26-03	26-03	N
+Kindee	C	KOL	TPM	77000	20000	H	L	26-03	26-06	N
+Wel-B (Joery Family)	R	TikTok Ads	TPM	49500	11250	C	L			N
+Neobun	C	KOL	TPM	1000000	800000	W	W	25-11	26-04	N
+SIP (Haisentpet TH)	R	Year Plan	TPS	1405800	812500	H	L	26-02	26-06	N
+Muay	C	MA	TPS	600000	350000	W	L	25-11	26-02	N
+Vet Planet	R	MA	TPS	1380000	842200	H	L	25-09	26-02	N
+Neobun	C	Media Plan	TPS	1500000	800000	W	W	26-01	26-04	N
+NIU TH	C	MA	TPS	3500000	1000000	W	L	26-06	26-03	N
+PLAYMORE	C	MA & Media Plan	TPS	400000	250000	W	L	25-11	26-03	N
+Neobun	C	Ads TikTok	TPS	51750	6750	H	W	26-04	26-04	N
+Muay	C	Ads TikTok	TPS	51750	6750	H	W	26-04	26-04	N
+Haisenpet TH	R	Packaging	TPS	80000		W	L	26-04	26-06	N
+Thonburipanich	R	CRM	Code Play	2500000	1000000	W	L	26-03	26-06	P
+Thonburipanich	R	Server (Big) 6 units	SETech	2300000	120000	C	L	26-01	26-05	P	ส่งเรื่องรออนุมัติไปที่ผู้บริหารแล้ว แต่ตอนนี้ต้องรอเปิดศูนย์ใหม่ ถึงจะดำเนินการ process ต่อได้	70
+SME D Bank	R	MS SQL Server 2025	Code Play	4930000	1831158	W	LI	26-01	26-07	P	อยู่ตามขั้นตอน process ของธนาคาร	100
+GSB	R	PR mymo Junior	TPS	3000000	700000	W	W	26-08	26-10	P	ทางฝ่ายองค์การสื่อสารนำเสนอผู้ใหญ่	80
+SME D Bank	R	AI Chatbot	SETech	3000000	1200000	C	PS	26-02	26-08	P	ทางฝ่ายสื่อสารมีการเปลี่ยนตำแหน่งใหม่ ต้องรอหลังเกษียณสิ้นเดือนกันยา แล้วประสานงานกะฝ่ายไอทีต่อ	50
+Thonburipanich	R	เช่าใช้ Notebook	SETech	168000	28900	W	L	26-02	26-03	P	รอ GoLive โครงการ KPI ก่อน	50
+Arise	R	Corp.x Strategy	SETech	1500000	500000	C	L	26-02	26-09	P	งบมีการเปลี่ยนแปลง จึงต้องทำ process ของบขึ้นไปใหม่	50
+Arise	R	งานวิ่ง	SETech	2500000	1000000	C	PS	26-04	26-07	P	ทำ memo ของบไปแล้ว แต่ตอนนี้ทางผู้ใหญ่ยังเงียบอยู่	70
+Lenso	R	Rally	SETech	145236	20000	H	W	26-03	26-04	P
+Arise	R	SEO	SYD	3000000	1000000	C	PS	26-04	26-07	P	งบมีการเปลี่ยนแปลง จึงต้องทำ process ของบขึ้นไปใหม่	50
+Arise	R	Ads Boost	TPS	336220	50000	C	L	26-04	26-07	P	งบมีการเปลี่ยนแปลง จึงต้องทำ process ของบขึ้นไปใหม่	50
+เหมืองแร่	R	VDO Presentation	SETech	500000	20000	W	L	26-03	26-10	P
+บริษัท อะนิเมท เจเอ็มเอ จำกัด	O	MA	Code Play	300000	200000	H	W	26-02	26-03	T
+เอจีซี แฟลทกลาส (ประเทศไทย) จํากัด (มหาชน)	C	CRM	Code Play	1000000	250000	H	L	26-03	26-05	T	WEB , ADS , SEO
+Greenspot	C	Tournament Games	GGEZ	1200000	360000	W	L	26-01		T	ถามพิชชิ่ง + MKT Plan ปีหน้า
+Greenspot	C	Games	GGEZ	2000000	600000	W	L	26-01		T
+Minor	C	Games	GGEZ	2000000	700000	W	L	26-01	26-10	T	ถามมีแบรนด์ไหน พิชชิ่ง + MKT Plan ปีหน้า
+PepsiCo	R	School Tournament	GGEZ	500000		W	L	26-05	27-05	T	ยังไม่มี BG สำหรับ School Tour	0
+PepsiCo	R	Game Card Event	GGEZ	300000		H	L	26-06	26-10	T	ยังไม่ได้ Proposal Card Games Event จากทีม	50	นำ part เสริม (Fandom Marketing) เป็นตัวเพิ่มโอกาสปิด
+ข้าวตราฉัตร	O	Ads	Goodtech	144000	0	H	W	25-12	26-03	T
+Tea Corporation	C	eCom	Goodtech	1800000	450000	H	L	25-11	26-02	T
+K.Thirawit	R	eCom	Goodtech			W	L	26-01		T
+K.Thirawit	R	Ads	Goodtech			W	L	26-01		T
+Buddy Review (ENFANT)	R	Ads	Goodtech	3600000	500000	W	L	26-02	26-08	T	ส่งการ์ตูนอนิเมะให้เขาดู
+All About You	C	Event	SETech	9825000	2947500	W	L	25-11		T	KOL แพลนปีหน้า เอนิเมะ
+Buddy Review (SPM OEM)		Management Fee 15%	TPM	39000	18050	H	W	26-01	26-03	T
+Buddy Review (SPM OEM)		Ads	TPM	180000	0	H	W	26-01	26-03	T
+CPE-Satake	R	Ads	TPM	130000	27000	H	W	26-04	26-05	T
+All About You	C	OOH	TPM	1000000		W	L	26-03		T
+All About You	C	PR	TPM	1000000		W	L	26-03		T
+Srifa Bakery	C	Management Fee 15%	TPM	524100	320695	C	L	25-11		T
+Srifa Bakery	C	KOC	TPM	100000	20000	C	L	25-11		T
+Tea Corporation	C	Brand Ambassador	TPM	3745000	245000	H	L	25-11	26-02	T
+All About You	C	KOL	TPM	1000000	200000	W	L	25-11		T
+K.Thirawit	R	KOL	TPM			W	L	26-01		T
+Medmaker	C	KOL	TPM	620000	186000	C	L	26-02	26-06	T
+Iconix	C	KOL	TPM	500000	75000	H	L	26-04		T
+Aurie Aura	R	KOL	TPM	300000	90000	C	L	26-06		T
+ข้าวตราฉัตร	O	MA	TPS	95000	57000	H	W	26-03	26-04	T
+Berich	C	MA	TPS	123000	115950	H	L	25-10		T
+Berich	C	Media / KOL	TPS	439800	60000	H	L	25-10		T
+Berich	C	Management Fee 15%	TPS	105120	54450	H	L	25-10		T
+ข้าวตราฉัตร	O	MA	TPS	582200	479940	H	W	26-01	26-03	T
+ข้าวตราฉัตร	O	Management Fee 10%	TPS	73800	40000	H	W	26-01	26-03	T
+Buddy Review (SPM OEM)		MA	TPS	80000	71000	H	W	26-01	26-03	T
+Srifa Bakery	C	Strategy	TPS	50000	40000	C	L	25-11		T
+Srifa Bakery	C	Production	TPS	700000	200000	C	L	25-11		T
+Srifa Bakery	C	MA	TPS	1734000	1570700	C	L	25-11		T
+Tea Corporation	C	Management Fee 15%	TPS	1089300	671735	H	L	25-11	26-02	T
+Tea Corporation	C	MA	TPS	912000	783000	H	L	25-11	26-02	T
+Tea Corporation	C	Campaign Collab	TPS	250000	80000	H	L	25-11	26-02	T
+Tea Corporation	C	Brand Ambassador	TPS		195000	H	L	25-11	26-02	T
+Zolution	R	Production	TPS	850000	510000	W	L	25-10	26-06	T
+Zolution	R	Management Fee 15%	TPS	217500	145000	W	L	25-10	26-06	T
+Zolution	R	MA	TPS	600000	460000	W	L	25-10	26-06	T
+Xongdur	C	Fandom Marketing	SETech	600000	300000	W	L	25-12	26-10	T	Manager คนก่อนที่คุย ได้ส่งข้อมูลให้ทีมดูแล้ว แต่ทีมการตลาดแจ้งว่า Manager คนใหม่จะมา 1 Oct'69 จะประสานงานให้ ให้ติดต่ออีกครั้ง WK2 ของ Oct'69	50	follow up ให้ติดในสัปดาห์ที่ 2 ของ Oct
+Growth More Corporation Co., Ltd.	C	MA	TPS	500000		W	L	26-03		T
+กิเลนคู่	O	Production	TPS	200000	100000	H	L	26-03	26-04	T
+Berich	R	MA	TPS	540000	460000	H	L	26-05	26-06	T
+PrimeMobility	R	Ads	TPM	582015	95515	H	W	26-06	26-08	T
+PrimeMobility	R	Management Fee 15%	TPM	101761	65761	H	W	26-06	26-08	T
+Northingham	R	MA	TPS	324000	293000	C	L	26-06		T
+Northingham	R	Ads	TPS	189000		C	L	26-06		T
+Northingham	R	Management Fee 15%	TPS	76950	47453	C	L	26-06		T
+CPP	R	Ads	TPM	20000		H	W	26-06	26-06	T
+CPP	R	Management Fee 15%	TPM	20000	3000	H	W	26-06	26-06	T
+HWH	O	CRM	Code Play	40000	40000	H	W	26-07	26-07	T
+HWH	O	CRM (Add)	Code Play	8000		H	W	26-07	26-08	T
+โรงเรียนสามภาษาจื้อเล่อพัฒนา	O	CRM	Code Play	40000		H	L	26-07	26-07	T	ส่งใบเสนอราคาแล้ว แต่ลูกค้ายังมีการพิจารณากับ internal ก่อน
+โรงเรียนสามภาษาจื้อเล่อพัฒนา	O	MA	Code Play	243000		H	L	26-07	26-07	T	ส่งใบเสนอราคาแล้ว แต่ลูกค้ายังมีการพิจารณากับ internal ก่อน
+เชฟโรเลต	O	MA	Code Play	243000	150000	H	W	26-06	26-06	T
+Srifa Bakery	C	Fandom Marketing	SETech		500000	H	L	26-08	26-09	T	ส่งใบเสนอราคาแล้ว แต่ลูกค้ายังมีการพิจารณากับ internal ก่อน
+Srifa Bakery	C	IP Collab	GGEZ		500000	H	L	26-08	26-09	T	ส่งใบเสนอราคาแล้ว แต่ลูกค้ายังมีการพิจารณากับ internal ก่อน
+Fitwhey	C	Fandom Marketing	SETech	2600000	1100000	H	L	26-09	26-10	T	กลับไปเสนอแผนอีกรอบภายในศุกร์หน้า ลูกค้ามีข้อ concern และ direction ที่ชัดเจน ถ้าหากสามารถให้ข้อมูลทุกอย่างที่ concern ได้ครบ ก็มีโอกาสในการปิดการขาย	60	ประชุมเสนอแผนรอบใหม่แบบเจาะจงแก้ concern ทีละข้อ ให้ข้อมูลครบและชัดเจน สร้างความมั่นใจใน direction ที่ไป
+Beauty in The Pot	C	Fandom Marketing	SETech	600000	300000	H	L	26-09	26-11	T	กลับไปเสนอแผนอีกรอบภายในศุกร์หน้า ลูกค้ามีข้อ concern และ direction ที่ชัดเจน ถ้าหากสามารถให้ข้อมูลทุกอย่างที่ concern ได้ครบ ก็มีโอกาสในการปิดการขาย	60	ประชุมเสนอแผนรอบใหม่แบบเจาะจงแก้ concern ทีละข้อ ให้ข้อมูลครบและชัดเจน สร้างความมั่นใจใน direction ที่ไป
+SiPH	O	MA	Code Play	360000	200000	H	QS	26-09	26-10	T	ส่งใบเสนอราคาแล้ว แต่ลูกค้ายังมีการพิจารณากับ internal ก่อน ขอปรับเป็น MA 6 เดือน
+Fler	C	KOL	TPM	92000	13000	H	L	26-09	26-10	T
+Private Event at ลำลูกกาคันทรี่คลับ	R	Event	SETech	200000	40000	H	L	26-09	26-10	T	มีคู่แข่งคือเจ้าเก่าที่ใช้	50	หาความแตกต่างที่ชัดจริง ๆ เพื่อเสนอกับลูกค้า (ราคา/บริการเสริม/Ref.ที่เคยทำมา)
+Ringer Hut	R	MA	TPS			H	LI	26-09	27-03	G	หมดสัญญากับเอเจนซี่เดิมที่ทำ Content ในช่วงกลางปีหน้า	50	สร้างความสัมพันธ์ก่อนช่วงตัดสินใจจริง วางแผน touch point ต่อเนื่องจนถึงช่วงใกล้หมดสัญญา
+Srifa Bakery	C	Campaign	TPS	100000		H	LI	26-11	26-12	G	Celebrate 40 years Srifa / รอลูกค้าบรีฟ
+Srifa Bakery	C	KOL	TPM			H	LI	26-11	26-12	G	ยังไม่ทราบ budget / รอลูกค้าบรีฟ
+Royal Umbrella	R	Website Develop Design & MA and Ads	TPS	580800		H	L	26-10	26-11	T	ลูกค้าแจ้งว่าทางผู้ใหญ่ให้เลือกใช้เจ้าเดิมที่ทำเว็บไซต์มาก่อน	70
+Bewell	R	KOL	TPM	120000		H	PS	26-10	26-11	G	ลูกค้าใช้ kol nano 100 อยู่มีบัดเจท 120,000
+70 mai	R	PR Website	TPM	60000		H	LI	26-10	26-11	G	ต้องการใช้ google ads
+Body Glove	R	Campaign	TPS			H	LI	26-10	26-12	G
+Nose Tea	C	PR องค์กร	TPM			H	LI	26-10	26-11	G
+SANGDAW SLEEP SALON	R	Google ads	TPM	45000		H	LI	26-10	26-11	G
+Tea Corporation	C	KOL	TPM	100000		H	LI	26-10	27-01	G
+Tea Corporation	C	Live	TPM	200000		H	LI	26-10	27-02	G
+Fitwhey	C	MA	TPS	50000		H	LI	26-11	26-12	G
+SOS Plus	C	KOL	TPM			H	LI	26-11	26-12	G
+Sunrisedairy	C		TPS			H	LI	26-11	26-12	G
+Happy Noz	C	Event	TPS			H	LI	26-11	26-12	G

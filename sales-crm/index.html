@@ -1,0 +1,695 @@
+<title>SETech Sales Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky top bar with view tabs; each view is a stack of panels on a cool paper ground.
+   Summary first, detail below. Sales colours follow the person (Bee = slot 1, Nungning = slot 2). */
+:root{
+  --bg:#f3f5f2; --panel:#ffffff; --panel2:#f8f9f7; --ink:#15191b; --ink2:#4b5356; --muted:#7c8487; --line:#dde1dc;
+  --accent:#0d675e; --accent-soft:#e1efec; --on-accent:#ffffff;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#6250d6; --s-other:#a3a9a6; --fc:#86b6ef; --target:#4b5356;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --good-ink:#17701a; --crit-ink:#b42f2f; --warn-ink:#8a5c00;
+  --hot:#d03b3b; --warm:#d98a00; --cold:#3d7fc4;
+  --f-display:"Anuphan","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:10px; --shadow:0 1px 2px rgba(20,30,28,.06),0 4px 14px rgba(20,30,28,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111413; --panel:#191d1c; --panel2:#1f2422; --ink:#eef1ef; --ink2:#bac2bf; --muted:#8a928f; --line:#2c3230;
+  --accent:#43b3a5; --accent-soft:#1d3532; --on-accent:#08201d;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#9085e9; --s-other:#5f6663; --fc:#184f95; --target:#bac2bf;
+  --good-ink:#4cc44c; --crit-ink:#ee7a7a; --warn-ink:#f2c050;
+  --hot:#ee6a6a; --warm:#e6a63a; --cold:#6aa5e6;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111413; --panel:#191d1c; --panel2:#1f2422; --ink:#eef1ef; --ink2:#bac2bf; --muted:#8a928f; --line:#2c3230;
+  --accent:#43b3a5; --accent-soft:#1d3532; --on-accent:#08201d;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#9085e9; --s-other:#5f6663; --fc:#184f95; --target:#bac2bf;
+  --good-ink:#4cc44c; --crit-ink:#ee7a7a; --warn-ink:#f2c050;
+  --hot:#ee6a6a; --warm:#e6a63a; --cold:#6aa5e6;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--panel)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1320px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:17px;font-weight:600}
+h3{font-size:14px;font-weight:600}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums;font-weight:500}
+.muted{color:var(--muted)}.ink2{color:var(--ink2)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--panel);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;min-width:0}
+.brand b{font-family:var(--f-display);font-size:18px;font-weight:700}
+.brand span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:2px;overflow-x:auto;flex:1 1 auto;min-width:0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:7px 12px;border-radius:8px;cursor:pointer;color:var(--ink2);white-space:nowrap;font-weight:500}
+.tab:hover{background:var(--panel2)}
+.tab[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.who{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2)}
+.who select{padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+main{padding-block:18px 60px;display:flex;flex-direction:column;gap:16px}
+.banner{padding:10px 14px;border-radius:var(--r);background:var(--accent-soft);color:var(--ink);font-size:13px}
+.banner.warn{background:color-mix(in srgb,var(--warn) 18%,var(--panel))}
+/* panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;min-width:0}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.ph p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.viewhead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.viewhead h1{font-size:24px;font-weight:700}
+.viewhead p{margin:2px 0 0;color:var(--muted);font-size:13px}
+/* KPI tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile .lbl{font-size:12px;color:var(--ink2);letter-spacing:.01em}
+.tile .val{font-family:var(--f-display);font-size:26px;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.tile .sub{font-size:12px;color:var(--muted)}
+.tile.hero{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.tile.hero .lbl,.tile.hero .sub{color:inherit;opacity:.85}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px}
+.bar>i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+.tile.hero .bar{background:rgba(255,255,255,.25)}.tile.hero .bar>i{background:var(--on-accent)}
+/* pills */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:500;background:var(--panel2);border:1px solid var(--line);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.t-Hot .dot{background:var(--hot)}.t-Warm .dot{background:var(--warm)}.t-Cold .dot{background:var(--cold)}
+.st{font-size:12px;padding:1px 8px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);white-space:nowrap}
+.st.won{color:var(--good-ink);border-color:color-mix(in srgb,var(--good) 40%,var(--line))}
+.st.lost{color:var(--muted);text-decoration:line-through}
+.flag{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;white-space:nowrap}
+.flag.crit{color:var(--crit-ink)}.flag.warn{color:var(--warn-ink)}.flag.good{color:var(--good-ink)}
+.owner{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+/* tables */
+.tw{overflow-x:auto;margin:0 -16px;padding:0 16px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:12px;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover td{background:var(--panel2)}
+th.sort{cursor:pointer}th.sort:hover{color:var(--ink)}
+.cname{font-weight:500}
+.small{font-size:12px}
+/* buttons, forms */
+.btn{border:1px solid var(--line);background:var(--panel);padding:7px 12px;border-radius:8px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--ink2)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--crit-ink)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filters select,.filters input{padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--panel);padding:6px 11px;cursor:pointer;color:var(--ink2)}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld.wide{grid-column:1/-1}
+.fld label{font-size:12px;color:var(--ink2);font-weight:500}
+.fld input,.fld select,.fld textarea{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);width:100%}
+.fld textarea{min-height:64px;resize:vertical}
+.hint{font-size:12px;color:var(--muted)}
+.hint.warn{color:var(--warn-ink)}
+/* board */
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;overflow-x:auto;padding-bottom:6px}
+.col{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:140px}
+.col.drop{outline:2px dashed var(--accent);outline-offset:-4px}
+.colh{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.colh b{font-family:var(--f-display);font-weight:600}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 10px;cursor:pointer;display:flex;flex-direction:column;gap:5px;border-left:3px solid var(--owner,var(--s-other))}
+.card:hover{border-color:var(--ink2);border-left-color:var(--owner,var(--s-other))}
+.card .t{font-weight:600;font-size:13px;line-height:1.35}
+.card .m{display:flex;justify-content:space-between;gap:6px;font-size:12px;color:var(--ink2);flex-wrap:wrap}
+/* lists */
+.list{display:flex;flex-direction:column}
+.li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.li:last-child{border-bottom:0}
+.li .main{flex:1;min-width:0}
+.li .main .t{font-weight:500}
+.li.click{cursor:pointer}.li.click:hover .t{color:var(--accent)}
+.empty{padding:24px 12px;text-align:center;color:var(--muted);font-size:13px}
+.daygrp{font-family:var(--f-display);font-weight:600;font-size:13px;color:var(--ink2);padding:12px 0 2px;border-bottom:1px solid var(--line)}
+/* chart */
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-size:11px;font-family:var(--f-body)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin-top:6px}
+.legend i{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.legend i.line{height:0;border-top:2px dashed var(--target);border-radius:0}
+.tip{position:fixed;z-index:60;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:7px 10px;border-radius:8px;max-width:260px;box-shadow:var(--shadow)}
+.hbar{display:grid;grid-template-columns:minmax(80px,140px) 1fr auto;gap:8px;align-items:center;font-size:13px;padding:4px 0}
+.hbar .trk{height:14px;background:var(--panel2);border-radius:0 4px 4px 0;position:relative}
+.hbar .trk i{position:absolute;inset:0 auto 0 0;background:var(--s1);border-radius:0 4px 4px 0}
+details summary{cursor:pointer;color:var(--ink2);font-size:12px;margin-top:8px}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,14,13,.42);z-index:40;display:flex;justify-content:flex-end}
+.drawer{background:var(--panel);width:min(640px,100%);height:100%;overflow-y:auto;padding:18px max(18px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) 18px;padding-top:calc(18px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:16px;box-shadow:-8px 0 30px rgba(0,0,0,.18)}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dh h2{font-size:20px}
+.x{border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:var(--muted);padding:4px 8px}
+.sect{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.confirm{background:color-mix(in srgb,var(--crit) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--crit) 35%,var(--line));border-radius:8px;padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13px;z-index:70;box-shadow:var(--shadow)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+@media (max-width:640px){.viewhead h1{font-size:20px}.tile .val{font-size:22px}.brand span{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><b>SETech Sales Desk</b><span id="yearLbl">ปี 2026</span></div>
+  <nav class="tabs" id="tabs" aria-label="มุมมอง"></nav>
+  <div class="who"><label for="meSel">ฉันคือ</label><select id="meSel"></select></div>
+</div></header>
+<div class="wrap"><main id="main"><div class="empty">กำลังโหลดข้อมูลการขาย…</div></main></div>
+<datalist id="acctList"></datalist><datalist id="prodList"></datalist>
+<div id="tip" class="tip" hidden></div>
+<div id="layer"></div>
+
+<script>
+"use strict";
+/* ---------- constants ---------- */
+const STAGES=[{k:"Prospect",p:10},{k:"Lead In",p:20},{k:"Proposal Sent",p:40},{k:"Quotation Sent",p:60},{k:"Negotiation",p:80},{k:"Closed Won",p:100},{k:"Closed Lost",p:0}];
+const OPEN=STAGES.slice(0,5).map(s=>s.k);
+const STAGE_TH={"Prospect":"Prospect","Lead In":"Lead In","Proposal Sent":"ส่ง Proposal","Quotation Sent":"ส่งใบเสนอราคา","Negotiation":"ต่อรอง","Closed Won":"ปิดได้ (Won)","Closed Lost":"ไม่ได้ (Lost)"};
+const TEMPS=["Hot","Warm","Cold"];
+const CHANNELS=["Call","Relationship","Old Customer","Martech","Referral","Inbound","Event"];
+const ACT_TYPES=["โทร","ประชุม","นำเสนองาน","ส่ง Proposal","ส่งใบเสนอราคา","อีเมล / LINE","เยี่ยมลูกค้า","อื่น ๆ"];
+const MTH=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const DEFAULT_CFG={year:2026,newAcctPerMonth:2,actPerWeek:15,
+  sales:[{name:"Bee",active:true,monthly:Array(12).fill(800000)},{name:"Nungning",active:true,monthly:Array(12).fill(800000)}],
+  bus:["SETech","TPS","TPM","Goodtech","GGEZ","Code Play","Snaptech","SYD"],
+  products:["MA","KOL","Ads","Event","Production","Campaign","CRM","PR","Live","Fandom Marketing","IP Collab","Games","Management Fee 10%","Management Fee 15%","Strategy","Seeding","Website","AI"]};
+const VIEWS=[["summary","ภาพรวมผู้บริหาร"],["my","งานของฉัน"],["pipeline","Pipeline"],["accounts","ลูกค้า"],["activities","กิจกรรม"],["settings","ตั้งค่า"]];
+
+/* ---------- state ---------- */
+const S={deals:new Map(),accounts:new Map(),acts:new Map(),cfg:DEFAULT_CFG,me:"",uid:null,db:null,dl:null,
+  ready:{deals:false,accounts:false,acts:false,cfg:false},noDb:false,readOnly:false,slow:false,
+  view:"summary",sumOwner:"all",pipe:{mode:"board",owner:"",bu:"",temp:"",q:"",period:"open",sort:"close",dir:1},
+  acc:{q:"",list:"",owner:"",status:""},act:{owner:"",range:"7"}};
+try{const m=localStorage.getItem("sd.me");if(m)S.me=m;const v=localStorage.getItem("sd.pipe");if(v)Object.assign(S.pipe,JSON.parse(v));}catch(e){}
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const n=v=>{const x=Number(v);return isFinite(x)?x:0};
+const fmt=v=>Math.round(n(v)).toLocaleString("th-TH");
+const fmtM=v=>{v=n(v);const a=Math.abs(v);if(a>=1e6)return(v/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,"")+"M";if(a>=1e3)return Math.round(v/1e3)+"K";return fmt(v)};
+const pct=(a,b)=>b>0?Math.round(a/b*100):0;
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const curYM=()=>today().slice(0,7);
+const ymLabel=ym=>{if(!ym)return"—";const[y,m]=ym.split("-");return MTH[+m-1]+" "+String((+y+543)%100).padStart(2,"0")};
+const dLabel=d=>{if(!d)return"—";const[y,m,dd]=d.split("-");return +dd+" "+MTH[+m-1]};
+const addDays=(d,k)=>{const x=new Date(d+"T00:00:00");x.setDate(x.getDate()+k);return x.toISOString().slice(0,10)};
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const isOpen=d=>OPEN.includes(d.stage);
+const won=d=>d.stage==="Closed Won";
+const lost=d=>d.stage==="Closed Lost";
+const salesNames=()=>S.cfg.sales.map(s=>s.name);
+const activeSales=()=>S.cfg.sales.filter(s=>s.active).map(s=>s.name);
+const allOwners=()=>{const set=new Set(salesNames());S.deals.forEach(d=>d.owner&&set.add(d.owner));S.accounts.forEach(a=>a.owner&&set.add(a.owner));return[...set]};
+const ownerColor=o=>{const i=salesNames().indexOf(o);const act=S.cfg.sales[i]?.active;return act?["var(--s1)","var(--s2)","var(--s3)","var(--s4)"][i]||"var(--s-other)":"var(--s-other)"};
+const ownerTag=o=>`<span class="owner"><span class="dot" style="background:${ownerColor(o)}"></span>${esc(o||"—")}</span>`;
+const tempPill=t=>t?`<span class="pill t-${esc(t)}"><span class="dot"></span>${esc(t)}</span>`:"";
+const stagePill=s=>`<span class="st ${s==="Closed Won"?"won":s==="Closed Lost"?"lost":""}">${esc(STAGE_TH[s]||s)}</span>`;
+const accName=d=>S.accounts.get(d.accountId)?.name||d.customer||"(ไม่ระบุลูกค้า)";
+const targetOf=(owner,m)=>{const ss=owner==="all"?S.cfg.sales:S.cfg.sales.filter(s=>s.name===owner);return ss.reduce((t,s)=>t+n((s.monthly||[])[m]),0)};
+function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2400)}
+
+/* GP recognition: GP lands in gpMonth (defaults to close month), optionally spread over N months */
+function alloc(d){const start=d.gpMonth||d.closeMonth;if(!start)return[];const k=Math.max(1,n(d.spread)||1);const out=[];let[y,m]=start.split("-").map(Number);for(let i=0;i<k;i++){out.push({ym:y+"-"+String(m).padStart(2,"0"),gp:n(d.gp)/k});m++;if(m>12){m=1;y++}}return out}
+function monthly(deals,year,fn){const a=Array(12).fill(0);deals.forEach(d=>{if(!fn(d))return;alloc(d).forEach(x=>{const[y,m]=x.ym.split("-").map(Number);if(y===year)a[m-1]+=x.gp*(won(d)?1:n(d.prob)/100)})});return a}
+
+/* ---------- metrics ---------- */
+function metrics(owner){
+  const Y=n(S.cfg.year),cym=curYM(),[cy,cm]=cym.split("-").map(Number);
+  const curIdx=cy===Y?cm-1:(cy>Y?11:-1);
+  const ds=[...S.deals.values()].filter(d=>owner==="all"||d.owner===owner);
+  const wonM=monthly(ds,Y,won);
+  const fcM=monthly(ds,Y,d=>isOpen(d));
+  const tgtM=Array.from({length:12},(_,i)=>targetOf(owner,i));
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  const ytdWon=sum(wonM.slice(0,curIdx+1)),fullWon=sum(wonM);
+  const ytdTgt=sum(tgtM.slice(0,curIdx+1)),yearTgt=sum(tgtM);
+  const restFc=sum(fcM.slice(Math.max(0,curIdx)));
+  const open=ds.filter(isOpen);
+  const openGP=open.reduce((t,d)=>t+n(d.gp),0);
+  const weighted=open.reduce((t,d)=>t+n(d.gp)*n(d.prob)/100,0);
+  const inYear=d=>(d.closeMonth||"").startsWith(String(Y));
+  const wonY=ds.filter(d=>won(d)&&inYear(d)),lostY=ds.filter(d=>lost(d)&&inYear(d));
+  const winRate=pct(wonY.length,wonY.length+lostY.length);
+  const winRateV=pct(wonY.reduce((t,d)=>t+n(d.billing),0),wonY.concat(lostY).reduce((t,d)=>t+n(d.billing),0));
+  const gap=Math.max(0,yearTgt-fullWon);
+  const remainingOpenGP=open.filter(d=>!d.closeMonth||d.closeMonth.slice(0,4)<=String(Y)).reduce((t,d)=>t+n(d.gp),0);
+  // new customers: first won deal (by close month) in year, account not flagged existing
+  const firstWon=new Map();[...S.deals.values()].filter(won).forEach(d=>{const k=d.accountId||d.customer;const c=d.closeMonth||"9999";if(!firstWon.has(k)||firstWon.get(k).cm>c)firstWon.set(k,{cm:c,owner:d.owner})});
+  let newAcc=0;firstWon.forEach((v,k)=>{const a=S.accounts.get(k);if(a?.existing)return;if(!v.cm.startsWith(String(Y)))return;if(owner!=="all"&&v.owner!==owner)return;newAcc++});
+  const nSales=owner==="all"?activeSales().length:1;
+  const newAccTgt=n(S.cfg.newAcctPerMonth)*nSales*(curIdx+1);
+  const wk=addDays(today(),-6);
+  const acts7=[...S.acts.values()].filter(a=>(owner==="all"||a.owner===owner)&&a.date>=wk&&a.date<=today()).length;
+  const actTgt=n(S.cfg.actPerWeek)*nSales;
+  const thisM=curIdx>=0?{won:wonM[curIdx],tgt:tgtM[curIdx],fc:fcM[curIdx]}:{won:0,tgt:0,fc:0};
+  return{Y,curIdx,wonM,fcM,tgtM,ytdWon,fullWon,ytdTgt,yearTgt,restFc,open,openGP,weighted,winRate,winRateV,wonCount:wonY.length,lostCount:lostY.length,gap,coverage:gap>0?remainingOpenGP/gap:null,newAcc,newAccTgt,acts7,actTgt,thisM,forecastYear:fullWon+restFc,ds};
+}
+function flagsOf(d){const f=[],t=today(),cym=curYM();if(!isOpen(d))return f;
+  if(d.closeMonth&&d.closeMonth<cym)f.push(["crit","เลยเดือนที่คาดว่าจะปิด"]);
+  if(n(d.prob)<70&&!String(d.action||"").trim())f.push(["warn","โอกาส < 70% แต่ยังไม่มี Action Plan"]);
+  if(d.nextDate&&d.nextDate<t)f.push(["crit","เลยวันนัดติดตาม"]);
+  if(!d.nextStep&&!d.nextDate)f.push(["warn","ยังไม่มีขั้นตอนถัดไป"]);
+  if(!n(d.gp))f.push(["warn","ยังไม่ใส่มูลค่า GP"]);
+  const last=d.updatedAt?d.updatedAt.slice(0,10):"";if(last&&last<addDays(t,-14))f.push(["warn","ไม่มีความเคลื่อนไหว 14 วัน"]);
+  return f}
+
+/* ---------- data layer ---------- */
+async function boot(){
+  renderChrome();render();
+  const slow=setTimeout(()=>{S.slow=true;render()},10000);
+  let db=null,user=null;
+  try{[db,user]=await Promise.all([window.claude?.use?window.claude.use("db"):null,window.claude?.use?window.claude.use("user"):null])}catch(e){}
+  if(!db){clearTimeout(slow);S.noDb=true;Object.keys(S.ready).forEach(k=>S.ready[k]=true);render();return}
+  S.db=db;
+  if(user){try{S.uid=await user.id();const cw=await user.can("data.write");if(cw===false)S.readOnly=true}catch(e){}}
+  window.claude.use("downloads").then(d=>{S.dl=d}).catch(()=>{});
+  const done=k=>{S.ready[k]=true;if(Object.values(S.ready).every(Boolean))clearTimeout(slow)};
+  const sub=(col,map,key)=>db.collection(col).onSnapshot(snap=>{map.clear();snap.docs.forEach(x=>map.set(x.id,{id:x.id,...x.data()}));if(!snap.metadata.fromCache)done(key);schedule()},err=>{done(key);console.warn(col,err);schedule()});
+  sub("deals",S.deals,"deals");sub("accounts",S.accounts,"accounts");
+  db.collection("activities").orderBy("date","desc").limit(1000).onSnapshot(snap=>{S.acts.clear();snap.docs.forEach(x=>S.acts.set(x.id,{id:x.id,...x.data()}));if(!snap.metadata.fromCache)done("acts");schedule()},()=>{done("acts");schedule()});
+  db.doc("config/settings").onSnapshot(s=>{if(s.exists)S.cfg={...DEFAULT_CFG,...s.data()};if(!s.metadata.fromCache)done("cfg");renderChrome();schedule()},()=>{done("cfg");schedule()});
+  if(S.uid){try{const p=await db.doc("data/users/"+S.uid+"/prefs").get();if(p.exists&&p.data().me&&!localStorage.getItem("sd.me")){S.me=p.data().me;renderChrome();schedule()}}catch(e){}}
+}
+let rq=0,pend=false;function schedule(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;const ae=document.activeElement;if(S.view==="settings"&&Object.values(S.ready).every(Boolean)&&$("#main .panel")){pend=true;return}if(ae&&ae.closest&&ae.closest("#main")&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)){pend=true;return}render()})}
+document.addEventListener("focusout",()=>setTimeout(()=>{if(pend&&S.view!=="settings"){pend=false;render()}},0));
+async function save(col,id,data){if(!S.db){toast("ยังเชื่อมต่อฐานข้อมูลไม่ได้ จึงบันทึกไม่ได้");return false}
+  try{await S.db.collection(col).doc(id).set(data);return true}catch(e){if(e.code==="invalid_argument"&&!S.readOnly){S.readOnly=true;toast("บัญชีนี้มีสิทธิ์ดูอย่างเดียว ขอสิทธิ์ Contributor จาก MD");render()}else toast(e.code==="quota_exceeded"?"พื้นที่เก็บข้อมูลเต็ม":"บันทึกไม่สำเร็จ ลองอีกครั้ง");return false}}
+async function del(col,id){try{await S.db.collection(col).doc(id).delete();return true}catch(e){toast("ลบไม่สำเร็จ");return false}}
+const stamp=o=>({...o,updatedAt:new Date().toISOString(),updatedBy:S.uid||null});
+async function ensureAccount(name,owner){name=String(name||"").trim();if(!name)return"";
+  for(const a of S.accounts.values())if(a.name.trim().toLowerCase()===name.toLowerCase())return a.id;
+  const id=uid("a");const a=stamp({name,owner:owner||S.me||"",industry:"",lists:[],stage:"Prospect",temp:"",remark:"",contacts:[],existing:false,createdAt:new Date().toISOString()});
+  S.accounts.set(id,{id,...a});await save("accounts",id,a);return id}
+
+/* ---------- chrome ---------- */
+function renderChrome(){
+  $("#yearLbl").textContent="ปี "+S.cfg.year;
+  $("#tabs").innerHTML=VIEWS.map(([k,l])=>`<button class="tab" data-view="${k}" ${S.view===k?'aria-current="page"':""}>${l}</button>`).join("");
+  const opts=[["","— เลือก —"],["MD","MD / ผู้บริหาร"],...activeSales().map(s=>[s,s])];
+  $("#meSel").innerHTML=opts.map(([v,l])=>`<option value="${esc(v)}" ${S.me===v?"selected":""}>${esc(l)}</option>`).join("");
+  $("#acctList").innerHTML=[...S.accounts.values()].map(a=>`<option value="${esc(a.name)}">`).join("");
+  $("#prodList").innerHTML=(S.cfg.products||[]).map(p=>`<option value="${esc(p)}">`).join("");
+}
+function route(){pend=false;const h=location.hash.slice(1);S.view=VIEWS.some(v=>v[0]===h)?h:(S.me&&S.me!=="MD"?"my":"summary");renderChrome();render();window.scrollTo(0,0)}
+
+/* ---------- render ---------- */
+function render(){
+  const m=$("#main");const loading=!Object.values(S.ready).every(Boolean);
+  let top="";
+  if(S.noDb)top=`<div class="banner warn">เปิดหน้านี้ผ่าน claude.ai ขณะลงชื่อเข้าใช้ จึงจะโหลดและบันทึกข้อมูลการขายได้</div>`;
+  else if(loading&&S.slow)top=`<div class="banner warn">ยังโหลดข้อมูลไม่ได้ อาจเป็นที่เครือข่าย ข้อมูลที่เห็นอาจยังไม่ครบ</div>`;
+  else if(S.readOnly)top=`<div class="banner">คุณมีสิทธิ์ดูอย่างเดียว ถ้าต้องบันทึกงาน ให้ MD แชร์หน้านี้เป็น Contributor</div>`;
+  if(!S.me&&!S.noDb)top+=`<div class="banner">เลือกชื่อคุณที่มุมขวาบน (“ฉันคือ”) เพื่อให้ระบบเปิดหน้างานของคุณและใส่ชื่อเจ้าของดีลให้อัตโนมัติ</div>`;
+  if(loading&&!S.slow&&!S.deals.size){m.innerHTML=top+`<div class="empty">กำลังโหลดข้อมูลการขาย…</div>`;return}
+  const v={summary:vSummary,my:vMy,pipeline:vPipeline,accounts:vAccounts,activities:vActivities,settings:vSettings}[S.view];
+  const y=window.scrollY;m.innerHTML=top+v();window.scrollTo(0,y);
+}
+
+/* ---------- views: executive summary ---------- */
+function vSummary(){
+  const o=S.sumOwner,M=metrics(o);
+  const ownerSeg=`<div class="seg" role="group" aria-label="เลือกมุมมอง">${[["all","ทั้งทีม"],...allOwners().filter(x=>activeSales().includes(x)).map(x=>[x,x])].map(([k,l])=>`<button data-sumowner="${esc(k)}" aria-pressed="${o===k}">${esc(l)}</button>`).join("")}</div>`;
+  const att=pct(M.fullWon,M.yearTgt),ytdAtt=pct(M.ytdWon,M.ytdTgt);
+  const cov=M.coverage==null?"ถึงเป้าแล้ว":M.coverage.toFixed(1)+"×";
+  const tiles=`<div class="tiles">
+    <div class="tile hero"><span class="lbl">GP ที่ปิดได้ทั้งปี ${M.Y}</span><span class="val">฿${fmtM(M.fullWon)}</span><span class="sub">${att}% ของเป้าทั้งปี ฿${fmtM(M.yearTgt)}</span><div class="bar"><i style="width:${Math.min(100,att)}%"></i></div></div>
+    <div class="tile"><span class="lbl">เทียบเป้าสะสมถึงเดือนนี้</span><span class="val">${ytdAtt}%</span><span class="sub">฿${fmtM(M.ytdWon)} / ฿${fmtM(M.ytdTgt)}</span>${statusOf(ytdAtt)}</div>
+    <div class="tile"><span class="lbl">คาดการณ์ทั้งปี (ปิดแล้ว + ถ่วงน้ำหนัก)</span><span class="val">฿${fmtM(M.forecastYear)}</span><span class="sub">${pct(M.forecastYear,M.yearTgt)}% ของเป้า</span></div>
+    <div class="tile"><span class="lbl">Pipeline ครอบคลุมส่วนที่ขาด</span><span class="val">${cov}</span><span class="sub">ขาดอีก ฿${fmtM(M.gap)} · ดีลเปิด GP ฿${fmtM(M.openGP)}</span></div>
+    <div class="tile"><span class="lbl">Win rate ปีนี้ (จำนวนดีล)</span><span class="val">${M.winRate}%</span><span class="sub">ชนะ ${M.wonCount} · แพ้ ${M.lostCount} · ตามมูลค่า ${M.winRateV}%</span></div>
+    <div class="tile"><span class="lbl">ลูกค้าใหม่ที่ปิดได้ปีนี้</span><span class="val">${M.newAcc}<span class="muted" style="font-size:15px"> / ${M.newAccTgt}</span></span><span class="sub">เป้า ${S.cfg.newAcctPerMonth} รายต่อคนต่อเดือน</span></div>
+  </div>`;
+  return `<div class="viewhead"><div><h1>ภาพรวมผู้บริหาร</h1><p>ข้อมูล ณ ${dLabel(today())} ${M.Y+543} · นับ GP ตามเดือนที่รับรู้รายได้ของดีลที่ปิดได้</p></div>${ownerSeg}</div>
+  ${tiles}
+  <div class="panel chart"><div class="ph"><div><h2>GP รายเดือนเทียบเป้า</h2><p>แท่งเข้ม = ปิดได้แล้ว · แท่งอ่อน = ดีลเปิดที่ถ่วงด้วย % โอกาส · เส้นประ = เป้า</p></div></div>${monthChart(M)}
+  <div class="legend"><span><i style="background:var(--s1)"></i>GP ที่ปิดได้</span><span><i style="background:var(--fc)"></i>คาดการณ์ถ่วงน้ำหนัก</span><span><i class="line"></i>เป้า</span></div>
+  <details><summary>ดูเป็นตาราง</summary><div class="tw"><table><thead><tr><th>เดือน</th><th class="r">เป้า</th><th class="r">ปิดได้</th><th class="r">%</th><th class="r">คาดการณ์</th></tr></thead><tbody>${M.tgtM.map((t,i)=>`<tr><td>${MTH[i]}</td><td class="r num">${fmt(t)}</td><td class="r num">${fmt(M.wonM[i])}</td><td class="r num">${pct(M.wonM[i],t)}%</td><td class="r num">${fmt(M.fcM[i])}</td></tr>`).join("")}</tbody></table></div></details></div>
+  ${quarterPanel(M)}
+  ${scorecard()}
+  <div class="grid g2">${funnelPanel(M)}${buPanel(M)}</div>
+  <div class="grid g2">${attentionPanel(M)}${topDealsPanel(M)}</div>`;
+}
+function statusOf(p){return p>=100?`<span class="flag good">● ถึงเป้า</span>`:p>=80?`<span class="flag warn">▲ ใกล้เป้า</span>`:`<span class="flag crit">▼ ต่ำกว่าเป้า</span>`}
+function monthChart(M){
+  const W=720,H=240,L=46,R=8,T=12,B=26,iw=W-L-R,ih=H-T-B;
+  const vals=M.tgtM.map((t,i)=>Math.max(t,M.wonM[i]+(i>=M.curIdx?M.fcM[i]:0)));
+  const raw=Math.max(1,...vals)/4,mag=Math.pow(10,Math.floor(Math.log10(raw)));const mx=[1,2,2.5,5,10].map(x=>x*mag).find(x=>x>=raw)*4;
+  const y=v=>T+ih-(v/mx)*ih,bw=iw/12,w=Math.min(28,bw*.56);
+  let g="";for(let k=0;k<=4;k++){const v=mx*k/4;g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${fmtM(v)}</text>`}
+  let bars="",tline="",hits="";
+  M.tgtM.forEach((t,i)=>{const cx=L+bw*i+bw/2,x=cx-w/2;const wv=Math.max(0,M.wonM[i]),fv=i>=M.curIdx?M.fcM[i]:0;
+    if(wv>0)bars+=`<path d="${rbar(x,y(wv),w,y(0)-y(wv),fv>0?0:4)}" fill="var(--s1)"/>`;
+    if(fv>0){const top=y(wv+fv),bot=y(wv)-(wv>0?2:0);bars+=`<path d="${rbar(x,top,w,Math.max(0,bot-top),4)}" fill="var(--fc)"/>`}
+    tline+=`${i?"L":"M"}${L+bw*i+2} ${y(t)} L${L+bw*(i+1)-2} ${y(t)}`;
+    const tip=`<b>${MTH[i]} ${M.Y+543}</b><br>เป้า ฿${fmt(t)}<br>ปิดได้ ฿${fmt(wv)} (${pct(wv,t)}%)${fv?`<br>คาดการณ์ +฿${fmt(fv)}`:""}`;
+    hits+=`<rect x="${L+bw*i}" y="${T}" width="${bw}" height="${ih}" fill="transparent" data-tip="${esc(tip)}"/>`;
+    g+=`<text x="${cx}" y="${H-8}" text-anchor="middle" ${i===M.curIdx?'style="fill:var(--ink);font-weight:600"':""}>${MTH[i]}</text>`});
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="GP รายเดือนเทียบเป้า">${g}${bars}<path d="${tline}" fill="none" stroke="var(--target)" stroke-width="2" stroke-dasharray="5 4"/>${hits}</svg>`;
+}
+function rbar(x,y,w,h,r){if(h<=0)return"";r=Math.min(r,h,w/2);return`M${x} ${y+h}V${y+r}Q${x} ${y} ${x+r} ${y}H${x+w-r}Q${x+w} ${y} ${x+w} ${y+r}V${y+h}Z`}
+function quarterPanel(M){
+  const q=[0,1,2,3].map(i=>{const s=a=>a.slice(i*3,i*3+3).reduce((x,y)=>x+y,0);return{t:s(M.tgtM),w:s(M.wonM),f:s(M.fcM)}});
+  return `<div class="panel"><div class="ph"><h2>รายไตรมาส</h2></div><div class="tiles">${q.map((x,i)=>{const p=pct(x.w,x.t);return`<div class="tile"><span class="lbl">Q${i+1}</span><span class="val">${p}%</span><span class="sub">฿${fmtM(x.w)} / ฿${fmtM(x.t)}${x.f?` · คาดการณ์ +฿${fmtM(x.f)}`:""}</span><div class="bar"><i style="width:${Math.min(100,p)}%;background:${p>=100?"var(--good)":p>=80?"var(--warn)":"var(--crit)"}"></i></div></div>`}).join("")}</div></div>`;
+}
+function scorecard(){
+  const owners=allOwners();const rows=owners.map(o=>{const M=metrics(o);const stale=M.open.filter(d=>flagsOf(d).length).length;return{o,M,stale,act:activeSales().includes(o)}}).filter(r=>r.act||r.M.fullWon||r.M.open.length);
+  rows.sort((a,b)=>(b.act-a.act)||(b.M.fullWon-a.M.fullWon));
+  return `<div class="panel"><div class="ph"><div><h2>Scorecard รายเซลส์</h2><p>เซลส์ที่ไม่ได้อยู่ในทีมแล้วแสดงเป็นสีเทา เพื่อให้ยอดทั้งบริษัทครบ · กดแถวเพื่อดูงานของคนนั้น</p></div></div><div class="tw"><table>
+  <thead><tr><th>เซลส์</th><th class="r">เป้าทั้งปี</th><th class="r">GP ปิดได้</th><th class="r">% เป้า</th><th class="r">เดือนนี้</th><th class="r">ดีลเปิด</th><th class="r">GP ถ่วงน้ำหนัก</th><th class="r">Win rate</th><th class="r">ลูกค้าใหม่</th><th class="r">กิจกรรม 7 วัน</th><th class="r">ดีลต้องดูแล</th></tr></thead><tbody>
+  ${rows.map(({o,M,stale,act})=>`<tr class="click" data-goowner="${esc(o)}" style="${act?"":"color:var(--muted)"}"><td>${ownerTag(o)}</td><td class="r num">${M.yearTgt?fmtM(M.yearTgt):"—"}</td><td class="r num">${fmtM(M.fullWon)}</td><td class="r num">${M.yearTgt?pct(M.fullWon,M.yearTgt)+"%":"—"}</td><td class="r num">${fmtM(M.thisM.won)}${M.thisM.tgt?` / ${fmtM(M.thisM.tgt)}`:""}</td><td class="r num">${M.open.length}</td><td class="r num">${fmtM(M.weighted)}</td><td class="r num">${M.winRate}%</td><td class="r num">${M.newAcc}</td><td class="r num">${M.acts7}${act?` / ${S.cfg.actPerWeek}`:""}</td><td class="r">${stale?`<span class="flag warn">${stale}</span>`:`<span class="flag good">0</span>`}</td></tr>`).join("")}
+  </tbody></table></div></div>`;
+}
+function funnelPanel(M){
+  const by=OPEN.map(s=>{const ds=M.open.filter(d=>d.stage===s);return{s,c:ds.length,gp:ds.reduce((t,d)=>t+n(d.gp),0)}});
+  const mx=Math.max(1,...by.map(x=>x.gp));
+  return `<div class="panel"><div class="ph"><div><h2>Funnel ดีลที่ยังเปิดอยู่</h2><p>มูลค่า GP ตามขั้นตอน</p></div></div>${by.map(x=>`<div class="hbar"><span>${esc(STAGE_TH[x.s])} <span class="muted">(${x.c})</span></span><span class="trk"><i style="width:${x.gp/mx*100}%"></i></span><span class="num">฿${fmtM(x.gp)}</span></div>`).join("")}</div>`;
+}
+function buPanel(M){
+  const Y=String(M.Y);const map=new Map();M.ds.forEach(d=>{const k=d.bu||"ไม่ระบุ";if(!map.has(k))map.set(k,{w:0,o:0});const r=map.get(k);if(won(d)&&(d.closeMonth||"").startsWith(Y))r.w+=n(d.gp);if(isOpen(d))r.o+=n(d.gp)*n(d.prob)/100});
+  const rows=[...map.entries()].sort((a,b)=>b[1].w-a[1].w);const mx=Math.max(1,...rows.map(r=>r[1].w));
+  return `<div class="panel"><div class="ph"><div><h2>GP ตามบริษัทในเครือ</h2><p>แท่ง = ปิดได้ปีนี้ · ตัวเลขเทา = pipeline ถ่วงน้ำหนัก</p></div></div>${rows.map(([k,r])=>`<div class="hbar"><span>${esc(k)}</span><span class="trk"><i style="width:${r.w/mx*100}%"></i></span><span class="num">฿${fmtM(r.w)} <span class="muted">+${fmtM(r.o)}</span></span></div>`).join("")||`<div class="empty">ยังไม่มีข้อมูล</div>`}</div>`;
+}
+function attentionPanel(M){
+  const items=M.open.map(d=>({d,f:flagsOf(d)})).filter(x=>x.f.length).sort((a,b)=>(b.f.some(f=>f[0]==="crit")-a.f.some(f=>f[0]==="crit"))||n(b.d.gp)-n(a.d.gp));
+  return `<div class="panel"><div class="ph"><div><h2>ดีลที่ต้องดูแล</h2><p>${items.length} ดีล · เรียงจากเร่งด่วนและมูลค่า</p></div></div><div class="list">${items.slice(0,12).map(({d,f})=>`<div class="li click" data-deal="${esc(d.id)}"><div class="main"><div class="t">${esc(accName(d))} · <span class="ink2">${esc(d.product||"")}</span></div><div class="row small">${f.map(x=>`<span class="flag ${x[0]}">${x[0]==="crit"?"●":"▲"} ${esc(x[1])}</span>`).join("")}</div></div><div style="text-align:right">${ownerTag(d.owner)}<div class="num small">฿${fmtM(d.gp)}</div></div></div>`).join("")||`<div class="empty">ไม่มีดีลที่ต้องดูแลเป็นพิเศษ</div>`}</div>${items.length>12?`<p class="hint">และอีก ${items.length-12} ดีล ดูทั้งหมดในหน้า Pipeline</p>`:""}</div>`;
+}
+function topDealsPanel(M){
+  const top=[...M.open].sort((a,b)=>n(b.gp)*n(b.prob)-n(a.gp)*n(a.prob)).slice(0,10);
+  return `<div class="panel"><div class="ph"><div><h2>ดีลใหญ่ที่กำลังลุ้น</h2><p>10 อันดับตาม GP × % โอกาส</p></div></div><div class="tw"><table><thead><tr><th>ลูกค้า</th><th>ขั้นตอน</th><th class="r">GP</th><th class="r">%</th><th>ปิด</th></tr></thead><tbody>${top.map(d=>`<tr class="click" data-deal="${esc(d.id)}"><td><div class="cname">${esc(accName(d))}</div><div class="small muted">${esc(d.product||"")} · ${esc(d.owner||"")}</div></td><td>${stagePill(d.stage)}</td><td class="r num">${fmtM(d.gp)}</td><td class="r num">${n(d.prob)}%</td><td class="small">${ymLabel(d.closeMonth)}</td></tr>`).join("")||`<tr><td colspan="5" class="empty">ไม่มีดีลเปิด</td></tr>`}</tbody></table></div></div>`;
+}
+
+/* ---------- views: my day ---------- */
+function vMy(){
+  const me=(activeSales().includes(S.myPick)&&S.myPick)||(activeSales().includes(S.me)?S.me:activeSales()[0]);
+  const pick=`<div class="seg" role="group" aria-label="เลือกเซลส์">${activeSales().map(s=>`<button data-mypick="${esc(s)}" aria-pressed="${me===s}">${esc(s)}</button>`).join("")}</div>`;
+  if(!me)return`<div class="empty">ยังไม่มีรายชื่อเซลส์ เพิ่มได้ในหน้า ตั้งค่า</div>`;
+  const M=metrics(me),t=today(),cym=curYM();
+  const mine=M.open;
+  const follow=mine.filter(d=>(d.nextDate&&d.nextDate<=t)||(!d.nextDate&&!d.nextStep)).sort((a,b)=>(a.nextDate||"0").localeCompare(b.nextDate||"0"));
+  const closing=mine.filter(d=>d.closeMonth===cym).sort((a,b)=>n(b.gp)-n(a.gp));
+  const upcoming=mine.filter(d=>d.nextDate&&d.nextDate>t&&d.nextDate<=addDays(t,7)).sort((a,b)=>a.nextDate.localeCompare(b.nextDate));
+  const myActs=[...S.acts.values()].filter(a=>a.owner===me).slice(0,8);
+  const mp=pct(M.thisM.won,M.thisM.tgt);
+  const dl=(d,extra)=>`<div class="li click" data-deal="${esc(d.id)}"><div class="main"><div class="t">${esc(accName(d))} · <span class="ink2">${esc(d.product||"")}</span></div><div class="small muted">${esc(d.nextStep||"ยังไม่ได้ระบุขั้นตอนถัดไป")}</div></div><div style="text-align:right" class="small">${extra}<div class="num">฿${fmtM(d.gp)}</div></div></div>`;
+  return `<div class="viewhead"><div><h1>งานของ ${esc(me)}</h1><p>${dLabel(t)} · โฟกัสสิ่งที่ต้องทำวันนี้และยอดเดือนนี้</p></div><div class="row">${pick}<button class="btn" data-newact="">+ บันทึกกิจกรรม</button><button class="btn pri" data-newdeal="">+ ดีลใหม่</button></div></div>
+  <div class="tiles">
+   <div class="tile hero"><span class="lbl">GP เดือนนี้ (${MTH[n(cym.slice(5))-1]})</span><span class="val">฿${fmtM(M.thisM.won)}</span><span class="sub">${mp}% ของเป้า ฿${fmtM(M.thisM.tgt)}</span><div class="bar"><i style="width:${Math.min(100,mp)}%"></i></div></div>
+   <div class="tile"><span class="lbl">ถ้าปิดได้ตาม % โอกาส</span><span class="val">฿${fmtM(M.thisM.won+M.thisM.fc)}</span><span class="sub">ยังขาดอีก ฿${fmtM(Math.max(0,M.thisM.tgt-M.thisM.won))} ถึงเป้าเดือนนี้</span></div>
+   <div class="tile"><span class="lbl">GP สะสมทั้งปี</span><span class="val">฿${fmtM(M.fullWon)}</span><span class="sub">${pct(M.fullWon,M.yearTgt)}% ของเป้า ฿${fmtM(M.yearTgt)}</span>${statusOf(pct(M.ytdWon,M.ytdTgt))}</div>
+   <div class="tile"><span class="lbl">กิจกรรม 7 วันล่าสุด</span><span class="val">${M.acts7}<span class="muted" style="font-size:15px"> / ${S.cfg.actPerWeek}</span></span><span class="sub">ลูกค้าใหม่ที่ปิดได้ปีนี้ ${M.newAcc} ราย</span></div>
+  </div>
+  <div class="grid g2">
+   <div class="panel"><div class="ph"><div><h2>ต้องติดตามวันนี้</h2><p>ถึงวันนัด เลยวันนัด หรือยังไม่มีขั้นตอนถัดไป</p></div><span class="pill">${follow.length}</span></div><div class="list">${follow.map(d=>dl(d,d.nextDate?`<span class="flag ${d.nextDate<t?"crit":"warn"}">${d.nextDate<t?"เลยนัด":"วันนี้"} ${dLabel(d.nextDate)}</span>`:`<span class="flag warn">ไม่มีนัด</span>`)).join("")||`<div class="empty">เคลียร์หมดแล้ว ไม่มีงานค้างวันนี้</div>`}</div></div>
+   <div class="panel"><div class="ph"><div><h2>ดีลที่ควรปิดเดือนนี้</h2><p>ปิดได้เท่าไร ยอดเดือนนี้ขึ้นตามนั้น</p></div><span class="pill">${closing.length}</span></div><div class="list">${closing.map(d=>dl(d,`${stagePill(d.stage)} <span class="num">${n(d.prob)}%</span>`)).join("")||`<div class="empty">ไม่มีดีลที่ตั้งเดือนปิดเป็นเดือนนี้</div>`}</div></div>
+  </div>
+  <div class="grid g2">
+   <div class="panel"><div class="ph"><h2>นัดติดตาม 7 วันข้างหน้า</h2></div><div class="list">${upcoming.map(d=>dl(d,`<span class="flag">${dLabel(d.nextDate)}</span>`)).join("")||`<div class="empty">ยังไม่มีนัดในสัปดาห์หน้า</div>`}</div></div>
+   <div class="panel"><div class="ph"><h2>กิจกรรมล่าสุด</h2><button class="btn sm" data-view="activities">ดูทั้งหมด</button></div><div class="list">${myActs.map(actRow).join("")||`<div class="empty">ยังไม่มีบันทึก กด “+ บันทึกกิจกรรม” หลังโทรหรือประชุมลูกค้า</div>`}</div></div>
+  </div>`;
+}
+
+/* ---------- views: pipeline ---------- */
+function pipeDeals(){const P=S.pipe,q=P.q.trim().toLowerCase(),cym=curYM(),Y=String(S.cfg.year);
+  return[...S.deals.values()].filter(d=>{
+    if(P.owner&&d.owner!==P.owner)return false;if(P.bu&&d.bu!==P.bu)return false;if(P.temp&&d.temp!==P.temp)return false;
+    if(P.period==="open"&&!isOpen(d))return false;
+    if(P.period==="month"&&d.closeMonth!==cym)return false;
+    if(P.period==="quarter"){const qq=Math.floor((n(cym.slice(5))-1)/3);const m=n((d.closeMonth||"").slice(5));if(!(d.closeMonth||"").startsWith(cym.slice(0,4))||Math.floor((m-1)/3)!==qq)return false}
+    if(P.period==="year"&&!(d.closeMonth||"").startsWith(Y))return false;
+    if(q&&!(accName(d)+" "+(d.product||"")+" "+(d.note||"")).toLowerCase().includes(q))return false;return true})}
+function vPipeline(){
+  const P=S.pipe,ds=pipeDeals();
+  const sel=(k,arr,all)=>`<select data-pf="${k}" aria-label="${all}"><option value="">${all}</option>${arr.map(x=>`<option ${P[k]===x?"selected":""}>${esc(x)}</option>`).join("")}</select>`;
+  const totGP=ds.reduce((t,d)=>t+n(d.gp),0),totW=ds.filter(isOpen).reduce((t,d)=>t+n(d.gp)*n(d.prob)/100,0);
+  const head=`<div class="viewhead"><div><h1>Pipeline</h1><p>${ds.length} ดีล · GP รวม ฿${fmtM(totGP)} · ถ่วงน้ำหนัก ฿${fmtM(totW)}</p></div><div class="row"><div class="seg" role="group" aria-label="รูปแบบ"><button data-pmode="board" aria-pressed="${P.mode==="board"}">บอร์ด</button><button data-pmode="table" aria-pressed="${P.mode==="table"}">ตาราง</button></div><button class="btn" data-export="">ส่งออก CSV</button><button class="btn pri" data-newdeal="">+ ดีลใหม่</button></div></div>
+  <div class="filters"><input type="search" data-pf="q" placeholder="ค้นหาลูกค้า / สินค้า" value="${esc(P.q)}" aria-label="ค้นหา">${sel("owner",allOwners(),"เซลส์ทุกคน")}${sel("bu",S.cfg.bus,"ทุกบริษัท")}${sel("temp",TEMPS,"ทุกระดับ")}
+  <select data-pf="period" aria-label="ช่วงเวลา">${[["open","เฉพาะดีลเปิด"],["month","ปิดเดือนนี้"],["quarter","ปิดไตรมาสนี้"],["year","ปิดในปี "+S.cfg.year],["all","ทั้งหมด"]].map(([k,l])=>`<option value="${k}" ${P.period===k?"selected":""}>${l}</option>`).join("")}</select></div>`;
+  return head+(P.mode==="board"?board(ds):table(ds));
+}
+function board(ds){
+  const cols=S.pipe.period==="open"?OPEN:STAGES.map(s=>s.k);
+  return `<div class="board">${cols.map(s=>{const c=ds.filter(d=>d.stage===s).sort((a,b)=>n(b.gp)-n(a.gp));const gp=c.reduce((t,d)=>t+n(d.gp),0);
+    return `<section class="col" data-dropstage="${esc(s)}" aria-label="${esc(STAGE_TH[s])}"><div class="colh"><b>${esc(STAGE_TH[s])}</b><span class="small muted">${c.length} · ฿${fmtM(gp)}</span></div>
+    ${c.slice(0,60).map(d=>{const f=flagsOf(d);return `<article class="card" draggable="${!S.readOnly}" data-deal="${esc(d.id)}" style="--owner:${ownerColor(d.owner)}"><div class="t">${esc(accName(d))}</div><div class="m"><span>${esc(d.product||"—")} · ${esc(d.bu||"")}</span><span class="num">฿${fmtM(d.gp)}</span></div><div class="m"><span>${tempPill(d.temp)} ${n(d.prob)}%</span><span>${esc(d.owner||"")} · ${ymLabel(d.closeMonth)}</span></div>${f.length?`<div class="small"><span class="flag ${f[0][0]}">${f[0][0]==="crit"?"●":"▲"} ${esc(f[0][1])}${f.length>1?` +${f.length-1}`:""}</span></div>`:""}</article>`}).join("")}
+    ${c.length>60?`<p class="hint">แสดง 60 จาก ${c.length} ใช้ตัวกรองหรือมุมมองตาราง</p>`:""}${!c.length?`<p class="hint">ลากการ์ดมาวางเพื่อเปลี่ยนขั้นตอน</p>`:""}</section>`}).join("")}</div>`;
+}
+function table(ds){
+  const P=S.pipe,key={cust:d=>accName(d),gp:d=>n(d.gp),billing:d=>n(d.billing),prob:d=>n(d.prob),close:d=>d.closeMonth||"9999",stage:d=>STAGES.findIndex(s=>s.k===d.stage),owner:d=>d.owner||"",next:d=>d.nextDate||"9999"}[P.sort]||(d=>d.closeMonth);
+  ds=[...ds].sort((a,b)=>{const x=key(a),y=key(b);return(x>y?1:x<y?-1:0)*P.dir});
+  const th=(k,l,r)=>`<th class="sort ${r?"r":""}" data-sort="${k}">${l}${P.sort===k?(P.dir>0?" ↑":" ↓"):""}</th>`;
+  return `<div class="panel"><div class="tw"><table><thead><tr>${th("cust","ลูกค้า / สินค้า")}<th>บริษัท</th>${th("billing","Billing",1)}${th("gp","GP",1)}${th("stage","ขั้นตอน")}${th("prob","%",1)}${th("close","ปิด")}${th("owner","เซลส์")}${th("next","ขั้นตอนถัดไป")}</tr></thead><tbody>
+  ${ds.map(d=>{const f=flagsOf(d);return `<tr class="click" data-deal="${esc(d.id)}"><td><div class="cname">${esc(accName(d))}</div><div class="small muted">${esc(d.product||"")} ${tempPill(d.temp)}</div></td><td class="small">${esc(d.bu||"")}</td><td class="r num">${fmt(d.billing)}</td><td class="r num">${fmt(d.gp)}</td><td>${stagePill(d.stage)}</td><td class="r num">${n(d.prob)}</td><td class="small">${ymLabel(d.closeMonth)}</td><td>${ownerTag(d.owner)}</td><td class="small" style="min-width:160px">${esc(d.nextStep||"")}${d.nextDate?` <span class="muted">(${dLabel(d.nextDate)})</span>`:""}${f.length?`<div><span class="flag ${f[0][0]}">${f[0][0]==="crit"?"●":"▲"} ${esc(f[0][1])}</span></div>`:""}</td></tr>`}).join("")||`<tr><td colspan="9" class="empty">ไม่พบดีลตามตัวกรอง</td></tr>`}
+  </tbody></table></div></div>`;
+}
+
+/* ---------- views: accounts ---------- */
+function accStatus(a){const ds=[...S.deals.values()].filter(d=>d.accountId===a.id);if(ds.some(won))return"ลูกค้า (เคยปิดได้)";if(ds.some(isOpen))return"มีดีลเปิด";if(ds.length)return"เคยเสนอ (ยังไม่ได้)";return a.stage==="Closed Lost"?"ไม่สนใจ":"Prospect"}
+function vAccounts(){
+  const A=S.acc,q=A.q.trim().toLowerCase();
+  const lists=[...new Set([...S.accounts.values()].flatMap(a=>a.lists||[]))];
+  const statuses=["ลูกค้า (เคยปิดได้)","มีดีลเปิด","เคยเสนอ (ยังไม่ได้)","Prospect","ไม่สนใจ"];
+  let rows=[...S.accounts.values()].map(a=>({a,st:accStatus(a)})).filter(({a,st})=>(!q||(a.name+" "+(a.industry||"")+" "+(a.remark||"")).toLowerCase().includes(q))&&(!A.list||(a.lists||[]).includes(A.list))&&(!A.owner||a.owner===A.owner)&&(!A.status||st===A.status));
+  rows.sort((x,y)=>statuses.indexOf(x.st)-statuses.indexOf(y.st)||x.a.name.localeCompare(y.a.name,"th"));
+  const cnt=s=>[...S.accounts.values()].filter(a=>accStatus(a)===s).length;
+  const sel=(k,arr,all)=>`<select data-af="${k}" aria-label="${all}"><option value="">${all}</option>${arr.map(x=>`<option ${A[k]===x?"selected":""}>${esc(x)}</option>`).join("")}</select>`;
+  return `<div class="viewhead"><div><h1>ลูกค้าและรายชื่อเป้าหมาย</h1><p>${S.accounts.size} บริษัท · ลูกค้าปัจจุบัน ${cnt(statuses[0])} · มีดีลเปิด ${cnt(statuses[1])} · Prospect ${cnt(statuses[3])}</p></div><button class="btn pri" data-newacc="">+ เพิ่มบริษัท</button></div>
+  <div class="filters"><input type="search" data-af="q" placeholder="ค้นหาบริษัท / อุตสาหกรรม" value="${esc(A.q)}" aria-label="ค้นหา">${sel("status",statuses,"ทุกสถานะ")}${sel("list",lists,"ทุกรายชื่อเป้าหมาย")}${sel("owner",allOwners(),"เซลส์ทุกคน")}</div>
+  <div class="panel"><div class="tw"><table><thead><tr><th>บริษัท</th><th>สถานะ</th><th>อุตสาหกรรม</th><th>รายชื่อ</th><th>ผู้ติดต่อ</th><th>เซลส์</th><th>หมายเหตุล่าสุด</th></tr></thead><tbody>
+  ${rows.slice(0,400).map(({a,st})=>`<tr class="click" data-acc="${esc(a.id)}"><td class="cname">${esc(a.name)}${a.existing?` <span class="pill small">ลูกค้าเก่า</span>`:""}</td><td class="small">${esc(st)}</td><td class="small">${esc(a.industry||"")}</td><td class="small">${esc((a.lists||[]).join(", "))}</td><td class="small">${esc((a.contacts||[])[0]?.name||"")}${(a.contacts||[]).length>1?` +${a.contacts.length-1}`:""}</td><td>${ownerTag(a.owner)}</td><td class="small muted" style="max-width:280px">${esc((a.remark||"").slice(0,90))}</td></tr>`).join("")||`<tr><td colspan="7" class="empty">ไม่พบบริษัทตามตัวกรอง</td></tr>`}
+  </tbody></table></div>${rows.length>400?`<p class="hint">แสดง 400 จาก ${rows.length} รายการ ใช้ช่องค้นหาเพื่อหาให้เจอเร็วขึ้น</p>`:""}</div>`;
+}
+
+/* ---------- views: activities ---------- */
+function actRow(a){const acc=S.accounts.get(a.accountId);return `<div class="li"><div class="main"><div class="t">${esc(a.type)} · ${esc(acc?.name||a.account||"")}</div><div class="small ink2">${esc(a.detail||"")}</div>${a.outcome?`<div class="small muted">ผล: ${esc(a.outcome)}</div>`:""}</div><div class="small" style="text-align:right">${ownerTag(a.owner)}<div class="muted">${dLabel(a.date)} ${esc(a.time||"")}</div><button class="btn sm" data-editact="${esc(a.id)}">แก้ไข</button></div></div>`}
+function vActivities(){
+  const F=S.act,from=F.range==="all"?"0000":addDays(today(),-(n(F.range)-1));
+  const list=[...S.acts.values()].filter(a=>(!F.owner||a.owner===F.owner)&&a.date>=from).sort((a,b)=>(b.date+(b.time||"")).localeCompare(a.date+(a.time||"")));
+  const by=new Map();list.forEach(a=>{if(!by.has(a.date))by.set(a.date,[]);by.get(a.date).push(a)});
+  const wk=addDays(today(),-6);
+  const per=activeSales().map(s=>{const c=[...S.acts.values()].filter(a=>a.owner===s&&a.date>=wk).length;return{s,c}});
+  const types=ACT_TYPES.map(t=>({t,c:list.filter(a=>a.type===t).length})).filter(x=>x.c);
+  return `<div class="viewhead"><div><h1>กิจกรรมการขาย</h1><p>แทน Timesheet เดิม · บันทึกทุกครั้งที่โทร ประชุม หรือส่งงานให้ลูกค้า</p></div><button class="btn pri" data-newact="">+ บันทึกกิจกรรม</button></div>
+  <div class="tiles">${per.map(({s,c})=>{const p=pct(c,S.cfg.actPerWeek);return`<div class="tile"><span class="lbl">${ownerTag(s)} · 7 วันล่าสุด</span><span class="val">${c}<span class="muted" style="font-size:15px"> / ${S.cfg.actPerWeek}</span></span><div class="bar"><i style="width:${Math.min(100,p)}%;background:${ownerColor(s)}"></i></div></div>`}).join("")}
+  <div class="tile"><span class="lbl">ประเภทในช่วงที่เลือก</span><span class="sub" style="font-size:13px;color:var(--ink2)">${types.map(x=>`${esc(x.t)} ${x.c}`).join(" · ")||"—"}</span></div></div>
+  <div class="filters"><select data-actf="owner" aria-label="เซลส์"><option value="">เซลส์ทุกคน</option>${allOwners().map(o=>`<option ${F.owner===o?"selected":""}>${esc(o)}</option>`).join("")}</select><select data-actf="range" aria-label="ช่วงเวลา">${[["7","7 วันล่าสุด"],["30","30 วันล่าสุด"],["90","90 วันล่าสุด"],["all","ทั้งหมด"]].map(([k,l])=>`<option value="${k}" ${F.range===k?"selected":""}>${l}</option>`).join("")}</select></div>
+  <div class="panel">${[...by.entries()].map(([d,arr])=>`<div class="daygrp">${dLabel(d)} ${n(d.slice(0,4))+543} · ${arr.length} รายการ</div><div class="list">${arr.map(actRow).join("")}</div>`).join("")||`<div class="empty">ยังไม่มีกิจกรรมในช่วงนี้<br>กด “+ บันทึกกิจกรรม” หลังโทรหรือประชุมลูกค้า ระบบจะนับให้ MD เห็นใน Scorecard</div>`}</div>`;
+}
+
+/* ---------- views: settings ---------- */
+function vSettings(){
+  const C=S.cfg;
+  return `<div class="viewhead"><div><h1>ตั้งค่า</h1><p>เป้าหมายและรายชื่อทีม ใช้คำนวณทุกหน้าของระบบ (เฉพาะ MD / Editor แก้ได้)</p></div></div>
+  <div class="panel"><div class="ph"><div><h2>เป้า GP รายเดือนของแต่ละคน</h2><p>ใส่ตัวเลขช่องแรกแล้วกด “ใช้ทุกเดือน” ถ้าเป้าเท่ากันทั้งปี</p></div></div><div class="tw"><table><thead><tr><th>เซลส์</th><th>อยู่ในทีม</th>${MTH.map(m=>`<th class="r">${m}</th>`).join("")}<th class="r">รวมปี</th><th></th></tr></thead><tbody>
+  ${C.sales.map((s,i)=>`<tr><td><input id="sn${i}" value="${esc(s.name)}" style="width:110px;padding:5px 7px;border:1px solid var(--line);border-radius:6px;background:var(--panel)" aria-label="ชื่อ"></td><td><input type="checkbox" id="sa${i}" ${s.active?"checked":""} aria-label="อยู่ในทีม"></td>${MTH.map((m,j)=>`<td><input id="st${i}_${j}" class="num" inputmode="numeric" value="${n((s.monthly||[])[j])}" style="width:84px;padding:5px 6px;border:1px solid var(--line);border-radius:6px;text-align:right;background:var(--panel)" aria-label="${esc(s.name)} ${m}"></td>`).join("")}<td class="r num">${fmtM((s.monthly||[]).reduce((a,b)=>a+n(b),0))}</td><td><button class="btn sm" data-fillrow="${i}">ใช้ทุกเดือน</button></td></tr>`).join("")}
+  </tbody></table></div><div class="row" style="margin-top:10px"><button class="btn sm" data-addsales="">+ เพิ่มเซลส์</button></div></div>
+  <div class="panel"><div class="ph"><h2>เป้ากิจกรรมและลูกค้าใหม่</h2></div><div class="form">
+   <div class="fld"><label for="cYear">ปีที่ติดตาม</label><input id="cYear" type="number" value="${C.year}"></div>
+   <div class="fld"><label for="cNew">ลูกค้าใหม่ที่ต้องปิดได้ (ราย / คน / เดือน)</label><input id="cNew" type="number" min="0" value="${C.newAcctPerMonth}"></div>
+   <div class="fld"><label for="cAct">กิจกรรมขั้นต่ำ (ครั้ง / คน / สัปดาห์)</label><input id="cAct" type="number" min="0" value="${C.actPerWeek}"></div>
+   <div class="fld wide"><label for="cBus">บริษัทในเครือ (คั่นด้วยจุลภาค)</label><input id="cBus" value="${esc(C.bus.join(", "))}"></div>
+   <div class="fld wide"><label for="cProd">สินค้า / บริการ (คั่นด้วยจุลภาค)</label><textarea id="cProd">${esc((C.products||[]).join(", "))}</textarea></div>
+  </div><div class="row" style="margin-top:12px"><button class="btn pri" data-savecfg="">บันทึกการตั้งค่า</button><span class="hint">บันทึกแล้วตัวเลขทุกหน้าคำนวณใหม่ทันที</span></div></div>
+  <div class="panel"><div class="ph"><div><h2>โอนงานเมื่อเซลส์ลาออกหรือสลับลูกค้า</h2><p>ย้ายดีลที่ยังเปิดและรายชื่อบริษัทจากคนหนึ่งไปอีกคน ดีลที่ปิดแล้วยังเป็นยอดของคนเดิม</p></div></div><div class="row">
+   <select id="trFrom" aria-label="จาก">${allOwners().map(o=>`<option>${esc(o)}</option>`).join("")}</select><span>→</span><select id="trTo" aria-label="ไปยัง">${activeSales().map(o=>`<option>${esc(o)}</option>`).join("")}</select><button class="btn" data-transfer="">โอนงาน</button></div><div id="trConfirm"></div></div>`;
+}
+
+/* ---------- drawer (deal / account / activity) ---------- */
+let layerRender=null;
+function openLayer(fn){layerRender=fn;$("#layer").innerHTML=`<div class="scrim" data-scrim=""><div class="drawer" role="dialog" aria-modal="true" id="drawer"></div></div>`;fn();document.body.style.overflow="hidden"}
+function closeLayer(){layerRender=null;$("#layer").innerHTML="";document.body.style.overflow=""}
+function dealForm(id,preset){
+  const d=id?S.deals.get(id):{stage:"Lead In",prob:20,temp:"Warm",owner:activeSales().includes(S.me)?S.me:activeSales()[0]||"",leadMonth:curYM(),channel:"Call",...preset};
+  if(!d){closeLayer();return}
+  const acc=S.accounts.get(d.accountId);const custName=acc?.name||d.customer||"";
+  const o=(arr,v,lab)=>arr.map(x=>`<option value="${esc(x)}" ${v===x?"selected":""}>${esc(lab?lab(x):x)}</option>`).join("");
+  const acts=id?[...S.acts.values()].filter(a=>a.dealId===id).slice(0,10):[];
+  const hist=(d.history||[]).slice(-6).reverse();
+  const dr=$("#drawer");
+  dr.innerHTML=`<div class="dh"><div><h2>${id?esc(custName):"ดีลใหม่"}</h2>${id?`<div class="row small" style="margin-top:4px">${stagePill(d.stage)} ${tempPill(d.temp)} ${ownerTag(d.owner)}</div>`:""}</div><button class="x" data-close="" aria-label="ปิด">×</button></div>
+  ${id&&flagsOf(d).length?`<div class="row">${flagsOf(d).map(f=>`<span class="flag ${f[0]}">${f[0]==="crit"?"●":"▲"} ${esc(f[1])}</span>`).join("")}</div>`:""}
+  <form id="dealF" class="form" autocomplete="off">
+   <div class="fld wide"><label for="fCust">ลูกค้า</label><input id="fCust" list="acctList" required value="${esc(custName)}" placeholder="พิมพ์ชื่อบริษัท ถ้าไม่มีในระบบจะสร้างให้"></div>
+   <div class="fld"><label for="fProd">สินค้า / บริการ</label><input id="fProd" list="prodList" value="${esc(d.product||"")}"></div>
+   <div class="fld"><label for="fBu">บริษัท (ภายใน)</label><select id="fBu"><option value="">—</option>${o(S.cfg.bus,d.bu)}</select></div>
+   <div class="fld"><label for="fBill">มูลค่า Billing (บาท)</label><input id="fBill" inputmode="numeric" value="${d.billing??""}"></div>
+   <div class="fld"><label for="fGp">มูลค่า GP / Margin (บาท)</label><input id="fGp" inputmode="numeric" value="${d.gp??""}"></div>
+   <div class="fld"><label for="fStage">ขั้นตอน</label><select id="fStage">${o(STAGES.map(s=>s.k),d.stage,s=>STAGE_TH[s])}</select></div>
+   <div class="fld"><label for="fProb">โอกาสปิด (%)</label><input id="fProb" type="number" min="0" max="100" step="5" value="${n(d.prob)}"></div>
+   <div class="fld"><label for="fTemp">ความร้อน</label><select id="fTemp">${o(TEMPS,d.temp)}</select></div>
+   <div class="fld"><label for="fCh">ช่องทาง</label><select id="fCh">${o(CHANNELS,d.channel)}</select></div>
+   <div class="fld"><label for="fLead">เดือนที่เข้ามา</label><input id="fLead" type="month" value="${esc(d.leadMonth||"")}"></div>
+   <div class="fld"><label for="fClose">เดือนที่คาดว่าจะปิด</label><input id="fClose" type="month" value="${esc(d.closeMonth||"")}"></div>
+   <div class="fld"><label for="fOwner">เซลส์เจ้าของดีล</label><select id="fOwner">${o(allOwners(),d.owner)}</select></div>
+   <div class="fld wide"><label for="fNext">ขั้นตอนถัดไป</label><input id="fNext" value="${esc(d.nextStep||"")}" placeholder="เช่น นัดนำเสนอรอบ 2, ตามใบ PO"></div>
+   <div class="fld"><label for="fNextD">วันนัดติดตาม</label><input id="fNextD" type="date" value="${esc(d.nextDate||"")}"></div>
+   <div class="fld wide"><label for="fAction">Action Plan (จำเป็นเมื่อโอกาสต่ำกว่า 70%)</label><textarea id="fAction">${esc(d.action||"")}</textarea><span class="hint warn" id="actionHint" ${n(d.prob)<70&&!d.action?"":"hidden"}>โอกาสต่ำกว่า 70% ใส่แผนว่าจะดันให้ปิดอย่างไร</span></div>
+   <div class="fld wide"><label for="fNote">หมายเหตุ / สถานการณ์ล่าสุด</label><textarea id="fNote">${esc(d.note||"")}</textarea></div>
+   <div class="fld wide" id="lostWrap" ${d.stage==="Closed Lost"?"":"hidden"}><label for="fLost">เหตุผลที่ไม่ได้งาน</label><input id="fLost" value="${esc(d.lostReason||"")}" placeholder="เช่น งบไม่พอ, เลือกเจ้าเดิม, ราคา"></div>
+   <details class="fld wide"><summary>การรับรู้ GP (ขั้นสูง)</summary><div class="form" style="margin-top:8px"><div class="fld"><label for="fGpM">เดือนที่เริ่มรับรู้ GP</label><input id="fGpM" type="month" value="${esc(d.gpMonth||"")}"><span class="hint">เว้นว่าง = ใช้เดือนที่ปิด</span></div><div class="fld"><label for="fSpread">กระจาย GP กี่เดือน</label><input id="fSpread" type="number" min="1" max="36" value="${n(d.spread)||1}"><span class="hint">เช่น สัญญา MA/Support รายเดือน</span></div></div></details>
+   <div class="fld wide"><div class="row"><button type="submit" class="btn pri" ${S.readOnly?"disabled":""}>${id?"บันทึก":"สร้างดีล"}</button><button type="button" class="btn" data-close="">ยกเลิก</button>${id?`<button type="button" class="btn" data-newact="${esc(id)}">+ บันทึกกิจกรรม</button><button type="button" class="btn danger" data-askdel="${esc(id)}" style="margin-left:auto">ลบดีล</button>`:""}</div><div id="delBox"></div></div>
+  </form>
+  ${id?`<div class="sect"><h3>กิจกรรมของดีลนี้</h3><div class="list">${acts.map(actRow).join("")||`<div class="hint">ยังไม่มีกิจกรรม</div>`}</div></div>
+  <div class="sect"><h3>ประวัติการเปลี่ยนขั้นตอน</h3>${hist.length?`<div class="list">${hist.map(h=>`<div class="li small"><div class="main">${esc(STAGE_TH[h.from]||h.from||"เริ่ม")} → <b>${esc(STAGE_TH[h.to]||h.to)}</b></div><span class="muted">${dLabel((h.at||"").slice(0,10))}</span></div>`).join("")}</div>`:`<div class="hint">ยังไม่มีการเปลี่ยนขั้นตอนในระบบนี้</div>`}<p class="hint">แก้ไขล่าสุด ${d.updatedAt?dLabel(d.updatedAt.slice(0,10)):"—"}</p></div>`:""}`;
+  const st=$("#fStage"),pr=$("#fProb");
+  st.onchange=()=>{const s=STAGES.find(x=>x.k===st.value);if(s)pr.value=s.p;$("#lostWrap").hidden=st.value!=="Closed Lost";upd()};
+  const upd=()=>{$("#actionHint").hidden=!(n(pr.value)<70&&!$("#fAction").value.trim()&&OPEN.includes(st.value))};pr.oninput=upd;$("#fAction").oninput=upd;upd();
+  $("#dealF").onsubmit=async e=>{e.preventDefault();if(S.readOnly)return;
+    const owner=$("#fOwner").value;const accountId=await ensureAccount($("#fCust").value,owner);
+    const next={...(id?S.deals.get(id):{createdAt:new Date().toISOString(),history:[]}),customer:$("#fCust").value.trim(),accountId,product:$("#fProd").value.trim(),bu:$("#fBu").value,billing:n(String($("#fBill").value).replace(/,/g,"")),gp:n(String($("#fGp").value).replace(/,/g,"")),stage:st.value,prob:Math.max(0,Math.min(100,n(pr.value))),temp:$("#fTemp").value,channel:$("#fCh").value,leadMonth:$("#fLead").value,closeMonth:$("#fClose").value,owner,nextStep:$("#fNext").value.trim(),nextDate:$("#fNextD").value,action:$("#fAction").value.trim(),note:$("#fNote").value.trim(),lostReason:$("#fLost").value.trim(),gpMonth:$("#fGpM").value,spread:Math.max(1,n($("#fSpread").value)||1)};
+    delete next.id;const prevStage=id?S.deals.get(id).stage:null;
+    if(prevStage!==next.stage)next.history=[...(next.history||[]),{at:new Date().toISOString(),from:prevStage,to:next.stage}].slice(-30);
+    if(next.stage==="Closed Won"&&!next.closeMonth)next.closeMonth=curYM();
+    const did=id||uid("d");if(await save("deals",did,stamp(next))){toast(id?"บันทึกดีลแล้ว":"สร้างดีลแล้ว");closeLayer()}};
+}
+function accForm(id){
+  const a=id?S.accounts.get(id):{name:"",owner:activeSales().includes(S.me)?S.me:activeSales()[0]||"",contacts:[],lists:[],industry:"",remark:"",existing:false};
+  if(!a){closeLayer();return}
+  const ds=id?[...S.deals.values()].filter(d=>d.accountId===id).sort((x,y)=>(y.closeMonth||"").localeCompare(x.closeMonth||"")):[];
+  const acts=id?[...S.acts.values()].filter(x=>x.accountId===id).slice(0,10):[];
+  const wonGP=ds.filter(won).reduce((t,d)=>t+n(d.gp),0);
+  const C=draftC||(a.contacts||[]).map(c=>({...c}));draftC=null;
+  const dr=$("#drawer");
+  dr.innerHTML=`<div class="dh"><div><h2>${id?esc(a.name):"เพิ่มบริษัท"}</h2>${id?`<p class="small muted" style="margin:4px 0 0">${esc(accStatus(a))} · GP ที่เคยปิดได้ ฿${fmtM(wonGP)} · ${ds.length} ดีล</p>`:""}</div><button class="x" data-close="" aria-label="ปิด">×</button></div>
+  <form id="accF" class="form" autocomplete="off">
+   <div class="fld wide"><label for="aName">ชื่อบริษัท / แบรนด์</label><input id="aName" required value="${esc(a.name)}"></div>
+   <div class="fld"><label for="aInd">อุตสาหกรรม</label><input id="aInd" value="${esc(a.industry||"")}" placeholder="FMCG, Restaurant, Banking…"></div>
+   <div class="fld"><label for="aOwner">เซลส์ผู้ดูแล</label><select id="aOwner">${allOwners().map(o=>`<option ${a.owner===o?"selected":""}>${esc(o)}</option>`).join("")}</select></div>
+   <div class="fld"><label for="aLists">อยู่ในรายชื่อเป้าหมาย</label><input id="aLists" value="${esc((a.lists||[]).join(", "))}" placeholder="เช่น IP-GGEZ, Fandom-SETech"></div>
+   <div class="fld"><label for="aEx">ประเภท</label><select id="aEx"><option value="0" ${!a.existing?"selected":""}>ลูกค้าใหม่ / เป้าหมาย</option><option value="1" ${a.existing?"selected":""}>ลูกค้าเก่า (เคยใช้บริการก่อนปีนี้)</option></select></div>
+   <div class="fld wide"><label for="aRem">หมายเหตุ / Insight</label><textarea id="aRem">${esc(a.remark||"")}</textarea></div>
+   <div class="fld wide"><label>ผู้ติดต่อ</label><div id="cList" class="list">${C.map((c,i)=>`<div class="form" style="padding:8px 0;border-bottom:1px solid var(--line)"><div class="fld"><input id="cn${i}" value="${esc(c.name||"")}" placeholder="ชื่อ" aria-label="ชื่อผู้ติดต่อ"></div><div class="fld"><input id="cr${i}" value="${esc(c.role||"")}" placeholder="ตำแหน่ง" aria-label="ตำแหน่ง"></div><div class="fld"><input id="ct${i}" value="${esc(c.tel||"")}" placeholder="โทร" aria-label="โทร"></div><div class="fld"><input id="ce${i}" value="${esc(c.email||"")}" placeholder="อีเมล" aria-label="อีเมล"></div><div class="fld"><button type="button" class="btn sm danger" data-rmcontact="${i}">ลบ</button></div></div>`).join("")}</div><button type="button" class="btn sm" data-addcontact="" style="align-self:flex-start">+ เพิ่มผู้ติดต่อ</button></div>
+   <div class="fld wide"><div class="row"><button type="submit" class="btn pri" ${S.readOnly?"disabled":""}>${id?"บันทึก":"เพิ่มบริษัท"}</button><button type="button" class="btn" data-close="">ยกเลิก</button>${id?`<button type="button" class="btn" data-newdeal="${esc(id)}">+ ดีลใหม่</button><button type="button" class="btn" data-newactacc="${esc(id)}">+ บันทึกกิจกรรม</button>`:""}</div></div>
+  </form>
+  ${id?`<div class="sect"><h3>ดีลทั้งหมด</h3><div class="list">${ds.map(d=>`<div class="li click" data-deal="${esc(d.id)}"><div class="main"><div class="t">${esc(d.product||"—")} <span class="muted small">${esc(d.bu||"")}</span></div><div class="small muted">${ymLabel(d.closeMonth)} · ${esc(d.owner||"")}</div></div><div style="text-align:right">${stagePill(d.stage)}<div class="num small">฿${fmtM(d.gp)}</div></div></div>`).join("")||`<div class="hint">ยังไม่มีดีล</div>`}</div></div>
+  <div class="sect"><h3>กิจกรรมล่าสุด</h3><div class="list">${acts.map(actRow).join("")||`<div class="hint">ยังไม่มีกิจกรรม</div>`}</div></div>`:""}`;
+  const readC=()=>C.map((c,i)=>({name:$("#cn"+i).value.trim(),role:$("#cr"+i).value.trim(),tel:$("#ct"+i).value.trim(),email:$("#ce"+i).value.trim()}));
+  dr.querySelector("[data-addcontact]").onclick=()=>{draftC=[...readC(),{name:"",role:"",tel:"",email:""}];snapshotAcc();accForm(id);restoreAcc()};
+  dr.querySelectorAll("[data-rmcontact]").forEach(b=>b.onclick=()=>{const arr=readC();arr.splice(+b.dataset.rmcontact,1);draftC=arr;snapshotAcc();accForm(id);restoreAcc()});
+  $("#accF").onsubmit=async e=>{e.preventDefault();if(S.readOnly)return;const name=$("#aName").value.trim();if(!name)return;
+    const next={...(id?S.accounts.get(id):{createdAt:new Date().toISOString(),stage:"Prospect",temp:""}),name,industry:$("#aInd").value.trim(),owner:$("#aOwner").value,lists:$("#aLists").value.split(",").map(s=>s.trim()).filter(Boolean),existing:$("#aEx").value==="1",remark:$("#aRem").value.trim(),contacts:readC().filter(c=>c.name||c.tel||c.email)};
+    delete next.id;const aid=id||uid("a");if(await save("accounts",aid,stamp(next))){toast("บันทึกบริษัทแล้ว");closeLayer()}};
+}
+let accSnap=null,draftC=null;
+function snapshotAcc(){accSnap={};["aName","aInd","aOwner","aLists","aEx","aRem"].forEach(k=>accSnap[k]=$("#"+k)?.value)}
+function restoreAcc(){if(!accSnap)return;Object.entries(accSnap).forEach(([k,v])=>{const el=$("#"+k);if(el&&v!=null)el.value=v});accSnap=null}
+function actForm(actId,dealId,accId){
+  const a=actId?S.acts.get(actId):{date:today(),time:new Date().toTimeString().slice(0,5),type:"โทร",owner:activeSales().includes(S.me)?S.me:activeSales()[0]||"",dealId:dealId||"",accountId:accId||(dealId?S.deals.get(dealId)?.accountId:"")||""};
+  if(!a){closeLayer();return}
+  const acc=S.accounts.get(a.accountId);
+  const dealsOf=nm=>{const ac=[...S.accounts.values()].find(x=>x.name===nm);return ac?[...S.deals.values()].filter(d=>d.accountId===ac.id&&(isOpen(d)||d.id===a.dealId)):[]};
+  const dr=$("#drawer");
+  dr.innerHTML=`<div class="dh"><h2>${actId?"แก้ไขกิจกรรม":"บันทึกกิจกรรม"}</h2><button class="x" data-close="" aria-label="ปิด">×</button></div>
+  <form id="actF" class="form" autocomplete="off">
+   <div class="fld"><label for="xDate">วันที่</label><input id="xDate" type="date" required value="${esc(a.date)}"></div>
+   <div class="fld"><label for="xTime">เวลา</label><input id="xTime" type="time" value="${esc(a.time||"")}"></div>
+   <div class="fld"><label for="xType">ประเภท</label><select id="xType">${ACT_TYPES.map(t=>`<option ${a.type===t?"selected":""}>${t}</option>`).join("")}</select></div>
+   <div class="fld"><label for="xOwner">เซลส์</label><select id="xOwner">${allOwners().map(o=>`<option ${a.owner===o?"selected":""}>${esc(o)}</option>`).join("")}</select></div>
+   <div class="fld wide"><label for="xAcc">ลูกค้า</label><input id="xAcc" list="acctList" required value="${esc(acc?.name||a.account||"")}" placeholder="พิมพ์ชื่อบริษัท"></div>
+   <div class="fld wide"><label for="xDeal">เกี่ยวกับดีล (ถ้ามี)</label><select id="xDeal"></select></div>
+   <div class="fld wide"><label for="xDetail">ทำอะไรไป</label><textarea id="xDetail" required placeholder="เช่น โทรคุยกับคุณแบม เรื่องแผน MKT ปีหน้า">${esc(a.detail||"")}</textarea></div>
+   <div class="fld wide"><label for="xOut">ผลที่ได้ / สิ่งที่ลูกค้าตอบ</label><input id="xOut" value="${esc(a.outcome||"")}"></div>
+   <div class="fld wide" id="nextWrap"><label for="xNext">อัปเดตขั้นตอนถัดไปของดีล</label><div class="form"><input id="xNext" placeholder="ขั้นตอนถัดไป" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel)"><input id="xNextD" type="date" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel)" aria-label="วันนัดติดตาม"></div><span class="hint">เลือกดีลด้านบน แล้วระบบจะอัปเดตนัดติดตามของดีลนั้นให้</span></div>
+   <div class="fld wide"><div class="row"><button type="submit" class="btn pri" ${S.readOnly?"disabled":""}>บันทึก</button><button type="button" class="btn" data-close="">ยกเลิก</button>${actId?`<button type="button" class="btn danger" data-delact="${esc(actId)}" style="margin-left:auto">ลบ</button>`:""}</div></div>
+  </form>`;
+  const fill=()=>{const ds=dealsOf($("#xAcc").value.trim());$("#xDeal").innerHTML=`<option value="">— ไม่ระบุ —</option>`+ds.map(d=>`<option value="${esc(d.id)}" ${a.dealId===d.id?"selected":""}>${esc(d.product||"ดีล")} · ${esc(STAGE_TH[d.stage])} · ฿${fmtM(d.gp)}</option>`).join("");$("#nextWrap").hidden=!$("#xDeal").value};
+  $("#xAcc").onchange=fill;$("#xDeal").onchange=()=>{$("#nextWrap").hidden=!$("#xDeal").value;const d=S.deals.get($("#xDeal").value);if(d){$("#xNext").value=d.nextStep||"";$("#xNextD").value=d.nextDate||""}};fill();
+  if(a.dealId){const d=S.deals.get(a.dealId);if(d){$("#xNext").value=d.nextStep||"";$("#xNextD").value=d.nextDate||""}}
+  $("#actF").onsubmit=async e=>{e.preventDefault();if(S.readOnly)return;const owner=$("#xOwner").value;const accountId=await ensureAccount($("#xAcc").value,owner);
+    const dId=$("#xDeal").value;
+    const next={...(actId?S.acts.get(actId):{createdAt:new Date().toISOString()}),date:$("#xDate").value,time:$("#xTime").value,type:$("#xType").value,owner,accountId,account:$("#xAcc").value.trim(),dealId:dId,detail:$("#xDetail").value.trim(),outcome:$("#xOut").value.trim()};delete next.id;
+    const ok=await save("activities",actId||uid("x"),stamp(next));
+    if(ok&&dId){const d=S.deals.get(dId);if(d){const nd={...d,nextStep:$("#xNext").value.trim(),nextDate:$("#xNextD").value};delete nd.id;await save("deals",dId,stamp(nd))}}
+    if(ok){toast("บันทึกกิจกรรมแล้ว");closeLayer()}};
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("[data-view],[data-sumowner],[data-goowner],[data-mypick],[data-deal],[data-acc],[data-newdeal],[data-newacc],[data-newact],[data-newactacc],[data-editact],[data-delact],[data-close],[data-scrim],[data-pmode],[data-sort],[data-askdel],[data-dodel],[data-canceldel],[data-savecfg],[data-fillrow],[data-addsales],[data-transfer],[data-dotransfer],[data-export]");
+  if(!t)return;const ds=t.dataset;
+  if("scrim" in ds){if(e.target===t)closeLayer();return}
+  if("close" in ds){closeLayer();return}
+  if("view" in ds){closeLayer();if(location.hash.slice(1)===ds.view)route();else location.hash=ds.view;return}
+  if("sumowner" in ds){S.sumOwner=ds.sumowner;render();return}
+  if("goowner" in ds){if(activeSales().includes(ds.goowner)){S.myPick=ds.goowner;location.hash="my"}else{S.pipe.owner=ds.goowner;location.hash="pipeline"}return}
+  if("mypick" in ds){S.myPick=ds.mypick;render();return}
+  if("pmode" in ds){S.pipe.mode=ds.pmode;persistPipe();render();return}
+  if("sort" in ds){if(S.pipe.sort===ds.sort)S.pipe.dir*=-1;else{S.pipe.sort=ds.sort;S.pipe.dir=1}persistPipe();render();return}
+  if("askdel" in ds){$("#delBox").innerHTML=`<div class="confirm" style="margin-top:10px"><span>ลบดีลนี้ถาวร? ยอดที่เคยนับจะหายไปด้วย</span><button type="button" class="btn sm danger" data-dodel="${esc(ds.askdel)}">ลบเลย</button><button type="button" class="btn sm" data-canceldel="">ไม่ลบ</button></div>`;return}
+  if("canceldel" in ds){$("#delBox").innerHTML="";return}
+  if("dodel" in ds){if(await del("deals",ds.dodel)){toast("ลบดีลแล้ว");closeLayer()}return}
+  if("delact" in ds){if(await del("activities",ds.delact)){toast("ลบกิจกรรมแล้ว");closeLayer()}return}
+  if("deal" in ds&&!t.closest("form")){openLayer(()=>dealForm(ds.deal));return}
+  if("acc" in ds){openLayer(()=>accForm(ds.acc));return}
+  if("newdeal" in ds){const accId=ds.newdeal;openLayer(()=>dealForm(null,accId?{accountId:accId,owner:S.accounts.get(accId)?.owner||S.me}:{}));return}
+  if("newacc" in ds){openLayer(()=>accForm(null));return}
+  if("newact" in ds){const did=ds.newact;openLayer(()=>actForm(null,did||""));return}
+  if("newactacc" in ds){openLayer(()=>actForm(null,"",ds.newactacc));return}
+  if("editact" in ds){openLayer(()=>actForm(ds.editact));return}
+  if("fillrow" in ds){const i=ds.fillrow,v=$(`#st${i}_0`).value;for(let j=1;j<12;j++)$(`#st${i}_${j}`).value=v;return}
+  if("addsales" in ds){S.cfg={...S.cfg,sales:[...S.cfg.sales,{name:"เซลส์ใหม่",active:true,monthly:Array(12).fill(0)}]};render();toast("เพิ่มแถวแล้ว กรอกชื่อและเป้า แล้วกดบันทึก");return}
+  if("savecfg" in ds){
+    const sales=S.cfg.sales.map((s,i)=>({name:($(`#sn${i}`)?.value||s.name).trim(),active:$(`#sa${i}`)?.checked??s.active,monthly:MTH.map((_,j)=>n(String($(`#st${i}_${j}`)?.value).replace(/,/g,"")))})).filter(s=>s.name);
+    const cfg={year:n($("#cYear").value)||S.cfg.year,newAcctPerMonth:n($("#cNew").value),actPerWeek:n($("#cAct").value),sales,bus:$("#cBus").value.split(",").map(s=>s.trim()).filter(Boolean),products:$("#cProd").value.split(",").map(s=>s.trim()).filter(Boolean)};
+    if(!S.db){toast("ยังเชื่อมต่อฐานข้อมูลไม่ได้");return}
+    try{await S.db.doc("config/settings").set(stamp(cfg));S.cfg={...DEFAULT_CFG,...cfg};renderChrome();render();toast("บันทึกการตั้งค่าแล้ว")}catch(err){toast("บันทึกไม่ได้ เฉพาะ MD หรือ Editor แก้การตั้งค่าได้")}return}
+  if("transfer" in ds){const f=$("#trFrom").value,to=$("#trTo").value;if(!f||!to||f===to){toast("เลือกคนต้นทางและปลายทางที่ต่างกัน");return}
+    const dn=[...S.deals.values()].filter(d=>d.owner===f&&isOpen(d)).length,an=[...S.accounts.values()].filter(a=>a.owner===f).length;
+    $("#trConfirm").innerHTML=`<div class="confirm" style="margin-top:10px"><span>โอนดีลเปิด ${dn} ดีล และบริษัท ${an} ราย จาก ${esc(f)} ไปให้ ${esc(to)}?</span><button class="btn sm pri" data-dotransfer="${esc(f)}|${esc(to)}">ยืนยันโอน</button></div>`;return}
+  if("dotransfer" in ds){const[f,to]=ds.dotransfer.split("|");let c=0;
+    for(const d of[...S.deals.values()].filter(d=>d.owner===f&&isOpen(d))){const x={...d,owner:to};delete x.id;if(await save("deals",d.id,stamp(x)))c++}
+    for(const a of[...S.accounts.values()].filter(a=>a.owner===f)){const x={...a,owner:to};delete x.id;if(await save("accounts",a.id,stamp(x)))c++}
+    $("#trConfirm").innerHTML="";toast(`โอนแล้ว ${c} รายการ`);return}
+  if("export" in ds){exportCSV();return}
+});
+document.addEventListener("input",e=>{const t=e.target;
+  if(t.dataset.pf==="q"){S.pipe.q=t.value;clearTimeout(t._t);t._t=setTimeout(()=>{persistPipe();render();const el=document.querySelector('[data-pf="q"]');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},250)}
+  if(t.dataset.af==="q"){S.acc.q=t.value;clearTimeout(t._t);t._t=setTimeout(()=>{render();const el=document.querySelector('[data-af="q"]');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},250)}});
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.id==="meSel"){S.me=t.value;S.myPick=null;try{localStorage.setItem("sd.me",S.me)}catch(x){}if(S.db&&S.uid)S.db.doc("data/users/"+S.uid+"/prefs").set({me:S.me}).catch(()=>{});location.hash=S.me&&S.me!=="MD"?"my":"summary";route();return}
+  if(t.dataset.pf&&t.dataset.pf!=="q"){S.pipe[t.dataset.pf]=t.value;persistPipe();render()}
+  if(t.dataset.af&&t.dataset.af!=="q"){S.acc[t.dataset.af]=t.value;render()}
+  if(t.dataset.actf){S.act[t.dataset.actf]=t.value;render()}});
+function persistPipe(){try{localStorage.setItem("sd.pipe",JSON.stringify({mode:S.pipe.mode,sort:S.pipe.sort,dir:S.pipe.dir}))}catch(e){}}
+/* drag & drop stage change */
+let dragId=null;
+document.addEventListener("dragstart",e=>{const c=e.target.closest?.(".card");if(c){dragId=c.dataset.deal;e.dataTransfer.effectAllowed="move"}});
+document.addEventListener("dragover",e=>{const col=e.target.closest?.("[data-dropstage]");if(col&&dragId){e.preventDefault();document.querySelectorAll(".col.drop").forEach(x=>x!==col&&x.classList.remove("drop"));col.classList.add("drop")}});
+document.addEventListener("dragend",()=>{dragId=null;document.querySelectorAll(".col.drop").forEach(x=>x.classList.remove("drop"))});
+document.addEventListener("drop",async e=>{const col=e.target.closest?.("[data-dropstage]");if(!col||!dragId)return;e.preventDefault();const d=S.deals.get(dragId);const to=col.dataset.dropstage;dragId=null;
+  if(!d||d.stage===to)return;const s=STAGES.find(x=>x.k===to);const x={...d,stage:to,prob:s.p,history:[...(d.history||[]),{at:new Date().toISOString(),from:d.stage,to}].slice(-30)};delete x.id;
+  if(to==="Closed Won"&&!x.closeMonth)x.closeMonth=curYM();
+  S.deals.set(d.id,{id:d.id,...x});render();if(await save("deals",d.id,stamp(x)))toast(`ย้ายไป ${STAGE_TH[to]} แล้ว`)});
+/* tooltip */
+document.addEventListener("mousemove",e=>{const h=e.target.closest?.("[data-tip]");const tip=$("#tip");if(!h){tip.hidden=true;return}tip.innerHTML=h.getAttribute("data-tip");tip.hidden=false;const x=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-8),y=Math.max(8,e.clientY-tip.offsetHeight-10);tip.style.left=x+"px";tip.style.top=y+"px"});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&layerRender)closeLayer()});
+/* CSV export */
+async function exportCSV(){
+  const ds=pipeDeals();const cols=["ลูกค้า","สินค้า","บริษัท","Billing","GP","ขั้นตอน","โอกาส%","ความร้อน","ช่องทาง","เดือนที่เข้ามา","เดือนที่คาดว่าจะปิด","เซลส์","ขั้นตอนถัดไป","วันนัด","Action Plan","หมายเหตุ"];
+  const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const csv="﻿"+[cols.map(q).join(","),...ds.map(d=>[accName(d),d.product,d.bu,d.billing,d.gp,d.stage,d.prob,d.temp,d.channel,d.leadMonth,d.closeMonth,d.owner,d.nextStep,d.nextDate,d.action,d.note].map(q).join(","))].join("\n");
+  if(!S.dl){toast("หน้านี้ส่งออกไฟล์ไม่ได้ในมุมมองนี้");return}
+  try{await S.dl.save({filename:`pipeline-${today()}.csv`,data:new Blob([csv],{type:"text/csv"})})}catch(e){if(e.code!=="declined")toast("ส่งออกไม่สำเร็จ")}
+}
+window.addEventListener("hashchange",route);
+route();boot();
+</script>
