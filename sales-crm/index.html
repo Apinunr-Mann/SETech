@@ -274,7 +274,7 @@ function flagsOf(d){const f=[],t=today(),cym=curYM();if(!isOpen(d))return f;
   if(n(d.prob)<70&&!String(d.action||"").trim())f.push(["warn","โอกาส < 70% แต่ยังไม่มี Action Plan"]);
   if(d.nextDate&&d.nextDate<t)f.push(["crit","เลยวันนัดติดตาม"]);
   if(!d.nextStep&&!d.nextDate)f.push(["warn","ยังไม่มีขั้นตอนถัดไป"]);
-  if(!n(d.gp))f.push(["warn","ยังไม่ใส่มูลค่า GP"]);
+  if(!n(d.gp)&&d.stage!=="Prospect")f.push(["warn","ยังไม่ใส่มูลค่า GP"]);
   if(d.stageAt){const dd=Math.round((Date.now()-new Date(d.stageAt))/864e5);if(dd>21)f.push(["warn",`ค้างในขั้นนี้ ${dd} วัน`])}
   const last=d.updatedAt?d.updatedAt.slice(0,10):"";if(last&&last<addDays(t,-14))f.push(["warn","ไม่มีความเคลื่อนไหว 14 วัน"]);
   return f}
