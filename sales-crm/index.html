@@ -161,6 +161,10 @@ details summary{cursor:pointer;color:var(--ink2);font-size:12px;margin-top:8px}
 .x{border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:var(--muted);padding:4px 8px}
 .sect{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
 .confirm{background:color-mix(in srgb,var(--crit) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--crit) 35%,var(--line));border-radius:8px;padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lnk{border:0;background:none;padding:0;font-weight:500;cursor:pointer;color:var(--ink);text-align:left}.lnk:hover{color:var(--accent);text-decoration:underline}
+.fc-Commit{color:var(--good-ink);border-color:color-mix(in srgb,var(--good) 40%,var(--line))}.fc-BestCase{color:var(--warn-ink)}
+td select{padding:5px 7px;border:1px solid var(--line);border-radius:6px;background:var(--panel);max-width:100%}
+.ai{font-size:13px;line-height:1.6;display:flex;flex-direction:column;gap:4px}.ai h3{margin-top:8px;font-size:14px}.ai p{margin:0}.ai-li{padding-left:14px;position:relative}.ai-li::before{content:"–";position:absolute;left:0;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:13px;z-index:70;box-shadow:var(--shadow)}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
 .kv dt{color:var(--muted)}.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
@@ -192,11 +196,11 @@ const DEFAULT_CFG={year:2026,newAcctPerMonth:2,actPerWeek:15,
   sales:[{name:"Bee",active:true,monthly:Array(12).fill(800000)},{name:"Nungning",active:true,monthly:Array(12).fill(800000)}],
   bus:["SETech","TPS","TPM","Goodtech","GGEZ","Code Play","Snaptech","SYD"],
   products:["MA","KOL","Ads","Event","Production","Campaign","CRM","PR","Live","Fandom Marketing","IP Collab","Games","Management Fee 10%","Management Fee 15%","Strategy","Seeding","Website","AI"]};
-const VIEWS=[["summary","ภาพรวมผู้บริหาร"],["my","งานของฉัน"],["pipeline","Pipeline"],["accounts","ลูกค้า"],["activities","กิจกรรม"],["settings","ตั้งค่า"]];
+const VIEWS=[["summary","ภาพรวมผู้บริหาร"],["forecast","Forecast"],["my","งานของฉัน"],["pipeline","Pipeline"],["accounts","ลูกค้า"],["activities","กิจกรรม"],["coach","โค้ช 1:1"],["settings","ตั้งค่า"]];
 
 /* ---------- state ---------- */
-const S={deals:new Map(),accounts:new Map(),acts:new Map(),cfg:DEFAULT_CFG,me:"",uid:null,db:null,dl:null,
-  ready:{deals:false,accounts:false,acts:false,cfg:false},noDb:false,readOnly:false,slow:false,
+const S={deals:new Map(),accounts:new Map(),acts:new Map(),snaps:new Map(),coach:new Map(),ai:{},sample:null,cfg:DEFAULT_CFG,me:"",uid:null,db:null,dl:null,
+  ready:{deals:false,accounts:false,acts:false,cfg:false,snaps:false,coach:false},noDb:false,readOnly:false,slow:false,
   view:"summary",sumOwner:"all",pipe:{mode:"board",owner:"",bu:"",temp:"",q:"",period:"open",sort:"close",dir:1},
   acc:{q:"",list:"",owner:"",status:""},act:{owner:"",range:"7"}};
 try{const m=localStorage.getItem("sd.me");if(m)S.me=m;const v=localStorage.getItem("sd.pipe");if(v)Object.assign(S.pipe,JSON.parse(v));}catch(e){}
@@ -208,11 +212,12 @@ const n=v=>{const x=Number(v);return isFinite(x)?x:0};
 const fmt=v=>Math.round(n(v)).toLocaleString("th-TH");
 const fmtM=v=>{v=n(v);const a=Math.abs(v);if(a>=1e6)return(v/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,"")+"M";if(a>=1e3)return Math.round(v/1e3)+"K";return fmt(v)};
 const pct=(a,b)=>b>0?Math.round(a/b*100):0;
-const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const ld=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today=()=>ld(new Date());
 const curYM=()=>today().slice(0,7);
 const ymLabel=ym=>{if(!ym)return"—";const[y,m]=ym.split("-");return MTH[+m-1]+" "+String((+y+543)%100).padStart(2,"0")};
 const dLabel=d=>{if(!d)return"—";const[y,m,dd]=d.split("-");return +dd+" "+MTH[+m-1]};
-const addDays=(d,k)=>{const x=new Date(d+"T00:00:00");x.setDate(x.getDate()+k);return x.toISOString().slice(0,10)};
+const addDays=(d,k)=>{const x=new Date(d+"T00:00:00");x.setDate(x.getDate()+k);return ld(x)};
 const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const isOpen=d=>OPEN.includes(d.stage);
 const won=d=>d.stage==="Closed Won";
@@ -270,6 +275,7 @@ function flagsOf(d){const f=[],t=today(),cym=curYM();if(!isOpen(d))return f;
   if(d.nextDate&&d.nextDate<t)f.push(["crit","เลยวันนัดติดตาม"]);
   if(!d.nextStep&&!d.nextDate)f.push(["warn","ยังไม่มีขั้นตอนถัดไป"]);
   if(!n(d.gp))f.push(["warn","ยังไม่ใส่มูลค่า GP"]);
+  if(d.stageAt){const dd=Math.round((Date.now()-new Date(d.stageAt))/864e5);if(dd>21)f.push(["warn",`ค้างในขั้นนี้ ${dd} วัน`])}
   const last=d.updatedAt?d.updatedAt.slice(0,10):"";if(last&&last<addDays(t,-14))f.push(["warn","ไม่มีความเคลื่อนไหว 14 วัน"]);
   return f}
 
@@ -285,7 +291,8 @@ async function boot(){
   window.claude.use("downloads").then(d=>{S.dl=d}).catch(()=>{});
   const done=k=>{S.ready[k]=true;if(Object.values(S.ready).every(Boolean))clearTimeout(slow)};
   const sub=(col,map,key)=>db.collection(col).onSnapshot(snap=>{map.clear();snap.docs.forEach(x=>map.set(x.id,{id:x.id,...x.data()}));if(!snap.metadata.fromCache)done(key);schedule()},err=>{done(key);console.warn(col,err);schedule()});
-  sub("deals",S.deals,"deals");sub("accounts",S.accounts,"accounts");
+  sub("deals",S.deals,"deals");sub("accounts",S.accounts,"accounts");sub("snapshots",S.snaps,"snaps");sub("coaching",S.coach,"coach");
+  window.claude.use("sample").then(x=>{S.sample=x;schedule()}).catch(()=>{});
   db.collection("activities").orderBy("date","desc").limit(1000).onSnapshot(snap=>{S.acts.clear();snap.docs.forEach(x=>S.acts.set(x.id,{id:x.id,...x.data()}));if(!snap.metadata.fromCache)done("acts");schedule()},()=>{done("acts");schedule()});
   db.doc("config/settings").onSnapshot(s=>{if(s.exists)S.cfg={...DEFAULT_CFG,...s.data()};if(!s.metadata.fromCache)done("cfg");renderChrome();schedule()},()=>{done("cfg");schedule()});
   if(S.uid){try{const p=await db.doc("data/users/"+S.uid+"/prefs").get();if(p.exists&&p.data().me&&!localStorage.getItem("sd.me")){S.me=p.data().me;renderChrome();schedule()}}catch(e){}}
@@ -321,8 +328,8 @@ function render(){
   else if(S.readOnly)top=`<div class="banner">คุณมีสิทธิ์ดูอย่างเดียว ถ้าต้องบันทึกงาน ให้ MD แชร์หน้านี้เป็น Contributor</div>`;
   if(!S.me&&!S.noDb)top+=`<div class="banner">เลือกชื่อคุณที่มุมขวาบน (“ฉันคือ”) เพื่อให้ระบบเปิดหน้างานของคุณและใส่ชื่อเจ้าของดีลให้อัตโนมัติ</div>`;
   if(loading&&!S.slow&&!S.deals.size){m.innerHTML=top+`<div class="empty">กำลังโหลดข้อมูลการขาย…</div>`;return}
-  const v={summary:vSummary,my:vMy,pipeline:vPipeline,accounts:vAccounts,activities:vActivities,settings:vSettings}[S.view];
-  const y=window.scrollY;m.innerHTML=top+v();window.scrollTo(0,y);
+  const v={summary:vSummary,forecast:vForecast,my:vMy,pipeline:vPipeline,accounts:vAccounts,activities:vActivities,coach:vCoach,settings:vSettings}[S.view];
+  const y=window.scrollY;m.innerHTML=top+v();window.scrollTo(0,y);maybeSnap();
 }
 
 /* ---------- views: executive summary ---------- */
@@ -347,6 +354,7 @@ function vSummary(){
   ${quarterPanel(M)}
   ${scorecard()}
   <div class="grid g2">${funnelPanel(M)}${buPanel(M)}</div>
+  ${convPanel()}
   <div class="grid g2">${attentionPanel(M)}${topDealsPanel(M)}</div>`;
 }
 function statusOf(p){return p>=100?`<span class="flag good">● ถึงเป้า</span>`:p>=80?`<span class="flag warn">▲ ใกล้เป้า</span>`:`<span class="flag crit">▼ ต่ำกว่าเป้า</span>`}
@@ -417,6 +425,7 @@ function vMy(){
    <div class="tile"><span class="lbl">ถ้าปิดได้ตาม % โอกาส</span><span class="val">฿${fmtM(M.thisM.won+M.thisM.fc)}</span><span class="sub">ยังขาดอีก ฿${fmtM(Math.max(0,M.thisM.tgt-M.thisM.won))} ถึงเป้าเดือนนี้</span></div>
    <div class="tile"><span class="lbl">GP สะสมทั้งปี</span><span class="val">฿${fmtM(M.fullWon)}</span><span class="sub">${pct(M.fullWon,M.yearTgt)}% ของเป้า ฿${fmtM(M.yearTgt)}</span>${statusOf(pct(M.ytdWon,M.ytdTgt))}</div>
    <div class="tile"><span class="lbl">กิจกรรม 7 วันล่าสุด</span><span class="val">${M.acts7}<span class="muted" style="font-size:15px"> / ${S.cfg.actPerWeek}</span></span><span class="sub">ลูกค้าใหม่ที่ปิดได้ปีนี้ ${M.newAcc} ราย</span></div>
+   ${(()=>{const c=capacity(me);return `<div class="tile"><span class="lbl">ต้องสร้าง pipeline เพิ่ม</span><span class="val">${c.short>0?c.deals+" ดีล":"พอแล้ว"}</span><span class="sub">${c.short>0?`≈ ${c.perWeek.toFixed(1)} ดีลต่อสัปดาห์ (GP ฿${fmtM(c.short)}) ถึงจะทันเป้าทั้งปี`:"pipeline ที่มีครอบคลุมส่วนที่ขาดทั้งปี"}</span></div>`})()}
   </div>
   <div class="grid g2">
    <div class="panel"><div class="ph"><div><h2>ต้องติดตามวันนี้</h2><p>ถึงวันนัด เลยวันนัด หรือยังไม่มีขั้นตอนถัดไป</p></div><span class="pill">${follow.length}</span></div><div class="list">${follow.map(d=>dl(d,d.nextDate?`<span class="flag ${d.nextDate<t?"crit":"warn"}">${d.nextDate<t?"เลยนัด":"วันนี้"} ${dLabel(d.nextDate)}</span>`:`<span class="flag warn">ไม่มีนัด</span>`)).join("")||`<div class="empty">เคลียร์หมดแล้ว ไม่มีงานค้างวันนี้</div>`}</div></div>
@@ -450,7 +459,7 @@ function board(ds){
   const cols=S.pipe.period==="open"?OPEN:STAGES.map(s=>s.k);
   return `<div class="board">${cols.map(s=>{const c=ds.filter(d=>d.stage===s).sort((a,b)=>n(b.gp)-n(a.gp));const gp=c.reduce((t,d)=>t+n(d.gp),0);
     return `<section class="col" data-dropstage="${esc(s)}" aria-label="${esc(STAGE_TH[s])}"><div class="colh"><b>${esc(STAGE_TH[s])}</b><span class="small muted">${c.length} · ฿${fmtM(gp)}</span></div>
-    ${c.slice(0,60).map(d=>{const f=flagsOf(d);return `<article class="card" draggable="${!S.readOnly}" data-deal="${esc(d.id)}" style="--owner:${ownerColor(d.owner)}"><div class="t">${esc(accName(d))}</div><div class="m"><span>${esc(d.product||"—")} · ${esc(d.bu||"")}</span><span class="num">฿${fmtM(d.gp)}</span></div><div class="m"><span>${tempPill(d.temp)} ${n(d.prob)}%</span><span>${esc(d.owner||"")} · ${ymLabel(d.closeMonth)}</span></div>${f.length?`<div class="small"><span class="flag ${f[0][0]}">${f[0][0]==="crit"?"●":"▲"} ${esc(f[0][1])}${f.length>1?` +${f.length-1}`:""}</span></div>`:""}</article>`}).join("")}
+    ${c.slice(0,60).map(d=>{const f=flagsOf(d);return `<article class="card" draggable="${!S.readOnly}" data-deal="${esc(d.id)}" style="--owner:${ownerColor(d.owner)}"><div class="t">${esc(accName(d))}</div><div class="m"><span>${esc(d.product||"—")} · ${esc(d.bu||"")}</span><span class="num">฿${fmtM(d.gp)}</span></div><div class="m"><span>${tempPill(d.temp)} ${n(d.prob)}% ${fcatPill(d)}</span><span>${esc(d.owner||"")} · ${ymLabel(d.closeMonth)}</span></div>${f.length?`<div class="small"><span class="flag ${f[0][0]}">${f[0][0]==="crit"?"●":"▲"} ${esc(f[0][1])}${f.length>1?` +${f.length-1}`:""}</span></div>`:""}</article>`}).join("")}
     ${c.length>60?`<p class="hint">แสดง 60 จาก ${c.length} ใช้ตัวกรองหรือมุมมองตาราง</p>`:""}${!c.length?`<p class="hint">ลากการ์ดมาวางเพื่อเปลี่ยนขั้นตอน</p>`:""}</section>`}).join("")}</div>`;
 }
 function table(ds){
@@ -513,6 +522,184 @@ function vSettings(){
    <select id="trFrom" aria-label="จาก">${allOwners().map(o=>`<option>${esc(o)}</option>`).join("")}</select><span>→</span><select id="trTo" aria-label="ไปยัง">${activeSales().map(o=>`<option>${esc(o)}</option>`).join("")}</select><button class="btn" data-transfer="">โอนงาน</button></div><div id="trConfirm"></div></div>`;
 }
 
+/* ---------- SPM: forecast categories, capacity, conversion, coaching ---------- */
+const FCATS=["Commit","Best Case","Pipeline","Omitted"];
+const FCAT_TH={"Commit":"Commit · มั่นใจปิดได้","Best Case":"Best Case · ลุ้นได้","Pipeline":"Pipeline · ยังไม่แน่","Omitted":"ไม่นับเดือนนี้"};
+const fcatOf=d=>d.fcat||(n(d.prob)>=80?"Commit":n(d.prob)>=50?"Best Case":"Pipeline");
+const fcatPill=d=>{const c=fcatOf(d);if(c==="Pipeline"&&!d.fcat)return"";return `<span class="pill small fc-${c.replace(/\s/g,"")}" title="${d.fcat?"เซลส์ยืนยันแล้ว":"ตั้งจาก % โอกาส ยังไม่ได้ยืนยัน"}">${esc(c)}${d.fcat?"":" ?"}</span>`};
+const daysBetween=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+function weekStart(d){const x=new Date((d||today())+"T00:00:00");x.setDate(x.getDate()-((x.getDay()+6)%7));return ld(x)}
+function monthDiff(a,b){if(!a||!b)return null;const[ay,am]=a.split("-").map(Number),[by,bm]=b.split("-").map(Number);return(by-ay)*12+(bm-am)}
+const gpSum=a=>a.reduce((t,d)=>t+n(d.gp),0);
+function ownerDeals(o){return[...S.deals.values()].filter(d=>o==="all"||d.owner===o)}
+function rates(owner){
+  const Y=String(S.cfg.year);const pick=o=>ownerDeals(o).filter(d=>(won(d)||lost(d))&&(d.closeMonth||"").startsWith(Y));
+  let c=pick(owner),fb=false;if(owner!=="all"&&c.filter(won).length<3){c=pick("all");fb=true}
+  const w=c.filter(won),wGP=gpSum(w),lGP=gpSum(c.filter(lost));
+  const cyc=w.map(d=>monthDiff(d.leadMonth,d.closeMonth)).filter(x=>x!=null&&x>=0);
+  return{winV:Math.max(.1,(wGP+lGP)?wGP/(wGP+lGP):.25),winC:c.length?w.length/c.length:0,avgGP:w.length?wGP/w.length:500000,cycleM:cyc.length?cyc.reduce((a,b)=>a+b,0)/cyc.length:null,fb,n:c.length}}
+function capacity(owner){
+  const M=metrics(owner),R=rates(owner),cym=curYM(),Y=String(M.Y),yEnd=Y+"-12";
+  const open=ownerDeals(owner).filter(d=>isOpen(d)&&fcatOf(d)!=="Omitted");
+  const mGap=Math.max(0,M.thisM.tgt-M.thisM.won),mPipe=gpSum(open.filter(d=>d.closeMonth===cym)),mNeed=mGap/R.winV;
+  const yPipe=gpSum(open.filter(d=>!d.closeMonth||d.closeMonth<=yEnd)),yNeed=M.gap/R.winV,short=Math.max(0,yNeed-yPipe);
+  const deals=Math.ceil(short/Math.max(1,R.avgGP)),weeks=Math.max(1,Math.ceil(daysBetween(today(),Y+"-12-31")/7));
+  return{M,R,mGap,mPipe,mNeed,mShort:Math.max(0,mNeed-mPipe),yGap:M.gap,yPipe,yNeed,short,deals,weeks,perWeek:deals/weeks}}
+function fcSum(owner,month){
+  const ds=ownerDeals(owner);let w=0;ds.filter(won).forEach(d=>alloc(d).forEach(x=>{if(x.ym===month)w+=x.gp}));
+  const r={won:w,"Commit":0,"Best Case":0,"Pipeline":0,"Omitted":0,weighted:w,unconfirmed:0};
+  ds.filter(d=>isOpen(d)&&d.closeMonth===month).forEach(d=>{const c=fcatOf(d);r[c]+=n(d.gp);if(!d.fcat)r.unconfirmed++;if(c!=="Omitted")r.weighted+=n(d.gp)*n(d.prob)/100});
+  r.call=w+r["Commit"];r.upside=r.call+r["Best Case"];r.target=month.startsWith(String(S.cfg.year))?targetOf(owner,n(month.slice(5))-1):0;return r}
+function reachIdx(d){const idx=s=>STAGES.findIndex(x=>x.k===s);if(won(d))return 9;
+  const h=Math.max(-1,...(d.history||[]).map(x=>idx(x.to)).filter(i=>i>=0&&i<5));
+  if(isOpen(d))return Math.max(idx(d.stage),h);if(d.lostStage&&idx(d.lostStage)>=0)return idx(d.lostStage);return h>=0?h:null}
+function conv(owner){
+  const Y=String(S.cfg.year),ds=ownerDeals(owner).filter(d=>(d.leadMonth||"").startsWith(Y));
+  const known=ds.map(reachIdx).filter(x=>x!=null);const p=k=>known.length?known.filter(x=>x>=k).length/known.length:0;
+  const closed=ds.filter(d=>won(d)||lost(d));const now=today();
+  const open=ownerDeals(owner).filter(isOpen).map(d=>daysBetween((d.stageAt||d.createdAt||now).slice(0,10),now));
+  const stay={};ownerDeals(owner).forEach(d=>{const h=d.history||[];for(let i=1;i<h.length;i++){const s=h[i].from;if(!s||!OPEN.includes(s))continue;(stay[s]=stay[s]||[]).push(daysBetween(h[i-1].at,h[i].at))}});
+  return{n:ds.length,known:known.length,p2:p(2),p3:p(3),win:closed.length?closed.filter(won).length/closed.length:0,R:rates(owner),
+    age:open.length?open.reduce((a,b)=>a+b,0)/open.length:0,stuck:open.filter(x=>x>21).length,stay}}
+
+/* forecast view */
+function vForecast(){
+  const Y=n(S.cfg.year),cym=curYM(),mon=S.fcMonth||cym;
+  const months=[];for(let m=1;m<=12;m++)months.push(Y+"-"+String(m).padStart(2,"0"));[1,2].forEach(k=>{const[y,m]=cym.split("-").map(Number);const d=new Date(y,m-1+k,1);months.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"))});
+  const reps=activeSales(),rows=[...reps.map(o=>[o,fcSum(o,mon)]),["all",fcSum("all",mon)]];
+  const wk=weekStart(),snap=S.snaps.get(wk);
+  const cell=v=>`<td class="r num">${fmtM(v)}</td>`;
+  const fcTable=`<div class="tw"><table><thead><tr><th>เซลส์</th><th class="r">เป้า</th><th class="r">ปิดแล้ว</th><th class="r">Commit</th><th class="r">Call<br><span class="muted">ปิดแล้ว+Commit</span></th><th class="r">% เป้า</th><th class="r">Best Case</th><th class="r">Upside</th><th class="r">Pipeline</th><th class="r">ระบบถ่วงน้ำหนัก</th><th class="r">ขาดจาก Call</th></tr></thead><tbody>
+  ${rows.map(([o,r])=>`<tr ${o==="all"?'style="font-weight:600;background:var(--panel2)"':""}><td>${o==="all"?"ทั้งทีม (รวมทุกคน)":ownerTag(o)}${r.unconfirmed&&o!=="all"?`<div class="small flag warn">▲ ${r.unconfirmed} ดีลยังไม่ยืนยันหมวด</div>`:""}</td>${cell(r.target)}${cell(r.won)}${cell(r["Commit"])}<td class="r num" style="font-weight:600">${fmtM(r.call)}</td><td class="r">${r.target?`<span class="flag ${pct(r.call,r.target)>=100?"good":pct(r.call,r.target)>=80?"warn":"crit"}">${pct(r.call,r.target)}%</span>`:"—"}</td>${cell(r["Best Case"])}${cell(r.upside)}${cell(r["Pipeline"])}${cell(r.weighted)}<td class="r num">${r.target?fmtM(Math.max(0,r.target-r.call)):"—"}</td></tr>`).join("")}</tbody></table></div>`;
+  const open=[...S.deals.values()].filter(d=>isOpen(d)&&d.closeMonth===mon).sort((a,b)=>(a.owner||"").localeCompare(b.owner||"")||FCATS.indexOf(fcatOf(a))-FCATS.indexOf(fcatOf(b))||n(b.gp)-n(a.gp));
+  const overdue=mon===cym?[...S.deals.values()].filter(d=>isOpen(d)&&d.closeMonth&&d.closeMonth<cym):[];
+  const dealRow=d=>`<tr><td><button class="lnk" data-deal="${esc(d.id)}">${esc(accName(d))}</button><div class="small muted">${esc(d.product||"")} · ${esc(STAGE_TH[d.stage])} · ${n(d.prob)}%</div></td><td>${ownerTag(d.owner)}</td><td class="r num">${fmtM(d.gp)}</td><td><select data-fcatsel="${esc(d.id)}" aria-label="หมวด Forecast" ${S.readOnly?"disabled":""}>${FCATS.map(c=>`<option value="${c}" ${fcatOf(d)===c?"selected":""}>${FCAT_TH[c]}${!d.fcat&&fcatOf(d)===c?" (ยังไม่ยืนยัน)":""}</option>`).join("")}</select></td></tr>`;
+  const sn=[...S.snaps.values()].filter(s=>s.month===mon).sort((a,b)=>a.week.localeCompare(b.week));
+  const past=[...new Set([...S.snaps.values()].map(s=>s.month))].filter(m=>m<cym).sort().reverse();
+  return `<div class="viewhead"><div><h1>Forecast</h1><p>เซลส์ยืนยันว่าดีลไหนมั่นใจ (Commit) ดีลไหนลุ้น (Best Case) ระบบเก็บตัวเลขทุกสัปดาห์เพื่อวัดความแม่นยำ</p></div>
+   <div class="row"><select data-fcmonth="" aria-label="เดือน" style="padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel)">${months.map(m=>`<option value="${m}" ${m===mon?"selected":""}>${ymLabel(m)}${m===cym?" (เดือนนี้)":""}</option>`).join("")}</select><button class="btn" data-snap="" ${S.readOnly?"disabled":""}>บันทึก snapshot ตอนนี้</button></div></div>
+  <div class="panel"><div class="ph"><div><h2>Forecast call · ${ymLabel(mon)}</h2><p>Call = ยอดที่ปิดแล้ว + ดีล Commit ใช้เป็นตัวเลขที่ทีมรับปากกับ MD · Upside = Call + Best Case</p></div><span class="small muted">${snap?`snapshot สัปดาห์นี้ ${dLabel(snap.week)}`:"ยังไม่มี snapshot สัปดาห์นี้"}</span></div>${fcTable}</div>
+  <div class="grid g2">
+   <div class="panel"><div class="ph"><div><h2>ดีลที่จะปิดใน ${ymLabel(mon)}</h2><p>เซลส์เลือกหมวดของแต่ละดีล หมวดที่มีเครื่องหมาย ? ระบบเดาจาก % โอกาส ยังไม่ได้ยืนยัน</p></div><span class="pill">${open.length}</span></div><div class="tw"><table><thead><tr><th>ดีล</th><th>เซลส์</th><th class="r">GP</th><th>หมวด</th></tr></thead><tbody>${open.map(dealRow).join("")||`<tr><td colspan="4" class="empty">ไม่มีดีลเปิดที่ตั้งเดือนปิดเป็นเดือนนี้</td></tr>`}</tbody></table></div></div>
+   <div class="panel"><div class="ph"><div><h2>ดีลที่เลยเดือนปิดแล้ว</h2><p>ยังเปิดอยู่แต่เดือนที่คาดว่าจะปิดผ่านไปแล้ว ให้เลื่อนเดือนใหม่หรือปิดเป็น Lost เพื่อให้ Forecast ตรงความจริง</p></div><span class="pill">${overdue.length}</span></div><div class="list">${overdue.sort((a,b)=>n(b.gp)-n(a.gp)).map(d=>`<div class="li click" data-deal="${esc(d.id)}"><div class="main"><div class="t">${esc(accName(d))} · <span class="ink2">${esc(d.product||"")}</span></div><div class="small muted">ตั้งไว้ ${ymLabel(d.closeMonth)} · ${esc(d.owner||"")}</div></div><div class="num small">฿${fmtM(d.gp)}</div></div>`).join("")||`<div class="empty">${mon===cym?"ไม่มี ดีลทุกดีลมีเดือนปิดเป็นปัจจุบัน":"ดูได้เฉพาะเดือนปัจจุบัน"}</div>`}</div></div>
+  </div>
+  ${capacityPanel()}
+  <div class="panel"><div class="ph"><div><h2>Snapshot รายสัปดาห์ · ${ymLabel(mon)}</h2><p>ระบบบันทึกให้เองครั้งแรกที่มีคนเปิดหน้านี้ในแต่ละสัปดาห์ ดูว่าตัวเลข Call ขยับอย่างไรระหว่างเดือน</p></div></div>
+   ${sn.length?`<div class="tw"><table><thead><tr><th>สัปดาห์ของ</th>${reps.map(o=>`<th class="r">${esc(o)} Call</th>`).join("")}<th class="r">ทีม Call</th><th class="r">ทีม Upside</th><th class="r">ทีมปิดแล้ว</th></tr></thead><tbody>${sn.map(s=>`<tr><td>${dLabel(s.week)}</td>${reps.map(o=>`<td class="r num">${s.reps?.[o]?fmtM(s.reps[o].call):"—"}</td>`).join("")}<td class="r num">${fmtM(s.reps?.all?.call)}</td><td class="r num">${fmtM(s.reps?.all?.upside)}</td><td class="r num">${fmtM(s.reps?.all?.won)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">ยังไม่มี snapshot ของเดือนนี้</div>`}
+   <h3 style="margin-top:14px">ความแม่นยำของ Forecast เดือนที่ผ่านมา</h3>
+   ${past.length?`<div class="tw"><table><thead><tr><th>เดือน</th><th>เซลส์</th><th class="r">Call สัปดาห์แรก</th><th class="r">Call สัปดาห์สุดท้าย</th><th class="r">ปิดได้จริง</th><th class="r">แม่นยำ</th></tr></thead><tbody>${past.flatMap(m=>{const ss=[...S.snaps.values()].filter(s=>s.month===m).sort((a,b)=>a.week.localeCompare(b.week));return[...reps,"all"].map(o=>{const f=ss[0]?.reps?.[o],l=ss[ss.length-1]?.reps?.[o];if(!l)return"";const act=fcSum(o,m).won,acc=l.call?Math.round(act/l.call*100):0;return`<tr><td>${ymLabel(m)}</td><td>${o==="all"?"ทั้งทีม":ownerTag(o)}</td><td class="r num">${fmtM(f.call)}</td><td class="r num">${fmtM(l.call)}</td><td class="r num">${fmtM(act)}</td><td class="r"><span class="flag ${Math.abs(acc-100)<=10?"good":Math.abs(acc-100)<=25?"warn":"crit"}">${acc}%</span></td></tr>`})}).join("")}</tbody></table></div><p class="hint">แม่นยำ = ยอดจริง ÷ Call สัปดาห์สุดท้าย · 90–110% ถือว่าพยากรณ์ได้ดี</p>`:`<div class="hint">จะเริ่มแสดงตั้งแต่เดือนหน้า เมื่อมี snapshot ของเดือนที่จบไปแล้ว</div>`}
+  </div>`;
+}
+function capacityPanel(){
+  const reps=activeSales();
+  return `<div class="panel"><div class="ph"><div><h2>Pipeline ที่ต้องมีเพื่อถึงเป้า</h2><p>คำนวณย้อนจาก win rate (ตามมูลค่า) และ GP เฉลี่ยต่อดีลที่ปิดได้ของแต่ละคน · ถ้าคนนั้นปิดได้น้อยกว่า 3 ดีลจะใช้ค่าเฉลี่ยทีม</p></div></div><div class="tw"><table>
+  <thead><tr><th>เซลส์</th><th class="r">Win rate<br><span class="muted">ตามมูลค่า</span></th><th class="r">GP เฉลี่ย/ดีล</th><th class="r">ขาดเดือนนี้</th><th class="r">Pipeline เดือนนี้<br><span class="muted">ต้องมี / มีอยู่</span></th><th class="r">ขาดถึงสิ้นปี</th><th class="r">Pipeline ถึงสิ้นปี<br><span class="muted">ต้องมี / มีอยู่</span></th><th class="r">ต้องสร้างดีลใหม่</th></tr></thead><tbody>
+  ${reps.map(o=>{const c=capacity(o);return`<tr><td>${ownerTag(o)}${c.R.fb?`<div class="small muted">ใช้ค่าเฉลี่ยทีม</div>`:""}</td><td class="r num">${Math.round(c.R.winV*100)}%</td><td class="r num">${fmtM(c.R.avgGP)}</td><td class="r num">${fmtM(c.mGap)}</td><td class="r num">${fmtM(c.mNeed)} / <span class="${c.mPipe>=c.mNeed?"":"flag crit"}">${fmtM(c.mPipe)}</span></td><td class="r num">${fmtM(c.yGap)}</td><td class="r num">${fmtM(c.yNeed)} / <span class="${c.yPipe>=c.yNeed?"":"flag crit"}">${fmtM(c.yPipe)}</span></td><td class="r">${c.short>0?`<b class="num">${c.deals} ดีล</b><div class="small muted">≈ ${c.perWeek.toFixed(1)} ดีล/สัปดาห์ · GP ฿${fmtM(c.short)}</div>`:`<span class="flag good">● pipeline พอแล้ว</span>`}</td></tr>`}).join("")}
+  </tbody></table></div><p class="hint">ตัวอย่างการอ่าน: ถ้า win rate 30% และขาด ฿1M ต้องมีดีลเปิดรวม GP ฿3.3M ถึงจะคาดว่าปิดได้ครบ ส่วนที่ยังไม่มีคือ pipeline ที่ต้องหาเพิ่มจากลูกค้าใหม่หรือลูกค้าเก่า</p></div>`;
+}
+function convPanel(){
+  const owners=allOwners().filter(o=>activeSales().includes(o)||ownerDeals(o).length);
+  const pc=v=>Math.round(v*100)+"%";
+  return `<div class="panel"><div class="ph"><div><h2>Conversion และความเร็วการขาย</h2><p>นับดีลที่เข้ามาในปี ${S.cfg.year} · % ถึงขั้น = สัดส่วนดีลที่ไปถึงขั้นนั้นหรือไกลกว่า</p></div></div><div class="tw"><table>
+  <thead><tr><th>เซลส์</th><th class="r">ดีลเข้า</th><th class="r">ถึงส่ง Proposal</th><th class="r">ถึงใบเสนอราคา</th><th class="r">Win rate</th><th class="r">รอบการขายเฉลี่ย</th><th class="r">อยู่ในขั้นปัจจุบันเฉลี่ย</th><th class="r">ดีลค้าง &gt; 21 วัน</th></tr></thead><tbody>
+  ${owners.map(o=>{const c=conv(o);return`<tr style="${activeSales().includes(o)?"":"color:var(--muted)"}"><td>${ownerTag(o)}</td><td class="r num">${c.n}</td><td class="r num">${c.known?pc(c.p2):"—"}</td><td class="r num">${c.known?pc(c.p3):"—"}</td><td class="r num">${pc(c.win)}</td><td class="r num">${c.R.cycleM!=null&&!c.R.fb?c.R.cycleM.toFixed(1)+" เดือน":"—"}</td><td class="r num">${Math.round(c.age)} วัน</td><td class="r">${c.stuck?`<span class="flag warn">${c.stuck}</span>`:"0"}</td></tr>`}).join("")}
+  </tbody></table></div><p class="hint">ดีลที่ย้ายมาจาก Google Sheet ไม่มีประวัติว่าแพ้ที่ขั้นไหน จึงนับ % ถึงขั้นจากดีลที่ชนะและดีลที่ยังเปิดก่อน ตัวเลขจะแม่นขึ้นเมื่อใช้ระบบเปลี่ยนขั้นตอนไปเรื่อยๆ</p></div>`;
+}
+
+/* coaching view */
+function vCoach(){
+  const reps=activeSales(),rep=(reps.includes(S.coachRep)&&S.coachRep)||(reps.includes(S.me)?S.me:reps[0]);
+  if(!rep)return`<div class="empty">ยังไม่มีรายชื่อเซลส์ เพิ่มได้ในหน้า ตั้งค่า</div>`;
+  const cym=curYM(),f=fcSum(rep,cym),c=capacity(rep),cv=conv(rep),cvT=conv("all"),M=c.M;
+  const wks=[...S.snaps.values()].filter(s=>s.month===cym).sort((a,b)=>a.week.localeCompare(b.week));
+  const prev=wks.filter(s=>s.week<weekStart()).pop(),delta=prev?.reps?.[rep]?f.call-prev.reps[rep].call:null;
+  const sessions=[...S.coach.values()].filter(s=>s.rep===rep).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const openActs=sessions.flatMap(s=>(s.actions||[]).map((a,i)=>({...a,sid:s.id,i,date:s.date}))).filter(a=>!a.done);
+  const review=ownerDeals(rep).filter(isOpen).map(d=>({d,f:flagsOf(d)})).filter(x=>x.d.closeMonth===cym||x.f.length).sort((a,b)=>n(b.d.gp)-n(a.d.gp)).slice(0,8);
+  const ai=S.ai[rep]||{};
+  const pc=v=>Math.round(v*100)+"%";
+  const stayRows=OPEN.filter(s=>cv.stay[s]?.length).map(s=>`${esc(STAGE_TH[s])} ${Math.round(cv.stay[s].reduce((a,b)=>a+b,0)/cv.stay[s].length)} วัน`).join(" · ");
+  return `<div class="viewhead"><div><h1>โค้ช 1:1 · ${esc(rep)}</h1><p>ตัวเลขสำหรับคุยประจำสัปดาห์ ดึงมาให้อัตโนมัติ · ${dLabel(today())}</p></div><div class="row"><div class="seg" role="group" aria-label="เลือกเซลส์">${reps.map(s=>`<button data-coachrep="${esc(s)}" aria-pressed="${rep===s}">${esc(s)}</button>`).join("")}</div><button class="btn pri" data-newcoach="${esc(rep)}">+ บันทึก 1:1</button></div></div>
+  <div class="tiles">
+   <div class="tile"><span class="lbl">Call เดือนนี้</span><span class="val">฿${fmtM(f.call)}</span><span class="sub">${pct(f.call,f.target)}% ของเป้า ฿${fmtM(f.target)}${delta!=null?` · ${delta>=0?"▲":"▼"} ${fmtM(Math.abs(delta))} จากสัปดาห์ก่อน`:""}</span></div>
+   <div class="tile"><span class="lbl">GP สะสมทั้งปี</span><span class="val">${pct(M.fullWon,M.yearTgt)}%</span><span class="sub">฿${fmtM(M.fullWon)} / ฿${fmtM(M.yearTgt)}</span></div>
+   <div class="tile"><span class="lbl">ต้องสร้าง pipeline เพิ่ม</span><span class="val">${c.short>0?c.deals+" ดีล":"พอแล้ว"}</span><span class="sub">${c.short>0?`≈ ${c.perWeek.toFixed(1)} ดีล/สัปดาห์ · GP ฿${fmtM(c.short)}`:"pipeline ครอบคลุมส่วนที่ขาด"}</span></div>
+   <div class="tile"><span class="lbl">กิจกรรม 7 วัน</span><span class="val">${M.acts7}<span class="muted" style="font-size:15px"> / ${S.cfg.actPerWeek}</span></span><span class="sub">ลูกค้าใหม่ที่ปิดได้ปีนี้ ${M.newAcc} ราย</span></div>
+  </div>
+  <div class="grid g2">
+   <div class="panel"><div class="ph"><div><h2>ข้อตกลงที่ยังค้าง</h2><p>จากการคุย 1:1 ครั้งก่อนๆ ติ๊กเมื่อทำเสร็จ</p></div><span class="pill">${openActs.length}</span></div><div class="list">${openActs.map(a=>`<label class="li" style="cursor:pointer"><input type="checkbox" data-acttoggle="${esc(a.sid)}|${a.i}" ${S.readOnly?"disabled":""} style="margin-top:4px"><div class="main"><div class="t">${esc(a.text)}</div><div class="small muted">จาก 1:1 วันที่ ${dLabel(a.date)}${a.due?` · กำหนด ${dLabel(a.due)}`:""}${a.due&&a.due<today()?` <span class="flag crit">● เลยกำหนด</span>`:""}</div></div></label>`).join("")||`<div class="empty">ไม่มีข้อตกลงค้าง</div>`}</div></div>
+   <div class="panel"><div class="ph"><div><h2>เทียบกับค่าเฉลี่ยทีม</h2><p>ดูว่าติดอยู่ที่ขั้นไหนของการขาย</p></div></div>
+    <div class="tw"><table><thead><tr><th>ตัวชี้วัด</th><th class="r">${esc(rep)}</th><th class="r">ทีม</th></tr></thead><tbody>
+     <tr><td>ดีลเข้าปีนี้</td><td class="r num">${cv.n}</td><td class="r num">${cvT.n}</td></tr>
+     <tr><td>ถึงส่ง Proposal</td><td class="r num">${cv.known?pc(cv.p2):"—"}</td><td class="r num">${pc(cvT.p2)}</td></tr>
+     <tr><td>ถึงใบเสนอราคา</td><td class="r num">${cv.known?pc(cv.p3):"—"}</td><td class="r num">${pc(cvT.p3)}</td></tr>
+     <tr><td>Win rate (จำนวนดีล)</td><td class="r num">${pc(cv.win)}</td><td class="r num">${pc(cvT.win)}</td></tr>
+     <tr><td>Win rate (มูลค่า)</td><td class="r num">${cv.R.fb?"—":pc(cv.R.winV)}</td><td class="r num">${pc(cvT.R.winV)}</td></tr>
+     <tr><td>GP เฉลี่ยต่อดีลที่ปิดได้</td><td class="r num">${cv.R.fb?"—":fmtM(cv.R.avgGP)}</td><td class="r num">${fmtM(cvT.R.avgGP)}</td></tr>
+     <tr><td>รอบการขายเฉลี่ย</td><td class="r num">${cv.R.cycleM!=null&&!cv.R.fb?cv.R.cycleM.toFixed(1)+" ด.":"—"}</td><td class="r num">${cvT.R.cycleM!=null?cvT.R.cycleM.toFixed(1)+" ด.":"—"}</td></tr>
+     <tr><td>ดีลค้างในขั้นเดิม &gt; 21 วัน</td><td class="r num">${cv.stuck}</td><td class="r num">${cvT.stuck}</td></tr>
+    </tbody></table></div>${stayRows?`<p class="hint">เวลาเฉลี่ยในแต่ละขั้น: ${stayRows}</p>`:""}</div>
+  </div>
+  <div class="grid g2">
+   <div class="panel"><div class="ph"><div><h2>ดีลที่ควรคุยใน 1:1</h2><p>ดีลที่ควรปิดเดือนนี้ และดีลที่มีธงเตือน</p></div></div><div class="list">${review.map(({d,f})=>`<div class="li click" data-deal="${esc(d.id)}"><div class="main"><div class="t">${esc(accName(d))} · <span class="ink2">${esc(d.product||"")}</span> ${fcatPill(d)}</div><div class="row small">${f.slice(0,2).map(x=>`<span class="flag ${x[0]}">${x[0]==="crit"?"●":"▲"} ${esc(x[1])}</span>`).join("")||`<span class="muted">${esc(d.nextStep||"")}</span>`}</div></div><div style="text-align:right" class="small">${stagePill(d.stage)}<div class="num">฿${fmtM(d.gp)}</div></div></div>`).join("")||`<div class="empty">ไม่มีดีลที่ต้องคุยเป็นพิเศษ</div>`}</div></div>
+   <div class="panel"><div class="ph"><div><h2>AI ช่วยเตรียมโค้ช</h2><p>ให้ AI อ่านตัวเลขด้านบนแล้วสรุปประเด็นคุย คำถาม และข้อตกลงที่ควรตั้ง</p></div>${S.sample?`<button class="btn" data-aicoach="${esc(rep)}" ${ai.busy?"disabled":""}>${ai.busy?"กำลังวิเคราะห์…":ai.text?"วิเคราะห์ใหม่":"วิเคราะห์"}</button>`:""}</div>
+    ${!S.sample?`<div class="hint">ฟีเจอร์ AI ใช้ได้เมื่อเปิดหน้านี้ใน claude.ai และอนุญาตให้หน้านี้ถาม Claude</div>`:ai.err?`<div class="hint warn">${esc(ai.err)}</div>`:ai.text?`<div class="ai">${mdLite(ai.text)}</div><div class="row" style="margin-top:10px"><button class="btn sm" data-aiuse="${esc(rep)}" ${ai.busy?"disabled":""}>ใช้เป็นบันทึก 1:1</button></div>`:`<div class="hint">กด “วิเคราะห์” ก่อนเริ่มคุย ใช้เวลาประมาณ 10–20 วินาที</div>`}</div>
+  </div>
+  <div class="panel"><div class="ph"><h2>ประวัติการคุย 1:1</h2><span class="pill">${sessions.length}</span></div><div class="list">${sessions.map(s=>`<div class="li click" data-editcoach="${esc(s.id)}"><div class="main"><div class="t">${dLabel(s.date)} ${n((s.date||"").slice(0,4))+543}</div><div class="small ink2">${esc((s.notes||"").slice(0,160))}${(s.notes||"").length>160?"…":""}</div></div><span class="small muted">${(s.actions||[]).filter(a=>a.done).length}/${(s.actions||[]).length} ข้อตกลงเสร็จ</span></div>`).join("")||`<div class="empty">ยังไม่มีบันทึก กด “+ บันทึก 1:1” หลังคุยกับ ${esc(rep)}</div>`}</div></div>`;
+}
+function mdLite(t){return esc(t).split("\n").map(l=>/^#{1,3}\s/.test(l)?`<h3>${l.replace(/^#+\s/,"")}</h3>`:/^\s*[-*•]\s/.test(l)?`<div class="ai-li">${l.replace(/^\s*[-*•]\s/,"")}</div>`:/^\s*\d+[.)]\s/.test(l)?`<div class="ai-li">${l.trim()}</div>`:l.trim()?`<p>${l}</p>`:"").join("").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")}
+async function aiCoach(rep){
+  if(!S.sample)return;const cym=curYM(),f=fcSum(rep,cym),c=capacity(rep),cv=conv(rep),cvT=conv("all");
+  const flagged=ownerDeals(rep).filter(isOpen).map(d=>({d,f:flagsOf(d)})).sort((a,b)=>n(b.d.gp)-n(a.d.gp)).slice(0,12).map(({d,f})=>({ลูกค้า:accName(d),สินค้า:d.product,GP:n(d.gp),ขั้นตอน:d.stage,โอกาส:n(d.prob),หมวดForecast:fcatOf(d),เดือนปิด:d.closeMonth,ขั้นถัดไป:d.nextStep||"",ธงเตือน:f.map(x=>x[1]),หมายเหตุ:String(d.note||"").slice(0,160)}));
+  const openActs=[...S.coach.values()].filter(s=>s.rep===rep).flatMap(s=>(s.actions||[]).filter(a=>!a.done).map(a=>a.text));
+  const data={เซลส์:rep,วันที่:today(),เดือนนี้:{เป้า:f.target,ปิดแล้ว:f.won,Commit:f["Commit"],BestCase:f["Best Case"],Call:f.call},ทั้งปี:{เป้า:c.M.yearTgt,ปิดแล้ว:c.M.fullWon,ขาด:c.yGap},pipeline:{winRateมูลค่า:+c.R.winV.toFixed(2),ใช้ค่าทีม:c.R.fb,GPเฉลี่ยต่อดีล:Math.round(c.R.avgGP),ต้องมีถึงสิ้นปี:Math.round(c.yNeed),มีอยู่:Math.round(c.yPipe),ต้องสร้างดีลเพิ่ม:c.deals,ดีลต่อสัปดาห์:+c.perWeek.toFixed(1)},
+    conversion:{คน:{ดีลเข้า:cv.n,ถึงProposal:+cv.p2.toFixed(2),ถึงใบเสนอราคา:+cv.p3.toFixed(2),winRate:+cv.win.toFixed(2),ดีลค้าง21วัน:cv.stuck},ทีม:{ถึงProposal:+cvT.p2.toFixed(2),ถึงใบเสนอราคา:+cvT.p3.toFixed(2),winRate:+cvT.win.toFixed(2)}},
+    กิจกรรม7วัน:c.M.acts7,เป้ากิจกรรมต่อสัปดาห์:S.cfg.actPerWeek,ลูกค้าใหม่ปีนี้:c.M.newAcc,ข้อตกลงค้าง:openActs,ดีลหลัก:flagged};
+  const prompt=`คุณเป็นโค้ชการขายที่ช่วย MD ซึ่งเป็น Sales Director ของกลุ่มบริษัทเอเจนซี่การตลาดและเทคโนโลยีในไทย (บริษัทในเครือ เช่น SETech, TPS, TPM, Goodtech, GGEZ, Code Play) เตรียมคุย 1:1 รายสัปดาห์กับเซลส์ชื่อ ${rep}
+ตัวเลข KPI คือ GP (กำไรขั้นต้น) ไม่ใช่ยอดขาย ใช้เฉพาะข้อมูลด้านล่าง ห้ามแต่งตัวเลขหรือชื่อลูกค้าที่ไม่มีในข้อมูล ถ้าข้อมูลไม่พอให้บอกตรงๆ
+ตอบเป็นภาษาไทย กระชับ ใช้หัวข้อดังนี้ (ขึ้นต้นหัวข้อด้วย ## และรายการด้วย -):
+## ภาพรวมสั้นๆ (2 ประโยค)
+## สิ่งที่ทำได้ดี (ไม่เกิน 2 ข้อ)
+## จุดที่ต้องแก้ (ไม่เกิน 3 ข้อ อ้างตัวเลขทุกข้อ)
+## ดีลที่ควรคุย (ไม่เกิน 3 ดีล บอกว่าควรถามหรือช่วยอะไร)
+## คำถามที่ MD ควรถาม (3 ข้อ)
+## ข้อตกลงที่แนะนำสัปดาห์นี้ (3 ข้อ วัดผลได้และมีกำหนดเวลา)
+
+ข้อมูล:
+${JSON.stringify(data)}`;
+  S.ai[rep]={busy:true,text:""};render();
+  try{const r=await S.sample(prompt,{modelTier:"default",cache:false,onText:({text})=>{S.ai[rep]={busy:true,text};const el=document.querySelector(".ai");if(el)el.innerHTML=mdLite(text);else render()}});S.ai[rep]={text:r.text}}
+  catch(e){S.ai[rep]={err:e.code==="not_granted"?"ยังไม่ได้อนุญาตให้หน้านี้ถาม Claude เปิดได้จากเมนูสิทธิ์ของหน้านี้":e.code==="rate_limited"?"ใช้งาน AI ถี่เกินไป รอสักครู่แล้วลองใหม่":"AI ตอบไม่สำเร็จ ลองใหม่อีกครั้ง",text:e.text||""}}
+  render()}
+async function takeSnapshot(silent){
+  if(!S.db||S.readOnly)return;const wk=weekStart(),mon=curYM(),reps={};
+  [...activeSales(),"all"].forEach(o=>{const r=fcSum(o,mon);reps[o]={target:r.target,won:r.won,commit:r["Commit"],best:r["Best Case"],pipeline:r["Pipeline"],call:r.call,upside:r.upside,weighted:Math.round(r.weighted)}});
+  const doc={week:wk,month:mon,at:new Date().toISOString(),by:S.uid||null,reps};
+  try{await S.db.collection("snapshots").doc(wk).set(doc);S.snaps.set(wk,{id:wk,...doc});if(!silent)toast("บันทึก snapshot สัปดาห์นี้แล้ว");render()}catch(e){if(!silent)toast("บันทึก snapshot ไม่สำเร็จ")}}
+function maybeSnap(){if(S.view!=="forecast"||S.snapTried||!S.db||S.readOnly||!Object.values(S.ready).every(Boolean))return;S.snapTried=true;if(!S.snaps.has(weekStart()))setTimeout(()=>takeSnapshot(true),0)}
+function coachForm(id,preset){
+  const s=id?S.coach.get(id):{date:today(),rep:preset?.rep||activeSales()[0],notes:preset?.notes||"",actions:[]};
+  if(!s){closeLayer();return}
+  const A=draftA||(s.actions||[]).map(a=>({...a}));draftA=null;
+  const dr=$("#drawer");
+  dr.innerHTML=`<div class="dh"><h2>${id?"บันทึก 1:1":"บันทึก 1:1 ใหม่"}</h2><button class="x" data-close="" aria-label="ปิด">×</button></div>
+  <form id="coachF" class="form" autocomplete="off">
+   <div class="fld"><label for="kDate">วันที่คุย</label><input id="kDate" type="date" required value="${esc(s.date)}"></div>
+   <div class="fld"><label for="kRep">เซลส์</label><select id="kRep">${activeSales().map(o=>`<option ${s.rep===o?"selected":""}>${esc(o)}</option>`).join("")}</select></div>
+   <div class="fld wide"><label for="kNotes">คุยอะไรกันบ้าง</label><textarea id="kNotes" style="min-height:160px">${esc(s.notes||"")}</textarea></div>
+   <div class="fld wide"><label>ข้อตกลง (Action items)</label><div class="list">${A.map((a,i)=>`<div class="form" style="padding:6px 0;border-bottom:1px solid var(--line);grid-template-columns:auto 1fr 150px auto;align-items:center"><input type="checkbox" id="ad${i}" ${a.done?"checked":""} aria-label="เสร็จแล้ว"><input id="at${i}" value="${esc(a.text||"")}" placeholder="เช่น นัดนำเสนอ Srifa ให้ได้ภายในศุกร์" aria-label="ข้อตกลง"><input id="au${i}" type="date" value="${esc(a.due||"")}" aria-label="กำหนดเสร็จ"><button type="button" class="btn sm danger" data-rmaction="${i}">ลบ</button></div>`).join("")}</div><button type="button" class="btn sm" data-addaction="" style="align-self:flex-start">+ เพิ่มข้อตกลง</button></div>
+   <div class="fld wide"><div class="row"><button type="submit" class="btn pri" ${S.readOnly?"disabled":""}>บันทึก</button><button type="button" class="btn" data-close="">ยกเลิก</button>${id?`<button type="button" class="btn danger" data-askdelcoach="${esc(id)}" style="margin-left:auto">ลบ</button>`:""}</div><div id="delBox"></div></div>
+  </form>`;
+  const readA=()=>A.map((a,i)=>({text:$("#at"+i).value.trim(),due:$("#au"+i).value,done:$("#ad"+i).checked}));
+  const keep=()=>({date:$("#kDate").value,rep:$("#kRep").value,notes:$("#kNotes").value});
+  dr.querySelector("[data-addaction]").onclick=()=>{draftA=[...readA(),{text:"",due:addDays(today(),7),done:false}];const k=keep();coachForm(id,k);Object.entries({kDate:k.date,kRep:k.rep,kNotes:k.notes}).forEach(([x,v])=>$("#"+x).value=v)};
+  dr.querySelectorAll("[data-rmaction]").forEach(b=>b.onclick=()=>{const arr=readA();arr.splice(+b.dataset.rmaction,1);draftA=arr;const k=keep();coachForm(id,k);Object.entries({kDate:k.date,kRep:k.rep,kNotes:k.notes}).forEach(([x,v])=>$("#"+x).value=v)});
+  $("#coachF").onsubmit=async e=>{e.preventDefault();if(S.readOnly)return;
+    const next={...(id?S.coach.get(id):{createdAt:new Date().toISOString()}),...keep(),actions:readA().filter(a=>a.text)};delete next.id;
+    if(await save("coaching",id||uid("k"),stamp(next))){toast("บันทึก 1:1 แล้ว");closeLayer()}};
+}
+let draftA=null;
+
 /* ---------- drawer (deal / account / activity) ---------- */
 let layerRender=null;
 function openLayer(fn){layerRender=fn;$("#layer").innerHTML=`<div class="scrim" data-scrim=""><div class="drawer" role="dialog" aria-modal="true" id="drawer"></div></div>`;fn();document.body.style.overflow="hidden"}
@@ -536,6 +723,7 @@ function dealForm(id,preset){
    <div class="fld"><label for="fStage">ขั้นตอน</label><select id="fStage">${o(STAGES.map(s=>s.k),d.stage,s=>STAGE_TH[s])}</select></div>
    <div class="fld"><label for="fProb">โอกาสปิด (%)</label><input id="fProb" type="number" min="0" max="100" step="5" value="${n(d.prob)}"></div>
    <div class="fld"><label for="fTemp">ความร้อน</label><select id="fTemp">${o(TEMPS,d.temp)}</select></div>
+   <div class="fld"><label for="fFc">หมวด Forecast</label><select id="fFc"><option value="">อัตโนมัติจาก % (${esc(fcatOf({...d,fcat:""}))})</option>${o(FCATS,d.fcat||"",c=>FCAT_TH[c])}</select></div>
    <div class="fld"><label for="fCh">ช่องทาง</label><select id="fCh">${o(CHANNELS,d.channel)}</select></div>
    <div class="fld"><label for="fLead">เดือนที่เข้ามา</label><input id="fLead" type="month" value="${esc(d.leadMonth||"")}"></div>
    <div class="fld"><label for="fClose">เดือนที่คาดว่าจะปิด</label><input id="fClose" type="month" value="${esc(d.closeMonth||"")}"></div>
@@ -555,8 +743,9 @@ function dealForm(id,preset){
   const upd=()=>{$("#actionHint").hidden=!(n(pr.value)<70&&!$("#fAction").value.trim()&&OPEN.includes(st.value))};pr.oninput=upd;$("#fAction").oninput=upd;upd();
   $("#dealF").onsubmit=async e=>{e.preventDefault();if(S.readOnly)return;
     const owner=$("#fOwner").value;const accountId=await ensureAccount($("#fCust").value,owner);
-    const next={...(id?S.deals.get(id):{createdAt:new Date().toISOString(),history:[]}),customer:$("#fCust").value.trim(),accountId,product:$("#fProd").value.trim(),bu:$("#fBu").value,billing:n(String($("#fBill").value).replace(/,/g,"")),gp:n(String($("#fGp").value).replace(/,/g,"")),stage:st.value,prob:Math.max(0,Math.min(100,n(pr.value))),temp:$("#fTemp").value,channel:$("#fCh").value,leadMonth:$("#fLead").value,closeMonth:$("#fClose").value,owner,nextStep:$("#fNext").value.trim(),nextDate:$("#fNextD").value,action:$("#fAction").value.trim(),note:$("#fNote").value.trim(),lostReason:$("#fLost").value.trim(),gpMonth:$("#fGpM").value,spread:Math.max(1,n($("#fSpread").value)||1)};
+    const next={...(id?S.deals.get(id):{createdAt:new Date().toISOString(),history:[]}),customer:$("#fCust").value.trim(),accountId,product:$("#fProd").value.trim(),bu:$("#fBu").value,billing:n(String($("#fBill").value).replace(/,/g,"")),gp:n(String($("#fGp").value).replace(/,/g,"")),stage:st.value,prob:Math.max(0,Math.min(100,n(pr.value))),temp:$("#fTemp").value,channel:$("#fCh").value,leadMonth:$("#fLead").value,closeMonth:$("#fClose").value,owner,nextStep:$("#fNext").value.trim(),nextDate:$("#fNextD").value,action:$("#fAction").value.trim(),note:$("#fNote").value.trim(),lostReason:$("#fLost").value.trim(),fcat:$("#fFc").value,gpMonth:$("#fGpM").value,spread:Math.max(1,n($("#fSpread").value)||1)};
     delete next.id;const prevStage=id?S.deals.get(id).stage:null;
+    if(prevStage!==next.stage){next.stageAt=new Date().toISOString();if(next.stage==="Closed Lost"&&OPEN.includes(prevStage))next.lostStage=prevStage}
     if(prevStage!==next.stage)next.history=[...(next.history||[]),{at:new Date().toISOString(),from:prevStage,to:next.stage}].slice(-30);
     if(next.stage==="Closed Won"&&!next.closeMonth)next.closeMonth=curYM();
     const did=id||uid("d");if(await save("deals",did,stamp(next))){toast(id?"บันทึกดีลแล้ว":"สร้างดีลแล้ว");closeLayer()}};
@@ -624,7 +813,7 @@ function actForm(actId,dealId,accId){
 
 /* ---------- events ---------- */
 document.addEventListener("click",async e=>{
-  const t=e.target.closest("[data-view],[data-sumowner],[data-goowner],[data-mypick],[data-deal],[data-acc],[data-newdeal],[data-newacc],[data-newact],[data-newactacc],[data-editact],[data-delact],[data-close],[data-scrim],[data-pmode],[data-sort],[data-askdel],[data-dodel],[data-canceldel],[data-savecfg],[data-fillrow],[data-addsales],[data-transfer],[data-dotransfer],[data-export]");
+  const t=e.target.closest("[data-view],[data-sumowner],[data-goowner],[data-mypick],[data-deal],[data-acc],[data-newdeal],[data-newacc],[data-newact],[data-newactacc],[data-editact],[data-delact],[data-close],[data-scrim],[data-pmode],[data-sort],[data-askdel],[data-dodel],[data-canceldel],[data-savecfg],[data-fillrow],[data-addsales],[data-transfer],[data-dotransfer],[data-export],[data-snap],[data-coachrep],[data-newcoach],[data-editcoach],[data-aicoach],[data-aiuse],[data-askdelcoach],[data-dodelcoach]");
   if(!t)return;const ds=t.dataset;
   if("scrim" in ds){if(e.target===t)closeLayer();return}
   if("close" in ds){closeLayer();return}
@@ -660,6 +849,14 @@ document.addEventListener("click",async e=>{
     for(const a of[...S.accounts.values()].filter(a=>a.owner===f)){const x={...a,owner:to};delete x.id;if(await save("accounts",a.id,stamp(x)))c++}
     $("#trConfirm").innerHTML="";toast(`โอนแล้ว ${c} รายการ`);return}
   if("export" in ds){exportCSV();return}
+  if("snap" in ds){takeSnapshot(false);return}
+  if("coachrep" in ds){S.coachRep=ds.coachrep;render();return}
+  if("newcoach" in ds){const r=ds.newcoach;openLayer(()=>coachForm(null,{rep:r}));return}
+  if("editcoach" in ds){openLayer(()=>coachForm(ds.editcoach));return}
+  if("aicoach" in ds){aiCoach(ds.aicoach);return}
+  if("aiuse" in ds){const r=ds.aiuse,txt=(S.ai[r]||{}).text||"";openLayer(()=>coachForm(null,{rep:r,notes:"[สรุปจาก AI ก่อนคุย]\n"+txt+"\n\n[สิ่งที่คุยจริง]\n"}));return}
+  if("askdelcoach" in ds){$("#delBox").innerHTML=`<div class="confirm" style="margin-top:10px"><span>ลบบันทึก 1:1 นี้ถาวร?</span><button type="button" class="btn sm danger" data-dodelcoach="${esc(ds.askdelcoach)}">ลบเลย</button><button type="button" class="btn sm" data-canceldel="">ไม่ลบ</button></div>`;return}
+  if("dodelcoach" in ds){if(await del("coaching",ds.dodelcoach)){toast("ลบบันทึกแล้ว");closeLayer()}return}
 });
 document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.pf==="q"){S.pipe.q=t.value;clearTimeout(t._t);t._t=setTimeout(()=>{persistPipe();render();const el=document.querySelector('[data-pf="q"]');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},250)}
@@ -668,7 +865,10 @@ document.addEventListener("change",e=>{const t=e.target;
   if(t.id==="meSel"){S.me=t.value;S.myPick=null;try{localStorage.setItem("sd.me",S.me)}catch(x){}if(S.db&&S.uid)S.db.doc("data/users/"+S.uid+"/prefs").set({me:S.me}).catch(()=>{});location.hash=S.me&&S.me!=="MD"?"my":"summary";route();return}
   if(t.dataset.pf&&t.dataset.pf!=="q"){S.pipe[t.dataset.pf]=t.value;persistPipe();render()}
   if(t.dataset.af&&t.dataset.af!=="q"){S.acc[t.dataset.af]=t.value;render()}
-  if(t.dataset.actf){S.act[t.dataset.actf]=t.value;render()}});
+  if(t.dataset.actf){S.act[t.dataset.actf]=t.value;render()}
+  if("fcmonth" in t.dataset){S.fcMonth=t.value;render()}
+  if(t.dataset.fcatsel){const d=S.deals.get(t.dataset.fcatsel);if(d){const x={...d,fcat:t.value};delete x.id;S.deals.set(d.id,{id:d.id,...x});save("deals",d.id,stamp(x)).then(ok=>{if(ok)toast("อัปเดตหมวด Forecast แล้ว")});pend=false;render()}}
+  if(t.dataset.acttoggle){const[sid,i]=t.dataset.acttoggle.split("|");const sDoc=S.coach.get(sid);if(sDoc){const acts=(sDoc.actions||[]).map((a,j)=>j===+i?{...a,done:t.checked}:a);const x={...sDoc,actions:acts};delete x.id;S.coach.set(sid,{id:sid,...x});save("coaching",sid,stamp(x)).then(ok=>{if(ok)toast("อัปเดตข้อตกลงแล้ว")});pend=false;setTimeout(render,300)}}});
 function persistPipe(){try{localStorage.setItem("sd.pipe",JSON.stringify({mode:S.pipe.mode,sort:S.pipe.sort,dir:S.pipe.dir}))}catch(e){}}
 /* drag & drop stage change */
 let dragId=null;
@@ -677,6 +877,7 @@ document.addEventListener("dragover",e=>{const col=e.target.closest?.("[data-dro
 document.addEventListener("dragend",()=>{dragId=null;document.querySelectorAll(".col.drop").forEach(x=>x.classList.remove("drop"))});
 document.addEventListener("drop",async e=>{const col=e.target.closest?.("[data-dropstage]");if(!col||!dragId)return;e.preventDefault();const d=S.deals.get(dragId);const to=col.dataset.dropstage;dragId=null;
   if(!d||d.stage===to)return;const s=STAGES.find(x=>x.k===to);const x={...d,stage:to,prob:s.p,history:[...(d.history||[]),{at:new Date().toISOString(),from:d.stage,to}].slice(-30)};delete x.id;
+  x.stageAt=new Date().toISOString();if(to==="Closed Lost"&&OPEN.includes(d.stage))x.lostStage=d.stage;
   if(to==="Closed Won"&&!x.closeMonth)x.closeMonth=curYM();
   S.deals.set(d.id,{id:d.id,...x});render();if(await save("deals",d.id,stamp(x)))toast(`ย้ายไป ${STAGE_TH[to]} แล้ว`)});
 /* tooltip */
@@ -684,9 +885,9 @@ document.addEventListener("mousemove",e=>{const h=e.target.closest?.("[data-tip]
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&layerRender)closeLayer()});
 /* CSV export */
 async function exportCSV(){
-  const ds=pipeDeals();const cols=["ลูกค้า","สินค้า","บริษัท","Billing","GP","ขั้นตอน","โอกาส%","ความร้อน","ช่องทาง","เดือนที่เข้ามา","เดือนที่คาดว่าจะปิด","เซลส์","ขั้นตอนถัดไป","วันนัด","Action Plan","หมายเหตุ"];
+  const ds=pipeDeals();const cols=["ลูกค้า","สินค้า","บริษัท","Billing","GP","ขั้นตอน","หมวด Forecast","โอกาส%","ความร้อน","ช่องทาง","เดือนที่เข้ามา","เดือนที่คาดว่าจะปิด","เซลส์","ขั้นตอนถัดไป","วันนัด","Action Plan","หมายเหตุ"];
   const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
-  const csv="﻿"+[cols.map(q).join(","),...ds.map(d=>[accName(d),d.product,d.bu,d.billing,d.gp,d.stage,d.prob,d.temp,d.channel,d.leadMonth,d.closeMonth,d.owner,d.nextStep,d.nextDate,d.action,d.note].map(q).join(","))].join("\n");
+  const csv="﻿"+[cols.map(q).join(","),...ds.map(d=>[accName(d),d.product,d.bu,d.billing,d.gp,d.stage,fcatOf(d),d.prob,d.temp,d.channel,d.leadMonth,d.closeMonth,d.owner,d.nextStep,d.nextDate,d.action,d.note].map(q).join(","))].join("\n");
   if(!S.dl){toast("หน้านี้ส่งออกไฟล์ไม่ได้ในมุมมองนี้");return}
   try{await S.dl.save({filename:`pipeline-${today()}.csv`,data:new Blob([csv],{type:"text/csv"})})}catch(e){if(e.code!=="declined")toast("ส่งออกไม่สำเร็จ")}
 }
