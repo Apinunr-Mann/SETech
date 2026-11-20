@@ -1,4 +1,4 @@
-# SETech Sales Desk
+# TBU Sales Desk
 
 CRM ภายในสำหรับทีมขาย ใช้แทน Google Sheet "Sales Pipeline 2026"
 
